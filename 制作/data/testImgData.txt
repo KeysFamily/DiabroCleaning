@@ -1,0 +1,5 @@
+./data/image/adventure.png
+50 37
+7
+112
+3
