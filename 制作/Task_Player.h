@@ -22,8 +22,9 @@ namespace  Player
 		typedef  weak_ptr<Resource>		WP;
 		static   WP  instance;
 		static  Resource::SP  Create();
-	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
-		//共有する変数はここに追加する
+		//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+			//共有する変数はここに追加する
+		DG::Image::SP img;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BChara
@@ -45,15 +46,26 @@ namespace  Player
 		void  Render2D_AF()	override;	//「2D描画」１フレーム毎に行う処理
 		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
 	public:
-	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
-		//追加したい変数・メソッドはここに追加する
-		//BCharaに含まれないモノのみここに追加する
-		DG::Image::SP img;
+		//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+			//追加したい変数・メソッドはここに追加する
+			//BCharaに含まれないモノのみここに追加する
+
 		OL::Size2D cutSize;
 		int imgTurn;
 		OL::Limit<int> select;
 		int drawScale;
-	
+
 		void LoadImg();
+
+		XI::GamePad::SP  controller;
+
+		//思考＆状況判断(ステータス決定）
+		void  Think();
+		//モーションに対応した処理
+		void  Move();
+		//アニメーション制御
+		BChara::DrawInfo  Anim();
+		//接触時の応答処理(必ず受け身の処理として実装する)
+		void Received(BChara* from_, AttackInfo at_) override;
 	};
 }
