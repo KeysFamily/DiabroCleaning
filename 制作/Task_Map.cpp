@@ -35,7 +35,9 @@ namespace  Map
 		auto result = this->LoadMap("map_start");
 		this->testCam = ML::Vec2(0, 0);
 		//★タスクの生成
-		Player::Object::Create(true);
+		auto  pl = Player::Object::Create(true);
+		pl->pos.x = ge->screen2DWidth / 2;
+		pl->pos.y = ge->screen2DHeight * 2 / 3;
 
 		return  true;
 	}
@@ -160,8 +162,67 @@ namespace  Map
 				ifs >> this->ObjectMap.chipdata[y][x];
 			}
 		}
-		
+
 		return true;
+	}
+	//-------------------------------------------------------------------
+	//あたり判定
+	bool  Object::CheckHit(const  ML::Box2D& hit_)
+	{
+		ML::Rect  r = { hit_.x, hit_.y, hit_.x + hit_.w, hit_.y + hit_.h };
+		//矩形がマップ外に出ていたらサイズを変更する
+		ML::Rect  m = {
+			this->hitBase.x,
+			this->hitBase.y,
+			this->hitBase.x + this->hitBase.w,
+			this->hitBase.y + this->hitBase.h
+		};
+		if (r.left < m.left) { r.left = m.left; }
+		if (r.top < m.top) { r.top = m.top; }
+		if (r.right > m.right) { r.right = m.right; }
+		if (r.bottom > m.bottom) { r.bottom = m.bottom; }
+
+		//ループ範囲調整
+		int sx, sy, ex, ey;
+		sx = r.left / 32;
+		sy = r.top / 32;
+		ex = (r.right - 1) / 32;
+		ey = (r.bottom - 1) / 32;
+
+		//範囲内の障害物を探す
+		for (int y = sy; y <= ey; ++y) {
+			for (int x = sx; x <= ex; ++x) {
+				if (8 <= this->arr[y][x]) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	//-------------------------------------------------------------------
+	//マップ外を見せないようにカメラを位置調整する
+	void  Object::AdjustCameraPos()
+	{
+		//カメラとマップの範囲を用意
+		ML::Rect  c = {
+			ge->camera2D.x,
+			ge->camera2D.y,
+			ge->camera2D.x + ge->camera2D.w,
+			ge->camera2D.y + ge->camera2D.h };
+		ML::Rect  m = {
+			this->hitBase.x,
+			this->hitBase.y,
+			this->hitBase.x + this->hitBase.w,
+			this->hitBase.y + this->hitBase.h };
+
+		//カメラの位置を調整
+		if (c.right > m.right) { ge->camera2D.x = m.right - ge->camera2D.w; }
+		if (c.bottom > m.bottom) { ge->camera2D.y = m.bottom - ge->camera2D.h; }
+		if (c.left < m.left) { ge->camera2D.x = m.left; }
+		if (c.top < m.top) { ge->camera2D.y = m.top; }
+		//マップがカメラより小さい場合
+		if (this->hitBase.w < ge->camera2D.w) { ge->camera2D.x = m.left; }
+		if (this->hitBase.h < ge->camera2D.h) { ge->camera2D.y = m.top; }
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
@@ -175,7 +236,7 @@ namespace  Map
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
-				
+
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill

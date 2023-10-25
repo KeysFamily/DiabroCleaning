@@ -58,9 +58,14 @@ namespace  Map
 		MapData			ObjectMap;
 
 		ML::Vec2 testCam;
-
+		int  arr[100][100];
+		ML::Box2D			hitBase;//ピクセル単位のマップサイズを持つ
 		//マップ読み込み
 		//param1:難易度までの名前
 		bool LoadMap(const string& mapName_);
+		bool  CheckHit(const  ML::Box2D& hit_);//あたり判定
+
+		//マップ外を見せないようにカメラを位置調整する
+		void  AdjustCameraPos();
 	};
 }
