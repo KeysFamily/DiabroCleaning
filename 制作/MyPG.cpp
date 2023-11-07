@@ -961,6 +961,14 @@ ge->debugRect(me, DEBUGRECTMODE::RED ,- ge->camera2D.x, -ge->camera2D.y);
 	{
 		return ML::Vec2(screenWidth / 2.0f, screenHeight / 2.0f);
 	}
+	//デバッグ関数
+	void MyGameEngine::printToDebugFile(string debugstr_) 
+	{
+		ofstream ofs("./data/debug/Debug.txt", ofstream::app);
+		ofs << debugstr_ << endl;
+		ofs.close();
+	}
+
 	//◆◆◆◆◆◆◆◆◆◆
 
 

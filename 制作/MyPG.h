@@ -108,6 +108,7 @@ namespace  MyPG
 		//ˆÈ‰º22CI0329‹Lq
 		ML::Box2D GetScreenBox() const;
 		ML::Vec2  GetScreenCenter() const;
+		void printToDebugFile(std::string debugstr_);
 		//ŸŸŸŸŸŸŸŸŸŸ
 
 
@@ -176,6 +177,7 @@ namespace  MyPG
 	{
 		return std::dynamic_pointer_cast<Type>(btask_);
 	}
+
 
 	//ŸŸŸŸŸŸŸŸŸŸ
 

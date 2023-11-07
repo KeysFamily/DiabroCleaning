@@ -160,6 +160,9 @@ namespace  Map
 			return false;
 		}
 
+		//“–‚½‚è”»’è‹éŒ`Ý’è
+		this->hitBase = ML::Box2D(0, 0, this->ObjectMap.width * this->res->drawSize, this->ObjectMap.height * this->res->drawSize);
+
 		return true;
 	}
 
