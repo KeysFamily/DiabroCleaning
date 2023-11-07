@@ -54,6 +54,8 @@ namespace  Player
 		int imgTurn;
 		OL::Limit<int> select;
 		int drawScale;
+		ML::Box2D initialHitBase;
+		ML::Box2D crouchHitBase;
 
 		void LoadImg();
 
@@ -67,5 +69,8 @@ namespace  Player
 		BChara::DrawInfo  Anim();
 		//ÚG‚Ì‰“šˆ—(•K‚¸ó‚¯g‚Ìˆ—‚Æ‚µ‚ÄÀ‘•‚·‚é)
 		void Received(BChara* from_, AttackInfo at_) override;
+
+		//”{—¦
+		ML::Box2D DrawScale(ML::Box2D& me ,const int drawScale);
 	};
 }

@@ -83,7 +83,7 @@ public:
 		, gravity(0.f)
 		, maxSpeed(0.f)
 		, addSpeed(0.f)
-		, crouchSpeed(0)
+		, crouchSpeed(0.f)
 		, decSpeed(0.f)
 		, unHitTime(0)
 	{
