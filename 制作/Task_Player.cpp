@@ -36,6 +36,8 @@ namespace  Player
 		//★データ初期化
 		this->render2D_Priority[1] = 0.5f;
 		this->hitBase = ML::Box2D(-10, -15, 19, 29);
+		this->initialHitBase = ML::Box2D(-10, -15, 19, 29);
+		this->crouchHitBase = ML::Box2D(-10, -11, 19, 21);
 		this->angle_LR = Angle_LR::Right;
 		this->controller = ge->in1;
 		this->hp = 10;
@@ -47,7 +49,8 @@ namespace  Player
 		this->maxFallSpeed = 10.0f;	//最大落下速度
 		this->jumpPow = -10.0f;		//ジャンプ力（初速）
 		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
-
+		this->drawScale = 4;
+		ge->debugRectLoad();
 		//★タスクの生成
 
 		return  true;
@@ -57,7 +60,7 @@ namespace  Player
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-
+		ge->debugRectReset();
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -71,6 +74,7 @@ namespace  Player
 	{
 		this->moveCnt++;
 		this->animCnt++;
+		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 		if (this->unHitTime > 0) { this->unHitTime--; }
 		//思考・状況判断
 		this->Think();
@@ -114,6 +118,8 @@ namespace  Player
 		di.draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
 
 		this->res->img->Draw(di.draw, di.src);
+		ge->debugRect(this->hitBase.OffsetCopy(this->pos),7);
+		ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
 	//思考＆状況判断　モーション決定
@@ -220,10 +226,10 @@ namespace  Player
 		//モーション毎に固有の処理
 		switch (this->motion) {
 		case  Motion::Stand:	//立っている
-			this->hitBase = ML::Box2D(-10, -15, 19, 29);
+			this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 			break;
 		case  Motion::Walk:		//歩いている
-			this->hitBase = ML::Box2D(-10, -15, 19, 29);
+			this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 			if (inp.LStick.BL.on) {
 				this->angle_LR = Angle_LR::Left;
 				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
@@ -259,10 +265,10 @@ namespace  Player
 		case  Motion::Attack:	//攻撃中
 			break;
 		case Motion::Crouch:	//しゃがむ
-			this->hitBase = ML::Box2D(-10, -11, 19, 21);
+			this->hitBase = this->DrawScale(this->crouchHitBase, this->drawScale);
 			break;
 		case Motion::CrouchWalk:	//しゃがみながら移動
-			this->hitBase = ML::Box2D(-10, -11, 19, 21);
+			this->hitBase = this->DrawScale(this->crouchHitBase, this->drawScale);
 			if (inp.LStick.BL.on) {
 				this->angle_LR = Angle_LR::Left;
 				this->moveVec.x -= this->crouchSpeed;
@@ -288,7 +294,7 @@ namespace  Player
 			{ ML::Box2D(-10, -14, 20, 28), ML::Box2D(67,45,20,28), defColor },	//歩行1
 			{ ML::Box2D(-10, -14, 20, 27), ML::Box2D(116,46,20,27), defColor },	//歩行2
 			{ ML::Box2D(-10, -13, 20, 25), ML::Box2D(166,48,20,25), defColor },	//歩行3
-			{ ML::Box2D(-12, -14, 23, 28), ML::Box2D(217,45,23,28), defColor },	//歩行4
+			{ ML::Box2D(-9, -14, 23, 28), ML::Box2D(217,45,23,28), defColor },	//歩行4
 			{ ML::Box2D(-10, -14, 20, 27), ML::Box2D(266,46,20,27), defColor },	//歩行5
 			{ ML::Box2D(-10, -13, 20, 25), ML::Box2D(316,48,20,25), defColor },	//歩行6
 			{ ML::Box2D(-10, -11, 19, 21), ML::Box2D(216,15,19,21), defColor },	//しゃがみ
@@ -349,6 +355,7 @@ namespace  Player
 			rtv.draw.x = -rtv.draw.x;
 			rtv.draw.w = -rtv.draw.w;
 		}
+		rtv.draw = this->DrawScale(rtv.draw, this->drawScale);
 
 		return rtv;
 	}
@@ -374,6 +381,18 @@ namespace  Player
 		this->UpdateMotion(Motion::Bound);
 		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う
 	}
+	//-------------------------------------------------------------------
+	//矩形倍率
+	ML::Box2D Object::DrawScale(ML::Box2D& me, const int drawScale)
+	{
+		ML::Box2D sample;
+		sample.x = me.x * drawScale;
+		sample.y = me.y * drawScale;
+		sample.h = me.h * drawScale;
+		sample.w = me.w * drawScale;
+		return sample;
+	}
+	
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
