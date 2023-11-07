@@ -23,6 +23,9 @@
     <Filter Include="MyPG\Task\Game">
       <UniqueIdentifier>{3dd18d8e-0ad1-46da-9f35-a5854eac44d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyPG\Task\Load">
+      <UniqueIdentifier>{7bf91148-d91f-4e7c-b97b-71264b73ee54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine_Ver3_83.cpp">
@@ -106,6 +109,9 @@
     <ClCompile Include="Task_Player.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
+    <ClCompile Include="Task_Load.cpp">
+      <Filter>MyPG\Task\Load</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -183,6 +189,9 @@
     </ClInclude>
     <ClInclude Include="Task_Player.h">
       <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Load.h">
+      <Filter>MyPG\Task\Load</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
