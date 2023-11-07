@@ -47,6 +47,7 @@ public:
 		TakeOff,	//	飛び立つ瞬間
 		Landing,	//	着地
 		Crouch,		//  しゃがみ
+		CrouchWalk,	//	しゃがみながら移動
 		Turn,		//	方向転換
 		Bound,		//	弾き飛ばされてる
 		Lose,		//  消滅中
@@ -58,6 +59,7 @@ public:
 	float			gravity;		//	フレーム単位の加算量
 	float			maxSpeed;		//	左右方向への移動の加算量
 	float			addSpeed;		//	左右方向への移動の加算量
+	float			crouchSpeed;	//	しゃがみながら移動の加算量
 	float			decSpeed;		//	左右方向への移動の減衰量
 	int				unHitTime;		//　無敵時間
 
@@ -81,6 +83,7 @@ public:
 		, gravity(0.f)
 		, maxSpeed(0.f)
 		, addSpeed(0.f)
+		, crouchSpeed(0)
 		, decSpeed(0.f)
 		, unHitTime(0)
 	{
