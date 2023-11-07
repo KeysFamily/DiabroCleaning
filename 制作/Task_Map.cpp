@@ -18,7 +18,7 @@ namespace  Map
 		this->turnNum = 64;		//画像の1行に含まれるチップの種類
 
 		this->debugFont = DG::Font::Create("non", 8, 16);	//数字フォント
-		this->drawObject = false;	//オブジェクトチップの数字描画
+		this->drawObject = true;	//オブジェクトチップの数字描画
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -284,7 +284,7 @@ namespace  Map
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x, chipPos.y + slope.second.slopeHeight);
 								//プレイヤーの当たり判定右端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
-								float rbheight = slope.second.slopeVec.y * abs((r.right - slopeBegin.x) / this->res->drawSize) + slopeBegin.y;
+								float rbheight = slope.second.slopeVec.y * abs((r.right - slopeBegin.x) / this->res->drawSize) - slopeBegin.y;
 								//プレイヤーを坂の上に乗せるために必要な移動距離（最大値は坂の最高値）
 								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, rbheight - r.bottom);
 								if (moveResult > 0)
