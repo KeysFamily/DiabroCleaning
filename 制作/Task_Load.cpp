@@ -38,7 +38,9 @@ namespace  Load
 		//★データ初期化
 		this->Kill();
 		//★タスクの生成
-		Player::Object::Create(true);
+		auto player = Player::Object::Create(true);
+		player->pos.x = 500;
+		player->pos.y = 500;
 		Map::Object::Create(true);
 		return  true;
 	}
