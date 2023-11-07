@@ -248,49 +248,52 @@ namespace  Map
 						//チップの座標（左上）
 						ML::Vec2 chipPos(x * this->res->drawSize, y * this->res->drawSize);
 						//さらにチップの坂の部分と当たっているか判定
-						if (slope.second.slopeVec.y > 0) {
+						if (slope.second.slopeVec.y < 0) {
 							//右上
 							if (slope.second.slopeVec.x > 0) {
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x, chipPos.y + this->res->drawSize - 1 - slope.second.slopeHeight);
-								//プレイヤーの当たり判定右端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
+								//プレイヤーの当たり判定右端のx座標の、坂の高さ（ゲーム座標）
 								float rbheight = slope.second.slopeVec.y * abs((r.right - slopeBegin.x) / this->res->drawSize) + slopeBegin.y;
 								//プレイヤーを坂の上に乗せるために必要な移動距離（最大値は坂の最高値）
-								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, rbheight - r.bottom);
-								if (moveResult > 0)
+								float moveResult = min(-(slope.second.slopeVec.y + slope.second.slopeHeight), rbheight - r.bottom);
+								if (moveResult < 0)
 								{
 									//値の小さいほうを採用する
-									result.y = min(-moveResult, result.y);
+									result.y = min(moveResult, result.y);
 								}
 							}
 							//左上
 							if (slope.second.slopeVec.x < 0) {
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x + this->res->drawSize - 1, chipPos.y + this->res->drawSize - 1 - slope.second.slopeHeight);
-								//プレイヤーの当たり判定左端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
+								//プレイヤーの当たり判定左端のx座標の、坂の高さ（ゲーム座標）
 								float lbheight = slope.second.slopeVec.y * abs((r.left - slopeBegin.x) / this->res->drawSize) + slopeBegin.y;
 								//プレイヤーを坂の上に乗せるために必要な移動距離（最大値は坂の最高値）
-								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, lbheight - r.bottom);
-								if (moveResult > 0)
+								float moveResult = min(-(slope.second.slopeVec.y + slope.second.slopeHeight), lbheight - r.bottom);
+								if (moveResult < 0)
 								{
 									//値の小さいほうを採用する
-									result.y = min(-moveResult, result.y);
+									result.y = min(moveResult, result.y);
 								}
 							}
 						}
-						if (slope.second.slopeVec.y < 0) {
+						else if (slope.second.slopeVec.y > 0) {
 							//右下
 							if (slope.second.slopeVec.x > 0) {
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x, chipPos.y + slope.second.slopeHeight);
 								//プレイヤーの当たり判定右端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
-								float rbheight = slope.second.slopeVec.y * abs((r.right - slopeBegin.x) / this->res->drawSize) - slopeBegin.y;
+								float rtheight = slope.second.slopeVec.y * abs((r.right - slopeBegin.x) / this->res->drawSize) + slopeBegin.y;
 								//プレイヤーを坂の上に乗せるために必要な移動距離（最大値は坂の最高値）
-								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, rbheight - r.bottom);
+								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, rtheight - r.top);
 								if (moveResult > 0)
 								{
-									//値の小さいほうを採用する
-									result.y = min(-moveResult, result.y);
+									//上がる指示がない場合のみ実行（変更可）
+									if (result.y >= 0) {
+										//値の大きいほうを採用する
+										result.y = min(moveResult, result.y);
+									}
 								}
 							}
 							//左下
@@ -303,8 +306,11 @@ namespace  Map
 								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, lbheight - r.bottom);
 								if (moveResult > 0)
 								{
-									//値の小さいほうを採用する
-									result.y = min(-moveResult, result.y);
+									//上がる指示がない場合のみ実行（変更可）
+									if (result.y >= 0) {
+										//値の大きいほうを採用する
+										result.y = min(moveResult, result.y);
+									}
 								}
 							}
 						}
