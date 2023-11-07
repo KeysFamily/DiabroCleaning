@@ -13,6 +13,12 @@ namespace  Map
 	bool  Resource::Initialize()
 	{
 		this->img = DG::Image::Create("./data/map/map96.png");
+		this->chipSize = 96;	//チップ画像のサイズ
+		this->drawSize = 64;	//描画するサイズ
+		this->turnNum = 64;		//画像の1行に含まれるチップの種類
+
+		this->debugFont = DG::Font::Create("non", 8, 16);	//数字フォント
+		this->drawObject = false;	//オブジェクトチップの数字描画
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -35,9 +41,6 @@ namespace  Map
 		auto result = this->LoadMap("map_start");
 		this->testCam = ML::Vec2(0, 0);
 		//★タスクの生成
-		auto  pl = Player::Object::Create(true);
-		pl->pos.x = ge->screen2DWidth / 2;
-		pl->pos.y = ge->screen2DHeight * 2 / 3;
 
 		return  true;
 	}
@@ -82,25 +85,41 @@ namespace  Map
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		int chipsize = 96;
-		int drawSize = 64;
-		int srcturn = 64;
-
 		for (auto& layer : this->drawMap)
 		{
 			for (int y = 0; y < layer.height; ++y)
 			{
 				for (int x = 0; x < layer.width; ++x)
 				{
-					ML::Box2D draw(drawSize * x, drawSize * y, drawSize, drawSize);
-					draw.Offset(-this->testCam);
+					ML::Box2D draw(this->res->drawSize * x, this->res->drawSize * y, this->res->drawSize, this->res->drawSize);
+					draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
 					ML::Box2D src(
-						chipsize * (layer.chipdata[y][x] % srcturn),
-						chipsize * (layer.chipdata[y][x] / srcturn),
-						chipsize,
-						chipsize);
+						this->res->chipSize * (layer.chipdata[y][x] % this->res->turnNum),
+						this->res->chipSize * (layer.chipdata[y][x] / this->res->turnNum),
+						this->res->chipSize,
+						this->res->chipSize);
 
 					this->res->img->Draw(draw, src);
+				}
+			}
+		}
+
+		//オブジェクトマップの描画（デバッグ用）
+		if (this->res->drawObject == true)
+		{
+			for (int y = 0; y < this->ObjectMap.height; ++y)
+			{
+				for (int x = 0; x < this->ObjectMap.width; ++x)
+				{
+					ML::Box2D draw(this->res->drawSize * x, this->res->drawSize * y, this->res->drawSize, this->res->drawSize);
+					draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+					ML::Box2D src(
+						this->res->chipSize * (this->ObjectMap.chipdata[y][x] % this->res->turnNum),
+						this->res->chipSize * (this->ObjectMap.chipdata[y][x] / this->res->turnNum),
+						this->res->chipSize,
+						this->res->chipSize);
+
+					this->res->debugFont->Draw(draw, to_string(this->ObjectMap.chipdata[y][x]));
 				}
 			}
 		}
@@ -115,55 +134,49 @@ namespace  Map
 		int layerNum = 0;
 		while (layerNum < 10)
 		{
-			ifstream ifs("./data/map/" + mapName_ + "/" + mapName_ + "_R" + to_string(layerNum) + ".csv");
-			if (!ifs)
+			MapData layer;
+
+			//読み込むマップが無くなったら終了
+			if (layer.Load("./data/map/" + mapName_ + "/" + mapName_ + "_R" + to_string(layerNum) + ".csv")
+				 == false)
 			{
 				break;
 			}
 
-			this->drawMap.push_back(MapData());
-
-			//読み込み
-			ifs >> this->drawMap[layerNum].width;
-			ifs >> this->drawMap[layerNum].height;
-			for (int y = 0; y < drawMap[layerNum].height; ++y)
-			{
-				this->drawMap[layerNum].chipdata.push_back(vector<int>());
-				for (int x = 0; x < drawMap[layerNum].width; ++x)
-				{
-					this->drawMap[layerNum].chipdata[y].push_back(0);
-					ifs >> this->drawMap[layerNum].chipdata[y][x];
-				}
-			}
-
+			this->drawMap.push_back(layer);
 			++layerNum;
 		}
 
+		//マップが一つもなければfalse
 		if (drawMap.empty())
 		{
 			return false;
 		}
 
 		//オブジェクトマップ読み込み
-		ifstream ifs("./data/map/" + mapName_ + "/" + mapName_ + "_H.csv");
-		if (!ifs)
+		if (this->ObjectMap.Load("./data/map/" + mapName_ + "/" + mapName_ + "_H.csv")
+			 == false)
 		{
 			return false;
 		}
-		//読み込み
-		ifs >> this->ObjectMap.width;
-		ifs >> this->ObjectMap.height;
-		for (int y = 0; y < ObjectMap.height; ++y)
-		{
-			this->ObjectMap.chipdata.push_back(vector<int>());
-			for (int x = 0; x < ObjectMap.width; ++x)
-			{
-				this->ObjectMap.chipdata[y].push_back(0);
-				ifs >> this->ObjectMap.chipdata[y][x];
-			}
-		}
 
 		return true;
+	}
+
+	//-------------------------------------------------------------------
+	//坂データの読み込み
+	bool Object::LoadSlope(const string& filepath_)
+	{
+		//仮処理
+		for (int i = 1; i < 9; ++i)
+		{
+			slopeData[i] = SlopeData();
+			slopeData[i].slopeHeight = 0;
+			slopeData[i].slopeVec.x = this->res->drawSize;
+			slopeData[i].slopeVec.y = this->res->drawSize * 0.5f;
+		}
+
+		return false;
 	}
 	//-------------------------------------------------------------------
 	//あたり判定
@@ -184,20 +197,122 @@ namespace  Map
 
 		//ループ範囲調整
 		int sx, sy, ex, ey;
-		sx = r.left / 32;
-		sy = r.top / 32;
-		ex = (r.right - 1) / 32;
-		ey = (r.bottom - 1) / 32;
+		sx = r.left / this->res->drawSize;
+		sy = r.top / this->res->drawSize;
+		ex = (r.right - 1) / this->res->drawSize;
+		ey = (r.bottom - 1) / this->res->drawSize;
 
 		//範囲内の障害物を探す
 		for (int y = sy; y <= ey; ++y) {
 			for (int x = sx; x <= ex; ++x) {
-				if (8 <= this->arr[y][x]) {
+				if (this->ObjectMap.chipdata[y][x] == 0) {
 					return true;
 				}
 			}
 		}
 		return false;
+	}
+	//-------------------------------------------------------------------
+	//坂とのあたり判定
+	ML::Vec2 Object::CheckSlope(const ML::Box2D& hit_)
+	{
+		ML::Vec2 result(0, 0);
+
+		ML::Rect  r = { hit_.x, hit_.y, hit_.x + hit_.w, hit_.y + hit_.h };
+		//矩形がマップ外に出ていたらサイズを変更する
+		ML::Rect  m = {
+			this->hitBase.x,
+			this->hitBase.y,
+			this->hitBase.x + this->hitBase.w,
+			this->hitBase.y + this->hitBase.h
+		};
+		if (r.left < m.left) { r.left = m.left; }
+		if (r.top < m.top) { r.top = m.top; }
+		if (r.right > m.right) { r.right = m.right; }
+		if (r.bottom > m.bottom) { r.bottom = m.bottom; }
+
+		//ループ範囲調整
+		int sx, sy, ex, ey;
+		sx = r.left / this->res->drawSize;
+		sy = r.top / this->res->drawSize;
+		ex = (r.right - 1) / this->res->drawSize;
+		ey = (r.bottom - 1) / this->res->drawSize;
+
+		//範囲内の障害物を探す
+		for (int y = sy; y <= ey; ++y) {
+			for (int x = sx; x <= ex; ++x) {
+				//全ての坂と判定させる
+				for (auto& slope : slopeData) {
+					//当たったマスが坂だったら
+					if (this->ObjectMap.chipdata[y][x] == slope.first) {
+						//チップの座標（左上）
+						ML::Vec2 chipPos(x * this->res->drawSize, y * this->res->drawSize);
+						//さらにチップの坂の部分と当たっているか判定
+						if (slope.second.slopeVec.y > 0) {
+							//右上
+							if (slope.second.slopeVec.x > 0) {
+								//坂が開始する地点の座標（ゲーム座標）
+								ML::Vec2 slopeBegin(chipPos.x, chipPos.y + this->res->drawSize - 1 - slope.second.slopeHeight);
+								//プレイヤーの当たり判定右端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
+								float rbheight = slope.second.slopeVec.y * abs((r.right - slopeBegin.x) / this->res->drawSize) + slopeBegin.y;
+								//プレイヤーを坂の上に乗せるために必要な移動距離（最大値は坂の最高値）
+								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, rbheight - r.bottom);
+								if (moveResult > 0)
+								{
+									//値の小さいほうを採用する
+									result.y = min(-moveResult, result.y);
+								}
+							}
+							//左上
+							if (slope.second.slopeVec.x < 0) {
+								//坂が開始する地点の座標（ゲーム座標）
+								ML::Vec2 slopeBegin(chipPos.x + this->res->drawSize - 1, chipPos.y + this->res->drawSize - 1 - slope.second.slopeHeight);
+								//プレイヤーの当たり判定左端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
+								float lbheight = slope.second.slopeVec.y * abs((r.left - slopeBegin.x) / this->res->drawSize) + slopeBegin.y;
+								//プレイヤーを坂の上に乗せるために必要な移動距離（最大値は坂の最高値）
+								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, lbheight - r.bottom);
+								if (moveResult > 0)
+								{
+									//値の小さいほうを採用する
+									result.y = min(-moveResult, result.y);
+								}
+							}
+						}
+						if (slope.second.slopeVec.y < 0) {
+							//右下
+							if (slope.second.slopeVec.x > 0) {
+								//坂が開始する地点の座標（ゲーム座標）
+								ML::Vec2 slopeBegin(chipPos.x, chipPos.y + slope.second.slopeHeight);
+								//プレイヤーの当たり判定右端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
+								float rbheight = slope.second.slopeVec.y * abs((r.right - slopeBegin.x) / this->res->drawSize) + slopeBegin.y;
+								//プレイヤーを坂の上に乗せるために必要な移動距離（最大値は坂の最高値）
+								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, rbheight - r.bottom);
+								if (moveResult > 0)
+								{
+									//値の小さいほうを採用する
+									result.y = min(-moveResult, result.y);
+								}
+							}
+							//左下
+							if (slope.second.slopeVec.x < 0) {
+								//坂が開始する地点の座標（ゲーム座標）
+								ML::Vec2 slopeBegin(chipPos.x + this->res->drawSize - 1, chipPos.y - slope.second.slopeHeight);
+								//プレイヤーの当たり判定左端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
+								float lbheight = slope.second.slopeVec.y * abs((r.left - slopeBegin.x) / this->res->drawSize) + slopeBegin.y;
+								//プレイヤーを坂の上に乗せるために必要な移動距離（最大値は坂の最高値）
+								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, lbheight - r.bottom);
+								if (moveResult > 0)
+								{
+									//値の小さいほうを採用する
+									result.y = min(-moveResult, result.y);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return result;
 	}
 	//-------------------------------------------------------------------
 	//マップ外を見せないようにカメラを位置調整する
@@ -224,6 +339,37 @@ namespace  Map
 		if (this->hitBase.w < ge->camera2D.w) { ge->camera2D.x = m.left; }
 		if (this->hitBase.h < ge->camera2D.h) { ge->camera2D.y = m.top; }
 	}
+
+
+
+	//読み込み処理
+	bool Object::MapData::Load(const string& filePath_)
+	{
+		//描画マップ読み込み
+		ifstream ifs(filePath_);
+		if (!ifs)
+		{
+			return false;
+		}
+
+		//読み込み
+		ifs >> this->width;
+		ifs >> this->height;
+		for (int y = 0; y < this->height; ++y)
+		{
+			this->chipdata.push_back(vector<int>());
+			for (int x = 0; x < width; ++x)
+			{
+				this->chipdata[y].push_back(0);
+				ifs >> this->chipdata[y][x];
+			}
+		}
+
+		return true;
+	}
+
+
+
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

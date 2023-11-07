@@ -24,6 +24,12 @@ namespace  Map
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
 		DG::Image::SP img;
+		int chipSize;		//元画像の1マスのサイズ
+		int drawSize;		//ゲームで描画するときの1マスのサイズ
+		int turnNum;		//元画像で1行にいくつのタイルがあるか
+
+		DG::Font::SP debugFont;	//デバッグ用のフォント
+		bool drawObject;		//オブジェクトマップを表示するか
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -52,10 +58,19 @@ namespace  Map
 			int width;
 			int height;
 			vector<vector<int>> chipdata;
-		};
 
+			//読み込み処理
+			bool Load(const string& mapName_);
+		};
 		vector<MapData> drawMap;
 		MapData			ObjectMap;
+
+		struct SlopeData
+		{
+			ML::Vec2 slopeVec;		//坂の方向
+			float    slopeHeight;	//坂開始時の高さ
+		};
+		map<int, SlopeData> slopeData;	//坂の情報のマップ配列
 
 		ML::Vec2 testCam;
 		int  arr[100][100];
@@ -63,7 +78,9 @@ namespace  Map
 		//マップ読み込み
 		//param1:難易度までの名前
 		bool LoadMap(const string& mapName_);
+		bool LoadSlope(const string& filepath_);
 		bool  CheckHit(const  ML::Box2D& hit_);//あたり判定
+		ML::Vec2 CheckSlope(const ML::Box2D& hit_);//坂との当たり判定
 
 		//マップ外を見せないようにカメラを位置調整する
 		void  AdjustCameraPos();
