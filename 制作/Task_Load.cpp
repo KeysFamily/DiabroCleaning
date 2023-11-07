@@ -39,7 +39,7 @@ namespace  Load
 		this->Kill();
 		//šƒ^ƒXƒN‚Ì¶¬
 		auto player = Player::Object::Create(true);
-		player->pos.x = 500;
+		player->pos.x = 1200;
 		player->pos.y = 500;
 		Map::Object::Create(true);
 		return  true;
