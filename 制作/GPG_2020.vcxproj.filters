@@ -26,6 +26,9 @@
     <Filter Include="MyPG\Task\Load">
       <UniqueIdentifier>{7bf91148-d91f-4e7c-b97b-71264b73ee54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyPG\Task\Game\Enemy">
+      <UniqueIdentifier>{7dea24d0-b10c-4940-823b-0fc3755b7c67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine_Ver3_83.cpp">
@@ -114,6 +117,8 @@
     </ClCompile>
     <ClCompile Include="Task_Sprite.cpp">
       <Filter>MyPG\Task\Game</Filter>
+    <ClCompile Include="BEnemy.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +203,8 @@
     </ClInclude>
     <ClInclude Include="Task_Sprite.h">
       <Filter>MyPG\Task\Game</Filter>
+    <ClInclude Include="BEnemy.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
