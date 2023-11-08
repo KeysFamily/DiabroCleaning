@@ -41,9 +41,13 @@ public:
 		Unnon = -1,	//	無効(使えません）
 		Stand,		//	停止
 		Walk,		//	歩行
-		Attack,		//	攻撃
+		Attack,		//	攻撃1
+		Attack2,	//	攻撃2
+		Attack3,	//	攻撃3
 		Jump,		//	ジャンプ
+		Jump2,		//	二段ジャンプ
 		Fall,		//	落下
+		Fall2,		//	落下(二段ジャンプ後)
 		TakeOff,	//	飛び立つ瞬間
 		Landing,	//	着地
 		Crouch,		//  しゃがみ
@@ -59,7 +63,7 @@ public:
 	float			gravity;		//	フレーム単位の加算量
 	float			maxSpeed;		//	左右方向への移動の加算量
 	float			addSpeed;		//	左右方向への移動の加算量
-	float			crouchSpeed;	//	しゃがみながら移動の加算量
+	float			crouchSpeed;	//	しゃがみながら移動の最大速度
 	float			decSpeed;		//	左右方向への移動の減衰量
 	int				unHitTime;		//　無敵時間
 

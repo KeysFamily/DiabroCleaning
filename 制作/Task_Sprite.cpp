@@ -1,30 +1,25 @@
-//?------------------------------------------------------
-//タスク名:ロード画面
-//作　成　者:0329 土田
-//TODO:もしいれば下記へ記述
-//編　集　者:
-//作成年月日:
-//概　　　要:
-//?------------------------------------------------------
+//-------------------------------------------------------------------
+//かわいい妖精
+//-------------------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Load.h"
-#include  "Task_Player.h"
-#include  "Task_Map.h"
 #include  "Task_Sprite.h"
+#include  "Task_Map.h"
 
-namespace  Load
+namespace  Sprite
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
+		this->img = DG::Image::Create("./data/image/妖精.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
+		this->img.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -37,15 +32,10 @@ namespace  Load
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->Kill();
+		this->render2D_Priority[1] = 0.5f;
+
 		//★タスクの生成
-		auto player = Player::Object::Create(true);
-		player->pos.x = 1200;
-		player->pos.y = 500;
-		Map::Object::Create(true);
-		auto spr = Sprite::Object::Create(true);
-		spr->pos = player->pos;
-		spr->target = player;
+
 		return  true;
 	}
 	//-------------------------------------------------------------------
@@ -65,11 +55,51 @@ namespace  Load
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		//ターゲットが存在するか調べてからアクセス
+		if (auto  tg = this->target.lock()) {
+			//ターゲットへの相対座標を求める
+			ML::Vec2  toVec = tg->pos - this->pos;
+
+			//ターゲットの向きに合わせて自分の移動先を変更
+			if (tg->angle_LR == BChara::Angle_LR::Left) {
+				ML::Vec2  adjust(-100, 0);
+				toVec += adjust;
+			}
+			else {
+				ML::Vec2  adjust(+100, 0);
+				toVec += adjust;
+			}
+
+			//ターゲットに５％近づく
+			this->pos += toVec * 0.05f;
+		}
+
+		//カメラの位置を再調整
+		{
+			//プレイヤを画面の何処に置くか（今回は画面中央）
+			int  px = 1200;
+			int  py = 500;
+			//プレイヤを画面中央に置いた時のカメラの左上座標を求める
+			int  cpx = int(this->pos.x) - px;
+			int  cpy = int(this->pos.y) - py;
+			//カメラの座標を更新
+			ge->camera2D.x = cpx;
+			ge->camera2D.y = cpy;
+			if (auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName)) {
+				map->AdjustCameraPos();
+			}
+		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		ML::Box2D  draw(-16, -16, 32, 32);
+		draw.Offset(this->pos);
+		ML::Box2D  src(0, 0, 32, 32);
+
+		draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+		this->res->img->Draw(draw, src, ML::Color(0.5f, 1, 1, 1));
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -84,7 +114,7 @@ namespace  Load
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
-				
+				//（メソッド名が変なのは旧バージョンのコピーによるバグを回避するため
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill

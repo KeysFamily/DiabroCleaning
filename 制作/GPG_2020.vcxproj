@@ -148,6 +148,7 @@
     <ClCompile Include="Task_Load.cpp" />
     <ClCompile Include="Task_Map.cpp" />
     <ClCompile Include="Task_Player.cpp" />
+    <ClCompile Include="Task_Sprite.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="XI2018_Ver1_0.cpp" />
   </ItemGroup>
@@ -179,6 +180,7 @@
     <ClInclude Include="Task_Load.h" />
     <ClInclude Include="Task_Map.h" />
     <ClInclude Include="Task_Player.h" />
+    <ClInclude Include="Task_Sprite.h" />
     <ClInclude Include="XI2018_Ver1_0.h" />
   </ItemGroup>
   <ItemGroup>

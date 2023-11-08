@@ -14,7 +14,7 @@ namespace  Player
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/image/adventure.png");
+		this->img = DG::Image::Create("./data/image/adventure4x.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -35,21 +35,21 @@ namespace  Player
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.5f;
-		this->hitBase = ML::Box2D(-10, -15, 19, 29);
-		this->initialHitBase = ML::Box2D(-10, -15, 19, 29);
-		this->crouchHitBase = ML::Box2D(-10, -11, 19, 21);
+		this->hitBase = ML::Box2D(-38, -58, 60, 116);
+		this->initialHitBase = ML::Box2D(-38, -58, 60, 116);
+		this->crouchHitBase = ML::Box2D(-38, -42, 76, 84);
 		this->angle_LR = Angle_LR::Right;
 		this->controller = ge->in1;
 		this->hp = 10;
 		this->motion = Motion::Stand;		//キャラ初期状態
-		this->maxSpeed = 5.0f;		//最大移動速度（横）
+		this->maxSpeed = 8.0f;		//最大移動速度（横）
 		this->addSpeed = 1.0f;		//歩行加速度（地面の影響である程度打ち消される
-		this->crouchSpeed = 0.5f;	//しゃがみながら移動加速度
+		this->crouchSpeed = 2.5f;	//しゃがみながら移動最大速度
 		this->decSpeed = 0.5f;		//接地状態の時の速度減衰量（摩擦
-		this->maxFallSpeed = 10.0f;	//最大落下速度
-		this->jumpPow = -10.0f;		//ジャンプ力（初速）
+		this->maxFallSpeed = 11.0f;	//最大落下速度
+		this->jumpPow = -11.0f;		//ジャンプ力（初速）
 		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
-		this->drawScale = 4;
+		this->drawScale = 1;
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -85,7 +85,7 @@ namespace  Player
 		this->CheckMove(est);
 		//hitbase更新
 		BChara::DrawInfo  di = this->Anim();
-		//this->hitBase = di.draw;
+		this->hitBase = di.draw;
 		//あたり判定
 		{
 			ML::Box2D me = this->hitBase.OffsetCopy(this->pos);
@@ -118,7 +118,9 @@ namespace  Player
 		di.draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
 
 		this->res->img->Draw(di.draw, di.src);
-		ge->debugRect(this->hitBase.OffsetCopy(this->pos),7);
+
+
+		ge->debugRect(this->hitBase.OffsetCopy(this->pos),7, -ge->camera2D.x, -ge->camera2D.y);
 		ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
@@ -150,12 +152,20 @@ namespace  Player
 			break;
 		case  Motion::Jump:		//上昇中
 			if (this->moveVec.y >= 0) { nm = Motion::Fall; }
+			if (inp.B1.down) { nm = Motion::Jump2; }
+			break;
+		case Motion::Jump2:
+			if (this->moveVec.y >= 0) { nm = Motion::Fall2; }
 			break;
 		case  Motion::Fall:		//落下中
 			if (this->CheckFoot() == true) { nm = Motion::Landing; }
+			if (inp.B1.down) { nm = Motion::Jump2; }
+			break;
+		case Motion::Fall2:
+			if (this->CheckFoot() == true) { nm = Motion::Landing; }
 			break;
 		case  Motion::Attack:	//攻撃中
-			if (this->moveCnt == 8) { nm = Motion::Stand; }
+			if (this->moveCnt == 40) { nm = Motion::Stand; }
 			break;
 		case  Motion::TakeOff:	//飛び立ち
 			if (this->moveCnt >= 3) { nm = Motion::Jump; }
@@ -172,14 +182,14 @@ namespace  Player
 			}
 			break;
 		case Motion::Crouch:    //しゃがむ
-			if (inp.LStick.BD.off) { nm = Motion::Stand; this->pos.y -= 5; }
+			if (inp.LStick.BD.off) { nm = Motion::Stand; /*this->pos.y -= 5;*/ }
 			if (inp.LStick.BL.on) { nm = Motion::CrouchWalk; }
 			if (inp.LStick.BR.on) { nm = Motion::CrouchWalk; }
 			break;
 		case Motion::CrouchWalk:	//しゃがみながら移動
-			if (inp.LStick.BD.off) { nm = Motion::Walk; this->pos.y -= 5; }
+			if (inp.LStick.BD.off) { nm = Motion::Walk; /*this->pos.y -= 5;*/ }
 			if (inp.LStick.BL.off && inp.LStick.BR.off) { nm = Motion::Crouch; }
-			if (inp.LStick.BL.off && inp.LStick.BR.off && inp.LStick.BD.off) { nm = Motion::Stand; this->pos.y -= 5; }
+			if (inp.LStick.BL.off && inp.LStick.BR.off && inp.LStick.BD.off) { nm = Motion::Stand; /*this->pos.y -= 5;*/ }
 			break;
 		}
 		//モーション更新
@@ -226,10 +236,8 @@ namespace  Player
 		//モーション毎に固有の処理
 		switch (this->motion) {
 		case  Motion::Stand:	//立っている
-			this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 			break;
 		case  Motion::Walk:		//歩いている
-			this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 			if (inp.LStick.BL.on) {
 				this->angle_LR = Angle_LR::Left;
 				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
@@ -248,6 +256,16 @@ namespace  Player
 				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
 			}
 			break;
+		case Motion::Fall2:
+			if (inp.LStick.BL.on) {
+				this->angle_LR = Angle_LR::Left;
+				this->moveVec.x = -this->maxSpeed;
+			}
+			if (inp.LStick.BR.on) {
+				this->angle_LR = Angle_LR::Right;
+				this->moveVec.x = this->maxSpeed;
+			}
+			break;
 		case  Motion::Jump:		//上昇中
 			if (this->CheckHead() == true) { this->moveVec.y = 0; }
 			if (this->moveCnt == 0) {
@@ -262,20 +280,32 @@ namespace  Player
 				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
 			}
 			break;
-		case  Motion::Attack:	//攻撃中
-			break;
-		case Motion::Crouch:	//しゃがむ
-			this->hitBase = this->DrawScale(this->crouchHitBase, this->drawScale);
-			break;
-		case Motion::CrouchWalk:	//しゃがみながら移動
-			this->hitBase = this->DrawScale(this->crouchHitBase, this->drawScale);
+		case Motion::Jump2:
+			if (this->CheckHead() == true) { this->moveVec.y = 0; }
+			if (this->moveCnt == 0) {
+				this->moveVec.y = this->jumpPow * 0.9f;
+			}
 			if (inp.LStick.BL.on) {
 				this->angle_LR = Angle_LR::Left;
-				this->moveVec.x -= this->crouchSpeed;
+				this->moveVec.x = -this->maxSpeed;
 			}
 			if (inp.LStick.BR.on) {
 				this->angle_LR = Angle_LR::Right;
-				this->moveVec.x += this->crouchSpeed;
+				this->moveVec.x = this->maxSpeed;
+			}
+			break;
+		case  Motion::Attack:	//攻撃中
+			break;
+		case Motion::Crouch:	//しゃがむ
+			break;
+		case Motion::CrouchWalk:	//しゃがみながら移動
+			if (inp.LStick.BL.on) {
+				this->angle_LR = Angle_LR::Left;
+				this->moveVec.x = max(-this->crouchSpeed, this->moveVec.x - this->addSpeed);
+			}
+			if (inp.LStick.BR.on) {
+				this->angle_LR = Angle_LR::Right;
+				this->moveVec.x = min(+this->crouchSpeed, this->moveVec.x + this->addSpeed);
 			}
 			break;
 		}
@@ -287,27 +317,32 @@ namespace  Player
 		ML::Color  defColor(1, 1, 1, 1);
 		BChara::DrawInfo imageTable[] = {
 			//draw							src
-			{ ML::Box2D(-12, -15, 19, 29), ML::Box2D(14,7,19,29), defColor },	//停止1
-			{ ML::Box2D(-10, -16, 17, 30), ML::Box2D(66,6,17,30), defColor },	//停止2
-			{ ML::Box2D(-11, -16, 19, 30), ML::Box2D(115,6,19,30), defColor },	//停止3
-			{ ML::Box2D(-13, -15, 20, 29), ML::Box2D(163,7,20,29), defColor },	//停止4
-			{ ML::Box2D(-10, -14, 20, 28), ML::Box2D(67,45,20,28), defColor },	//歩行1
-			{ ML::Box2D(-10, -14, 20, 27), ML::Box2D(116,46,20,27), defColor },	//歩行2
-			{ ML::Box2D(-10, -13, 20, 25), ML::Box2D(166,48,20,25), defColor },	//歩行3
-			{ ML::Box2D(-9, -14, 23, 28), ML::Box2D(217,45,23,28), defColor },	//歩行4
-			{ ML::Box2D(-10, -14, 20, 27), ML::Box2D(266,46,20,27), defColor },	//歩行5
-			{ ML::Box2D(-10, -13, 20, 25), ML::Box2D(316,48,20,25), defColor },	//歩行6
-			{ ML::Box2D(-10, -11, 19, 21), ML::Box2D(216,15,19,21), defColor },	//しゃがみ
-			{ ML::Box2D(-11, -12, 20, 22), ML::Box2D(265,14,20,22), defColor },	//しゃがみながら移動1
-			{ ML::Box2D(-11, -12, 19, 22), ML::Box2D(315,14,19,22), defColor },	//しゃがみながら移動2
-			{ ML::Box2D(-9, -11, 17, 21), ML::Box2D(17,52,17,21), defColor },	//しゃがみながら移動3
-			{ ML::Box2D(-10, -14, 19, 27), ML::Box2D(117,81,19,27), defColor },	//ジャンプ1
-			{ ML::Box2D(-11, -12, 21, 23), ML::Box2D(164,79,21,23), defColor },	//ジャンプ2
-			{ ML::Box2D(-9, -16, 17, 31), ML::Box2D(68,112,17,31), defColor },	//落下1
-			{ ML::Box2D(-9, -15, 17, 30), ML::Box2D(118,113,17,30), defColor },	//落下2
-			{ ML::Box2D(-10, -12, 20, 24), ML::Box2D(15,86,20,24), defColor },	//飛び立つ直前1
-			{ ML::Box2D(-10, -11, 20, 22), ML::Box2D(65,88,20,22), defColor },	//飛び立つ直前2
-			{ ML::Box2D(-10, -11, 20, 22), ML::Box2D(65,88,20,22), defColor },	//着地
+			{ ML::Box2D(-48, -58, 76, 116), ML::Box2D(56,28,76,116), defColor },	//0 停止1
+			{ ML::Box2D(-40, -62, 68, 120), ML::Box2D(264,24,68,120), defColor },	//1 停止2
+			{ ML::Box2D(-44, -62, 76, 120), ML::Box2D(460,24,76,120), defColor },	//2 停止3
+			{ ML::Box2D(-52, -58, 80, 116), ML::Box2D(652,28,80,116), defColor },	//3 停止4 ここまで編集済み
+			{ ML::Box2D(-40, -56, 80, 112), ML::Box2D(268,180,80,112), defColor },	//4 歩行1
+			{ ML::Box2D(-40, -54, 80, 108), ML::Box2D(464,184,80,108), defColor },	//5 歩行2
+			{ ML::Box2D(-40, -50, 80, 100), ML::Box2D(664,184,80,100), defColor },	//6 歩行3
+			{ ML::Box2D(-46, -56, 92, 112), ML::Box2D(868,180,92,112), defColor },	//7 歩行4
+			{ ML::Box2D(-40, -54, 80, 108), ML::Box2D(1064,184,80,108), defColor },	//8 歩行5
+			{ ML::Box2D(-40, -50, 80, 100), ML::Box2D(1264,192,80,100), defColor },	//9 歩行6
+			{ ML::Box2D(-10, -7, 76, 84), ML::Box2D(864,60,76,84), defColor },	//10 しゃがみ
+			{ ML::Box2D(-11, -8, 80, 88), ML::Box2D(1060,56,80,88), defColor },	//11 しゃがみながら移動1
+			{ ML::Box2D(-11, -8, 76, 88), ML::Box2D(1260,56,76,88), defColor },	//12 しゃがみながら移動2
+			{ ML::Box2D(-9, -7, 68, 84), ML::Box2D(68,208,68,84), defColor },	//13 しゃがみながら移動3
+			{ ML::Box2D(-10, -14, 76, 108), ML::Box2D(468,324,76,108), defColor },	//14 ジャンプ1
+			{ ML::Box2D(-11, -12, 84, 92), ML::Box2D(656,316,84,92), defColor },	//15 ジャンプ2
+			{ ML::Box2D(-9, -16, 68, 124), ML::Box2D(272,448,68,124), defColor },	//16 落下1
+			{ ML::Box2D(-9, -15, 68, 120), ML::Box2D(472,452,68,120), defColor },	//17 落下2
+			{ ML::Box2D(-10, -12, 80, 86), ML::Box2D(60,344,80,96), defColor },	//18 飛び立つ直前1
+			{ ML::Box2D(-10, -11, 80, 88), ML::Box2D(260,352,80,88), defColor },	//19 飛び立つ直前2
+			{ ML::Box2D(-10, -11, 80, 88), ML::Box2D(260,352,80,88), defColor },	//20 着地
+			{ ML::Box2D(-14, -8, 108, 88), ML::Box2D(28,944,108,88), defColor },	//21 攻撃1_1
+			{ ML::Box2D(-17, -18, 136, 144), ML::Box2D(460,888,136,144), defColor },	//22 攻撃1_2
+			{ ML::Box2D(-13, -18, 108, 144), ML::Box2D(660, 888, 108, 144), defColor },	//23 攻撃1_3
+			{ ML::Box2D(-10, -16, 76, 128), ML::Box2D(860,904,76,128), defColor },	//24 攻撃1_4
+			{ ML::Box2D(-9, -13, 72, 104), ML::Box2D(1060,928,72,104), defColor },	//25 攻撃1_5
 			{ ML::Box2D(-24, -24, 48, 80), ML::Box2D(176, 0, 48, 80),defColor},		//ダメージ
 		};
 		BChara::DrawInfo  rtv;
@@ -319,9 +354,13 @@ namespace  Player
 			rtv = imageTable[14];
 			if (this->animCnt > 10)rtv = imageTable[15];
 			break;
+		case  Motion::Jump2:
+			rtv = imageTable[14];
+			if (this->animCnt > 10)rtv = imageTable[15];
+			break;
 			//	停止----------------------------------------------------------------------------
 		case  Motion::Stand:
-			work = this->animCnt / 16;
+			work = this->animCnt / 30;
 			work %= 4;
 			rtv = imageTable[work];
 			break;
@@ -333,6 +372,10 @@ namespace  Player
 			break;
 			//	落下----------------------------------------------------------------------------
 		case  Motion::Fall:
+			rtv = imageTable[16];
+			if (this->animCnt > 10)rtv = imageTable[17];
+			break;
+		case  Motion::Fall2:
 			rtv = imageTable[16];
 			if (this->animCnt > 10)rtv = imageTable[17];
 			break;
@@ -349,6 +392,11 @@ namespace  Player
 			work %= 3;
 			rtv = imageTable[work + 11];
 			break;
+		case Motion::Attack:
+			work = this->animCnt / 8;
+			work %= 5;
+			rtv = imageTable[work + 21];
+			break;
 		}
 		//	向きに応じて画像を左右反転する
 		if (Angle_LR::Left == this->angle_LR) {
@@ -356,6 +404,7 @@ namespace  Player
 			rtv.draw.w = -rtv.draw.w;
 		}
 		rtv.draw = this->DrawScale(rtv.draw, this->drawScale);
+		rtv.src = this->DrawScale(rtv.src, this->drawScale);
 
 		return rtv;
 	}

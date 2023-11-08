@@ -115,6 +115,8 @@
     <ClCompile Include="Task_Load.cpp">
       <Filter>MyPG\Task\Load</Filter>
     </ClCompile>
+    <ClCompile Include="Task_Sprite.cpp">
+      <Filter>MyPG\Task\Game</Filter>
     <ClCompile Include="BEnemy.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
@@ -199,6 +201,8 @@
     <ClInclude Include="Task_Load.h">
       <Filter>MyPG\Task\Load</Filter>
     </ClInclude>
+    <ClInclude Include="Task_Sprite.h">
+      <Filter>MyPG\Task\Game</Filter>
     <ClInclude Include="BEnemy.h">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
