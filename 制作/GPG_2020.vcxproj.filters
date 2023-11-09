@@ -29,6 +29,12 @@
     <Filter Include="MyPG\Task\Game\Enemy">
       <UniqueIdentifier>{7dea24d0-b10c-4940-823b-0fc3755b7c67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyPG\Task\Title">
+      <UniqueIdentifier>{702e1b63-5034-4108-b450-53a9ac282496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Task\Ending">
+      <UniqueIdentifier>{679dd661-f1aa-454e-9227-6e328573c479}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine_Ver3_83.cpp">
@@ -117,8 +123,18 @@
     </ClCompile>
     <ClCompile Include="Task_Sprite.cpp">
       <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
     <ClCompile Include="BEnemy.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Game.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Title.cpp">
+      <Filter>MyPG\Task\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Ending.cpp">
+      <Filter>MyPG\Task\Ending</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,8 +219,18 @@
     </ClInclude>
     <ClInclude Include="Task_Sprite.h">
       <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
     <ClInclude Include="BEnemy.h">
       <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Game.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Title.h">
+      <Filter>MyPG\Task\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Ending.h">
+      <Filter>MyPG\Task\Ending</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
