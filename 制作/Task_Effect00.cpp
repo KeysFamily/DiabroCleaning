@@ -73,6 +73,8 @@ namespace  Effect00
 		this->AddRender = false;
 
 		this->fade = false;
+
+		this->IsCameraTrack = true;
 		//★タスクの生成
 
 		return  true;
@@ -163,7 +165,9 @@ namespace  Effect00
 			resSizeX, resSizeY);
 
 		//スクロール対応
-		draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+		if (this->IsCameraTrack) {
+			draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+		}
 
 		//フェードの際には利用無
 		if (fade != true) {
