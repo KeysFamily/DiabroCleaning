@@ -50,6 +50,10 @@ namespace  Player
 		this->jumpPow = -11.0f;		//ジャンプ力（初速）
 		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
 		this->drawScale = 1;
+		this->attack2 = false;
+		this->attack3 = false;
+		this->airattack = true;
+		this->canJump = true;
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -120,7 +124,7 @@ namespace  Player
 		this->res->img->Draw(di.draw, di.src);
 
 
-		ge->debugRect(this->hitBase.OffsetCopy(this->pos),7, -ge->camera2D.x, -ge->camera2D.y);
+		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
 		ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
@@ -153,26 +157,35 @@ namespace  Player
 		case  Motion::Jump:		//上昇中
 			if (this->moveVec.y >= 0) { nm = Motion::Fall; }
 			if (inp.B1.down) { nm = Motion::Jump2; }
+			if (airattack == true) {
+				if (inp.B4.down) { nm = Motion::AirAttack; }
+			}
 			break;
 		case Motion::Jump2:
 			if (this->moveVec.y >= 0) { nm = Motion::Fall2; }
+			if (airattack == true) {
+				if (inp.B4.down) { nm = Motion::AirAttack; }
+			}
 			break;
 		case  Motion::Fall:		//落下中
 			if (this->CheckFoot() == true) { nm = Motion::Landing; }
 			if (inp.B1.down) { nm = Motion::Jump2; }
+			if (airattack == true) {
+				if (inp.B4.down) { nm = Motion::AirAttack; }
+			}
 			break;
 		case Motion::Fall2:
 			if (this->CheckFoot() == true) { nm = Motion::Landing; }
-			break;
-		case  Motion::Attack:	//攻撃中
-			if (this->moveCnt == 40) { nm = Motion::Stand; }
+			if (airattack == true) {
+				if (inp.B4.down) { nm = Motion::AirAttack; }
+			}
 			break;
 		case  Motion::TakeOff:	//飛び立ち
 			if (this->moveCnt >= 3) { nm = Motion::Jump; }
 			if (this->CheckFoot() == false) { nm = Motion::Fall; }
 			break;
 		case  Motion::Landing:	//着地
-			if (this->moveCnt >= 3) { nm = Motion::Stand; }
+			if (this->moveCnt >= 6) { nm = Motion::Stand; }
 			if (this->CheckFoot() == false) { nm = Motion::Fall; }
 			break;
 		case Motion::Bound:
@@ -185,11 +198,64 @@ namespace  Player
 			if (inp.LStick.BD.off) { nm = Motion::Stand; /*this->pos.y -= 5;*/ }
 			if (inp.LStick.BL.on) { nm = Motion::CrouchWalk; }
 			if (inp.LStick.BR.on) { nm = Motion::CrouchWalk; }
+			if (inp.B4.down) { nm = Motion::Attack; }
 			break;
 		case Motion::CrouchWalk:	//しゃがみながら移動
 			if (inp.LStick.BD.off) { nm = Motion::Walk; /*this->pos.y -= 5;*/ }
 			if (inp.LStick.BL.off && inp.LStick.BR.off) { nm = Motion::Crouch; }
 			if (inp.LStick.BL.off && inp.LStick.BR.off && inp.LStick.BD.off) { nm = Motion::Stand; /*this->pos.y -= 5;*/ }
+			if (inp.B4.down) { nm = Motion::Attack; }
+			break;
+		case  Motion::Attack:	//攻撃中
+			if (this->moveCnt == 25)
+			{
+				if (attack2 == true)
+				{
+					nm = Motion::Attack2;
+				}
+				else nm = Motion::Stand;
+			}
+			break;
+		case Motion::Attack2:
+			if (this->moveCnt == 25)
+			{
+				if (attack3 == true)
+				{
+					nm = Motion::Attack3;
+				}
+				else nm = Motion::Stand;
+			}
+			break;
+		case Motion::Attack3:
+			if (this->moveCnt == 30) { nm = Motion::Stand; }
+			break;
+		case Motion::AirAttack:
+			if (this->moveCnt == 20)
+			{
+				if (canJump == true) nm = Motion::Fall;
+				else if (canJump == false)nm = Motion::Fall2;
+				if (attack2 == true)
+				{
+					nm = Motion::AirAttack2;
+				}
+			}
+			break;
+		case Motion::AirAttack2:
+			if (this->moveCnt == 25)
+			{
+				if (canJump == true) nm = Motion::Fall;
+				else if (canJump == false)nm = Motion::Fall2;
+				if (attack3 == true)
+				{
+					nm = Motion::AirAttack3;
+				}
+			}
+			break;
+		case Motion::AirAttack3:
+			if (this->CheckFoot() == true) { nm = Motion::AirAttack4; }
+			break;
+		case Motion::AirAttack4:
+			if (this->moveCnt == 15) { nm = Motion::Stand; }
 			break;
 		}
 		//モーション更新
@@ -215,6 +281,9 @@ namespace  Player
 			}
 			break;
 			//重力加速を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
+		case Motion::AirAttack: break;
+		case Motion::AirAttack2: break;
+		case Motion::AirAttack3: break;
 		case Motion::Unnon:	break;
 		}
 
@@ -236,6 +305,7 @@ namespace  Player
 		//モーション毎に固有の処理
 		switch (this->motion) {
 		case  Motion::Stand:	//立っている
+			this->airattack = true;
 			break;
 		case  Motion::Walk:		//歩いている
 			if (inp.LStick.BL.on) {
@@ -293,8 +363,44 @@ namespace  Player
 				this->angle_LR = Angle_LR::Right;
 				this->moveVec.x = this->maxSpeed;
 			}
+			this->canJump = false;
+			break;
+		case Motion::Landing:
+			this->canJump = true;
 			break;
 		case  Motion::Attack:	//攻撃中
+			if (moveCnt > 0) {
+				if (inp.B4.down) { this->attack2 = true; }
+			}
+			break;
+		case  Motion::Attack2:	//攻撃中
+			this->attack2 = false;
+			if (moveCnt > 0) {
+				if (inp.B4.down) { this->attack3 = true; }
+			}
+			break;
+		case  Motion::Attack3:	//攻撃中
+			this->attack3 = false;
+			break;
+		case Motion::AirAttack:
+			this->airattack = false;
+			this->moveVec.y = 0.0f;
+			if (moveCnt > 0) {
+				if (inp.B4.down) { this->attack2 = true; }
+			}
+			break;
+		case  Motion::AirAttack2:	//攻撃中
+			this->moveVec.y = 0.0f;
+			this->attack2 = false;
+			if (moveCnt > 0) {
+				if (inp.B4.down) { this->attack3 = true; }
+			}
+			break;
+		case Motion::AirAttack3:
+			this->moveVec.y = 20.0f;
+			this->attack3 = false;
+			break;
+		case Motion::AirAttack4:
 			break;
 		case Motion::Crouch:	//しゃがむ
 			break;
@@ -320,29 +426,56 @@ namespace  Player
 			{ ML::Box2D(-48, -58, 76, 116), ML::Box2D(56,28,76,116), defColor },	//0 停止1
 			{ ML::Box2D(-40, -62, 68, 120), ML::Box2D(264,24,68,120), defColor },	//1 停止2
 			{ ML::Box2D(-44, -62, 76, 120), ML::Box2D(460,24,76,120), defColor },	//2 停止3
-			{ ML::Box2D(-52, -58, 80, 116), ML::Box2D(652,28,80,116), defColor },	//3 停止4 ここまで編集済み
-			{ ML::Box2D(-40, -56, 80, 112), ML::Box2D(268,180,80,112), defColor },	//4 歩行1
-			{ ML::Box2D(-40, -54, 80, 108), ML::Box2D(464,184,80,108), defColor },	//5 歩行2
-			{ ML::Box2D(-40, -50, 80, 100), ML::Box2D(664,184,80,100), defColor },	//6 歩行3
-			{ ML::Box2D(-46, -56, 92, 112), ML::Box2D(868,180,92,112), defColor },	//7 歩行4
-			{ ML::Box2D(-40, -54, 80, 108), ML::Box2D(1064,184,80,108), defColor },	//8 歩行5
-			{ ML::Box2D(-40, -50, 80, 100), ML::Box2D(1264,192,80,100), defColor },	//9 歩行6
-			{ ML::Box2D(-10, -7, 76, 84), ML::Box2D(864,60,76,84), defColor },	//10 しゃがみ
-			{ ML::Box2D(-11, -8, 80, 88), ML::Box2D(1060,56,80,88), defColor },	//11 しゃがみながら移動1
-			{ ML::Box2D(-11, -8, 76, 88), ML::Box2D(1260,56,76,88), defColor },	//12 しゃがみながら移動2
-			{ ML::Box2D(-9, -7, 68, 84), ML::Box2D(68,208,68,84), defColor },	//13 しゃがみながら移動3
-			{ ML::Box2D(-10, -14, 76, 108), ML::Box2D(468,324,76,108), defColor },	//14 ジャンプ1
-			{ ML::Box2D(-11, -12, 84, 92), ML::Box2D(656,316,84,92), defColor },	//15 ジャンプ2
-			{ ML::Box2D(-9, -16, 68, 124), ML::Box2D(272,448,68,124), defColor },	//16 落下1
-			{ ML::Box2D(-9, -15, 68, 120), ML::Box2D(472,452,68,120), defColor },	//17 落下2
-			{ ML::Box2D(-10, -12, 80, 86), ML::Box2D(60,344,80,96), defColor },	//18 飛び立つ直前1
-			{ ML::Box2D(-10, -11, 80, 88), ML::Box2D(260,352,80,88), defColor },	//19 飛び立つ直前2
-			{ ML::Box2D(-10, -11, 80, 88), ML::Box2D(260,352,80,88), defColor },	//20 着地
-			{ ML::Box2D(-14, -8, 108, 88), ML::Box2D(28,944,108,88), defColor },	//21 攻撃1_1
-			{ ML::Box2D(-17, -18, 136, 144), ML::Box2D(460,888,136,144), defColor },	//22 攻撃1_2
-			{ ML::Box2D(-13, -18, 108, 144), ML::Box2D(660, 888, 108, 144), defColor },	//23 攻撃1_3
-			{ ML::Box2D(-10, -16, 76, 128), ML::Box2D(860,904,76,128), defColor },	//24 攻撃1_4
-			{ ML::Box2D(-9, -13, 72, 104), ML::Box2D(1060,928,72,104), defColor },	//25 攻撃1_5
+			{ ML::Box2D(-52, -58, 80, 116), ML::Box2D(652,28,80,116), defColor },	//3 停止4
+			{ ML::Box2D(-40, -54, 80, 112), ML::Box2D(268,180,80,112), defColor },	//4 歩行1
+			{ ML::Box2D(-40, -50, 80, 108), ML::Box2D(464,184,80,108), defColor },	//5 歩行2
+			{ ML::Box2D(-40, -42, 80, 100), ML::Box2D(664,184,80,100), defColor },	//6 歩行3
+			{ ML::Box2D(-40, -54, 92, 112), ML::Box2D(868,180,92,112), defColor },	//7 歩行4
+			{ ML::Box2D(-40, -50, 80, 108), ML::Box2D(1064,184,80,108), defColor },	//8 歩行5
+			{ ML::Box2D(-40, -42, 80, 100), ML::Box2D(1264,192,80,100), defColor },	//9 歩行6
+			{ ML::Box2D(-40, -26, 76, 84), ML::Box2D(864,60,76,84), defColor },	//10 しゃがみ
+			{ ML::Box2D(-44, -30, 80, 88), ML::Box2D(1060,56,80,88), defColor },	//11 しゃがみながら移動1
+			{ ML::Box2D(-44, -30, 76, 88), ML::Box2D(1260,56,76,88), defColor },	//12 しゃがみながら移動2
+			{ ML::Box2D(-36, -26, 68, 84), ML::Box2D(68,208,68,84), defColor },	//13 しゃがみながら移動3
+			{ ML::Box2D(-40, -40, 76, 108), ML::Box2D(468,324,76,108), defColor },	//14 ジャンプ1
+			{ ML::Box2D(-40, -40, 84, 92), ML::Box2D(656,316,84,92), defColor },	//15 ジャンプ2
+			{ ML::Box2D(-40, -40, 68, 124), ML::Box2D(272,448,68,124), defColor },	//16 落下1
+			{ ML::Box2D(-40, -40, 68, 120), ML::Box2D(472,452,68,120), defColor },	//17 落下2
+			{ ML::Box2D(-44, -28, 80, 86), ML::Box2D(60,344,80,96), defColor },	//18 飛び立つ直前1
+			{ ML::Box2D(-40, -30, 80, 88), ML::Box2D(260,352,80,88), defColor },	//19 着地
+			{ ML::Box2D(-44, -24, 80, 88), ML::Box2D(260,352,80,88), defColor },	//20 ダメージ(仮
+			{ ML::Box2D(-80, -30, 108, 88), ML::Box2D(28,944,108,88), defColor },	//21 攻撃1_1
+			{ ML::Box2D(-48, -86, 136, 144), ML::Box2D(460,888,136,144), defColor },	//22 攻撃1_2
+			{ ML::Box2D(-48, -86, 108, 144), ML::Box2D(660, 888, 108, 144), defColor },	//23 攻撃1_3
+			{ ML::Box2D(-48, -70, 76, 128), ML::Box2D(860,904,76,128), defColor },	//24 攻撃1_4
+			{ ML::Box2D(-48, -46, 72, 104), ML::Box2D(1060,928,72,104), defColor },	//25 攻撃1_5
+			{ ML::Box2D(-48, -50, 72, 108), ML::Box2D(1260,924,72,108), defColor },	//26 攻撃2_1
+			{ ML::Box2D(-56, -50, 80, 108), ML::Box2D(52,1072,80,108), defColor },	//27 攻撃2_2
+			{ ML::Box2D(-68, -58, 148, 116), ML::Box2D(240,1064,148, 116), defColor },	//28 攻撃2_3
+			{ ML::Box2D(-100, -26, 128,84), ML::Box2D(408,1096,128,84), defColor },	//29 攻撃2_4
+			{ ML::Box2D(-100, -30, 124,88), ML::Box2D(608,1092,124,88), defColor },	//30 攻撃2_5
+			{ ML::Box2D(-60, -46, 80,104), ML::Box2D(876,1076,80,104), defColor },	//31 攻撃3_1
+			{ ML::Box2D(-56, -46, 80,104), ML::Box2D(1080,1076,80,104), defColor },	//32 攻撃3_2
+			{ ML::Box2D(-104, -34, 192,92), ML::Box2D(1208,1088,192,92), defColor },	//33 攻撃3_3
+			{ ML::Box2D(-100, -18, 124,76), ML::Box2D(12,1252,124,76), defColor },	//34 攻撃3_4
+			{ ML::Box2D(-112, -22, 136,80), ML::Box2D(200,1248,136,80), defColor },	//35 攻撃3_5
+			{ ML::Box2D(-112, -22, 136,80), ML::Box2D(400,1248,136,80), defColor },	//36 攻撃3_6 ここまで編集済み 以下は仮アニメ
+			{ ML::Box2D(-80, -30, 108, 88), ML::Box2D(28,944,108,88), defColor },	//21 空中攻撃1_1
+			{ ML::Box2D(-48, -86, 136, 144), ML::Box2D(460,888,136,144), defColor },	//22 空中攻撃1_2
+			{ ML::Box2D(-48, -86, 108, 144), ML::Box2D(660, 888, 108, 144), defColor },	//23 空中攻撃1_3
+			{ ML::Box2D(-48, -70, 76, 128), ML::Box2D(860,904,76,128), defColor },	//24 空中攻撃1_4
+			{ ML::Box2D(-48, -46, 72, 104), ML::Box2D(1060,928,72,104), defColor },	//25 空中攻撃1_5
+			{ ML::Box2D(-48, -50, 72, 108), ML::Box2D(1260,924,72,108), defColor },	//26 空中攻撃2_1
+			{ ML::Box2D(-56, -50, 80, 108), ML::Box2D(52,1072,80,108), defColor },	//27 空中攻撃2_2
+			{ ML::Box2D(-68, -58, 148, 116), ML::Box2D(240,1064,148, 116), defColor },	//28 空中攻撃2_3
+			{ ML::Box2D(-100, -26, 128,84), ML::Box2D(408,1096,128,84), defColor },	//29 空中攻撃2_4
+			{ ML::Box2D(-100, -30, 124,88), ML::Box2D(608,1092,124,88), defColor },	//30 空中攻撃2_5
+			{ ML::Box2D(-60, -46, 80,104), ML::Box2D(876,1076,80,104), defColor },	//31 空中攻撃3_1
+			{ ML::Box2D(-56, -46, 80,104), ML::Box2D(1080,1076,80,104), defColor },	//32 空中攻撃3_2
+			{ ML::Box2D(-104, -34, 192,92), ML::Box2D(1208,1088,192,92), defColor },	//33 空中攻撃3_3
+			{ ML::Box2D(-100, -18, 124,76), ML::Box2D(12,1252,124,76), defColor },	//34 空中攻撃3_4
+			{ ML::Box2D(-112, -22, 136,80), ML::Box2D(200,1248,136,80), defColor },	//35 空中攻撃3_5
+			{ ML::Box2D(-112, -22, 136,80), ML::Box2D(400,1248,136,80), defColor },	//36 空中攻撃3_6
 			{ ML::Box2D(-24, -24, 48, 80), ML::Box2D(176, 0, 48, 80),defColor},		//ダメージ
 		};
 		BChara::DrawInfo  rtv;
@@ -360,30 +493,32 @@ namespace  Player
 			break;
 			//	停止----------------------------------------------------------------------------
 		case  Motion::Stand:
-			work = this->animCnt / 30;
+			work = this->animCnt / 8;
 			work %= 4;
 			rtv = imageTable[work];
 			break;
 			//	歩行----------------------------------------------------------------------------
 		case  Motion::Walk:
-			work = this->animCnt / 8;
+			work = this->animCnt / 6;
 			work %= 6;
 			rtv = imageTable[work + 4];
 			break;
 			//	落下----------------------------------------------------------------------------
 		case  Motion::Fall:
-			rtv = imageTable[16];
-			if (this->animCnt > 10)rtv = imageTable[17];
+			work = this->animCnt / 6;
+			work %= 2;
+			rtv = imageTable[work + 16];
 			break;
 		case  Motion::Fall2:
-			rtv = imageTable[16];
-			if (this->animCnt > 10)rtv = imageTable[17];
+			work = this->animCnt / 8;
+			work %= 2;
+			rtv = imageTable[work + 16];
 			break;
 		case  Motion::TakeOff:	rtv = imageTable[18];	break;
 		case  Motion::Landing:	rtv = imageTable[19];	break;
 		case  Motion::Bound:	rtv = imageTable[20];	break;
 		case Motion::Crouch:
-			work = this->animCnt / 16;
+			work = this->animCnt / 20;
 			work %= 4;
 			rtv = imageTable[work + 10];
 			break;
@@ -393,9 +528,36 @@ namespace  Player
 			rtv = imageTable[work + 11];
 			break;
 		case Motion::Attack:
-			work = this->animCnt / 8;
+			work = this->animCnt / 5;
 			work %= 5;
 			rtv = imageTable[work + 21];
+			break;
+		case Motion::Attack2:
+			work = this->animCnt / 5;
+			work %= 5;
+			rtv = imageTable[work + 26];
+			break;
+		case Motion::Attack3:
+			work = this->animCnt / 5;
+			work %= 6;
+			rtv = imageTable[work + 31];
+			break;
+		case Motion::AirAttack:
+			work = this->animCnt / 5;
+			work %= 5;
+			rtv = imageTable[work + 21];
+			break;
+		case Motion::AirAttack2:
+			work = this->animCnt / 5;
+			work %= 5;
+			rtv = imageTable[work + 26];
+			break;
+		case Motion::AirAttack3:
+			work = this->animCnt / 5;
+			work %= 6;
+			rtv = imageTable[work + 31];
+			break;
+		case Motion::AirAttack4:
 			break;
 		}
 		//	向きに応じて画像を左右反転する
@@ -441,7 +603,7 @@ namespace  Player
 		sample.w = me.w * drawScale;
 		return sample;
 	}
-	
+
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

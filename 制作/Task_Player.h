@@ -73,5 +73,11 @@ namespace  Player
 		//倍率
 		ML::Box2D DrawScale(ML::Box2D& me ,const int drawScale);
 		
+		//連続攻撃フラグ
+		bool attack2, attack3;
+		//空中攻撃フラグ
+		bool airattack;
+		//二段ジャンプフラグ
+		bool canJump;
 	};
 }

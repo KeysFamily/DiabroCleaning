@@ -46,6 +46,8 @@ namespace  Load
 		auto spr = Sprite::Object::Create(true);
 		spr->pos = player->pos;
 		spr->target = player;
+
+
 		return  true;
 	}
 	//-------------------------------------------------------------------

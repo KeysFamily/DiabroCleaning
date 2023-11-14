@@ -44,6 +44,10 @@ public:
 		Attack,		//	UŒ‚1
 		Attack2,	//	UŒ‚2
 		Attack3,	//	UŒ‚3
+		AirAttack,	//	‹ó’†UŒ‚1
+		AirAttack2,	//	‹ó’†UŒ‚2
+		AirAttack3,	//	‹ó’†UŒ‚3
+		AirAttack4,	//	‹ó’†UŒ‚4
 		Jump,		//	ƒWƒƒƒ“ƒv
 		Jump2,		//	“ñ’iƒWƒƒƒ“ƒv
 		Fall,		//	—‰º
