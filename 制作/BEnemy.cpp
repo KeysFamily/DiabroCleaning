@@ -18,6 +18,8 @@ bool  BEnemy::UpdateMotion(Motion  nm_)
 		return  false;
 	}
 	else {
+		this->preMotion = this->motion;
+		this->preMoveCnt = this->moveCnt;
 		this->motion = nm_;		//モーション変更
 		this->moveCnt = 0;		//行動カウンタクリア
 		this->animCnt = 0;		//アニメーションカウンタのクリア
@@ -144,7 +146,7 @@ bool BEnemy::CheckHit(const ML::Box2D& hit_)
 }
 //-----------------------------------------------------------------------------
 //接触時の応答処理（これ自体はダミーのようなモノ）
-void BEnemy::Received(BEnemy* from_, AttackInfo at_)
+void BEnemy::Received(BChara* from_, AttackInfo at_)
 {
 	ML::MsgBox("Received 実装されていません");
 }
@@ -161,15 +163,12 @@ BEnemy::DrawInfo BEnemy::Anim() {
 
 //-----------------------------------------------------------------------------
 // 共通の攻撃処理
-// Type部分に指定する型名はBCharaやBChara継承でCheckHit(),Received()をメンバに持つクラスにすること。
-// それ以外のクラスや型名を指定した場合エラーが発生する可能性がある。また、予測されない動作あり注意
-// 使用例)	this->Attack_Std<BChara>(Player::defGroupName);
-template <class Type> void BEnemy::Attack_Std(string gn_, BEnemy::AttackInfo at_) {
+bool BEnemy::Attack_Std(string gn_, BChara::AttackInfo at_) {
 	ML::Box2D me = this->CallHitBox();
-	auto targets = ge->GetTasks<Type>(gn_);
-	for (auto it = targets->bigin(); it != targets->end(); ++it) {
+	auto targets = ge->GetTasks<BChara>(gn_);
+	for (auto it = targets->begin(); it != targets->end(); ++it) {
 		if ((*it)->CheckHit(me)) {
-			(*it)->Received(this, at_);
+			//(*it)->Received(this, at_);
 			return true;
 		}
 	}

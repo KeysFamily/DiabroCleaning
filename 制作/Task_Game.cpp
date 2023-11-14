@@ -8,6 +8,8 @@
 #include  "Task_Map.h"
 #include  "Task_Sprite.h"
 
+#include "Task_EnemySkeleton.h"
+
 #include  "Task_Ending.h"
 
 namespace  Game
@@ -48,6 +50,9 @@ namespace  Game
 		spr->pos = player->pos;
 		spr->target = player;
 		spr->render2D_Priority[1] = 0.6f;
+		auto sk = EnemySkeleton::Object::Create(true);
+		sk->pos.x = 1100;
+		sk->pos.y = 500;
 
 		
 
