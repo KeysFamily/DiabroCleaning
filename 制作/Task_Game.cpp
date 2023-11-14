@@ -48,6 +48,10 @@ namespace  Game
 		spr->pos = player->pos;
 		spr->target = player;
 		spr->render2D_Priority[1] = 0.6f;
+		ge->camera2D.x = 0;
+		ge->camera2D.y = 0;
+		ge->camera2D.w = ge->screenWidth;
+		ge->camera2D.h = ge->screenHeight;
 
 		
 
