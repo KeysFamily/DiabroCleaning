@@ -38,6 +38,7 @@ namespace  Game
 
 		//šƒ^ƒXƒN‚Ì¶¬
 		auto player = Player::Object::Create(true);
+
 		player->pos.x = 1200;
 		player->pos.y = 500;
 		player->render2D_Priority[1] = 0.5f;
