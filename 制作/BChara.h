@@ -37,7 +37,6 @@ public:
 
 	//キャラクタの行動状態フラグ
 	int			motion,preMotion;	//	現在の行動を示すフラグ
-
 	int				animCnt;		//　アニメーションカウンタ
 	float			jumpPow;		//	ジャンプ初速
 	float           fallSpeed;

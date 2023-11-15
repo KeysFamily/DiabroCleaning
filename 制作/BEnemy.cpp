@@ -23,7 +23,7 @@ bool BEnemy::Attack_Std(string gn_, BChara::AttackInfo at_) {
 	auto targets = ge->GetTasks<BChara>(gn_);
 	for (auto it = targets->begin(); it != targets->end(); ++it) {
 		if ((*it)->CheckHit(me)) {
-			(*it)->Received(this, at_);
+			//(*it)->Received(this, at_);
 			return true;
 		}
 	}

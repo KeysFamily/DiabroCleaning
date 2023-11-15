@@ -42,6 +42,7 @@ public:
 		Bound,	// 弾き飛ばされている
 		Lose,		// 消滅中
 	};
+
 	//Motion			motion,preMotion;			//	現在の行動を示すフラグ
 	//int				animCnt;		//　アニメーションカウンタ
 	//float			jumpPow;		//	ジャンプ初速
@@ -65,16 +66,11 @@ public:
 	
 	//bool  UpdateMotion(int  nm_);
 
-	
-
-	
 
 protected:
 	//virtual void Think() {}		//思考処理
 	//virtual void Move() {}		//動作処理
 	virtual DrawInfo Anim();	//アニメーション制御
-	
-
 
 	bool Attack_Std(string gn_, BChara::AttackInfo at_);				//攻撃共通処理
 	void UpDate_Std();													//更新共通処理

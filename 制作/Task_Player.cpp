@@ -37,11 +37,7 @@ namespace  Player
 		this->render2D_Priority[1] = 0.5f;
 		this->hitBase = ML::Box2D(-48, -58, 76, 116);
 		this->initialHitBase = ML::Box2D(-48, -58, 76, 116);
-<<<<<<< HEAD
-		this->crouchHitBase = ML::Box2D(-38, -42, 76, 84);
-=======
 		this->crouchHitBase = ML::Box2D(-40, -26, 76, 84);
->>>>>>> 01ca1180b2132b258bb62eba9d26d1fe9c47186c
 		this->angle_LR = Angle_LR::Right;
 		this->controller = ge->in1;
 		this->motion = Motion::Stand;		//キャラ初期状態
@@ -58,7 +54,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->balanceMoney = 100;  //所持金
-		this->hp = this->balanceMoney; //hp=所持金
+		this->hp.SetValues(100, 0, 100);
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -93,11 +89,7 @@ namespace  Player
 		ML::Vec2  est = this->moveVec;
 		this->CheckMove(est);
 		//hitbase更新
-<<<<<<< HEAD
-		//BChara::DrawInfo  di = this->Anim();
-=======
 		BChara::DrawInfo  di = this->Anim();
->>>>>>> 01ca1180b2132b258bb62eba9d26d1fe9c47186c
 		//this->hitBase = di.draw;
 		//あたり判定
 		{
@@ -592,8 +584,8 @@ namespace  Player
 			return;//無敵時間中はダメージを受けない
 		}
 		this->unHitTime = 90;
-		this->hp -= at_.power;	//仮処理
-		if (this->hp <= 0) {
+		this->hp.Addval(-at_.power);	//仮処理
+		if (this->hp.IsMin()) {
 			this->Kill();
 		}
 		//吹き飛ばされる
