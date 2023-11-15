@@ -129,7 +129,7 @@ namespace  Player
 	void  Object::Think()
 	{
 		auto  inp = this->controller->GetState();
-		BChara::Motion  nm = this->motion;	//とりあえず今の状態を指定
+		int nm = this->motion;	//とりあえず今の状態を指定
 
 		//思考（入力）や状況に応じてモーションを変更する事を目的としている。
 		//モーションの変更以外の処理は行わない

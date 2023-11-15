@@ -50,6 +50,28 @@ namespace  Player
 			//追加したい変数・メソッドはここに追加する
 			//BCharaに含まれないモノのみここに追加する
 
+		enum Motion
+		{
+			Unnon = -1,	//	無効(使えません）
+			Stand,		//	停止
+			Walk,		//	歩行
+			Attack,		//	攻撃1
+			Attack2,	//	攻撃2
+			Attack3,	//	攻撃3
+			Jump,		//	ジャンプ
+			Jump2,		//	二段ジャンプ
+			Fall,		//	落下
+			Fall2,		//	落下(二段ジャンプ後)
+			TakeOff,	//	飛び立つ瞬間
+			Landing,	//	着地
+			Crouch,		//  しゃがみ
+			CrouchWalk,	//	しゃがみながら移動
+			Turn,		//	方向転換
+			Bound,		//	弾き飛ばされてる
+			Lose,		//  消滅中
+		};
+
+
 		OL::Size2D cutSize;
 		int imgTurn;
 		OL::Limit<int> select;

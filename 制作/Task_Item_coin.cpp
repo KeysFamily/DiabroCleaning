@@ -97,7 +97,7 @@ namespace  Item_coin
 	//-----------------------------------------------------------------
 	void Object::Think()
 	{
-		BChara::Motion nm = this->motion;
+		int nm = this->motion;
 		switch (nm)
 		{
 		case Motion::Stand:

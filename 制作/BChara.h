@@ -36,27 +36,7 @@ public:
 	WP			target;
 
 	//キャラクタの行動状態フラグ
-	enum class Motion
-	{
-		Unnon = -1,	//	無効(使えません）
-		Stand,		//	停止
-		Walk,		//	歩行
-		Attack,		//	攻撃1
-		Attack2,	//	攻撃2
-		Attack3,	//	攻撃3
-		Jump,		//	ジャンプ
-		Jump2,		//	二段ジャンプ
-		Fall,		//	落下
-		Fall2,		//	落下(二段ジャンプ後)
-		TakeOff,	//	飛び立つ瞬間
-		Landing,	//	着地
-		Crouch,		//  しゃがみ
-		CrouchWalk,	//	しゃがみながら移動
-		Turn,		//	方向転換
-		Bound,		//	弾き飛ばされてる
-		Lose,		//  消滅中
-	};
-	Motion			motion;			//	現在の行動を示すフラグ
+	int			motion;			//	現在の行動を示すフラグ
 	int				animCnt;		//　アニメーションカウンタ
 	float			jumpPow;		//	ジャンプ初速
 	float           fallSpeed;
@@ -82,7 +62,7 @@ public:
 		, speed(0.f)
 		, angle(0.f)
 		, angle_LR(Angle_LR::Right)
-		, motion(Motion::Stand)
+		, motion(0)
 		, animCnt(0)
 		, jumpPow(0.f)
 		, fallSpeed(0.f)
@@ -113,7 +93,7 @@ public:
 	//正面足元チェック（サイドビューゲーム専用）
 	virtual  bool  CheckFrontFoot_LR();
 	//モーションを更新（変更なしの場合	false)
-	bool  UpdateMotion(Motion  nm_);
+	bool  UpdateMotion(int nm_);
 
 	//	アニメーション情報構造体
 	struct DrawInfo {
