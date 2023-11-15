@@ -84,7 +84,7 @@ namespace  EnemySkeleton
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		//ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
+		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
 
 		this->Render_Std(this->res->img);
 		
@@ -93,7 +93,7 @@ namespace  EnemySkeleton
 	//-------------------------------------------------------------------
 	// 思考制御
 	void Object::Think(){
-		BEnemy::Motion nm = this->motion;//とりあえず今の状態を指定
+		int nm = this->motion;//とりあえず今の状態を指定
 		switch (nm)
 		{
 		case Motion::Stand:	//立っている
@@ -355,7 +355,7 @@ namespace  EnemySkeleton
 		}
 		return rtv;
 	}
-	
+
 	void Object::Received(BEnemy* from_, AttackInfo at_) {
 		if (this->unHitTime > 0) { 
 			return; //無敵時間中は処理を受けない

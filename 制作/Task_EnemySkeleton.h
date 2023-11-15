@@ -55,7 +55,7 @@ namespace  EnemySkeleton
 		//追加したい変数・メソッドはここに追加する
 		void Think()override;			//思考＆状況判断
 		void Move()override;			//モーションに対応した処理
-		BEnemy::DrawInfo Anim()override;//アニメーション制御
+		BChara::DrawInfo Anim()override;//アニメーション制御
 
 		//接触時の応答処理(必ず受け身の処理として実装する)
 		void Received(BEnemy* from_, AttackInfo at_);

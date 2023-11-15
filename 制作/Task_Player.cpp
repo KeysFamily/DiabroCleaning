@@ -54,7 +54,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->balanceMoney = 100;  //所持金
-		this->hp = this->balanceMoney; //hp=所持金
+		this->hp.SetValues(100, 0, 100);
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -584,8 +584,8 @@ namespace  Player
 			return;//無敵時間中はダメージを受けない
 		}
 		this->unHitTime = 90;
-		this->hp -= at_.power;	//仮処理
-		if (this->hp <= 0) {
+		this->hp.Addval(-at_.power);	//仮処理
+		if (this->hp.IsMin()) {
 			this->Kill();
 		}
 		//吹き飛ばされる
