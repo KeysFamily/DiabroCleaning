@@ -241,7 +241,7 @@ namespace  Player
 			}
 			break;
 		case Motion::AirAttack2:
-			if (this->moveCnt == 25)
+			if (this->moveCnt == 15)
 			{
 				if (canJump == true) nm = Motion::Fall;
 				else if (canJump == false)nm = Motion::Fall2;
@@ -423,60 +423,57 @@ namespace  Player
 		ML::Color  defColor(1, 1, 1, 1);
 		BChara::DrawInfo imageTable[] = {
 			//draw							src
-			{ ML::Box2D(-48, -58, 76, 116), ML::Box2D(56,28,76,116), defColor },	//0 ’â~1
-			{ ML::Box2D(-40, -62, 68, 120), ML::Box2D(264,24,68,120), defColor },	//1 ’â~2
-			{ ML::Box2D(-44, -62, 76, 120), ML::Box2D(460,24,76,120), defColor },	//2 ’â~3
-			{ ML::Box2D(-52, -58, 80, 116), ML::Box2D(652,28,80,116), defColor },	//3 ’â~4
-			{ ML::Box2D(-40, -54, 80, 112), ML::Box2D(268,180,80,112), defColor },	//4 •às1
-			{ ML::Box2D(-40, -50, 80, 108), ML::Box2D(464,184,80,108), defColor },	//5 •às2
-			{ ML::Box2D(-40, -42, 80, 100), ML::Box2D(664,184,80,100), defColor },	//6 •às3
-			{ ML::Box2D(-40, -54, 92, 112), ML::Box2D(868,180,92,112), defColor },	//7 •às4
-			{ ML::Box2D(-40, -50, 80, 108), ML::Box2D(1064,184,80,108), defColor },	//8 •às5
-			{ ML::Box2D(-40, -42, 80, 100), ML::Box2D(1264,192,80,100), defColor },	//9 •às6
-			{ ML::Box2D(-40, -26, 76, 84), ML::Box2D(864,60,76,84), defColor },	//10 ‚µ‚á‚ª‚İ
-			{ ML::Box2D(-44, -30, 80, 88), ML::Box2D(1060,56,80,88), defColor },	//11 ‚µ‚á‚ª‚İ‚È‚ª‚çˆÚ“®1
-			{ ML::Box2D(-44, -30, 76, 88), ML::Box2D(1260,56,76,88), defColor },	//12 ‚µ‚á‚ª‚İ‚È‚ª‚çˆÚ“®2
-			{ ML::Box2D(-36, -26, 68, 84), ML::Box2D(68,208,68,84), defColor },	//13 ‚µ‚á‚ª‚İ‚È‚ª‚çˆÚ“®3
-			{ ML::Box2D(-40, -40, 76, 108), ML::Box2D(468,324,76,108), defColor },	//14 ƒWƒƒƒ“ƒv1
-			{ ML::Box2D(-40, -40, 84, 92), ML::Box2D(656,316,84,92), defColor },	//15 ƒWƒƒƒ“ƒv2
-			{ ML::Box2D(-40, -40, 68, 124), ML::Box2D(272,448,68,124), defColor },	//16 —‰º1
-			{ ML::Box2D(-40, -40, 68, 120), ML::Box2D(472,452,68,120), defColor },	//17 —‰º2
-			{ ML::Box2D(-44, -28, 80, 86), ML::Box2D(60,344,80,96), defColor },	//18 ”ò‚Ñ—§‚Â’¼‘O1
-			{ ML::Box2D(-40, -30, 80, 88), ML::Box2D(260,352,80,88), defColor },	//19 ’…’n
-			{ ML::Box2D(-44, -24, 80, 88), ML::Box2D(260,352,80,88), defColor },	//20 ƒ_ƒ[ƒW(‰¼
-			{ ML::Box2D(-80, -30, 108, 88), ML::Box2D(28,944,108,88), defColor },	//21 UŒ‚1_1
-			{ ML::Box2D(-48, -86, 136, 144), ML::Box2D(460,888,136,144), defColor },	//22 UŒ‚1_2
-			{ ML::Box2D(-48, -86, 108, 144), ML::Box2D(660, 888, 108, 144), defColor },	//23 UŒ‚1_3
-			{ ML::Box2D(-48, -70, 76, 128), ML::Box2D(860,904,76,128), defColor },	//24 UŒ‚1_4
-			{ ML::Box2D(-48, -46, 72, 104), ML::Box2D(1060,928,72,104), defColor },	//25 UŒ‚1_5
-			{ ML::Box2D(-48, -50, 72, 108), ML::Box2D(1260,924,72,108), defColor },	//26 UŒ‚2_1
-			{ ML::Box2D(-56, -50, 80, 108), ML::Box2D(52,1072,80,108), defColor },	//27 UŒ‚2_2
-			{ ML::Box2D(-68, -58, 148, 116), ML::Box2D(240,1064,148, 116), defColor },	//28 UŒ‚2_3
-			{ ML::Box2D(-100, -26, 128,84), ML::Box2D(408,1096,128,84), defColor },	//29 UŒ‚2_4
-			{ ML::Box2D(-100, -30, 124,88), ML::Box2D(608,1092,124,88), defColor },	//30 UŒ‚2_5
-			{ ML::Box2D(-60, -46, 80,104), ML::Box2D(876,1076,80,104), defColor },	//31 UŒ‚3_1
-			{ ML::Box2D(-56, -46, 80,104), ML::Box2D(1080,1076,80,104), defColor },	//32 UŒ‚3_2
-			{ ML::Box2D(-104, -34, 192,92), ML::Box2D(1208,1088,192,92), defColor },	//33 UŒ‚3_3
-			{ ML::Box2D(-100, -18, 124,76), ML::Box2D(12,1252,124,76), defColor },	//34 UŒ‚3_4
-			{ ML::Box2D(-112, -22, 136,80), ML::Box2D(200,1248,136,80), defColor },	//35 UŒ‚3_5
-			{ ML::Box2D(-112, -22, 136,80), ML::Box2D(400,1248,136,80), defColor },	//36 UŒ‚3_6 ‚±‚±‚Ü‚Å•ÒWÏ‚İ ˆÈ‰º‚Í‰¼ƒAƒjƒ
-			{ ML::Box2D(-80, -30, 108, 88), ML::Box2D(28,944,108,88), defColor },	//21 ‹ó’†UŒ‚1_1
-			{ ML::Box2D(-48, -86, 136, 144), ML::Box2D(460,888,136,144), defColor },	//22 ‹ó’†UŒ‚1_2
-			{ ML::Box2D(-48, -86, 108, 144), ML::Box2D(660, 888, 108, 144), defColor },	//23 ‹ó’†UŒ‚1_3
-			{ ML::Box2D(-48, -70, 76, 128), ML::Box2D(860,904,76,128), defColor },	//24 ‹ó’†UŒ‚1_4
-			{ ML::Box2D(-48, -46, 72, 104), ML::Box2D(1060,928,72,104), defColor },	//25 ‹ó’†UŒ‚1_5
-			{ ML::Box2D(-48, -50, 72, 108), ML::Box2D(1260,924,72,108), defColor },	//26 ‹ó’†UŒ‚2_1
-			{ ML::Box2D(-56, -50, 80, 108), ML::Box2D(52,1072,80,108), defColor },	//27 ‹ó’†UŒ‚2_2
-			{ ML::Box2D(-68, -58, 148, 116), ML::Box2D(240,1064,148, 116), defColor },	//28 ‹ó’†UŒ‚2_3
-			{ ML::Box2D(-100, -26, 128,84), ML::Box2D(408,1096,128,84), defColor },	//29 ‹ó’†UŒ‚2_4
-			{ ML::Box2D(-100, -30, 124,88), ML::Box2D(608,1092,124,88), defColor },	//30 ‹ó’†UŒ‚2_5
-			{ ML::Box2D(-60, -46, 80,104), ML::Box2D(876,1076,80,104), defColor },	//31 ‹ó’†UŒ‚3_1
-			{ ML::Box2D(-56, -46, 80,104), ML::Box2D(1080,1076,80,104), defColor },	//32 ‹ó’†UŒ‚3_2
-			{ ML::Box2D(-104, -34, 192,92), ML::Box2D(1208,1088,192,92), defColor },	//33 ‹ó’†UŒ‚3_3
-			{ ML::Box2D(-100, -18, 124,76), ML::Box2D(12,1252,124,76), defColor },	//34 ‹ó’†UŒ‚3_4
-			{ ML::Box2D(-112, -22, 136,80), ML::Box2D(200,1248,136,80), defColor },	//35 ‹ó’†UŒ‚3_5
-			{ ML::Box2D(-112, -22, 136,80), ML::Box2D(400,1248,136,80), defColor },	//36 ‹ó’†UŒ‚3_6
-			{ ML::Box2D(-24, -24, 48, 80), ML::Box2D(176, 0, 48, 80),defColor},		//ƒ_ƒ[ƒW
+			{ ML::Box2D(-48, -58, 76, 116), ML::Box2D(56,28,76,116), defColor },			//0 ’â~1
+			{ ML::Box2D(-40, -62, 68, 120), ML::Box2D(264,24,68,120), defColor },			//1 ’â~2
+			{ ML::Box2D(-44, -62, 76, 120), ML::Box2D(460,24,76,120), defColor },			//2 ’â~3
+			{ ML::Box2D(-52, -58, 80, 116), ML::Box2D(652,28,80,116), defColor },			//3 ’â~4
+			{ ML::Box2D(-40, -54, 80, 112), ML::Box2D(268,180,80,112), defColor },			//4 •às1
+			{ ML::Box2D(-40, -50, 80, 108), ML::Box2D(464,184,80,108), defColor },			//5 •às2
+			{ ML::Box2D(-40, -42, 80, 100), ML::Box2D(664,184,80,100), defColor },			//6 •às3
+			{ ML::Box2D(-40, -54, 92, 112), ML::Box2D(868,180,92,112), defColor },			//7 •às4
+			{ ML::Box2D(-40, -50, 80, 108), ML::Box2D(1064,184,80,108), defColor },			//8 •às5
+			{ ML::Box2D(-40, -42, 80, 100), ML::Box2D(1264,192,80,100), defColor },			//9 •às6
+			{ ML::Box2D(-40, -26, 76, 84), ML::Box2D(864,60,76,84), defColor },				//10 ‚µ‚á‚ª‚İ
+			{ ML::Box2D(-44, -30, 80, 88), ML::Box2D(1060,56,80,88), defColor },			//11 ‚µ‚á‚ª‚İ‚È‚ª‚çˆÚ“®1
+			{ ML::Box2D(-44, -30, 76, 88), ML::Box2D(1260,56,76,88), defColor },			//12 ‚µ‚á‚ª‚İ‚È‚ª‚çˆÚ“®2
+			{ ML::Box2D(-36, -26, 68, 84), ML::Box2D(68,208,68,84), defColor },				//13 ‚µ‚á‚ª‚İ‚È‚ª‚çˆÚ“®3
+			{ ML::Box2D(-32, -40, 76, 108), ML::Box2D(468,324,76,108), defColor },			//14 ƒWƒƒƒ“ƒv1
+			{ ML::Box2D(-52, -40, 84, 92), ML::Box2D(656,316,84,92), defColor },			//15 ƒWƒƒƒ“ƒv2
+			{ ML::Box2D(-40, -40, 68, 124), ML::Box2D(272,448,68,124), defColor },			//16 —‰º1
+			{ ML::Box2D(-40, -40, 68, 120), ML::Box2D(472,452,68,120), defColor },			//17 —‰º2
+			{ ML::Box2D(-44, -28, 80, 86), ML::Box2D(60,344,80,96), defColor },				//18 ”ò‚Ñ—§‚Â’¼‘O1
+			{ ML::Box2D(-40, -30, 80, 88), ML::Box2D(260,352,80,88), defColor },			//19 ’…’n
+			{ ML::Box2D(-44, -24, 80, 88), ML::Box2D(260,352,80,88), defColor },			//20 ƒ_ƒ[ƒW(‰¼
+			{ ML::Box2D(-80, -30, 108, 88), ML::Box2D(28,944,108,88), defColor },			//21 UŒ‚1_1
+			{ ML::Box2D(-48, -86, 136, 144), ML::Box2D(460,888,136,144), defColor },		//22 UŒ‚1_2
+			{ ML::Box2D(-48, -86, 108, 144), ML::Box2D(660, 888, 108, 144), defColor },		//23 UŒ‚1_3
+			{ ML::Box2D(-48, -70, 76, 128), ML::Box2D(860,904,76,128), defColor },			//24 UŒ‚1_4
+			{ ML::Box2D(-48, -46, 72, 104), ML::Box2D(1060,928,72,104), defColor },			//25 UŒ‚1_5
+			{ ML::Box2D(-48, -50, 72, 108), ML::Box2D(1260,924,72,108), defColor },			//26 UŒ‚2_1
+			{ ML::Box2D(-56, -50, 80, 108), ML::Box2D(52,1072,80,108), defColor },			//27 UŒ‚2_2
+			{ ML::Box2D(-68, -58, 148, 116), ML::Box2D(240,1064,148, 116), defColor },		//28 UŒ‚2_3
+			{ ML::Box2D(-100, -26, 128,84), ML::Box2D(408,1096,128,84), defColor },			//29 UŒ‚2_4
+			{ ML::Box2D(-100, -30, 124,88), ML::Box2D(608,1092,124,88), defColor },			//30 UŒ‚2_5
+			{ ML::Box2D(-60, -46, 80,104), ML::Box2D(876,1076,80,104), defColor },			//31 UŒ‚3_1
+			{ ML::Box2D(-56, -46, 80,104), ML::Box2D(1080,1076,80,104), defColor },			//32 UŒ‚3_2
+			{ ML::Box2D(-104, -34, 192,92), ML::Box2D(1208,1088,192,92), defColor },		//33 UŒ‚3_3
+			{ ML::Box2D(-100, -18, 124,76), ML::Box2D(12,1252,124,76), defColor },			//34 UŒ‚3_4
+			{ ML::Box2D(-112, -22, 136,80), ML::Box2D(200,1248,136,80), defColor },			//35 UŒ‚3_5
+			{ ML::Box2D(-112, -22, 136,80), ML::Box2D(400,1248,136,80), defColor },			//36 UŒ‚3_6
+			{ ML::Box2D(-44, -40, 72, 104), ML::Box2D(1060, 1960, 72, 104), defColor },		//37 ‹ó’†UŒ‚1_1
+			{ ML::Box2D(-88, -64, 184, 120), ML::Box2D(1208, 1940, 184, 120), defColor },	//38 ‹ó’†UŒ‚1_2
+			{ ML::Box2D(-80, -70, 116, 120), ML::Box2D(24, 2084, 116, 120), defColor },		//39 ‹ó’†UŒ‚1_3
+			{ ML::Box2D(-84, -74, 108, 124), ML::Box2D(220, 2080, 108, 124), defColor },	//40 ‹ó’†UŒ‚1_4
+			{ ML::Box2D(-44, -66, 136, 124), ML::Box2D(460, 2088, 136, 124), defColor },	//41 ‹ó’†UŒ‚2_1
+			{ ML::Box2D(-44, -70, 92, 124), ML::Box2D(664, 2084, 92, 124), defColor },		//42 ‹ó’†UŒ‚2_2
+			{ ML::Box2D(-44, -54, 64, 104), ML::Box2D(860, 2100, 64, 104), defColor },		//43 ‹ó’†UŒ‚2_3
+			{ ML::Box2D(-56, -70, 112, 124), ML::Box2D(1032, 2076, 112, 124), defColor },	//44 ‹ó’†UŒ‚3_1
+			{ ML::Box2D(-56, -62, 108, 120), ML::Box2D(1232, 2084, 108, 120), defColor },	//45 ‹ó’†UŒ‚3_2
+			{ ML::Box2D(-56, -66, 108, 124), ML::Box2D(32, 2228, 108, 124), defColor },		//46 ‹ó’†UŒ‚3_3
+			{ ML::Box2D(-100, -84, 192, 144), ML::Box2D(204, 2220, 192, 144), defColor },	//47 ‹ó’†UŒ‚4_1
+			{ ML::Box2D(-92, -62, 184, 120), ML::Box2D(412, 2244, 184, 120), defColor },	//48 ‹ó’†UŒ‚4_2
+			{ ML::Box2D(-96, -30, 184, 88), ML::Box2D(608, 2276, 184, 88), defColor },		//49 ‹ó’†UŒ‚4_3 ‚±‚±‚Ü‚Å•ÒWÏ‚İ
+			{ ML::Box2D(-24, -24, 48, 80), ML::Box2D(176, 0, 48, 80),defColor},				//ƒ_ƒ[ƒW •ÒW‚µ‚Ä‚È‚¢
 		};
 		BChara::DrawInfo  rtv;
 		int  work;
@@ -544,20 +541,24 @@ namespace  Player
 			break;
 		case Motion::AirAttack:
 			work = this->animCnt / 5;
-			work %= 5;
-			rtv = imageTable[work + 21];
+			work %= 4;
+			rtv = imageTable[work + 37];
 			break;
 		case Motion::AirAttack2:
 			work = this->animCnt / 5;
-			work %= 5;
-			rtv = imageTable[work + 26];
+			work %= 3;
+			rtv = imageTable[work + 41];
 			break;
 		case Motion::AirAttack3:
-			work = this->animCnt / 5;
-			work %= 6;
-			rtv = imageTable[work + 31];
+			if (this->animCnt < 5)work = 0;
+			else if (this->animCnt >= 5 && this->animCnt < 10)work = 1;
+			else work = 2;
+			rtv = imageTable[work + 44];
 			break;
 		case Motion::AirAttack4:
+			work = this->animCnt / 5;
+			work %= 3;
+			rtv = imageTable[work + 47];
 			break;
 		}
 		//	Œü‚«‚É‰‚¶‚Ä‰æ‘œ‚ğ¶‰E”½“]‚·‚é
