@@ -7,6 +7,7 @@
 #include  "Task_Player.h"
 #include  "Task_Map.h"
 #include  "Task_Sprite.h"
+#include  "Task_Item_coin.h"
 
 #include "Task_EnemySkeleton.h"
 
@@ -47,6 +48,7 @@ namespace  Game
 		auto map = Map::Object::Create(true);
 		map->render2D_Priority[1] = 0.9f;
 		auto spr = Sprite::Object::Create(true);
+
 		spr->pos = player->pos;
 		spr->target = player;
 		spr->render2D_Priority[1] = 0.6f;
@@ -59,10 +61,12 @@ namespace  Game
 		ge->camera2D.y = 0;
 		ge->camera2D.w = ge->screenWidth;
 		ge->camera2D.h = ge->screenHeight;
+		auto coin = Item_coin::Object::Create(true);
+		coin->pos.x = 1300;
+		coin->pos.y = 500;
 
 
-		
-
+		this->cnt = 0;
 
 		return  true;
 	}
@@ -87,6 +91,9 @@ namespace  Game
 	void  Object::UpDate()
 	{
 		auto inp = ge->in1->GetState( );
+
+		this->cnt++;
+
 		if (inp.ST.down && ge->getCounterFlag("Game") != ge->ACTIVE) {
 			ge->StartCounter("Game", 45); //フェードは90フレームなので半分の45で切り替え
 			ge->CreateEffect(98, ML::Vec2(0, 0));
@@ -94,6 +101,12 @@ namespace  Game
 		}
 		if (ge->getCounterFlag("Game") == ge->LIMIT) {
 			this->Kill();
+		}
+
+		if (this->cnt % 10 == 0) {
+			auto coin = Item_coin::Object::Create(true);
+			coin->pos.x = 1300;
+			coin->pos.y = 500;
 		}
 	}
 	//-------------------------------------------------------------------
