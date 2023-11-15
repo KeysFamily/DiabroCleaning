@@ -35,32 +35,7 @@ public:
 	Angle_LR	angle_LR;
 	WP			target;
 
-	//キャラクタの行動状態フラグ
-	enum class Motion
-	{
-		Unnon = -1,	//	無効(使えません）
-		Stand,		//	停止
-		Walk,		//	歩行
-		Attack,		//	攻撃1
-		Attack2,	//	攻撃2
-		Attack3,	//	攻撃3
-		AirAttack,	//	空中攻撃1
-		AirAttack2,	//	空中攻撃2
-		AirAttack3,	//	空中攻撃3
-		AirAttack4,	//	空中攻撃4
-		Jump,		//	ジャンプ
-		Jump2,		//	二段ジャンプ
-		Fall,		//	落下
-		Fall2,		//	落下(二段ジャンプ後)
-		TakeOff,	//	飛び立つ瞬間
-		Landing,	//	着地
-		Crouch,		//  しゃがみ
-		CrouchWalk,	//	しゃがみながら移動
-		Turn,		//	方向転換
-		Bound,		//	弾き飛ばされてる
-		Lose,		//  消滅中
-	};
-	Motion			motion;			//	現在の行動を示すフラグ
+	
 	int				animCnt;		//　アニメーションカウンタ
 	float			jumpPow;		//	ジャンプ初速
 	float			maxFallSpeed;	//	落下最大速度
@@ -84,7 +59,6 @@ public:
 		, speed(0.f)
 		, angle(0.f)
 		, angle_LR(Angle_LR::Right)
-		, motion(Motion::Stand)
 		, animCnt(0)
 		, jumpPow(0.f)
 		, maxFallSpeed(0.f)
@@ -113,7 +87,7 @@ public:
 	//正面足元チェック（サイドビューゲーム専用）
 	virtual  bool  CheckFrontFoot_LR();
 	//モーションを更新（変更なしの場合	false)
-	bool  UpdateMotion(Motion  nm_);
+	bool  UpdateMotion(int nm_);
 
 	//	アニメーション情報構造体
 	struct DrawInfo {
