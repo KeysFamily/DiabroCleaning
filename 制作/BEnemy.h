@@ -12,6 +12,8 @@
 #include "GameEngine_Ver3_83.h"
 #include "OriginalLibrary.h"
 
+#include "BChara.h"
+
 class BEnemy : public BTask
 {
 	//変更不可◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
@@ -25,7 +27,7 @@ public:
 	ML::Box2D   hitBase;	//あたり判定範囲
 	ML::Box2D   map_hitBase;//マップ当たり判定
 	ML::Vec2	moveVec;	//移動ベクトル
-	int			moveCnt;	//行動カウンタ
+	int			moveCnt,preMoveCnt;	//行動カウンタ
 	OL::Limit<float> hp;	//体力
 	float		speed;      //移動スピード
 	//向き（2D視点）
@@ -48,10 +50,10 @@ public:
 		//	TakeOff,	// 飛び立つ瞬間
 		Landing,	// 着地
 		Turn,		// 逆を向く
-		//	Bound,	// 弾き飛ばされている
-		Lose		// 消滅中
+		Bound,	// 弾き飛ばされている
+		Lose,		// 消滅中
 	};
-	Motion			motion;			//	現在の行動を示すフラグ
+	Motion			motion,preMotion;			//	現在の行動を示すフラグ
 	int				animCnt;		//　アニメーションカウンタ
 	float			jumpPow;		//	ジャンプ初速
 	float			maxFallSpeed;	//	落下最大速度
@@ -69,11 +71,13 @@ public:
 		, map_hitBase(0, 0, 0, 0)
 		, moveVec(0, 0)
 		, moveCnt(0)
+		, preMoveCnt(0)
 		, hp()
 		, speed(0.f)
 		, angle(0.f)
 		, angle_LR(Angle_LR::Right)
 		, motion(Motion::Stand)
+		, preMotion(Motion::Stand)
 		, animCnt(0)
 		, jumpPow(0.f)
 		, maxFallSpeed(0.f)
@@ -117,7 +121,7 @@ public:
 	};
 
 	//接触時の応答処理（これ自体はダミーのようなモノ）
-	virtual void Received(BEnemy* from_, AttackInfo at_);
+	virtual void Received(BChara* from_, AttackInfo at_);
 	//接触判定
 	virtual bool CheckHit(const ML::Box2D& hit_);
 
@@ -126,7 +130,7 @@ protected:
 	virtual void Move() {}		//動作処理
 	virtual DrawInfo Anim();	//アニメーション制御
 	
-	template <class Type> void Attack_Std(string gn_, AttackInfo at_);	//攻撃共通処理
+	bool Attack_Std(string gn_, BChara::AttackInfo at_);				//攻撃共通処理
 	void UpDate_Std();													//更新共通処理
 	void Render_Std(const DG::Image::SP& img_);							//描画共通処理
 };
