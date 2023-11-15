@@ -59,6 +59,7 @@ public:
 	Motion			motion;			//	現在の行動を示すフラグ
 	int				animCnt;		//　アニメーションカウンタ
 	float			jumpPow;		//	ジャンプ初速
+	float           fallSpeed;
 	float			maxFallSpeed;	//	落下最大速度
 	float			gravity;		//	フレーム単位の加算量
 	float			maxSpeed;		//	左右方向への移動の加算量
@@ -66,6 +67,7 @@ public:
 	float			crouchSpeed;	//	しゃがみながら移動の最大速度
 	float			decSpeed;		//	左右方向への移動の減衰量
 	int				unHitTime;		//　無敵時間
+	int             balanceMoney;   //  所持金
 
 	//メンバ変数に最低限の初期化を行う
 	//★★メンバ変数を追加したら必ず初期化も追加する事★★
@@ -83,6 +85,7 @@ public:
 		, motion(Motion::Stand)
 		, animCnt(0)
 		, jumpPow(0.f)
+		, fallSpeed(0.f)
 		, maxFallSpeed(0.f)
 		, gravity(0.f)
 		, maxSpeed(0.f)
@@ -90,6 +93,7 @@ public:
 		, crouchSpeed(0.f)
 		, decSpeed(0.f)
 		, unHitTime(0)
+		, balanceMoney(0)
 	{
 	}
 	virtual  ~BChara() {}

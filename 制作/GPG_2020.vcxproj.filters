@@ -136,6 +136,9 @@
     <ClCompile Include="Task_Ending.cpp">
       <Filter>MyPG\Task\Ending</Filter>
     </ClCompile>
+    <ClCompile Include="Task_Item_coin.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -231,6 +234,9 @@
     </ClInclude>
     <ClInclude Include="Task_Ending.h">
       <Filter>MyPG\Task\Ending</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Item_coin.h">
+      <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
