@@ -85,7 +85,7 @@ namespace  Player
 		ML::Vec2  est = this->moveVec;
 		this->CheckMove(est);
 		//hitbaseXV
-		//BChara::DrawInfo  di = this->Anim();
+		BChara::DrawInfo  di = this->Anim();
 		//this->hitBase = di.draw;
 		//‚ ‚½‚è”»’è
 		{
@@ -399,11 +399,14 @@ namespace  Player
 			rtv = imageTable[work + 21];
 			break;
 		}
+		this->hitBase = rtv.draw;
 		//	Œü‚«‚É‰ž‚¶‚Ä‰æ‘œ‚ð¶‰E”½“]‚·‚é
 		if (Angle_LR::Left == this->angle_LR) {
 			rtv.draw.x = -rtv.draw.x;
 			rtv.draw.w = -rtv.draw.w;
+			this->hitBase = ML::Box2D(rtv.draw.x + rtv.draw.w, rtv.draw.y, -rtv.draw.w, rtv.draw.h);
 		}
+
 		rtv.draw = this->DrawScale(rtv.draw, this->drawScale);
 		rtv.src = this->DrawScale(rtv.src, this->drawScale);
 

@@ -96,7 +96,7 @@ namespace  Game
 			this->Kill();
 		}
 
-		if (this->cnt % 10 == 0) {
+		if (this->cnt % 60 == 0) {
 			auto coin = Item_coin::Object::Create(true);
 			coin->pos.x = 1300;
 			coin->pos.y = 500;

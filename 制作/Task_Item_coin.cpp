@@ -168,10 +168,10 @@ namespace  Item_coin
 
 		BChara::DrawInfo imageTable[] = {
 			//draw                   src
-			{this->hitBase,ML::Box2D(3,3,10,10),defColor},
-			{this->hitBase,ML::Box2D(20,3,8,10),defColor},
-			{this->hitBase,ML::Box2D(38,3,4,10),defColor},
-			{this->hitBase,ML::Box2D(52,3,8,10),defColor},
+			{this->hitBase,ML::Box2D(6,6,20,20),defColor},
+			{this->hitBase,ML::Box2D(40,6,16,20),defColor},
+			{this->hitBase,ML::Box2D(76,6,8,20),defColor},
+			{this->hitBase,ML::Box2D(40,6,16,20),defColor},
 		};
 		BChara::DrawInfo  rtv;
 		int work;
