@@ -1,0 +1,255 @@
+//?------------------------------------------------------
+//タスク名:
+//作　成　者:
+//TODO:もしいれば下記へ記述
+//編　集　者:
+//作成年月日:
+//概　　　要:
+//?------------------------------------------------------
+#include  "MyPG.h"
+#include  "Task_Map.h"
+#include  "Task_Player.h"
+#include  "Task_Item_coin.h"
+
+namespace  Item_coin
+{
+	Resource::WP  Resource::instance;
+	//-------------------------------------------------------------------
+	//リソースの初期化
+	bool  Resource::Initialize()
+	{
+		this->img = DG::Image::Create("./data/image/coin.png");
+		return true;
+	}
+	//-------------------------------------------------------------------
+	//リソースの解放
+	bool  Resource::Finalize()
+	{
+		this->img.reset();
+		return true;
+	}
+	//-------------------------------------------------------------------
+	//「初期化」タスク生成時に１回だけ行う処理
+	bool  Object::Initialize()
+	{
+		//スーパークラス初期化
+		__super::Initialize(defGroupName, defName, true);
+		//リソースクラス生成orリソース共有
+		this->res = Resource::Create();
+
+		//★データ初期化
+		this->render2D_Priority[1] = 0.7f;
+		this->hitBase = OL::setBoxCenter(32, 32);
+		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
+		this->decSpeed = 0.5f;		//接地状態の時の速度減衰量（摩擦
+		this->maxFallSpeed = 11.0f;	//最大落下速度
+		this->angle = ML::ToRadian((float)(rand() % 360));
+		this->moveVec = ML::Vec2(cos(angle) * 6, sin(angle) * 8);
+		//★タスクの生成
+
+		return  true;
+	}
+	//-------------------------------------------------------------------
+	//「終了」タスク消滅時に１回だけ行う処理
+	bool  Object::Finalize()
+	{
+		//★データ＆タスク解放
+
+		if (!ge->QuitFlag() && this->nextTaskCreate) {
+			//★引き継ぎタスクの生成
+		}
+
+		return  true;
+	}
+	//-------------------------------------------------------------------
+	//「更新」１フレーム毎に行う処理
+	void  Object::UpDate()
+	{
+		this->moveCnt++;
+		this->animCnt++;
+		if (this->unHitTime > 0) { this->unHitTime--; }
+
+		this->Think();
+		this->Move();
+
+		//めり込まない移動
+		ML::Vec2  est = this->moveVec;
+		this->CheckMove(est);
+
+		if (animCnt > 60 * 3) {
+			this->Kill();
+		}
+		/*this->moveVec.y += 0.02f;*/
+		
+	}
+	//-------------------------------------------------------------------
+	//「２Ｄ描画」１フレーム毎に行う処理
+	void  Object::Render2D_AF()
+	{
+		BChara::DrawInfo di = this->Anim();
+		di.draw.Offset(this->pos);
+		//スクロール対応
+		di.draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+		this->res->img->Draw(di.draw, di.src);
+		ge->debugRect(this->CallHitBox(), 4, -ge->camera2D.x, -ge->camera2D.y);
+	}
+	
+	//-----------------------------------------------------------------
+	void Object::Think()
+	{
+		int nm = this->motion;
+		switch (nm)
+		{
+		case Motion::Stand:
+			break;
+		/*case Motion::Jump:
+			if (this->moveVec.y < 0) { nm = Motion::Fall; }
+			break;*/
+		case Motion::Fall:
+			if (this->CheckFoot() == true)
+			{
+				{ nm = Motion::Stand; }
+				//if(this->fallSpeed<0.01f){ nm = Motion::Stand; }
+				//else { nm = Motion::Jump; }
+			}
+			break;
+		}
+		//モーション更新
+		this->UpdateMotion(nm);
+	}
+
+	//------------------------------------------------------------------
+	void Object::Move()
+	{
+		switch (this->motion) {
+		default:
+			//重力加速
+			switch (this->motion) {
+			default:
+				//上昇中もしくは足元に地面が無い
+				if (this->moveVec.y < 0 ||
+					this->CheckFoot() == false) {
+					this->fallSpeed = min(this->moveVec.y + this->gravity, this->maxFallSpeed);
+					this->moveVec.y = this->fallSpeed;
+				}
+				//地面に接触している
+				else {
+					this->fallSpeed = min(this->moveVec.y - this->gravity, this->maxFallSpeed);
+					this->moveVec.y -= this->fallSpeed*1.7;
+				}
+
+
+				break;
+				//重力加速を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
+			case Motion::Unnon:	break;
+			}
+			//移動速度減衰
+			switch (this->motion) {
+			default:
+				if (this->moveVec.x < 0) {
+					this->moveVec.x = min(this->moveVec.x + this->decSpeed, 0);
+				}
+				else {
+					this->moveVec.x = max(this->moveVec.x - this->decSpeed, 0);
+				}
+				break;
+				//移動速度減衰を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
+			case Motion::Bound:
+			case Motion::Unnon:	break;
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------
+	//アニメーション制御
+	BChara::DrawInfo Object::Anim()
+	{
+		ML::Color defColor(1, 1, 1, 1);
+
+		BChara::DrawInfo imageTable[] = {
+			//draw                   src
+			{this->hitBase,ML::Box2D(3,3,10,10),defColor},
+			{this->hitBase,ML::Box2D(20,3,8,10),defColor},
+			{this->hitBase,ML::Box2D(38,3,4,10),defColor},
+			{this->hitBase,ML::Box2D(52,3,8,10),defColor},
+		};
+		BChara::DrawInfo  rtv;
+		int work;
+		switch (this->motion)
+		{
+		default:
+			work = this->animCnt/5;
+			work %= 4;
+			rtv = imageTable[work]; 
+			break;
+		}
+
+		return rtv;
+	}
+	//-----------------------------------------------------------------------------
+	//接触時の応答処理（これ自体はダミーのようなモノ）
+	void Object::Received(BChara* from_, AttackInfo at_)
+	{
+		from_->balanceMoney += 1;
+		this->Kill();
+		this->UpdateMotion(Motion::Bound);
+		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う
+	}
+
+
+	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+	//以下は基本的に変更不要なメソッド
+	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+	//-------------------------------------------------------------------
+	//タスク生成窓口
+	Object::SP  Object::Create(bool  flagGameEnginePushBack_)
+	{
+		Object::SP  ob = Object::SP(new  Object());
+		if (ob) {
+			ob->me = ob;
+			if (flagGameEnginePushBack_) {
+				ge->PushBack(ob);//ゲームエンジンに登録
+				
+			}
+			if (!ob->B_Initialize()) {
+				ob->Kill();//イニシャライズに失敗したらKill
+			}
+			return  ob;
+		}
+		return nullptr;
+	}
+	//-------------------------------------------------------------------
+	bool  Object::B_Initialize()
+	{
+		return  this->Initialize();
+	}
+	//-------------------------------------------------------------------
+	Object::~Object() { this->B_Finalize(); }
+	bool  Object::B_Finalize()
+	{
+		auto  rtv = this->Finalize();
+		return  rtv;
+	}
+	//-------------------------------------------------------------------
+	Object::Object() {	}
+	//-------------------------------------------------------------------
+	//リソースクラスの生成
+	Resource::SP  Resource::Create()
+	{
+		if (auto sp = instance.lock()) {
+			return sp;
+		}
+		else {
+			sp = Resource::SP(new  Resource());
+			if (sp) {
+				sp->Initialize();
+				instance = sp;
+			}
+			return sp;
+		}
+	}
+	//-------------------------------------------------------------------
+	Resource::Resource() {}
+	//-------------------------------------------------------------------
+	Resource::~Resource() { this->Finalize(); }
+}

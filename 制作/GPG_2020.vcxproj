@@ -145,10 +145,14 @@
     <ClCompile Include="randomLib.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="Task_Effect00.cpp" />
+    <ClCompile Include="Task_Ending.cpp" />
+    <ClCompile Include="Task_Game.cpp" />
+    <ClCompile Include="Task_Item_coin.cpp" />
     <ClCompile Include="Task_Load.cpp" />
     <ClCompile Include="Task_Map.cpp" />
     <ClCompile Include="Task_Player.cpp" />
     <ClCompile Include="Task_Sprite.cpp" />
+    <ClCompile Include="Task_Title.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="XI2018_Ver1_0.cpp" />
   </ItemGroup>
@@ -177,10 +181,14 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="Task_Effect00.h" />
+    <ClInclude Include="Task_Ending.h" />
+    <ClInclude Include="Task_Game.h" />
+    <ClInclude Include="Task_Item_coin.h" />
     <ClInclude Include="Task_Load.h" />
     <ClInclude Include="Task_Map.h" />
     <ClInclude Include="Task_Player.h" />
     <ClInclude Include="Task_Sprite.h" />
+    <ClInclude Include="Task_Title.h" />
     <ClInclude Include="XI2018_Ver1_0.h" />
   </ItemGroup>
   <ItemGroup>

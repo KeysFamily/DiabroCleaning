@@ -35,12 +35,11 @@ namespace  Player
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.5f;
-		this->hitBase = ML::Box2D(-38, -58, 60, 116);
-		this->initialHitBase = ML::Box2D(-38, -58, 60, 116);
+		this->hitBase = ML::Box2D(-48, -58, 76, 116);
+		this->initialHitBase = ML::Box2D(-48, -58, 76, 116);
 		this->crouchHitBase = ML::Box2D(-38, -42, 76, 84);
 		this->angle_LR = Angle_LR::Right;
 		this->controller = ge->in1;
-		this->hp = 10;
 		this->motion = Motion::Stand;		//キャラ初期状態
 		this->maxSpeed = 8.0f;		//最大移動速度（横）
 		this->addSpeed = 1.0f;		//歩行加速度（地面の影響である程度打ち消される
@@ -54,6 +53,8 @@ namespace  Player
 		this->attack3 = false;
 		this->airattack = true;
 		this->canJump = true;
+		this->balanceMoney = 100;  //所持金
+		this->hp = this->balanceMoney; //hp=所持金
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -88,8 +89,8 @@ namespace  Player
 		ML::Vec2  est = this->moveVec;
 		this->CheckMove(est);
 		//hitbase更新
-		BChara::DrawInfo  di = this->Anim();
-		this->hitBase = di.draw;
+		//BChara::DrawInfo  di = this->Anim();
+		//this->hitBase = di.draw;
 		//あたり判定
 		{
 			ML::Box2D me = this->hitBase.OffsetCopy(this->pos);
@@ -133,6 +134,7 @@ namespace  Player
 	{
 		auto  inp = this->controller->GetState();
 		int  nm = this->motion;	//とりあえず今の状態を指定
+
 
 		//思考（入力）や状況に応じてモーションを変更する事を目的としている。
 		//モーションの変更以外の処理は行わない

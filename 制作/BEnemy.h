@@ -10,6 +10,7 @@
 // 概　　　要:敵関係のクラスに継承させるためのクラス
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "OriginalLibrary.h"
 
 class BEnemy : public BTask
 {
@@ -25,8 +26,7 @@ public:
 	ML::Box2D   map_hitBase;//マップ当たり判定
 	ML::Vec2	moveVec;	//移動ベクトル
 	int			moveCnt;	//行動カウンタ
-	float       hp;         //体力
-	float		maxHp;		//最大体力
+	OL::Limit<float> hp;	//体力
 	float		speed;      //移動スピード
 	//向き（2D視点）
 	float angle;
@@ -39,10 +39,10 @@ public:
 	enum class Motion
 	{
 		Unnon = -1,	// 無効(使えません）
-		Stand,	// N停止
+		Stand,		// N停止
 		Walk,		// N歩行
 		Tracking,	// A追尾
-		Attack,	// A攻撃
+		Attack,		// A攻撃
 		//	Jump,		// ジャンプ
 		Fall,		// 落下
 		//	TakeOff,	// 飛び立つ瞬間
@@ -58,7 +58,6 @@ public:
 	float			gravity;		//	フレーム単位の加算量
 	float			maxSpeed;		//	左右方向への移動の加算量
 	float			addSpeed;		//	左右方向への移動の加算量
-	float			crouchSpeed;	//	しゃがみながら移動の加算量
 	float			decSpeed;		//	左右方向への移動の減衰量
 	int				unHitTime;		//　無敵時間
 
@@ -70,8 +69,7 @@ public:
 		, map_hitBase(0, 0, 0, 0)
 		, moveVec(0, 0)
 		, moveCnt(0)
-		, hp(1.f)
-		, maxHp(1.f)
+		, hp()
 		, speed(0.f)
 		, angle(0.f)
 		, angle_LR(Angle_LR::Right)
@@ -82,7 +80,6 @@ public:
 		, gravity(0.f)
 		, maxSpeed(0.f)
 		, addSpeed(0.f)
-		, crouchSpeed(0.f)
 		, decSpeed(0.f)
 		, unHitTime(0)
 	{
