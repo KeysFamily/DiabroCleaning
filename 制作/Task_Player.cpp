@@ -40,7 +40,6 @@ namespace  Player
 		this->crouchHitBase = ML::Box2D(-40, -26, 76, 84);
 		this->angle_LR = Angle_LR::Right;
 		this->controller = ge->in1;
-		this->hp = 10;
 		this->motion = Motion::Stand;		//キャラ初期状態
 		this->maxSpeed = 8.0f;		//最大移動速度（横）
 		this->addSpeed = 1.0f;		//歩行加速度（地面の影響である程度打ち消される
@@ -54,6 +53,8 @@ namespace  Player
 		this->attack3 = false;
 		this->airattack = true;
 		this->canJump = true;
+		this->balanceMoney = 100;  //所持金
+		this->hp = this->balanceMoney; //hp=所持金
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -133,6 +134,7 @@ namespace  Player
 	{
 		auto  inp = this->controller->GetState();
 		int  nm = this->motion;	//とりあえず今の状態を指定
+
 
 		//思考（入力）や状況に応じてモーションを変更する事を目的としている。
 		//モーションの変更以外の処理は行わない

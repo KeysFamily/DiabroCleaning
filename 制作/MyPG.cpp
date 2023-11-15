@@ -2,7 +2,8 @@
 
 #include "randomLib.h"
 #include "sound.h"
-#include "Task_Load.h"
+
+#include "Task_Title.h"
 #define MYDEBUG
 #define	REFRESHRATE  60
 
@@ -574,14 +575,16 @@ namespace MyPG
 			if (auto e = Effect00::Object::Create(true)) {
 				e->filename = "data/effect/white.png";
 				e->resSizeX = e->resSizeY = 256;
-				e->drawSizeX = (int)ge->screen2DWidth;
-				e->drawSizeY = (int)ge->screen2DHeight;
-				e->pos.x = (float)ge->screen2DWidth / 2;
-				e->pos.y = (float)ge->screen2DHeight / 2;
+				e->drawSizeX = (int)ge->screenWidth;
+				e->drawSizeY = (int)ge->screenHeight;
+				e->pos.x = (float)ge->screenWidth / 2;
+				e->pos.y = (float)ge->screenHeight / 2;
 				e->fade = true;
 				e->addAngle = 2.f;
 				e->angle = 0.f;
 				e->alpha = 0.f;
+				e->AddRender = true;
+				e->IsCameraTrack = false;
 
 				resultEffect = e;
 			}
@@ -590,14 +593,16 @@ namespace MyPG
 			if (auto e = Effect00::Object::Create(true)) {
 				e->filename = "data/effect/black.png";
 				e->resSizeX = e->resSizeY = 256;
-				e->drawSizeX = (int)ge->screen2DWidth;
-				e->drawSizeY = (int)ge->screen2DHeight;
-				e->pos.x = (float)ge->screen2DWidth / 2;
-				e->pos.y = (float)ge->screen2DHeight / 2;
+				e->drawSizeX = (int)ge->screenWidth;
+				e->drawSizeY = (int)ge->screenHeight;
+				e->pos.x = (float)ge->screenWidth / 2;
+				e->pos.y = (float)ge->screenHeight / 2;
 				e->fade = true;
 				e->addAngle = 2.f;
 				e->angle = 0.f;
 				e->alpha = 0.f;
+				e->AddRender = true;
+				e->IsCameraTrack = false;
 
 				resultEffect = e;
 			}
@@ -887,7 +892,7 @@ ge->debugRect(me, DEBUGRECTMODE::RED ,- ge->camera2D.x, -ge->camera2D.y);
 
 		//TODO: 初期タスクを変更したい場合はここをいじること(from.22ci0333)
 		//初期実行タスク生成＆ゲームエンジンに登録
-		auto  ft = Load::Object::Create(true);
+		auto  ft = Title::Object::Create(true);
 
 		//------------------------------------------------------------------------------------
 		//レイヤー毎の描画のON/OFF

@@ -160,6 +160,14 @@ namespace  Map
 			return false;
 		}
 
+		//生成マップ読み込み
+		/*if (this->ObjectMap.Load("./data/map/" + mapName_ + "/" + mapName_ + "_gen.csv")
+			== false)
+		{
+			return false;
+		}*/
+
+
 		//当たり判定矩形設定
 		this->hitBase = ML::Box2D(0, 0, this->ObjectMap.width * this->res->drawSize, this->ObjectMap.height * this->res->drawSize);
 
@@ -341,7 +349,7 @@ namespace  Map
 
 		//カメラの位置を調整
 		if (c.right > m.right) { ge->camera2D.x = m.right - ge->camera2D.w; }
-		if (c.bottom > m.bottom) { ge->camera2D.y = m.bottom - ge->camera2D.h; }
+		if (c.bottom > m.bottom) { ge->camera2D.y = m.bottom-ge->camera2D.h; }
 		if (c.left < m.left) { ge->camera2D.x = m.left; }
 		if (c.top < m.top) { ge->camera2D.y = m.top; }
 		//マップがカメラより小さい場合

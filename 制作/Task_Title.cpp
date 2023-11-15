@@ -1,18 +1,14 @@
-//?------------------------------------------------------
-//タスク名:ロード画面
-//作　成　者:0329 土田
-//TODO:もしいれば下記へ記述
-//編　集　者:
-//作成年月日:
-//概　　　要:
-//?------------------------------------------------------
+//-------------------------------------------------------------------
+//タイトル画面
+//-------------------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Load.h"
-#include  "Task_Player.h"
-#include  "Task_Map.h"
-#include  "Task_Sprite.h"
+#include  "Task_Title.h"
 
-namespace  Load
+#include  "Task_Effect00.h"
+
+#include "Task_Game.h"
+
+namespace  Title
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
@@ -37,17 +33,8 @@ namespace  Load
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->Kill();
+
 		//★タスクの生成
-		auto player = Player::Object::Create(true);
-		player->pos.x = 1200;
-		player->pos.y = 500;
-		Map::Object::Create(true);
-		auto spr = Sprite::Object::Create(true);
-		spr->pos = player->pos;
-		spr->target = player;
-
-
 		return  true;
 	}
 	//-------------------------------------------------------------------
@@ -55,10 +42,9 @@ namespace  Load
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-
-
+		//bgm::Stop("bgm1");
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
-			//★引き継ぎタスクの生成
+			Game::Object::Create(true);
 		}
 
 		return  true;
@@ -67,12 +53,28 @@ namespace  Load
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		auto inp = ge->in1->GetState();
+
+		if (inp.ST.down && ge->getCounterFlag("title") != ge->ACTIVE) {
+			ge->StartCounter("title", 45); //フェードは90フレームなので半分の45で切り替え
+			ge->CreateEffect(98, ML::Vec2(0, 0));
+
+		}
+		if (ge->getCounterFlag("title") == ge->LIMIT) {
+			this->Kill();
+		}
+
+
+		return;
+
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		ge->Dbg_ToDisplay(100, 100, "Title");
 	}
+	
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
@@ -86,7 +88,6 @@ namespace  Load
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
-				
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill
