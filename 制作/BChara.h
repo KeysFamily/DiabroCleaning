@@ -59,6 +59,7 @@ public:
 		, speed(0.f)
 		, angle(0.f)
 		, angle_LR(Angle_LR::Right)
+		, motion(-1)
 		, animCnt(0)
 		, jumpPow(0.f)
 		, maxFallSpeed(0.f)
