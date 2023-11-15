@@ -77,7 +77,7 @@ namespace  Item_coin
 		this->CheckMove(est);
 
 		if (animCnt > 60 * 3) {
-			this->Kill();
+			//this->Kill();
 		}
 		/*this->moveVec.y += 0.02f;*/
 		
@@ -102,15 +102,10 @@ namespace  Item_coin
 		{
 		case Motion::Stand:
 			break;
-		/*case Motion::Jump:
-			if (this->moveVec.y < 0) { nm = Motion::Fall; }
-			break;*/
 		case Motion::Fall:
 			if (this->CheckFoot() == true)
 			{
 				{ nm = Motion::Stand; }
-				//if(this->fallSpeed<0.01f){ nm = Motion::Stand; }
-				//else { nm = Motion::Jump; }
 			}
 			break;
 		}
@@ -153,9 +148,23 @@ namespace  Item_coin
 					this->moveVec.x = max(this->moveVec.x - this->decSpeed, 0);
 				}
 				break;
+
 				//移動速度減衰を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
 			case Motion::Bound:
 			case Motion::Unnon:	break;
+			}
+
+			switch (this->motion)
+			{
+			case Motion::Suction:
+				if (auto  tg = this->target.lock()) {
+					//ターゲットへの相対座標を求める
+					ML::Vec2  toVec = tg->pos - this->pos;
+
+					//ターゲットに５％近づく
+					this->pos += toVec * 0.05f;
+				}
+					break;
 			}
 		}
 	}

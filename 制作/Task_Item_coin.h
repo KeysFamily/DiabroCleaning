@@ -62,7 +62,7 @@ namespace  Item_coin
 			Stand,		//	停止
 			Jump,		//	ジャン
 			Fall,		//	落下
-			TakeOff,	//	飛び立つ瞬間
+			Suction,    //　プレイヤに集める
 			Landing,	//	着地
 			Bound,		//	弾き飛ばされてる
 			Lose,		//  消滅中
@@ -75,5 +75,8 @@ namespace  Item_coin
 		BChara::DrawInfo  Anim();
 		//接触時の応答処理(必ず受け身の処理として実装する)
 		void Received(BChara* from_, AttackInfo at_) override;
+
+		//デバック用
+		XI::GamePad::SP controller;
 	};
 }
