@@ -21,10 +21,6 @@ public:
 public:
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	//キャラクタ共通メンバ変数
-	
-	//int			moveCnt,preMoveCnt;	//行動カウンタ
-	//OL::Limit<float> hp;	//体力
-	
 
 	//キャラクタの行動状態フラグ
 	enum Motion
@@ -43,16 +39,6 @@ public:
 		Lose,		// 消滅中
 	};
 
-	//Motion			motion,preMotion;			//	現在の行動を示すフラグ
-	//int				animCnt;		//　アニメーションカウンタ
-	//float			jumpPow;		//	ジャンプ初速
-	//float			maxFallSpeed;	//	落下最大速度
-	//float			gravity;		//	フレーム単位の加算量
-	//float			maxSpeed;		//	左右方向への移動の加算量
-	//float			addSpeed;		//	左右方向への移動の加算量
-	//float			decSpeed;		//	左右方向への移動の減衰量
-	//int				unHitTime;		//　無敵時間
-
 	//メンバ変数に最低限の初期化を行う
 	//★★メンバ変数を追加したら必ず初期化も追加する事★★
 	BEnemy()
@@ -60,16 +46,8 @@ public:
 	}
 	virtual  ~BEnemy() {}
 
-	//ML::Box2D CallHitBox() const;
-	//virtual void Damaged(int damage_) {};
-
-	
-	//bool  UpdateMotion(int  nm_);
-
 
 protected:
-	//virtual void Think() {}		//思考処理
-	//virtual void Move() {}		//動作処理
 	virtual DrawInfo Anim();	//アニメーション制御
 
 	bool Attack_Std(string gn_, BChara::AttackInfo at_);				//攻撃共通処理
