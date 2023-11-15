@@ -86,7 +86,6 @@ namespace  Player
 			Bound,		//	弾き飛ばされてる
 			Lose,		//  消滅中
 		};
-		Motion			motion;			//	現在の行動を示すフラグ
 
 		//思考＆状況判断(ステータス決定）
 		void  Think();

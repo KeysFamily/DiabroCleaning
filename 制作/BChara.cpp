@@ -31,7 +31,7 @@ ML::Vec2 BChara::MoveSet(int key)
 }
 //-----------------------------------------------------------------------------
 //モーションを更新（変更なしの場合	false)
-bool  BChara::UpdateMotion(Motion  nm_)
+bool  BChara::UpdateMotion(int  nm_)
 {
 	if (nm_ == this->motion) {
 		return  false;

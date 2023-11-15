@@ -35,7 +35,7 @@ public:
 	Angle_LR	angle_LR;
 	WP			target;
 
-	
+	int				motion;			//モーション
 	int				animCnt;		//　アニメーションカウンタ
 	float			jumpPow;		//	ジャンプ初速
 	float			maxFallSpeed;	//	落下最大速度
