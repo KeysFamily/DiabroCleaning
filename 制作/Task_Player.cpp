@@ -37,7 +37,11 @@ namespace  Player
 		this->render2D_Priority[1] = 0.5f;
 		this->hitBase = ML::Box2D(-48, -58, 76, 116);
 		this->initialHitBase = ML::Box2D(-48, -58, 76, 116);
+<<<<<<< HEAD
 		this->crouchHitBase = ML::Box2D(-38, -42, 76, 84);
+=======
+		this->crouchHitBase = ML::Box2D(-40, -26, 76, 84);
+>>>>>>> 01ca1180b2132b258bb62eba9d26d1fe9c47186c
 		this->angle_LR = Angle_LR::Right;
 		this->controller = ge->in1;
 		this->motion = Motion::Stand;		//キャラ初期状態
@@ -89,7 +93,11 @@ namespace  Player
 		ML::Vec2  est = this->moveVec;
 		this->CheckMove(est);
 		//hitbase更新
+<<<<<<< HEAD
 		//BChara::DrawInfo  di = this->Anim();
+=======
+		BChara::DrawInfo  di = this->Anim();
+>>>>>>> 01ca1180b2132b258bb62eba9d26d1fe9c47186c
 		//this->hitBase = di.draw;
 		//あたり判定
 		{
@@ -563,11 +571,14 @@ namespace  Player
 			rtv = imageTable[work + 47];
 			break;
 		}
+		this->hitBase = rtv.draw;
 		//	向きに応じて画像を左右反転する
 		if (Angle_LR::Left == this->angle_LR) {
 			rtv.draw.x = -rtv.draw.x;
 			rtv.draw.w = -rtv.draw.w;
+			this->hitBase = ML::Box2D(rtv.draw.x + rtv.draw.w, rtv.draw.y, -rtv.draw.w, rtv.draw.h);
 		}
+		
 		rtv.draw = this->DrawScale(rtv.draw, this->drawScale);
 		rtv.src = this->DrawScale(rtv.src, this->drawScale);
 
