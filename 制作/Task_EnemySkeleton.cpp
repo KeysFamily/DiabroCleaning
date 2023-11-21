@@ -11,6 +11,8 @@
 
 #include  "Task_Player.h"
 
+#include  "Task_Map.h"
+
 #include  "randomLib.h"
 
 namespace  EnemySkeleton
@@ -74,11 +76,6 @@ namespace  EnemySkeleton
 	void  Object::UpDate()
 	{
 		this->UpDate_Std();
-		//“–‚½‚è”»’è‰¼ˆ—
-		BChara::AttackInfo at = {0,0,0};
-		if(this->Attack_Std(Player::defGroupName,at)){
-		 	//ÚG‚µ‚½ÛA©g‚É‰½‚©‚ğ‚·‚éÛ‚Ìˆ—
-		}
 	}
 	//-------------------------------------------------------------------
 	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
@@ -97,14 +94,14 @@ namespace  EnemySkeleton
 		switch (nm)
 		{
 		case Motion::Stand:	//—§‚Á‚Ä‚¢‚é
-			//nm = Motion::Walk;
+			nm = Motion::Walk;
 			if (!this->CheckFoot()) { nm = Motion::Fall; }//‘«Œ³áŠQ‚È‚µ‚È‚ç—‰º‚³‚¹‚é
 
-			if (this->moveCnt > 60 * 3) { nm = Motion::Walk; }
+			//if (this->moveCnt > 60 * 3) { nm = Motion::Walk; }
 			break;
 		case Motion::Walk:	//•à‚¢‚Ä‚¢‚é
 		{
-			if (this->CheckFront_LR()) {
+			if (this->CheckFront_LR() || !this->CheckFrontFoot_LR()) {
 				nm = Motion::Turn;
 			}//‚à‚µ•Ç‚É“–‚½‚Á‚½‚çŒü‚«‚ğ•Ï‚¦‚é
 			if (!this->CheckFoot()) { nm = Motion::Fall; }//‘«Œ³áŠQ‚È‚µ‚È‚ç—‰º‚³‚¹‚é
@@ -112,17 +109,7 @@ namespace  EnemySkeleton
 			if (this->moveCnt > 60 * 5) { nm = Motion::Stand; }
 			//ˆÈ~@ƒvƒŒƒCƒ„õ“G
 
-			auto pl = ge->GetTask<Player::Object>(Player::defGroupName, Player::defName);
-			ML::Box2D eyes;
-			if (this->angle_LR == Angle_LR::Right) {
-				eyes = ML::Box2D(CallHitBox().x + CallHitBox().w, CallHitBox().y, 1000, CallHitBox().h);
-			}
-			else {
-				eyes = ML::Box2D(this->CallHitBox().x - 1000, this->CallHitBox().y, 1000, CallHitBox().h);
-			}
-			ge->debugRect(eyes, 7, -ge->camera2D.x, -ge->camera2D.y);
-
-			if (pl != nullptr && pl->CallHitBox().Hit(eyes)) {
+			if (this->searchCnt > 60 && this->SearchPlayer(1000)) {
 				nm = Motion::Tracking;
 			}
 		}
@@ -130,9 +117,29 @@ namespace  EnemySkeleton
 
 		case Motion::Tracking:
 			//’ÇÕ‚Ìˆ—
-			if (this->CheckFront_LR()) {
+			if (this->CheckFront_LR() || !this->CheckFrontFoot_LR()) {
 				nm = Motion::Turn;
 			}//‚à‚µ•Ç‚É“–‚½‚Á‚½‚çŒü‚«‚ğ•Ï‚¦‚é
+
+			if (this->searchCnt > 30) {
+				this->searchCnt = 0;
+				if (!this->SearchPlayer(1000)) {
+					//3‰ñŒ©‚Â‚©‚ç‚È‚¯‚ê‚Î’Êíˆ—‚É–ß‚·
+					if (++this->notFoundPlayerCnt > 3) {
+						this->notFoundPlayerCnt = 0;
+						nm = Motion::Stand;
+					}
+					else {
+						nm = Motion::Turn;
+					}
+				}
+				else {
+					if (this->SearchPlayer(50)) {
+						//UŒ‚‚³‚¹‚é
+						nm = Motion::Attack;
+					}
+				}
+			}
 			if (!this->CheckFoot()) { nm = Motion::Fall; }//‘«Œ³áŠQ‚È‚µ‚È‚ç—‰º‚³‚¹‚é
 
 			break;
@@ -157,6 +164,9 @@ namespace  EnemySkeleton
 			}//‘«Œ³áŠQ‚ ‚è‚Å’…’n‚·‚é
 			break;
 		case Motion::Attack://UŒ‚’†
+			if (this->moveCnt > 36) {
+				nm = this->preMotion;
+			}
 			break;
 		case Motion::Landing://’…’n
 			if (!this->CheckFoot()) { nm = Motion::Fall; }//‘«Œ³áŠQ‚È‚µ‚È‚ç—‰º‚³‚¹‚é
@@ -230,6 +240,25 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Attack://UŒ‚’†
+			if (this->moveCnt == 16) {
+				ML::Box2D hit(
+					this->hitBase.x, 
+					this->hitBase.y + this->hitBase.h / 2,
+					this->hitBase.w,
+					this->hitBase.h / 2
+				);
+				if (this->angle_LR == Angle_LR::Left) {
+					hit.Offset(-100, 0);
+				}
+				else {
+					hit.Offset(100, 0);
+				}
+				hit.Offset(this->pos);
+
+				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
+				BChara::AttackInfo ai = { 1,0,0 };
+				this->Attack_Std(Player::defGroupName, ai, hit);
+			}
 			break;
 		case Motion::Turn:
 			if (this->moveCnt == 3) {
@@ -340,6 +369,9 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Attack:
+			work = this->animCnt / 2;
+			work %= 18;
+			rtv = imageTable[work + 24];
 			break;
 		case Motion::Bound:
 			work = this->animCnt / 2;
@@ -373,6 +405,43 @@ namespace  EnemySkeleton
 			this->moveVec = ML::Vec2(-3, -8);
 		}
 		this->UpdateMotion(Motion::Bound);
+	}
+
+	//-------------------------------------------------------------------
+	// Player‚ğõ“G‚·‚é
+	bool Object::SearchPlayer(int dist) {
+		this->searchCnt = 0;
+		auto map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+		ML::Box2D eye(
+			this->hitBase.x,
+			this->hitBase.y,
+			10,
+			this->hitBase.h
+		);
+		if (this->angle_LR == Angle_LR::Left) {
+			eye.Offset(-eye.w, 0);
+		}
+		else {
+			eye.Offset(this->hitBase.w, 0);
+		}
+		eye.Offset(this->pos);
+
+
+		for (int i = 0; i < dist; ++i) {
+			ge->debugRect(eye, 7, -ge->camera2D.x, -ge->camera2D.y);
+
+			if (map->CheckHit(eye))break;
+			if (ge->qa_Player->CallHitBox().Hit(eye)) { return true; }
+
+			if (this->angle_LR == Angle_LR::Left) {
+				eye.Offset(-1, 0);
+			}
+			else {
+				eye.Offset(1, 0);
+			}
+		}
+
+		return false;
 	}
 
 	//šššššššššššššššššššššššššššššššššššššššššš
