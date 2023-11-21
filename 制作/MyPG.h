@@ -12,6 +12,9 @@
 #include "BChara.h"
 #include "Task_Effect00.h"
 
+#include "BEnemy.h"
+#include "Task_Player.h"
+
 #include "easing.h"
 
 
@@ -101,8 +104,8 @@ namespace  MyPG
 		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0333記述
 
-		shared_ptr<vector<BChara::SP>> qa_Players;
-		shared_ptr<vector<BChara::SP>> qa_ThrowObjects;
+		Player::Object::SP qa_Player;
+		shared_ptr<vector<BEnemy::SP>> qa_Enemys;
 		//◆◆◆◆◆◆◆◆◆◆
 		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0329記述

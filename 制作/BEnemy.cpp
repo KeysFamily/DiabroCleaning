@@ -18,12 +18,12 @@ BChara::DrawInfo BEnemy::Anim() {
 
 //-----------------------------------------------------------------------------
 // ‹¤’Ê‚ÌUŒ‚ˆ—
-bool BEnemy::Attack_Std(string gn_, BChara::AttackInfo at_) {
+bool BEnemy::Attack_Std(string gn_, BChara::AttackInfo at_, ML::Box2D AttackHit_) {
 	ML::Box2D me = this->CallHitBox();
 	auto targets = ge->GetTasks<BChara>(gn_);
 	for (auto it = targets->begin(); it != targets->end(); ++it) {
-		if ((*it)->CheckHit(me)) {
-			//(*it)->Received(this, at_);
+		if ((*it)->CheckHit(AttackHit_)) {
+			(*it)->Received(this, at_);
 			return true;
 		}
 	}
@@ -35,6 +35,8 @@ bool BEnemy::Attack_Std(string gn_, BChara::AttackInfo at_) {
 void BEnemy::UpDate_Std() {
 	++this->moveCnt;
 	++this->animCnt;
+	++this->searchCnt;
+
 	if (this->unHitTime > 0) { --this->unHitTime; }
 	this->Think();
 	this->Move();
