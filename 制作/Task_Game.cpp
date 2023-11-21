@@ -8,10 +8,9 @@
 #include  "Task_Map.h"
 #include  "Task_Sprite.h"
 #include  "Task_Item_coin.h"
+#include  "Task_Item_coin_maneger.h"
 #include  "Task_EnemySkeleton.h"
 #include  "BEnemy.h"
-
-
 #include  "Task_Ending.h"
 
 namespace  Game
@@ -42,14 +41,14 @@ namespace  Game
 
 		//★タスクの生成
 		auto player = Player::Object::Create(true);
-
 		player->pos.x = 1200;
 		player->pos.y = 500;
 		player->render2D_Priority[1] = 0.5f;
+
 		auto map = Map::Object::Create(true);
 		map->render2D_Priority[1] = 0.9f;
-		auto spr = Sprite::Object::Create(true);
 
+		auto spr = Sprite::Object::Create(true);
 		spr->pos = player->pos;
 		spr->target = player;
 		spr->render2D_Priority[1] = 0.6f;
@@ -62,10 +61,8 @@ namespace  Game
 		ge->camera2D.y = 0;
 		ge->camera2D.w = ge->screenWidth;
 		ge->camera2D.h = ge->screenHeight;
-		auto coin = Item_coin::Object::Create(true);
-		coin->pos.x = 1300;
-		coin->pos.y = 500;
 
+		auto coin_man = coin_maneger::Object::Create(true);
 
 		this->cnt = 0;
 
@@ -75,9 +72,11 @@ namespace  Game
 	//「終了」タスク消滅時に１回だけ行う処理
 	bool  Object::Finalize()
 	{
+
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
 		ge->KillAll_G("Enemy");
+    ge->KillAll_G("アイテム");
 		ge->KillAll_G(Player::defGroupName);
 		ge->KillAll_G(Map::defGroupName);
 		ge->KillAll_G(Sprite::defGroupName);
@@ -109,11 +108,6 @@ namespace  Game
 			this->Kill();
 		}
 
-		if (this->cnt % 10 == 0) {
-			auto coin = Item_coin::Object::Create(true);
-			coin->pos.x = 1300;
-			coin->pos.y = 500;
-		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
