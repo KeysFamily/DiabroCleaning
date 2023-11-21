@@ -106,5 +106,13 @@ namespace  Player
 		bool airattack;
 		//二段ジャンプフラグ
 		bool canJump;
+
+		//攻撃力
+		int power;
+		//攻撃力倍率
+		float powerScale;
+
+		//攻撃発動
+		void MakeAttack();
 	};
 }
