@@ -5,6 +5,8 @@
 #include  "Task_Player.h"
 #include  "Task_Map.h"
 #include  "Task_Effect00.h"
+#include  "BEnemy.h"
+#include  "Task_EnemySkeleton.h"
 
 
 namespace  Player
@@ -91,7 +93,7 @@ namespace  Player
 		this->CheckMove(est);
 		//hitbaseXV
 		BChara::DrawInfo  di = this->Anim();
-		this->attackBase.OffsetCopy(this->pos);
+		
 		//this->hitBase = di.draw;
 		//‚ ‚½‚è”»’è
 		{
@@ -109,11 +111,11 @@ namespace  Player
 				}
 			}
 			auto enemys = ge->GetTasks<BChara>("Enemy");
-			for (auto it = targets->begin();
-				it != targets->end();
+			for (auto it = enemys->begin();
+				it != enemys->end();
 				++it) {
-				if ((*it)->CheckHit(this->attackBase)) {
-					BChara::AttackInfo at = { 0, 0, 0 };
+				if ((*it)->CheckHit(this->attackBase.OffsetCopy(this->pos))) {
+					BChara::AttackInfo at = { 1, 0, 0 };
 					(*it)->Received(this, at);
 					break;
 				}
@@ -430,6 +432,9 @@ namespace  Player
 				this->angle_LR = Angle_LR::Right;
 				this->moveVec.x = min(+this->crouchSpeed, this->moveVec.x + this->addSpeed);
 			}
+			break;
+		case Motion::Bound:
+			this->attackBase = ML::Box2D(0, 0, 0, 0);
 			break;
 		}
 	}
