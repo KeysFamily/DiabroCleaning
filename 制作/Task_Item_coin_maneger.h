@@ -10,16 +10,16 @@
 //?------------------------------------------------------
 #include "BChara.h"
 
-namespace  Item_coin
+namespace  coin_maneger
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("アイテム");	//グループ名
-	const  string  defName("coin");		//タスク名
+	const  string  defGroupName("コインマネージャ");	//グループ名
+	const  string  defName("コイン生成");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
-		bool  Initialize()		override;
-		bool  Finalize()		override;
+		bool  Initialize()	override;
+		bool  Finalize()	override;
 		Resource();
 	public:
 		~Resource();
@@ -27,13 +27,12 @@ namespace  Item_coin
 		typedef  weak_ptr<Resource>		WP;
 		static   WP  instance;
 		static  Resource::SP  Create();
-	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//共有する変数はここに追加する
-		DG::Image::SP img;
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BChara
+	class  Object : public  BTask
 	{
+	//変更不可◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	public:
 		virtual  ~Object();
 		typedef  shared_ptr<Object>		SP;
@@ -42,41 +41,18 @@ namespace  Item_coin
 		static  Object::SP  Create(bool flagGameEnginePushBack_);
 		Resource::SP	res;
 	private:
-
 		Object();
 		bool  B_Initialize();
 		bool  B_Finalize();
 		bool  Initialize();	//「初期化」タスク生成時に１回だけ行う処理
-		void  UpDate()		override;	//「実行」１フレーム毎に行う処理
-		void  Render2D_AF()	override;	//「2D描画」１フレーム毎に行う処理
+		void  UpDate()			override;//「実行」１フレーム毎に行う処理
+		void  Render2D_AF()		override;//「2D描画」１フレーム毎に行う処理
 		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
-	public:
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+	public:
 		//追加したい変数・メソッドはここに追加する
-		//BCharaに含まれないモノのみここに追加する
-		//思考＆状況判断(ステータス決定）
-
-		enum Motion
-		{
-			Unnon = -1,	//	無効(使えません）
-			Stand,		//	停止
-			Jump,		//	ジャン
-			Fall,		//	落下
-			Suction,    //　プレイヤに集める
-			Landing,	//	着地
-			Bound,		//	弾き飛ばされてる
-			Lose,		//  消滅中
-		};
-
-		void  Think();
-		//モーションに対応した処理
-		void  Move();
-		//アニメーション制御
-		BChara::DrawInfo  Anim();
-		//接触時の応答処理(必ず受け身の処理として実装する)
-		void Received(BChara* from_, AttackInfo at_) override;
-
-		//デバック用
-		XI::GamePad::SP controller;
+		int coin_Max;     //map内で描画させるコインの枚数
+		int coin_num;     //見えないcoinの枚数
+		void Create_coin(int x_,int y_,int rand_);
 	};
 }
