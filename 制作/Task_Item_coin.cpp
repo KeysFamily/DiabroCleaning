@@ -45,6 +45,7 @@ namespace  Item_coin
 		this->maxFallSpeed = 11.0f;	//Å‘å—Ž‰º‘¬“x
 		this->angle = ML::ToRadian((float)(rand() % 360));
 		this->moveVec = ML::Vec2(cos(angle) * 4, sin(angle) * 4);
+		this->motion = Stand;
 
 		this->pos.x = 1300;
 		this->pos.y = 500;
