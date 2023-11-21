@@ -108,6 +108,16 @@ namespace  Player
 					break;
 				}
 			}
+			auto enemys = ge->GetTasks<BChara>("Enemy");
+			for (auto it = targets->begin();
+				it != targets->end();
+				++it) {
+				if ((*it)->CheckHit(this->attackBase)) {
+					BChara::AttackInfo at = { 0, 0, 0 };
+					(*it)->Received(this, at);
+					break;
+				}
+			}
 		}
 	}
 	//-------------------------------------------------------------------

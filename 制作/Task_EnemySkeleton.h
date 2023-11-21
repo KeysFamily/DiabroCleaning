@@ -58,6 +58,6 @@ namespace  EnemySkeleton
 		BChara::DrawInfo Anim()override;//アニメーション制御
 
 		//接触時の応答処理(必ず受け身の処理として実装する)
-		void Received(BEnemy* from_, AttackInfo at_);
+		void Received(BChara* from_, AttackInfo at_);
 	};
 }

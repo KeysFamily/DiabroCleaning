@@ -356,7 +356,7 @@ namespace  EnemySkeleton
 		return rtv;
 	}
 
-	void Object::Received(BEnemy* from_, AttackInfo at_) {
+	void Object::Received(BChara* from_, AttackInfo at_) {
 		if (this->unHitTime > 0) { 
 			return; //–³“GŠÔ’†‚Íˆ—‚ğó‚¯‚È‚¢
 		}
