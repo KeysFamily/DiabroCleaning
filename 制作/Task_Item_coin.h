@@ -13,7 +13,7 @@
 namespace  Item_coin
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("アイテム");	//グループ名
+	const  string  defGroupName("item");	//グループ名
 	const  string  defName("coin");		//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
