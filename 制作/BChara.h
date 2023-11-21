@@ -103,7 +103,7 @@ public:
 	};
 	//UŒ‚î•ñ
 	struct AttackInfo {
-		int	power;
+		float	power;
 		int	hit;
 		int element;
 		//‚»‚Ì‘¼•K—v‚É‰‚¶‚Ä

@@ -60,6 +60,8 @@ namespace  Player
 		this->canJump = true;
 		this->balanceMoney = 100;  //所持金
 		this->hp.SetValues(100, 0, 100);
+		this->power = 1;
+		this->powerScale = 1.0f;
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -70,7 +72,6 @@ namespace  Player
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-		ge->debugRectReset();
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -109,16 +110,6 @@ namespace  Player
 					//相手にダメージの処理を行わせる
 					BChara::AttackInfo at = { 0, 0, 0 };
 					(*it)->Received(this, at);
-				}
-			}
-			auto enemys = ge->GetTasks<BChara>("Enemy");
-			for (auto it = enemys->begin();
-				it != enemys->end();
-				++it) {
-				if ((*it)->CheckHit(this->attackBase.OffsetCopy(this->pos))) {
-					BChara::AttackInfo at = { 1, 0, 0 };
-					(*it)->Received(this, at);
-					break;
 				}
 			}
 		}
@@ -388,23 +379,31 @@ namespace  Player
 		case Motion::Landing:
 			this->canJump = true;
 			break;
-		case  Motion::Attack:	//攻撃中
+		case  Motion::Attack:	//�U����
+			this->powerScale = 1.0f;
+			this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack2 = true; }
 			}
 			break;
-		case  Motion::Attack2:	//攻撃中
+		case  Motion::Attack2:	//�U����
+			this->powerScale = 1.5f;
 			this->attack2 = false;
+			this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack3 = true; }
 			}
 			break;
-		case  Motion::Attack3:	//攻撃中
+		case  Motion::Attack3:	//�U����
+			this->powerScale = 2.0f;
 			this->attack3 = false;
+			this->MakeAttack();
 			break;
 		case Motion::AirAttack:
 			this->airattack = false;
 			this->moveVec.y = 0.0f;
+			this->powerScale = 1.0f;
+			this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack2 = true; }
 			}
@@ -412,6 +411,8 @@ namespace  Player
 		case  Motion::AirAttack2:	//攻撃中
 			this->moveVec.y = 0.0f;
 			this->attack2 = false;
+			this->powerScale = 1.5f;
+			this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack3 = true; }
 			}
@@ -419,8 +420,12 @@ namespace  Player
 		case Motion::AirAttack3:
 			this->moveVec.y = 20.0f;
 			this->attack3 = false;
+			this->powerScale = 2.0f;
+			this->MakeAttack();
 			break;
 		case Motion::AirAttack4:
+			this->powerScale = 2.5f;
+			this->MakeAttack();
 			break;
 		case Motion::Crouch:	//しゃがむ
 			break;
@@ -666,6 +671,21 @@ namespace  Player
 		}
 		this->UpdateMotion(Motion::Bound);
 		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う
+	}
+	//----------------------------------------------------------------------------
+	//�U������
+	void Object::MakeAttack()
+	{
+		auto enemys = ge->GetTasks<BChara>("Enemy");
+		for (auto it = enemys->begin();
+			it != enemys->end();
+			++it) {
+			if ((*it)->CheckHit(this->attackBase.OffsetCopy(this->pos))) {
+				BChara::AttackInfo at = { this->power * this->powerScale, 0, 0 };
+				(*it)->Received(this, at);
+				break;
+			}
+		}
 	}
 	//-------------------------------------------------------------------
 	//矩形倍率
