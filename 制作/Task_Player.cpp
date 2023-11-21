@@ -36,8 +36,9 @@ namespace  Player
 		//★データ初期化
 		this->render2D_Priority[1] = 0.5f;
 		this->hitBase = ML::Box2D(-48, -58, 76, 116);
-		this->initialHitBase = ML::Box2D(-48, -58, 76, 116);
+		this->initialHitBase = ML::Box2D(-20, -58, 40, 116);
 		this->crouchHitBase = ML::Box2D(-40, -26, 76, 84);
+		this->attackBase = ML::Box2D(0, 0, 0, 0);
 		this->angle_LR = Angle_LR::Right;
 		this->controller = ge->in1;
 		this->motion = Motion::Stand;		//キャラ初期状態
@@ -90,6 +91,7 @@ namespace  Player
 		this->CheckMove(est);
 		//hitbase更新
 		BChara::DrawInfo  di = this->Anim();
+		this->attackBase.OffsetCopy(this->pos);
 		//this->hitBase = di.draw;
 		//あたり判定
 		{
@@ -126,6 +128,8 @@ namespace  Player
 
 
 		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
+		ge->debugRectDraw();
+		ge->debugRect(this->attackBase.OffsetCopy(this->pos), 5, -ge->camera2D.x, -ge->camera2D.y);
 		ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
@@ -308,6 +312,7 @@ namespace  Player
 		switch (this->motion) {
 		case  Motion::Stand:	//立っている
 			this->airattack = true;
+			this->attackBase = ML::Box2D(0, 0, 0, 0);
 			break;
 		case  Motion::Walk:		//歩いている
 			if (inp.LStick.BL.on) {
@@ -441,8 +446,8 @@ namespace  Player
 			{ ML::Box2D(-36, -26, 68, 84), ML::Box2D(68,208,68,84), defColor },				//13 しゃがみながら移動3
 			{ ML::Box2D(-32, -40, 76, 108), ML::Box2D(468,324,76,108), defColor },			//14 ジャンプ1
 			{ ML::Box2D(-52, -40, 84, 92), ML::Box2D(656,316,84,92), defColor },			//15 ジャンプ2
-			{ ML::Box2D(-40, -40, 68, 124), ML::Box2D(272,448,68,124), defColor },			//16 落下1
-			{ ML::Box2D(-40, -40, 68, 120), ML::Box2D(472,452,68,120), defColor },			//17 落下2
+			{ ML::Box2D(-40, -64, 68, 124), ML::Box2D(272,448,68,124), defColor },			//16 落下1
+			{ ML::Box2D(-40, -64, 68, 120), ML::Box2D(472,452,68,120), defColor },			//17 落下2
 			{ ML::Box2D(-44, -28, 80, 86), ML::Box2D(60,344,80,96), defColor },				//18 飛び立つ直前1
 			{ ML::Box2D(-40, -30, 80, 88), ML::Box2D(260,352,80,88), defColor },			//19 着地
 			{ ML::Box2D(-44, -24, 80, 88), ML::Box2D(260,352,80,88), defColor },			//20 ダメージ(仮
@@ -474,8 +479,39 @@ namespace  Player
 			{ ML::Box2D(-56, -66, 108, 124), ML::Box2D(32, 2228, 108, 124), defColor },		//46 空中攻撃3_3
 			{ ML::Box2D(-100, -84, 192, 144), ML::Box2D(204, 2220, 192, 144), defColor },	//47 空中攻撃4_1
 			{ ML::Box2D(-92, -62, 184, 120), ML::Box2D(412, 2244, 184, 120), defColor },	//48 空中攻撃4_2
-			{ ML::Box2D(-96, -30, 184, 88), ML::Box2D(608, 2276, 184, 88), defColor },		//49 空中攻撃4_3 ここまで編集済み
-			{ ML::Box2D(-24, -24, 48, 80), ML::Box2D(176, 0, 48, 80),defColor},				//ダメージ 編集してない
+			{ ML::Box2D(-96, -30, 184, 88), ML::Box2D(608, 2276, 184, 88), defColor },		//49 空中攻撃4_3
+			{ ML::Box2D(-36, -38, 84, 96), ML::Box2D(664, 1232, 84, 96),defColor},			//50 ダメージ debugしてない
+		};
+		ML::Box2D attackTable[] = {
+			ML::Box2D(0,0,0,0),				//imageTable[21]	0
+			ML::Box2D(-20,-86,108,128),		//imageTable[22]	1			ML::Box2D(-48, -86, 136, 144)
+			ML::Box2D(-24,-86,84,32),		//imageTable[23]	2			ML::Box2D(-48, -86, 108, 144)
+			ML::Box2D(-44,-70,20,44),		//imageTable[24]	3			ML::Box2D(-48, -70, 76, 128)
+			ML::Box2D(0,0,0,0),				//imageTable[25]	4
+			ML::Box2D(0,0,0,0),				//imageTable[26]	5
+			ML::Box2D(0,0,0,0),				//imageTable[27]	6
+			ML::Box2D(-64,-58,144,116),		//imageTable[28]	7			ML::Box2D(-68, -58, 148, 116)
+			ML::Box2D(-100,14,80,32),		//imageTable[29]	8			ML::Box2D(-100, -26, 128, 84)
+			ML::Box2D(-100,10,52,24),		//imageTable[30]	9			ML::Box2D(-100, -30, 124, 88)
+			ML::Box2D(0,0,0,0),				//imageTable[31]	10
+			ML::Box2D(0,0,0,0),				//imageTable[32]	11
+			ML::Box2D(-104,-34,192,84),		//imageTable[33]	12			ML::Box2D(-104, -34, 192, 92)
+			ML::Box2D(-100, 10,84,40),		//imageTable[34]	13			ML::Box2D(-100, -18, 124,76)
+			ML::Box2D(-112,-2,72,32),		//imageTable[35]	14			ML::Box2D(-112, -22, 136,80)
+			ML::Box2D(0,0,0,0),				//imageTable[36]	15
+			ML::Box2D(0,0,0,0),				//imageTable[37]	16
+			ML::Box2D(-88,-64,184,88),		//imageTable[38]	17			ML::Box2D(-88, -64, 184, 120)
+			ML::Box2D(-80,-70,40,76),		//imageTable[39]	18			ML::Box2D(-80, -70, 116, 120)
+			ML::Box2D(0,0,0,0),				//imageTable[40]	19
+			ML::Box2D(-32,-66,124,124),		//imageTable[41]	20			ML::Box2D(-44, -66, 136, 124)
+			ML::Box2D(-36,-70,84,68),		//imageTable[42]	21			ML::Box2D(-44, -70, 92, 124)
+			ML::Box2D(0,0,0,0),				//imageTable[43]	22
+			ML::Box2D(-20,-70,76,124),		//imageTable[44]	23			ML::Box2D(-56, -70, 112, 124)
+			ML::Box2D(16,-62,36,120),		//imageTable[45]	24			ML::Box2D(-56, -62, 108, 120)
+			ML::Box2D(16,-66,36,124),		//imageTable[46]	25			ML::Box2D(-56, -66, 108, 124)
+			ML::Box2D(-100, -84, 192, 144),	//imageTable[47]	26			ML::Box2D(-100, -84, 192, 144)
+			ML::Box2D(-92, -62, 184, 120),	//imageTable[48]	27			ML::Box2D(-92, -62, 184, 120)
+			ML::Box2D(0,0,0,0),				//imageTable[49]	28
 		};
 		BChara::DrawInfo  rtv;
 		int  work;
@@ -515,8 +551,8 @@ namespace  Player
 			break;
 		case  Motion::TakeOff:	rtv = imageTable[18];	break;
 		case  Motion::Landing:	rtv = imageTable[19];	break;
-		case  Motion::Bound:	rtv = imageTable[20];	break;
-		case Motion::Crouch:
+		case  Motion::Bound:	rtv = imageTable[50];	break;
+		case  Motion::Crouch:
 			work = this->animCnt / 20;
 			work %= 4;
 			rtv = imageTable[work + 10];
@@ -530,45 +566,61 @@ namespace  Player
 			work = this->animCnt / 5;
 			work %= 5;
 			rtv = imageTable[work + 21];
+			this->attackBase = attackTable[work + 0];
 			break;
 		case Motion::Attack2:
 			work = this->animCnt / 5;
 			work %= 5;
 			rtv = imageTable[work + 26];
+			this->attackBase = attackTable[work + 5];
 			break;
 		case Motion::Attack3:
 			work = this->animCnt / 5;
 			work %= 6;
 			rtv = imageTable[work + 31];
+			this->attackBase = attackTable[work + 10];
 			break;
 		case Motion::AirAttack:
 			work = this->animCnt / 5;
 			work %= 4;
 			rtv = imageTable[work + 37];
+			this->attackBase = attackTable[work + 16];
 			break;
 		case Motion::AirAttack2:
 			work = this->animCnt / 5;
 			work %= 3;
 			rtv = imageTable[work + 41];
+			this->attackBase = attackTable[work + 20];
 			break;
 		case Motion::AirAttack3:
 			if (this->animCnt < 5)work = 0;
 			else if (this->animCnt >= 5 && this->animCnt < 10)work = 1;
 			else work = 2;
 			rtv = imageTable[work + 44];
+			this->attackBase = attackTable[work + 23];
 			break;
 		case Motion::AirAttack4:
 			work = this->animCnt / 5;
 			work %= 3;
 			rtv = imageTable[work + 47];
+			this->attackBase = attackTable[work + 26];
 			break;
 		}
-		this->hitBase = rtv.draw;
+		//this->hitBase = rtv.draw;
+		this->hitBase.x = -24;
+		this->hitBase.y = rtv.draw.y;
+		this->hitBase.w = 40;
+		this->hitBase.h = rtv.draw.h;		
 		//	向きに応じて画像を左右反転する
 		if (Angle_LR::Left == this->angle_LR) {
 			rtv.draw.x = -rtv.draw.x;
 			rtv.draw.w = -rtv.draw.w;
-			this->hitBase = ML::Box2D(rtv.draw.x + rtv.draw.w, rtv.draw.y, -rtv.draw.w, rtv.draw.h);
+			this->hitBase = ML::Box2D(-16, rtv.draw.y, 40, rtv.draw.h);
+			this->attackBase.x = -this->attackBase.x - this->attackBase.w;
+		}
+		if (this->hitBase.h > 116) {
+			this->hitBase.h = 116;
+			this->hitBase.y = -58;
 		}
 		
 		rtv.draw = this->DrawScale(rtv.draw, this->drawScale);
