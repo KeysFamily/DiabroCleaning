@@ -8,8 +8,9 @@
 #include  "Task_Map.h"
 #include  "Task_Sprite.h"
 #include  "Task_Item_coin.h"
+#include  "Task_EnemySkeleton.h"
+#include  "BEnemy.h"
 
-#include "Task_EnemySkeleton.h"
 
 #include  "Task_Ending.h"
 
@@ -76,6 +77,7 @@ namespace  Game
 	{
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
+		ge->KillAll_G("Enemy");
 		ge->KillAll_G(Player::defGroupName);
 		ge->KillAll_G(Map::defGroupName);
 		ge->KillAll_G(Sprite::defGroupName);
@@ -90,6 +92,10 @@ namespace  Game
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		//(22CI0333)他のタスクで以下の処理は行わなくてよい
+		ge->qa_Player = ge->GetTask<Player::Object>(Player::defGroupName, Player::defName);
+		ge->qa_Enemys = ge->GetTasks<BEnemy>("Enemy");
+
 		auto inp = ge->in1->GetState( );
 
 		this->cnt++;
