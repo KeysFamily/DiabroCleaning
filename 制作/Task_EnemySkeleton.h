@@ -1,20 +1,20 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//ƒ^ƒXƒN–¼:
-//ì@¬@Ò:
-//TODO:‚à‚µ‚¢‚ê‚Î‰º‹L‚Ö‹Lq
-//•Ò@W@Ò:
-//ì¬”NŒ“ú:
-//ŠT@@@—v:
+//ã‚¿ã‚¹ã‚¯å:
+//ä½œã€€æˆã€€è€…:
+//TODO:ã‚‚ã—ã„ã‚Œã°ä¸‹è¨˜ã¸è¨˜è¿°
+//ç·¨ã€€é›†ã€€è€…:
+//ä½œæˆå¹´æœˆæ—¥:
+//æ¦‚ã€€ã€€ã€€è¦:
 //?------------------------------------------------------
 #include "BEnemy.h"
 
 namespace  EnemySkeleton
 {
-	//ƒ^ƒXƒN‚ÉŠ„‚è“–‚Ä‚éƒOƒ‹[ƒv–¼‚ÆŒÅ—L–¼
-	const  string  defGroupName("Enemy");	//ƒOƒ‹[ƒv–¼
-	const  string  defName("Skeleton");		//ƒ^ƒXƒN–¼
+	//ã‚¿ã‚¹ã‚¯ã«å‰²ã‚Šå½“ã¦ã‚‹ã‚°ãƒ«ãƒ¼ãƒ—åã¨å›ºæœ‰å
+	const  string  defGroupName("Enemy");	//ã‚°ãƒ«ãƒ¼ãƒ—å
+	const  string  defName("Skeleton");		//ã‚¿ã‚¹ã‚¯å
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -27,8 +27,8 @@ namespace  EnemySkeleton
 		typedef  weak_ptr<Resource>		WP;
 		static   WP  instance;
 		static  Resource::SP  Create();
-	//•ÏX‰Â
-		//‹¤—L‚·‚é•Ï”‚Í‚±‚±‚É’Ç‰Á‚·‚é
+	//å¤‰æ›´å¯â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡
+		//å…±æœ‰ã™ã‚‹å¤‰æ•°ã¯ã“ã“ã«è¿½åŠ ã™ã‚‹
 		DG::Image::SP img;
 	};
 	//-------------------------------------------------------------------
@@ -38,7 +38,7 @@ namespace  EnemySkeleton
 		virtual  ~Object();
 		typedef  shared_ptr<Object>		SP;
 		typedef  weak_ptr<Object>		WP;
-		//¶¬‘‹Œû ˆø”‚Ítrue‚Åƒ^ƒXƒNƒVƒXƒeƒ€‚Ö©“®“o˜^
+		//ç”Ÿæˆçª“å£ å¼•æ•°ã¯trueã§ã‚¿ã‚¹ã‚¯ã‚·ã‚¹ãƒ†ãƒ ã¸è‡ªå‹•ç™»éŒ²
 		static  Object::SP  Create(bool flagGameEnginePushBack_);
 		Resource::SP	res;
 	private:
@@ -46,19 +46,19 @@ namespace  EnemySkeleton
 		Object();
 		bool  B_Initialize();
 		bool  B_Finalize();
-		bool  Initialize();	//u‰Šú‰»vƒ^ƒXƒN¶¬‚É‚P‰ñ‚¾‚¯s‚¤ˆ—
-		void  UpDate()		override;	//uÀsv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
-		void  Render2D_AF()	override;	//u2D•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
-		bool  Finalize();		//uI—¹vƒ^ƒXƒNÁ–Å‚É‚P‰ñ‚¾‚¯s‚¤ˆ—
+		bool  Initialize();	//ã€ŒåˆæœŸåŒ–ã€ã‚¿ã‚¹ã‚¯ç”Ÿæˆæ™‚ã«ï¼‘å›ã ã‘è¡Œã†å‡¦ç†
+		void  UpDate()		override;	//ã€Œå®Ÿè¡Œã€ï¼‘ãƒ•ãƒ¬ãƒ¼ãƒ æ¯ã«è¡Œã†å‡¦ç†
+		void  Render2D_AF()	override;	//ã€Œ2Dæç”»ã€ï¼‘ãƒ•ãƒ¬ãƒ¼ãƒ æ¯ã«è¡Œã†å‡¦ç†
+		bool  Finalize();		//ã€Œçµ‚äº†ã€ã‚¿ã‚¹ã‚¯æ¶ˆæ»…æ™‚ã«ï¼‘å›ã ã‘è¡Œã†å‡¦ç†
 	public:
-	//•ÏX‰Â
-		//’Ç‰Á‚µ‚½‚¢•Ï”Eƒƒ\ƒbƒh‚Í‚±‚±‚É’Ç‰Á‚·‚é
-		void Think()override;			//vl•ó‹µ”»’f
-		void Move()override;			//ƒ‚[ƒVƒ‡ƒ“‚É‘Î‰‚µ‚½ˆ—
-		BChara::DrawInfo Anim()override;//ƒAƒjƒ[ƒVƒ‡ƒ“§Œä
+	//å¤‰æ›´å¯â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡
+		//è¿½åŠ ã—ãŸã„å¤‰æ•°ãƒ»ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã“ã“ã«è¿½åŠ ã™ã‚‹
+		void Think()override;			//æ€è€ƒï¼†çŠ¶æ³åˆ¤æ–­
+		void Move()override;			//ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã«å¯¾å¿œã—ãŸå‡¦ç†
+		BChara::DrawInfo Anim()override;//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³åˆ¶å¾¡
 
-		//ÚG‚Ì‰“šˆ—(•K‚¸ó‚¯g‚Ìˆ—‚Æ‚µ‚ÄÀ‘•‚·‚é)
-		void Received(BEnemy* from_, AttackInfo at_);
+		//æ¥è§¦æ™‚ã®å¿œç­”å‡¦ç†(å¿…ãšå—ã‘èº«ã®å‡¦ç†ã¨ã—ã¦å®Ÿè£…ã™ã‚‹)
+		void Received(BChara* from_, AttackInfo at_);
 
 		bool SearchPlayer(int dist);
 	};
