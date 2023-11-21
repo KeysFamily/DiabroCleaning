@@ -98,12 +98,21 @@ namespace  Player
 
 		//倍率
 		ML::Box2D DrawScale(ML::Box2D& me ,const int drawScale);
-		
+		//攻撃判定
+		ML::Box2D attackBase;
 		//連続攻撃フラグ
 		bool attack2, attack3;
 		//空中攻撃フラグ
 		bool airattack;
 		//二段ジャンプフラグ
 		bool canJump;
+
+		//攻撃力
+		int power;
+		//攻撃力倍率
+		float powerScale;
+
+		//攻撃発動
+		void MakeAttack();
 	};
 }

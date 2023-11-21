@@ -139,8 +139,7 @@
     <ClCompile Include="Task_Item_coin.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
-    <ClCompile Include="Task_EnemySkeleton.cpp" />
-    <ClCompile Include="Task_MapManager.cpp">
+    <ClCompile Include="Task_Item_coin_maneger.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -242,8 +241,7 @@
     <ClInclude Include="Task_Item_coin.h">
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Task_EnemySkeleton.h" />
-    <ClInclude Include="Task_MapManager.h">
+    <ClInclude Include="Task_Item_coin_maneger.h">
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
   </ItemGroup>

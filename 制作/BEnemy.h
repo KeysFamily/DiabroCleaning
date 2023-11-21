@@ -38,10 +38,14 @@ public:
 		Bound,	// 弾き飛ばされている
 		Lose,		// 消滅中
 	};
+	int searchCnt;			//索敵カウント
+	int notFoundPlayerCnt;	//プレイヤが探せなかったとき	
 
 	//メンバ変数に最低限の初期化を行う
 	//★★メンバ変数を追加したら必ず初期化も追加する事★★
 	BEnemy()
+		: searchCnt(0)
+		, notFoundPlayerCnt(0)
 	{
 	}
 	virtual  ~BEnemy() {}
@@ -50,7 +54,7 @@ public:
 protected:
 	virtual DrawInfo Anim();	//アニメーション制御
 
-	bool Attack_Std(string gn_, BChara::AttackInfo at_);				//攻撃共通処理
+	bool Attack_Std(string gn_, BChara::AttackInfo at_, ML::Box2D AttackHit_);				//攻撃共通処理
 	void UpDate_Std();													//更新共通処理
 	void Render_Std(const DG::Image::SP& img_);							//描画共通処理
 };
