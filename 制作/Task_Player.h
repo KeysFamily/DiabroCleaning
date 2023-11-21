@@ -50,6 +50,18 @@ namespace  Player
 			//追加したい変数・メソッドはここに追加する
 			//BCharaに含まれないモノのみここに追加する
 
+		OL::Size2D cutSize;
+		int imgTurn;
+		OL::Limit<int> select;
+		int drawScale;
+		ML::Box2D initialHitBase;
+		ML::Box2D crouchHitBase;
+
+		void LoadImg();
+
+		XI::GamePad::SP  controller;
+
+		//キャラクタの行動状態フラグ
 		enum Motion
 		{
 			Unnon = -1,	//	無効(使えません）
@@ -58,6 +70,10 @@ namespace  Player
 			Attack,		//	攻撃1
 			Attack2,	//	攻撃2
 			Attack3,	//	攻撃3
+			AirAttack,	//	空中攻撃1
+			AirAttack2,	//	空中攻撃2
+			AirAttack3,	//	空中攻撃3
+			AirAttack4,	//	空中攻撃4
 			Jump,		//	ジャンプ
 			Jump2,		//	二段ジャンプ
 			Fall,		//	落下
@@ -71,18 +87,6 @@ namespace  Player
 			Lose,		//  消滅中
 		};
 
-
-		OL::Size2D cutSize;
-		int imgTurn;
-		OL::Limit<int> select;
-		int drawScale;
-		ML::Box2D initialHitBase;
-		ML::Box2D crouchHitBase;
-
-		void LoadImg();
-
-		XI::GamePad::SP  controller;
-
 		//思考＆状況判断(ステータス決定）
 		void  Think();
 		//モーションに対応した処理
@@ -94,6 +98,13 @@ namespace  Player
 
 		//倍率
 		ML::Box2D DrawScale(ML::Box2D& me ,const int drawScale);
-		
+		//攻撃判定
+		ML::Box2D attackBase;
+		//連続攻撃フラグ
+		bool attack2, attack3;
+		//空中攻撃フラグ
+		bool airattack;
+		//二段ジャンプフラグ
+		bool canJump;
 	};
 }
