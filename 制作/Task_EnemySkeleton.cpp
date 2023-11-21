@@ -1,10 +1,10 @@
 //?------------------------------------------------------
-//タスク名:
-//作　成　者:
+//タスク名　:敵Skeleton
+//作　成　者:22CI0333 長谷川勇一朗
 //TODO:もしいれば下記へ記述
 //編　集　者:
 //作成年月日:
-//概　　　要:
+//概　　　要:敵Skeletonの動作
 //?------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_EnemySkeleton.h"
@@ -134,7 +134,7 @@ namespace  EnemySkeleton
 					}
 				}
 				else {
-					if (this->SearchPlayer(50)) {
+					if (this->SearchPlayer(75)) {
 						//攻撃させる
 						nm = Motion::Attack;
 					}
@@ -172,9 +172,12 @@ namespace  EnemySkeleton
 			if (!this->CheckFoot()) { nm = Motion::Fall; }//足元障害なしなら落下させる
 			break;
 		case Motion::Bound:
-			if (this->moveCnt >= 15 && this->CheckFoot()) {
+			if (this->moveCnt >= 16 && this->CheckFoot()) {
 				nm = Motion::Stand;
 			}
+			break;
+		case Motion::Lose:
+
 			break;
 		default:
 			break;
@@ -256,7 +259,7 @@ namespace  EnemySkeleton
 				hit.Offset(this->pos);
 
 				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
-				BChara::AttackInfo ai = { 1,0,0 };
+				BChara::AttackInfo ai = { 10,0,0 };
 				this->Attack_Std(Player::defGroupName, ai, hit);
 			}
 			break;
@@ -268,6 +271,11 @@ namespace  EnemySkeleton
 				else {
 					this->angle_LR = Angle_LR::Left;
 				}
+			}
+			break;
+		case Motion::Lose:
+			if (this->moveCnt >= 30) {
+				this->Kill();
 			}
 			break;
 		}
@@ -379,6 +387,9 @@ namespace  EnemySkeleton
 			rtv = imageTable[work + 42];
 			break;
 		case Motion::Lose:
+			work = this->animCnt / 2;
+			work %= 15;
+			rtv = imageTable[work + 50];
 			break;
 		}
 		if (this->angle_LR == Angle_LR::Left) {
@@ -395,7 +406,8 @@ namespace  EnemySkeleton
 		this->unHitTime = 30;
 		this->hp.Addval(-at_.power);
 		if (this->hp.vnow <= 0) {
-			this->Kill();
+			this->UpdateMotion(Motion::Lose);
+			return;
 		}
 		//吹き飛ばされる
 		if (this->pos.x > from_->pos.x) {
@@ -412,6 +424,8 @@ namespace  EnemySkeleton
 	bool Object::SearchPlayer(int dist) {
 		this->searchCnt = 0;
 		auto map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+
+		if (ge->qa_Player == nullptr || map == nullptr) { return false; }
 		ML::Box2D eye(
 			this->hitBase.x,
 			this->hitBase.y,
@@ -431,7 +445,7 @@ namespace  EnemySkeleton
 			ge->debugRect(eye, 7, -ge->camera2D.x, -ge->camera2D.y);
 
 			if (map->CheckHit(eye))break;
-			if (ge->qa_Player->CallHitBox().Hit(eye)) { return true; }
+			if (ge->qa_Player != nullptr && ge->qa_Player->CallHitBox().Hit(eye)) { return true; }
 
 			if (this->angle_LR == Angle_LR::Left) {
 				eye.Offset(-1, 0);
