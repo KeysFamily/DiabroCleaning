@@ -59,5 +59,7 @@ namespace  EnemySkeleton
 
 		//ÚG‚Ì‰“šˆ—(•K‚¸ó‚¯g‚Ìˆ—‚Æ‚µ‚ÄÀ‘•‚·‚é)
 		void Received(BEnemy* from_, AttackInfo at_);
+
+		bool SearchPlayer(int dist);
 	};
 }
