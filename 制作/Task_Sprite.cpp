@@ -33,7 +33,7 @@ namespace  Sprite
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.5f;
-
+		
 		//★タスクの生成
 
 		return  true;

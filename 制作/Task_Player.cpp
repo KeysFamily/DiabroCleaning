@@ -5,6 +5,7 @@
 #include  "Task_Player.h"
 #include  "Task_Map.h"
 #include  "Task_Effect00.h"
+#include "Task_Item_coin.h"
 
 
 namespace  Player
@@ -99,7 +100,6 @@ namespace  Player
 					//相手にダメージの処理を行わせる
 					BChara::AttackInfo at = { 0, 0, 0 };
 					(*it)->Received(this, at);
-					break;
 				}
 			}
 		}

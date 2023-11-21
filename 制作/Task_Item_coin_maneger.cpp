@@ -1,18 +1,16 @@
-//-------------------------------------------------------------------
-//ゲーム本編
-//-------------------------------------------------------------------
+//?------------------------------------------------------
+//タスク名:
+//作　成　者:
+//TODO:もしいれば下記へ記述
+//編　集　者:
+//作成年月日:
+//概　　　要:
+//?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Game.h"
-
-#include  "Task_Player.h"
-#include  "Task_Map.h"
-#include  "Task_Sprite.h"
 #include  "Task_Item_coin.h"
 #include  "Task_Item_coin_maneger.h"
 
-#include  "Task_Ending.h"
-
-namespace  Game
+namespace  coin_maneger
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
@@ -37,28 +35,11 @@ namespace  Game
 		this->res = Resource::Create();
 
 		//★データ初期化
-
-		//★タスクの生成
-		auto player = Player::Object::Create(true);
-		player->pos.x = 1200;
-		player->pos.y = 500;
-		player->render2D_Priority[1] = 0.5f;
-
-		auto map = Map::Object::Create(true);
-		map->render2D_Priority[1] = 0.9f;
-
-		auto spr = Sprite::Object::Create(true);
-		spr->pos = player->pos;
-		spr->target = player;
-		spr->render2D_Priority[1] = 0.6f;
-		ge->camera2D.x = 0;
-		ge->camera2D.y = 0;
-		ge->camera2D.w = ge->screenWidth;
-		ge->camera2D.h = ge->screenHeight;
-
-		auto coin_man = coin_maneger::Object::Create(true);
-
-		this->cnt = 0;
+		
+		//auto coin = Item_coin::Object::Create(true);
+		//auto coin = ge->GetTask<Item_coin::Object>("アイテム","coin");
+		
+        //★タスクの生成
 
 		return  true;
 	}
@@ -67,14 +48,10 @@ namespace  Game
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-		ge->KillAll_G("本編");
-		ge->KillAll_G("アイテム");
-		ge->KillAll_G(Player::defGroupName);
-		ge->KillAll_G(Map::defGroupName);
-		ge->KillAll_G(Sprite::defGroupName);
+
+
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
-			auto next = Ending::Object::Create(true);
 		}
 
 		return  true;
@@ -83,27 +60,27 @@ namespace  Game
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		auto inp = ge->in1->GetState( );
-
-		this->cnt++;
-
-		if (inp.ST.down && ge->getCounterFlag("Game") != ge->ACTIVE) {
-			ge->StartCounter("Game", 45); //フェードは90フレームなので半分の45で切り替え
-			ge->CreateEffect(98, ML::Vec2(0, 0));
-
+		auto inp = ge->in1->GetState();
+		if (inp.B3.down) {
+			Create_coin(1500,300,10);
 		}
-		if (ge->getCounterFlag("Game") == ge->LIMIT) {
-			this->Kill();
-		}
-
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ge->Dbg_ToDisplay(100, 100, "Game");
+		
 	}
 
+	void Object::Create_coin(int x_, int y_, int rand_)
+	{
+		int coin_num = rand() % rand_;
+		for (int i = 0; i < coin_num;i++) {
+			auto coin = Item_coin::Object::Create(true);
+			coin->pos.x = x_;
+			coin->pos.y = y_;
+		}
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -116,6 +93,7 @@ namespace  Game
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
+				
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill
