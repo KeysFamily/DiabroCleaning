@@ -39,6 +39,8 @@ namespace  Map
 
 		//★データ初期化
 		auto result = this->LoadMap("map_start");
+		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
+
 		this->testCam = ML::Vec2(0, 0);
 		//★タスクの生成
 
@@ -320,7 +322,7 @@ namespace  Map
 								//プレイヤーの当たり判定左端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
 								float lbheight = slope.second.slopeVec.y * abs((r.left - slopeBegin.x) / this->res->drawSize) + slopeBegin.y;
 								//プレイヤーを坂の上に乗せるために必要な移動距離（最大値は坂の最高値）
-								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, lbheight - r.bottom);
+								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, lbheight - r.top);
 								if (moveResult > 0)
 								{
 									//上がる指示がない場合のみ実行（変更可）

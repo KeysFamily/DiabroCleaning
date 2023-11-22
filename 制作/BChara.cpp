@@ -81,8 +81,7 @@ void BChara::CheckMove(ML::Vec2& e_)
 		ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
 
 		//坂道判定
-		ML::Vec2 move = map->CheckSlope(hit);
-		ge->printToDebugFile(to_string(move.x) + "/" + to_string(move.y), 60);
+		this->pos += map->CheckSlope(hit);
 
 		if (true == map->CheckHit(hit)) {
 			this->pos.x = preX;		//移動をキャンセル
@@ -98,9 +97,7 @@ void BChara::CheckMove(ML::Vec2& e_)
 		ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
 
 		//坂道判定
-		ML::Vec2 move = map->CheckSlope(hit);
-		ge->printToDebugFile(to_string(move.x) + "/" + to_string(move.y), 60);
-
+		this->pos += map->CheckSlope(hit);
 
 		if (true == map->CheckHit(hit)) {
 			this->pos.y = preY;		//移動をキャンセル
