@@ -64,7 +64,7 @@ namespace  EnemySkeleton
 	{
 		//★データ＆タスク解放
 
-
+		this->DropCoins(10);
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
 		}
@@ -426,7 +426,7 @@ namespace  EnemySkeleton
 
 	//-------------------------------------------------------------------
 	// Playerを索敵する
-	bool Object::SearchPlayer(int dist) {
+	bool Object::SearchPlayer(int distX_, int distY_) {
 		this->searchCnt = 0;
 		//auto map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 
@@ -446,7 +446,7 @@ namespace  EnemySkeleton
 		eye.Offset(this->pos);
 
 
-		for (int i = 0; i < dist; ++i) {
+		for (int i = 0; i < distX_; ++i) {
 			ge->debugRect(eye, 7, -ge->camera2D.x, -ge->camera2D.y);
 
 			if (ge->qa_Map->CheckHit(eye))break;
