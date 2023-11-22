@@ -381,7 +381,7 @@ namespace  Player
 			break;
 		case  Motion::Attack:	//�U����
 			this->powerScale = 1.0f;
-			this->MakeAttack();
+			if(this->moveCnt == 6)this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack2 = true; }
 			}
@@ -389,7 +389,7 @@ namespace  Player
 		case  Motion::Attack2:	//�U����
 			this->powerScale = 1.5f;
 			this->attack2 = false;
-			this->MakeAttack();
+			if (this->moveCnt == 11)this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack3 = true; }
 			}
@@ -397,13 +397,13 @@ namespace  Player
 		case  Motion::Attack3:	//�U����
 			this->powerScale = 2.0f;
 			this->attack3 = false;
-			this->MakeAttack();
+			if (this->moveCnt == 11)this->MakeAttack();
 			break;
 		case Motion::AirAttack:
 			this->airattack = false;
 			this->moveVec.y = 0.0f;
 			this->powerScale = 1.0f;
-			this->MakeAttack();
+			if (this->moveCnt == 6)this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack2 = true; }
 			}
@@ -412,7 +412,7 @@ namespace  Player
 			this->moveVec.y = 0.0f;
 			this->attack2 = false;
 			this->powerScale = 1.5f;
-			this->MakeAttack();
+			if (this->moveCnt == 1)this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack3 = true; }
 			}
@@ -421,11 +421,11 @@ namespace  Player
 			this->moveVec.y = 20.0f;
 			this->attack3 = false;
 			this->powerScale = 2.0f;
-			this->MakeAttack();
+			if (this->moveCnt == 1)this->MakeAttack();
 			break;
 		case Motion::AirAttack4:
 			this->powerScale = 2.5f;
-			this->MakeAttack();
+			if (this->moveCnt == 1)this->MakeAttack();
 			break;
 		case Motion::Crouch:	//しゃがむ
 			break;
