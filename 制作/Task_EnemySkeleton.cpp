@@ -14,6 +14,7 @@
 #include  "Task_Map.h"
 
 #include  "randomLib.h"
+#include  "Task_Item_coin_maneger.h"
 
 namespace  EnemySkeleton
 {
@@ -182,7 +183,6 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Lose:
-
 			break;
 		default:
 			break;
@@ -279,6 +279,7 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Lose:
+			Create_coin(this->pos.x, this->pos.y, 10);
 			if (this->moveCnt >= 30) {
 				this->Kill();
 			}

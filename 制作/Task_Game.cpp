@@ -12,6 +12,7 @@
 #include  "Task_EnemySkeleton.h"
 #include  "BEnemy.h"
 #include  "Task_Ending.h"
+#include  "Task_GameUI.h"
 
 namespace  Game
 {
@@ -64,6 +65,9 @@ namespace  Game
 
 		auto coin_man = coin_maneger::Object::Create(true);
 
+		auto UI = GameUI::Object::Create(true);
+		UI->numPos = ML::Vec2(50, 50);
+
 		this->cnt = 0;
 
 		return  true;
@@ -77,6 +81,7 @@ namespace  Game
 		ge->KillAll_G("本編");
 		ge->KillAll_G("Enemy");
 		ge->KillAll_G("アイテム");
+		ge->KillAll_G("UI");
 		ge->KillAll_G(Player::defGroupName);
 		ge->KillAll_G(Map::defGroupName);
 		ge->KillAll_G(Sprite::defGroupName);

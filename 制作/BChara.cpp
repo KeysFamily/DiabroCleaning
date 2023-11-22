@@ -9,6 +9,7 @@
 #include "BChara.h"
 #include  "MyPG.h"
 #include  "Task_Map.h"
+#include  "Task_Item_coin.h"
 
 ML::Vec2 BChara::MoveSet(int key)
 {
@@ -180,6 +181,17 @@ bool BChara::CheckHit(const ML::Box2D& hit_)
 void BChara::Received(BChara* from_, AttackInfo at_)
 {
 	ML::MsgBox("Received é¿ëïÇ≥ÇÍÇƒÇ¢Ç‹ÇπÇÒ");
+}
+//-----------------------------------------------------------------------------
+//ÉRÉCÉìê∂ê¨
+void BChara::Create_coin(int x_, int y_, int rand_)
+{
+	int coin_num = rand() % rand_;
+	for (int i = 0; i < coin_num; i++) {
+		auto coin = Item_coin::Object::Create(true);
+		coin->pos.x = x_;
+		coin->pos.y = y_;
+	}
 }
 
 ML::Box2D BChara::CallHitBox() const
