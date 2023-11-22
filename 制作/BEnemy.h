@@ -19,8 +19,6 @@ public:
 	typedef shared_ptr<BEnemy>		SP;
 	typedef weak_ptr<BEnemy>		WP;
 public:
-	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
-	//キャラクタ共通メンバ変数
 
 	//キャラクタの行動状態フラグ
 	enum Motion
@@ -52,6 +50,8 @@ public:
 
 
 protected:
+	void InputJsonFile(string fileName_);
+
 	virtual DrawInfo Anim();	//アニメーション制御
 	virtual bool SearchPlayer(int distX_ = 0, int distY_ = 0);//Player索敵
 
