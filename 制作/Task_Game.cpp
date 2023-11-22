@@ -9,8 +9,6 @@
 #include  "Task_Sprite.h"
 
 #include  "Task_Ending.h"
-#include  "sound.h"
-
 
 namespace  Game
 {
@@ -37,11 +35,6 @@ namespace  Game
 		this->res = Resource::Create();
 
 		//★データ初期化
-		// // ◇◇◇◇◇◇◇◇◇◇
-		 //22ci0308
-		bgm::LoadFile("bgm3", "./data/sound/bgm/industrial_zone.mp3");
-		this->volume.SetValues(100, 0, 100);
-		// ◆◆◆◆◆◆◆◆◆◆
 
 		//★タスクの生成
 		auto player = Player::Object::Create(true);
