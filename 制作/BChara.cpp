@@ -45,6 +45,7 @@ bool  BChara::UpdateMotion(int  nm_)
 		this->motion = nm_;		//モーション変更
 		this->moveCnt = 0;		//行動カウンタクリア
 		this->animCnt = 0;		//アニメーションカウンタのクリア
+		this->tempCnt = 0;		//一時カウンタのクリア
 		return  true;
 	}
 }

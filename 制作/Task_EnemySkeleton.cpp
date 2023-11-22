@@ -279,7 +279,7 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Lose:
-			Create_coin(this->pos.x, this->pos.y, 10);
+			if (this->moveCnt < 3) { Create_coin(this->pos.x, this->pos.y, 10); }
 			if (this->moveCnt >= 30) {
 				this->Kill();
 			}

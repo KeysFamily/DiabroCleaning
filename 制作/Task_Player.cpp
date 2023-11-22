@@ -157,12 +157,24 @@ namespace  Player
 			if (inp.LStick.BD.on && inp.LStick.BR.on) { nm = Motion::CrouchWalk; }
 			if (inp.B1.down) { nm = Motion::TakeOff; }
 			if (inp.B4.down) { nm = Motion::Attack; }
-			if (this->CheckFoot() == false) { nm = Motion::Fall; }//足元 障害　無し
+			if (this->CheckFoot() == false) {
+				tempCnt++;
+				if (tempCnt > 10) {
+					nm = Motion::Fall;
+				}
+			}//足元 障害　無し
+			if (this->CheckFoot() == true)tempCnt = 0;
 			break;
 		case  Motion::Walk:		//歩いている
 			if (inp.B1.down) { nm = Motion::TakeOff; }
 			if (inp.B4.down) { nm = Motion::Attack; }
-			if (this->CheckFoot() == false) { nm = Motion::Fall; }
+			if (this->CheckFoot() == false) {
+				tempCnt++;
+				if (tempCnt > 18) {
+					nm = Motion::Fall;
+				}
+			}//足元 障害　無し
+			if (this->CheckFoot() == true)tempCnt = 0;
 			if (inp.LStick.BD.on) { nm = Motion::CrouchWalk; this->moveVec.x = 0; }
 			if (inp.LStick.BL.off && inp.LStick.BR.off) { nm = Motion::Stand; }
 			break;
@@ -210,12 +222,26 @@ namespace  Player
 			if (inp.LStick.BD.off) { nm = Motion::Stand; /*this->pos.y -= 5;*/ }
 			if (inp.LStick.BL.on) { nm = Motion::CrouchWalk; }
 			if (inp.LStick.BR.on) { nm = Motion::CrouchWalk; }
+			if (this->CheckFoot() == false) {
+				tempCnt++;
+				if (tempCnt > 10) {
+					nm = Motion::Fall;
+				}
+			}//足元 障害　無し
+			if (this->CheckFoot() == true)tempCnt = 0;
 			if (inp.B4.down) { nm = Motion::Attack; }
 			break;
 		case Motion::CrouchWalk:	//しゃがみながら移動
 			if (inp.LStick.BD.off) { nm = Motion::Walk; /*this->pos.y -= 5;*/ }
 			if (inp.LStick.BL.off && inp.LStick.BR.off) { nm = Motion::Crouch; }
 			if (inp.LStick.BL.off && inp.LStick.BR.off && inp.LStick.BD.off) { nm = Motion::Stand; /*this->pos.y -= 5;*/ }
+			if (this->CheckFoot() == false) {
+				tempCnt++;
+				if (tempCnt > 10) {
+					nm = Motion::Fall;
+				}
+			}//足元 障害　無し
+			if (this->CheckFoot() == true)tempCnt = 0;
 			if (inp.B4.down) { nm = Motion::Attack; }
 			break;
 		case  Motion::Attack:	//攻撃中
