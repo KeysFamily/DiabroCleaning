@@ -39,6 +39,8 @@ namespace  Map
 
 		//★データ初期化
 		auto result = this->LoadMap("map_start");
+		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
+
 		this->testCam = ML::Vec2(0, 0);
 		//★タスクの生成
 
@@ -178,15 +180,21 @@ namespace  Map
 	//坂データの読み込み
 	bool Object::LoadSlope(const string& filepath_)
 	{
-		//仮処理
-		for (int i = 1; i < 9; ++i)
-		{
-			slopeData[i] = SlopeData();
-			slopeData[i].slopeHeight = 0;
-			slopeData[i].slopeVec.x = this->res->drawSize;
-			slopeData[i].slopeVec.y = this->res->drawSize * 0.5f;
-		}
+		json js;
+		std::ifstream fin(filepath_);
+		if (!fin) { return json(); }
+		//JSONファイル読み込み
+		fin >> js;
+		//ファイル読み込み終了
+		fin.close();
 
+		for (auto& ji : js)
+		{
+			slopeData[ji["chipNum"]] = SlopeData();
+			slopeData[ji["chipNum"]].slopeHeight = this->res->drawSize * (float)ji["beginHeight"];
+			slopeData[ji["chipNum"]].slopeVec.x = this->res->drawSize * (float)ji["vecX"];
+			slopeData[ji["chipNum"]].slopeVec.y = this->res->drawSize * (float)ji["vecY"];
+		}
 		return false;
 	}
 	//-------------------------------------------------------------------
@@ -314,7 +322,7 @@ namespace  Map
 								//プレイヤーの当たり判定左端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
 								float lbheight = slope.second.slopeVec.y * abs((r.left - slopeBegin.x) / this->res->drawSize) + slopeBegin.y;
 								//プレイヤーを坂の上に乗せるために必要な移動距離（最大値は坂の最高値）
-								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, lbheight - r.bottom);
+								float moveResult = min(slope.second.slopeVec.y + slope.second.slopeHeight, lbheight - r.top);
 								if (moveResult > 0)
 								{
 									//上がる指示がない場合のみ実行（変更可）
