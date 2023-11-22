@@ -9,11 +9,29 @@
 #include  "MyPG.h"
 #include  "BEnemy.h"
 
+#include  "Task_Item_coin.h"
+
 //-----------------------------------------------------------------------------
 //アニメーション制御
 BChara::DrawInfo BEnemy::Anim() {
 	BChara::DrawInfo di{ ML::Box2D(),ML::Box2D(),ML::Color(1.0f,1.0f,1.0f,1.0f)};
 	return di;
+}
+
+//-----------------------------------------------------------------------------
+//Player索敵制御
+bool BEnemy::SearchPlayer(int distX_, int distY_) {
+	ML::MsgBox("処理が実装されていません");
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// コインをドロップする
+void BEnemy::DropCoins(unsigned int dropNum_) {
+	for (unsigned int i = 0; i < dropNum_; ++i) {
+		auto coin = Item_coin::Object::Create(true);
+		coin->pos = this->pos;
+	}
 }
 
 //-----------------------------------------------------------------------------
