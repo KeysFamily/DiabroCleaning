@@ -14,6 +14,7 @@
 
 #include "BEnemy.h"
 #include "Task_Player.h"
+#include "Task_Map.h"
 
 #include "easing.h"
 
@@ -103,7 +104,7 @@ namespace  MyPG
 		bool			TransparentFlag; //透明フラグ
 		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0333記述
-
+		Map::Object::SP qa_Map;
 		Player::Object::SP qa_Player;
 		shared_ptr<vector<BEnemy::SP>> qa_Enemys;
 		//◆◆◆◆◆◆◆◆◆◆
