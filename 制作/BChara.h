@@ -24,9 +24,8 @@ public:
 	ML::Box2D   hitBase;	//あたり判定範囲
 	ML::Box2D   map_hitBase;//マップ当たり判定
 	ML::Vec2	moveVec;	//移動ベクトル
-	int			moveCnt;	//行動カウンタ
-	float       hp;         //体力
-	float		maxHp;		//最大体力
+	int			moveCnt,preMoveCnt;	//行動カウンタ
+	OL::Limit<float> hp;
 	float		speed;      //移動スピード
 	//向き（2D視点）
 	float angle;
@@ -35,8 +34,9 @@ public:
 	Angle_LR	angle_LR;
 	WP			target;
 
+
 	//キャラクタの行動状態フラグ
-	int			motion;			//	現在の行動を示すフラグ
+	int			motion,preMotion;	//	現在の行動を示すフラグ
 	int				animCnt;		//　アニメーションカウンタ
 	float			jumpPow;		//	ジャンプ初速
 	float           fallSpeed;
@@ -57,12 +57,13 @@ public:
 		, map_hitBase(0, 0, 0, 0)
 		, moveVec(0, 0)
 		, moveCnt(0)
-		, hp(1.f)
-		, maxHp(1.f)
+		, preMoveCnt(0)
+		, hp()
 		, speed(0.f)
 		, angle(0.f)
 		, angle_LR(Angle_LR::Right)
-		, motion(0)
+		, motion(-1)
+		, preMotion(-1)
 		, animCnt(0)
 		, jumpPow(0.f)
 		, fallSpeed(0.f)
