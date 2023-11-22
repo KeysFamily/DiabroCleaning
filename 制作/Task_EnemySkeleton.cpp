@@ -173,7 +173,12 @@ namespace  EnemySkeleton
 			break;
 		case Motion::Bound:
 			if (this->moveCnt >= 16 && this->CheckFoot()) {
-				nm = Motion::Stand;
+				if (this->preMotion == Motion::Walk) {
+					nm = Motion::Tracking;
+				}
+				else {
+					nm = Motion::Stand;
+				}
 			}
 			break;
 		case Motion::Lose:
@@ -423,9 +428,9 @@ namespace  EnemySkeleton
 	// Player‚ðõ“G‚·‚é
 	bool Object::SearchPlayer(int dist) {
 		this->searchCnt = 0;
-		auto map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+		//auto map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 
-		if (ge->qa_Player == nullptr || map == nullptr) { return false; }
+		if (ge->qa_Player == nullptr || ge->qa_Map == nullptr) { return false; }
 		ML::Box2D eye(
 			this->hitBase.x,
 			this->hitBase.y,
@@ -444,7 +449,7 @@ namespace  EnemySkeleton
 		for (int i = 0; i < dist; ++i) {
 			ge->debugRect(eye, 7, -ge->camera2D.x, -ge->camera2D.y);
 
-			if (map->CheckHit(eye))break;
+			if (ge->qa_Map->CheckHit(eye))break;
 			if (ge->qa_Player != nullptr && ge->qa_Player->CallHitBox().Hit(eye)) { return true; }
 
 			if (this->angle_LR == Angle_LR::Left) {
