@@ -110,9 +110,16 @@ namespace  MyPG
 		//◆◆◆◆◆◆◆◆◆◆
 		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0329記述
+		int debugPrintTimeCnt;
+
 		ML::Box2D GetScreenBox() const;
 		ML::Vec2  GetScreenCenter() const;
-		void printToDebugFile(std::string debugstr_);
+
+		//デバッグ関数
+		//param1:出力する文字列
+		//param2:何フレームごとに出力するか
+
+		void printToDebugFile(std::string debugstr_, int distance_);
 		//◆◆◆◆◆◆◆◆◆◆
 
 
