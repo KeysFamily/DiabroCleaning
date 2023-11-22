@@ -113,7 +113,8 @@ public:
 	virtual void Received(BChara* from_, AttackInfo at_);
 	//ÚG”»’è
 	virtual bool CheckHit(const ML::Box2D& hit_);
-
+	//ƒRƒCƒ“¶¬
+	void Create_coin(int x_, int y_, int rand_);
 protected:
 	virtual void Think() {}
 	virtual void Move() {}

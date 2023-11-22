@@ -35,6 +35,9 @@
     <Filter Include="MyPG\Task\Ending">
       <UniqueIdentifier>{679dd661-f1aa-454e-9227-6e328573c479}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyPG\Task\Game\GameUI">
+      <UniqueIdentifier>{1b318143-e58a-41ae-b35d-8b214154aa6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine_Ver3_83.cpp">
@@ -142,8 +145,13 @@
     <ClCompile Include="Task_Item_coin_maneger.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
-    <ClCompile Include="Task_EnemySkeleton.cpp" />
     <ClCompile Include="Task_MapManager.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_GameUI.cpp">
+      <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemySkeleton.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -248,8 +256,13 @@
     <ClInclude Include="Task_Item_coin_maneger.h">
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Task_EnemySkeleton.h" />
     <ClInclude Include="Task_MapManager.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_GameUI.h">
+      <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemySkeleton.h">
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
   </ItemGroup>

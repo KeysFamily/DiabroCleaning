@@ -62,6 +62,8 @@ namespace  Player
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1;
 		this->powerScale = 1.0f;
+		this->balanceMoney = 100;
+
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -659,8 +661,10 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		this->hp.Addval(-at_.power);	//仮処理
+		this->balanceMoney -= at_.power;
+		if (this->balanceMoney <= 0)this->balanceMoney = 0; //仮処理
 		if (this->hp.IsMin()) {
-			this->Kill();
+			//this->Kill();
 		}
 		//吹き飛ばされる
 		if (this->pos.x > from_->pos.x) {
