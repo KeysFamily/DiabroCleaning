@@ -151,7 +151,7 @@ bool  BChara::CheckFrontFoot_LR()
 {
 	//あたり判定を基にして矩形を生成(とりあえず、縦幅と横幅１になった矩形を用意する）
 	ML::Box2D  frontFoot(this->hitBase.x,
-		this->hitBase.y + this->hitBase.w,
+		this->hitBase.y + this->hitBase.h,
 		1,
 		1);
 	//キャラクタの方向により矩形の位置を調整

@@ -1,25 +1,28 @@
-//-------------------------------------------------------------------
-//かわいい妖精
-//-------------------------------------------------------------------
+//?------------------------------------------------------
+//タスク名:
+//作　成　者:
+//TODO:もしいれば下記へ記述
+//編　集　者:
+//作成年月日:
+//概　　　要:
+//?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Sprite.h"
-#include  "Task_Map.h"
+#include  "Task_Item_coin.h"
+#include  "Task_Item_coin_maneger.h"
 
-namespace  Sprite
+namespace  coin_maneger
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/image/妖精.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->img.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -32,9 +35,11 @@ namespace  Sprite
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->render2D_Priority[1] = 0.5f;
 		
-		//★タスクの生成
+		//auto coin = Item_coin::Object::Create(true);
+		//auto coin = ge->GetTask<Item_coin::Object>("アイテム","coin");
+		
+        //★タスクの生成
 
 		return  true;
 	}
@@ -55,53 +60,27 @@ namespace  Sprite
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		//ターゲットが存在するか調べてからアクセス
-		if (auto  tg = this->target.lock()) {
-			//ターゲットへの相対座標を求める
-			ML::Vec2  toVec = tg->pos - this->pos;
-
-			//ターゲットの向きに合わせて自分の移動先を変更
-			if (tg->angle_LR == BChara::Angle_LR::Left) {
-				ML::Vec2  adjust(-100, 0);
-				toVec += adjust;
-			}
-			else {
-				ML::Vec2  adjust(+100, 0);
-				toVec += adjust;
-			}
-
-			//ターゲットに５％近づく
-			this->pos += toVec * 0.05f;
-		}
-
-		//カメラの位置を再調整
-		{
-			//プレイヤを画面の何処に置くか（今回は画面中央）
-			int  px = 1200;
-			int  py = 500;
-			//プレイヤを画面中央に置いた時のカメラの左上座標を求める
-			int  cpx = int(this->pos.x) - px;
-			int  cpy = int(this->pos.y) - py;
-			//カメラの座標を更新
-			ge->camera2D.x = cpx;
-			ge->camera2D.y = cpy;
-			if (auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName)) {
-				map->AdjustCameraPos();
-			}
+		auto inp = ge->in1->GetState();
+		if (inp.B3.down) {
+			Create_coin(1500,300,10);
 		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D  draw(-16, -16, 32, 32);
-		draw.Offset(this->pos);
-		ML::Box2D  src(0, 0, 32, 32);
-
-		draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
-		this->res->img->Draw(draw, src, ML::Color(0.5f, 1, 1, 1));
+		
 	}
 
+	void Object::Create_coin(int x_, int y_, int rand_)
+	{
+		int coin_num = rand() % rand_;
+		for (int i = 0; i < coin_num;i++) {
+			auto coin = Item_coin::Object::Create(true);
+			coin->pos.x = x_;
+			coin->pos.y = y_;
+		}
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -114,7 +93,7 @@ namespace  Sprite
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
-				//（メソッド名が変なのは旧バージョンのコピーによるバグを回避するため
+				
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill

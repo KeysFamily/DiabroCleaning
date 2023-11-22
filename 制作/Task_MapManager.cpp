@@ -1,25 +1,27 @@
-//-------------------------------------------------------------------
-//かわいい妖精
-//-------------------------------------------------------------------
+//?------------------------------------------------------
+//タスク名:マップ管理
+//作　成　者:土田誠也
+//TODO:もしいれば下記へ記述
+//編　集　者:
+//作成年月日:
+//概　　　要:
+//?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Sprite.h"
-#include  "Task_Map.h"
+#include  "Task_MapManager.h"
 
-namespace  Sprite
+namespace  MapManager
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/image/妖精.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->img.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -32,8 +34,11 @@ namespace  Sprite
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->render2D_Priority[1] = 0.5f;
-		
+		this->mapSeed = (unsigned int)time(NULL);
+		srand(mapSeed);
+		this->Destroy();
+
+
 		//★タスクの生成
 
 		return  true;
@@ -43,7 +48,6 @@ namespace  Sprite
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -55,53 +59,109 @@ namespace  Sprite
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		//ターゲットが存在するか調べてからアクセス
-		if (auto  tg = this->target.lock()) {
-			//ターゲットへの相対座標を求める
-			ML::Vec2  toVec = tg->pos - this->pos;
-
-			//ターゲットの向きに合わせて自分の移動先を変更
-			if (tg->angle_LR == BChara::Angle_LR::Left) {
-				ML::Vec2  adjust(-100, 0);
-				toVec += adjust;
-			}
-			else {
-				ML::Vec2  adjust(+100, 0);
-				toVec += adjust;
-			}
-
-			//ターゲットに５％近づく
-			this->pos += toVec * 0.05f;
-		}
-
-		//カメラの位置を再調整
-		{
-			//プレイヤを画面の何処に置くか（今回は画面中央）
-			int  px = 1200;
-			int  py = 500;
-			//プレイヤを画面中央に置いた時のカメラの左上座標を求める
-			int  cpx = int(this->pos.x) - px;
-			int  cpy = int(this->pos.y) - py;
-			//カメラの座標を更新
-			ge->camera2D.x = cpx;
-			ge->camera2D.y = cpy;
-			if (auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName)) {
-				map->AdjustCameraPos();
-			}
-		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D  draw(-16, -16, 32, 32);
-		draw.Offset(this->pos);
-		ML::Box2D  src(0, 0, 32, 32);
+	}
+	//-------------------------------------------------------------------
+	//その他のメソッド
+	void Object::Generate()
+	{
+		for (int y = 0; y < 20; ++y)
+		{
+			for (int x = 0; x < 20; ++x)
+			{
+				map[y][x] = nullptr;
+			}
+		}
 
-		draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
-		this->res->img->Draw(draw, src, ML::Color(0.5f, 1, 1, 1));
+		map[0][0] = new MapObject("map_start");
+		map[0][1] = new Object::Connect(MapEnter::Left, MapExit::Right);
+		
+
 	}
 
+	void Object::GenerateMap(int x_, int y_, int depth_, int depthRest_, MapEnter enter_)
+	{
+		enum GenerateDir
+		{
+			Right = 0,
+			Down,
+			RightDown,
+		};
+
+		int generatePos = rand() % 3;
+		bool generateSub = rand() % 2;
+
+		if (generateSub && generatePos == 3)
+		{
+			--generatePos;
+		}
+
+
+		int genX;
+		int genY;
+		MapEnter enterDir;
+		MapExit exitDir;
+		
+		switch (generatePos)
+		{
+		case GenerateDir::Right:
+			genX = 2;
+			genY = 0;
+			enterDir = MapEnter::Left;
+			exitDir = MapExit::Right;
+			break;
+		case GenerateDir::Down:
+			genX = 0;
+			genY = 2;
+			enterDir = MapEnter::Up;
+			exitDir = MapExit::Down;
+			break;
+		case GenerateDir::RightDown:
+			genX = 1;
+			genY = 1;
+			enterDir = MapEnter::Up;
+			exitDir = MapExit::Right;
+			break;
+		}
+		
+		GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
+		if (generateSub)
+		{
+			genX = 1;
+			genY = 1;
+			if (enterDir == MapEnter::Up)
+			{
+				enterDir = MapEnter::Left;
+			}
+			else
+			{
+				enterDir = MapEnter::Up;
+			}
+			GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
+		}
+
+
+		map[y_][x_] = new Map(enter_, exitDir, depth_);
+	}
+
+
+
+
+	//消滅時の処理
+	void Object::Destroy()
+	{
+		for (int y = 0; y < 20; ++y)
+		{
+			for (int x = 0; x < 20; ++x)
+			{
+				delete map[y][x];
+			}
+		}
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -114,7 +174,7 @@ namespace  Sprite
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
-				//（メソッド名が変なのは旧バージョンのコピーによるバグを回避するため
+
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill
@@ -157,4 +217,7 @@ namespace  Sprite
 	Resource::Resource() {}
 	//-------------------------------------------------------------------
 	Resource::~Resource() { this->Finalize(); }
+
+	//-------------------------------------------------------------------
+
 }
