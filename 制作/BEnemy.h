@@ -53,8 +53,11 @@ public:
 
 protected:
 	virtual DrawInfo Anim();	//アニメーション制御
+	virtual bool SearchPlayer(int distX_ = 0, int distY_ = 0);//Player索敵
 
 	bool Attack_Std(string gn_, BChara::AttackInfo at_, ML::Box2D AttackHit_);				//攻撃共通処理
 	void UpDate_Std();													//更新共通処理
 	void Render_Std(const DG::Image::SP& img_);							//描画共通処理
+
+	void DropCoins(unsigned int dropNum_);
 };
