@@ -403,7 +403,7 @@ namespace  EnemySkeleton
 		if (this->unHitTime > 0) { 
 			return; //–³“GŽžŠÔ’†‚Íˆ—‚ðŽó‚¯‚È‚¢
 		}
-		this->unHitTime = 20;
+		//this->unHitTime = 20;
 		this->hp.Addval(-at_.power);
 		if (this->hp.vnow <= 0) {
 			this->UpdateMotion(Motion::Lose);
@@ -411,10 +411,10 @@ namespace  EnemySkeleton
 		}
 		//‚«”ò‚Î‚³‚ê‚é
 		if (this->pos.x > from_->pos.x) {
-			this->moveVec = ML::Vec2(0, -3);
+			this->moveVec = ML::Vec2(2, -3);
 		}
 		else {
-			this->moveVec = ML::Vec2(0, -3);
+			this->moveVec = ML::Vec2(-2, -3);
 		}
 		this->UpdateMotion(Motion::Bound);
 	}

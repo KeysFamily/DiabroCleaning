@@ -114,5 +114,6 @@ namespace  Player
 
 		//UŒ‚”­“®
 		void MakeAttack();
+
 	};
 }
