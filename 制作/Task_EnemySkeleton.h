@@ -60,6 +60,6 @@ namespace  EnemySkeleton
 		//接触時の応答処理(必ず受け身の処理として実装する)
 		void Received(BChara* from_, AttackInfo at_);
 
-		bool SearchPlayer(int dist);
+		bool SearchPlayer(int distX_ = 0, int distY_ = 0)override;
 	};
 }

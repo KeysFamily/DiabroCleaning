@@ -98,6 +98,7 @@ namespace  Game
 	{
 		//(22CI0333)他のタスクで以下の処理は行わなくてよい
 		ge->qa_Player = ge->GetTask<Player::Object>(Player::defGroupName, Player::defName);
+		ge->qa_Map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 		ge->qa_Enemys = ge->GetTasks<BEnemy>("Enemy");
 
 		auto inp = ge->in1->GetState( );
