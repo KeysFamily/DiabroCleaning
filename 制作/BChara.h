@@ -25,6 +25,7 @@ public:
 	ML::Box2D   map_hitBase;//マップ当たり判定
 	ML::Vec2	moveVec;	//移動ベクトル
 	int			moveCnt,preMoveCnt;	//行動カウンタ
+	int			tempCnt;	//一時カウンタ
 	OL::Limit<float> hp;
 	float		speed;      //移動スピード
 	//向き（2D視点）
@@ -58,6 +59,7 @@ public:
 		, moveVec(0, 0)
 		, moveCnt(0)
 		, preMoveCnt(0)
+		, tempCnt(0)
 		, hp()
 		, speed(0.f)
 		, angle(0.f)
