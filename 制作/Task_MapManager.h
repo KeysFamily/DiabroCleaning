@@ -70,6 +70,8 @@ namespace MapManager
 				:mapName(mapName_)
 				, mapType(MapType::Empty)
 			{}
+
+			virtual string Generate() { return ""; };
 		};
 
 		enum class MapEnter
@@ -99,6 +101,11 @@ namespace MapManager
 				,depth(depth_)
 			{
 			}
+
+			string Generate() override
+			{
+				return "1";
+			}
 		};
 
 		//’Ê˜H
@@ -115,6 +122,12 @@ namespace MapManager
 				,exitSub(exitSub_)
 			{
 			}
+
+			string Generate() override
+			{
+				return "2";
+			}
+
 		};
 
 	public:

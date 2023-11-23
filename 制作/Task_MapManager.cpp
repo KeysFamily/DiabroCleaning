@@ -36,7 +36,8 @@ namespace  MapManager
 		//★データ初期化
 		this->mapSeed = (unsigned int)time(NULL);
 		srand(mapSeed);
-		this->Destroy();
+		this->Generate();
+
 
 
 		//★タスクの生成
@@ -48,6 +49,9 @@ namespace  MapManager
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
+
+		this->Destroy();
+
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -79,7 +83,27 @@ namespace  MapManager
 
 		map[0][0] = new MapObject("map_start");
 		map[0][1] = new Object::Connect(MapEnter::Left, MapExit::Right);
-		
+		this->GenerateMap(2,0, 2, 6, MapEnter::Left);
+
+		string result = "1";
+
+		//生成
+		for (int y = 0; y < 20; ++y)
+		{
+			for (int x = 0; x < 20; ++x)
+			{
+				if (map[y][x] != nullptr)
+				{
+					result += map[y][x]->Generate();
+				}
+				else {
+					result += "0";
+				}
+			}
+			result += "\n";
+		}
+
+		ge->printToDebugFile(result, 1);
 
 	}
 
@@ -92,60 +116,123 @@ namespace  MapManager
 			RightDown,
 		};
 
-		int generatePos = rand() % 3;
-		bool generateSub = rand() % 2;
-
-		if (generateSub && generatePos == 3)
+		//最下層なら次の生成処理は行わない
+		if (depthRest_ <= 1)
 		{
-			--generatePos;
+			map[y_][x_] = new Map(enter_, MapExit::Non, depth_);
+			return;
 		}
 
+		//生成不可な場所を探す
+		int cantGeneratesTotal = 0;
+		cantGeneratesTotal += map[y_][x_ + 2] != nullptr;
+		cantGeneratesTotal += map[y_ + 1][x_ + 1] != nullptr;
+		cantGeneratesTotal += map[y_ + 2][x_] != nullptr;
 
-		int genX;
-		int genY;
-		MapEnter enterDir;
-		MapExit exitDir;
-		
-		switch (generatePos)
+		//生成可能な場所がなければ次の生成処理は行わない
+		if (cantGeneratesTotal >= 3)
 		{
-		case GenerateDir::Right:
-			genX = 2;
-			genY = 0;
-			enterDir = MapEnter::Left;
-			exitDir = MapExit::Right;
-			break;
-		case GenerateDir::Down:
-			genX = 0;
-			genY = 2;
-			enterDir = MapEnter::Up;
-			exitDir = MapExit::Down;
-			break;
-		case GenerateDir::RightDown:
-			genX = 1;
-			genY = 1;
-			enterDir = MapEnter::Up;
-			exitDir = MapExit::Right;
-			break;
+			map[y_][x_] = new Map(enter_, MapExit::Non, depth_);
+			return;
 		}
-		
-		GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
+
+		//生成の種類（右・下・斜め）
+		int generateTypes = 3;
+
+		//分岐させるか
+		bool generateSub = rand() % 2 && cantGeneratesTotal < 1 && map[y_ + 1][x_ + 1] == nullptr;
+		//分岐が有効なら、右か下を最初に生成（斜めは確定なので）
 		if (generateSub)
 		{
-			genX = 1;
-			genY = 1;
-			if (enterDir == MapEnter::Up)
-			{
-				enterDir = MapEnter::Left;
-			}
-			else
-			{
-				enterDir = MapEnter::Up;
-			}
-			GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
+			--generateTypes;
 		}
 
+		int genX = 0;
+		int genY = 0;
+		int conX = 0;
+		int conY = 0;
+		MapEnter enterDir;
+		MapExit exitDir;
 
-		map[y_][x_] = new Map(enter_, exitDir, depth_);
+		MapExit connectExit = MapExit::Right;
+		MapExit connectExitSub = MapExit::Non;
+
+		//生成が完了するまでループする
+		bool finishedGenerate = true;
+		while (finishedGenerate)
+		{
+			//生成の方向をランダムで決定
+			int generatePos = rand() % generateTypes;
+
+			//生成の方向に応じて値を調整
+			switch (generatePos)
+			{
+			case GenerateDir::Right:
+				if (map[y_][x_ + 2] != nullptr)
+				{
+					continue;
+				}
+				genX = 2;
+				genY = 0;
+				conX = 1;
+				conY = 0;
+				enterDir = MapEnter::Left;
+				exitDir = MapExit::Right;
+				connectExit = MapExit::Right;
+				break;
+			case GenerateDir::Down:
+				if (map[y_ + 2][x_] != nullptr)
+				{
+					continue;
+				}
+				genX = 0;
+				genY = 2;
+				conX = 0;
+				conY = 1;
+				enterDir = MapEnter::Up;
+				exitDir = MapExit::Down;
+				connectExit = MapExit::Down;
+				break;
+			case GenerateDir::RightDown:
+				if (map[y_ + 1][x_ + 1] != nullptr)
+				{
+					continue;
+				}
+				genX = 1;
+				genY = 1;
+				conX = 1;
+				conY = 0;
+				enterDir = MapEnter::Up;
+				exitDir = MapExit::Right;
+				connectExit = MapExit::Down;
+				break;
+			}
+
+			//次の位置を生成
+			GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
+
+			//分岐が有効なら斜めも生成
+			if (generateSub)
+			{
+				genX = 1;
+				genY = 1;
+				if (enterDir == MapEnter::Up)
+				{
+					enterDir = MapEnter::Left;
+					connectExitSub = MapExit::Right;
+				}
+				else
+				{
+					enterDir = MapEnter::Up;
+					connectExitSub = MapExit::Down;
+				}
+				GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
+			}
+			map[y_][x_] = new Map(enter_, exitDir, depth_);
+			map[y_ + conY][x_ + conX] = new Connect(enterDir, connectExit, connectExitSub);
+
+			finishedGenerate = false;
+		}
 	}
 
 

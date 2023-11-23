@@ -845,6 +845,10 @@ ge->debugRect(me, DEBUGRECTMODE::RED ,- ge->camera2D.x, -ge->camera2D.y);
 		this->debugFont = DG::Font::Create("ＭＳ ゴシック", 6, 16);
 		//デバッグ用時間計測の準備
 		this->debugPrintTimeCnt = 0;
+		//デバッグファイルの初期化
+		ofstream ofs("./data/debug/Debug.txt");
+		ofs << "" << endl;
+		ofs.close();
 
 		//デフォルトカメラ
 		this->camera[0] = MyPG::Camera::Create(
