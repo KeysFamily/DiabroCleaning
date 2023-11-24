@@ -123,11 +123,11 @@ namespace  MapManager
 			return;
 		}
 
-		//生成不可な場所を探す
+		//生成不可な場所を探す（生成する方向にマップ・もしくは通路があるか判定）
 		int cantGeneratesTotal = 0;
-		cantGeneratesTotal += map[y_][x_ + 2] != nullptr;
-		cantGeneratesTotal += map[y_ + 1][x_ + 1] != nullptr;
-		cantGeneratesTotal += map[y_ + 2][x_] != nullptr;
+		cantGeneratesTotal += map[y_][x_ + 2] != nullptr || map[y_][x_ + 1] != nullptr;
+		cantGeneratesTotal += map[y_ + 1][x_ + 1] != nullptr || map[y_ + 1][x_] != nullptr && map[y_][x_ + 1] != nullptr;
+		cantGeneratesTotal += map[y_ + 2][x_] != nullptr || map[y_ + 1][x_] != nullptr;
 
 		//生成可能な場所がなければ次の生成処理は行わない
 		if (cantGeneratesTotal >= 3)
@@ -168,7 +168,7 @@ namespace  MapManager
 			switch (generatePos)
 			{
 			case GenerateDir::Right:
-				if (map[y_][x_ + 2] != nullptr)
+				if (map[y_][x_ + 2] != nullptr || map[y_][x_ + 1] != nullptr)
 				{
 					continue;
 				}
@@ -181,7 +181,7 @@ namespace  MapManager
 				connectExit = MapExit::Right;
 				break;
 			case GenerateDir::Down:
-				if (map[y_ + 2][x_] != nullptr)
+				if (map[y_ + 2][x_] != nullptr || map[y_ + 1][x_] != nullptr)
 				{
 					continue;
 				}
@@ -194,7 +194,7 @@ namespace  MapManager
 				connectExit = MapExit::Down;
 				break;
 			case GenerateDir::RightDown:
-				if (map[y_ + 1][x_ + 1] != nullptr)
+				if (map[y_ + 1][x_ + 1] != nullptr || map[y_ + 1][x_] != nullptr && map[y_][x_ + 1] != nullptr)
 				{
 					continue;
 				}

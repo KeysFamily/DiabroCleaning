@@ -64,11 +64,12 @@ namespace MapManager
 				Connect,
 			};
 			MapType mapType;
-
+			bool visited;
 
 			MapObject(const string& mapName_ = "")
 				:mapName(mapName_)
 				, mapType(MapType::Empty)
+				, visited(false)
 			{}
 
 			virtual string Generate() { return ""; };
@@ -83,7 +84,7 @@ namespace MapManager
 		{
 			Non = 0,
 			Right,
-			Down
+			Down,
 		};
 
 		class Map : public MapObject
