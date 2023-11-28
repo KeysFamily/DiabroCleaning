@@ -35,7 +35,8 @@ namespace  MapManager
 
 		//★データ初期化
 		this->mapSeed = (unsigned int)time(NULL);
-		srand(mapSeed);
+		srand(1701140554);
+		ge->printToDebugFile(to_string(mapSeed),1);
 		this->Generate();
 
 
@@ -73,9 +74,9 @@ namespace  MapManager
 	//その他のメソッド
 	void Object::Generate()
 	{
-		for (int y = 0; y < 20; ++y)
+		for (int y = 0; y < 30; ++y)
 		{
-			for (int x = 0; x < 20; ++x)
+			for (int x = 0; x < 30; ++x)
 			{
 				map[y][x] = nullptr;
 			}
@@ -85,26 +86,17 @@ namespace  MapManager
 		map[0][1] = new Object::Connect(MapEnter::Left, MapExit::Right);
 		this->GenerateMap(2,0, 2, 6, MapEnter::Left);
 
-		string result = "1";
-
 		//生成
-		for (int y = 0; y < 20; ++y)
+		for (int y = 0; y < 30; ++y)
 		{
-			for (int x = 0; x < 20; ++x)
+			for (int x = 0; x < 30; ++x)
 			{
 				if (map[y][x] != nullptr)
 				{
-					result += map[y][x]->Generate();
-				}
-				else {
-					result += "0";
+					map[y][x]->Generate();
 				}
 			}
-			result += "\n";
 		}
-
-		ge->printToDebugFile(result, 1);
-
 	}
 
 	void Object::GenerateMap(int x_, int y_, int depth_, int depthRest_, MapEnter enter_)
@@ -154,6 +146,7 @@ namespace  MapManager
 		MapEnter enterDir;
 		MapExit exitDir;
 
+		MapEnter connectEnter = MapEnter::Up;
 		MapExit connectExit = MapExit::Right;
 		MapExit connectExitSub = MapExit::Non;
 
@@ -177,6 +170,7 @@ namespace  MapManager
 				conX = 1;
 				conY = 0;
 				enterDir = MapEnter::Left;
+				connectEnter = MapEnter::Left;
 				exitDir = MapExit::Right;
 				connectExit = MapExit::Right;
 				break;
@@ -190,6 +184,7 @@ namespace  MapManager
 				conX = 0;
 				conY = 1;
 				enterDir = MapEnter::Up;
+				connectEnter = MapEnter::Up;
 				exitDir = MapExit::Down;
 				connectExit = MapExit::Down;
 				break;
@@ -203,10 +198,12 @@ namespace  MapManager
 				conX = 1;
 				conY = 0;
 				enterDir = MapEnter::Up;
+				connectEnter = MapEnter::Left;
 				exitDir = MapExit::Right;
 				connectExit = MapExit::Down;
 				break;
 			}
+
 
 			//次の位置を生成
 			GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
@@ -229,7 +226,7 @@ namespace  MapManager
 				GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
 			}
 			map[y_][x_] = new Map(enter_, exitDir, depth_);
-			map[y_ + conY][x_ + conX] = new Connect(enterDir, connectExit, connectExitSub);
+			map[y_ + conY][x_ + conX] = new Connect(connectEnter, connectExit, connectExitSub);
 
 			finishedGenerate = false;
 		}
@@ -241,9 +238,9 @@ namespace  MapManager
 	//消滅時の処理
 	void Object::Destroy()
 	{
-		for (int y = 0; y < 20; ++y)
+		for (int y = 0; y < 30; ++y)
 		{
-			for (int x = 0; x < 20; ++x)
+			for (int x = 0; x < 30; ++x)
 			{
 				delete map[y][x];
 			}

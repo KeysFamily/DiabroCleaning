@@ -13,6 +13,8 @@
 #include  "BEnemy.h"
 #include  "Task_Ending.h"
 #include  "Task_GameUI.h"
+#include  "Task_MapManager.h"
+#include  "Task_GameUI_MiniMap.h"
 
 namespace  Game
 {
@@ -46,6 +48,9 @@ namespace  Game
 		player->pos.y = 500;
 		player->render2D_Priority[1] = 0.5f;
 
+		MapManager::Object::Create(true);
+		MiniMap::Object::Create(true);
+		
 		auto map = Map::Object::Create(true);
 		map->render2D_Priority[1] = 0.9f;
 

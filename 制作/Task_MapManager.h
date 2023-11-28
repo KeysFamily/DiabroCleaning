@@ -145,7 +145,7 @@ namespace MapManager
 		//追加したい変数・メソッドはここに追加する
 		int bossDepth;
 		unsigned int mapSeed;		//マップ生成のシード値
-		MapObject* map[20][20];
+		MapObject* map[30][30];
 
 	private:
 		void Generate();

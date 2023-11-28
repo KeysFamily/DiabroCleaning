@@ -41,10 +41,11 @@ namespace  MiniMap
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->pos = ML::Vec2(0, 0);
+		this->pos.x = ge->screenWidth - this->res->imgBGSize.w / 2;
+		this->pos.y = this->res->imgBGSize.h / 2;
 		this->cameraPos = ML::Vec2(0, 0);
 		this->screenSize.Set(240, 216);
-		this->screenOfs = ML::Vec2(0, 0);
+		this->screenOfs = ML::Vec2(0, 12);
 		//★タスクの生成
 
 		return  true;
@@ -65,6 +66,16 @@ namespace  MiniMap
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		auto inp = ge->in1->GetState();
+		int speed = 1;
+		if (inp.RStick.BU.on)
+			this->cameraPos.y -= speed;
+		if (inp.RStick.BD.on)
+			this->cameraPos.y += speed;
+		if (inp.RStick.BR.on)
+			this->cameraPos.x += speed;
+		if (inp.RStick.BL.on)
+			this->cameraPos.x -= speed;
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -79,12 +90,14 @@ namespace  MiniMap
 		//マップチップ描画
 		ML::Box2D screen = OL::setBoxCenter(this->screenSize);
 		screen.Offset(this->pos + this->screenOfs);
-		for (int y = 0; y < 20; ++y) {
-			for (int x = 0; x < 20; ++x) {
+		for (int y = 0; y < 30; ++y) {
+			for (int x = 0; x < 30; ++x) {
 				draw = ML::Box2D(0, 0, this->res->imgChipSize.w, this->res->imgChipSize.h);
 				src = draw;
-				draw.Offset(screen.x,screen.y);
+				draw.x += screen.x + x * this->res->imgChipSize.w;
+				draw.y += screen.y + y * this->res->imgChipSize.h;
 				draw.Offset(-cameraPos);
+				this->SetChip(src, x, y);
 				this->SetToScreen(draw, src, screen);
 
 				this->res->imgChip->Draw(draw, src);
@@ -96,13 +109,28 @@ namespace  MiniMap
 	void Object::SetChip(ML::Box2D& src_, int x_, int y_)
 	{
 		auto mapMng = ge->GetTask<MapManager::Object>("MapManager");
+		if (!mapMng) 
+		{
+			return;
+		}
+		if (x_ == 0 && y_ == 0)
+		{
+			src_.x = this->res->imgChipSize.w * 3;
+			src_.y = this->res->imgChipSize.h * 2;
+		}
+
 		MapManager::Object::Map* map = dynamic_cast<MapManager::Object::Map*>(mapMng->map[y_][x_]);
 		if (map)
 		{
 			src_.x = (int)map->GetExit() * this->res->imgChipSize.w;
 			src_.y = this->res->imgChipSize.h * 2
-						+ (int)map->GetEnter() * this->res->imgChipSize.h;
-
+				+ (int)map->GetEnter() * this->res->imgChipSize.h;
+		}
+		MapManager::Object::Connect* connect = dynamic_cast<MapManager::Object::Connect*>(mapMng->map[y_][x_]);
+		if (connect)
+		{
+			src_.x = ((int)connect->GetExit() + (int)connect->GetExitSub()) * this->res->imgChipSize.w;
+			src_.y = (int)connect->GetEnter() * this->res->imgChipSize.h;
 		}
 	}
 
