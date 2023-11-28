@@ -94,12 +94,12 @@ namespace  Sprite
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D  draw(-16, -16, 32, 32);
-		draw.Offset(this->pos);
-		ML::Box2D  src(0, 0, 32, 32);
+		//ML::Box2D  draw(-16, -16, 32, 32);
+		//draw.Offset(this->pos);
+		//ML::Box2D  src(0, 0, 32, 32);
 
-		draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
-		this->res->img->Draw(draw, src, ML::Color(0.5f, 1, 1, 1));
+		//draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+		//this->res->img->Draw(draw, src, ML::Color(0.5f, 1, 1, 1));
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
