@@ -51,7 +51,7 @@ namespace  Player
 		this->crouchSpeed = 2.5f;	//しゃがみながら移動最大速度
 		this->decSpeed = 0.5f;		//接地状態の時の速度減衰量（摩擦
 		this->maxFallSpeed = 11.0f;	//最大落下速度
-		this->jumpPow = -11.0f;		//ジャンプ力（初速）
+		this->jumpPow = -12.5f;		//ジャンプ力（初速）
 		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
 		this->drawScale = 1;
 		this->attack2 = false;
@@ -133,10 +133,10 @@ namespace  Player
 		this->res->img->Draw(di.draw, di.src);
 
 
-		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
-		ge->debugRectDraw();
-		ge->debugRect(this->attackBase.OffsetCopy(this->pos), 5, -ge->camera2D.x, -ge->camera2D.y);
-		ge->debugRectDraw();
+		//ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
+		//ge->debugRectDraw();
+		//ge->debugRect(this->attackBase.OffsetCopy(this->pos), 5, -ge->camera2D.x, -ge->camera2D.y);
+		//ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
 	//思考＆状況判断　モーション決定
