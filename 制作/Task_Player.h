@@ -85,6 +85,7 @@ namespace  Player
 			Turn,		//	方向転換
 			Bound,		//	弾き飛ばされてる
 			Lose,		//  消滅中
+			Dash,		//  ダッシュ
 		};
 
 		//思考＆状況判断(ステータス決定）
@@ -106,6 +107,7 @@ namespace  Player
 		bool airattack;
 		//二段ジャンプフラグ
 		bool canJump;
+		bool canDash;
 
 		//攻撃力
 		int power;

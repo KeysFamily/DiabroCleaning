@@ -58,6 +58,7 @@ namespace  Player
 		this->attack3 = false;
 		this->airattack = true;
 		this->canJump = true;
+		this->canDash = true;
 		this->balanceMoney = 100;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1;
@@ -184,12 +185,14 @@ namespace  Player
 			if (airattack == true) {
 				if (inp.B4.down) { nm = Motion::AirAttack; }
 			}
+			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			break;
 		case Motion::Jump2:
 			if (this->moveVec.y >= 0) { nm = Motion::Fall2; }
 			if (airattack == true) {
 				if (inp.B4.down) { nm = Motion::AirAttack; }
 			}
+			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			break;
 		case  Motion::Fall:		//落下中
 			if (this->CheckFoot() == true) { nm = Motion::Landing; }
@@ -197,11 +200,19 @@ namespace  Player
 			if (airattack == true) {
 				if (inp.B4.down) { nm = Motion::AirAttack; }
 			}
+			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			break;
 		case Motion::Fall2:
 			if (this->CheckFoot() == true) { nm = Motion::Landing; }
 			if (airattack == true) {
 				if (inp.B4.down) { nm = Motion::AirAttack; }
+			}
+			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
+			break;
+		case Motion::Dash:
+			if (this->moveCnt > 10) {
+				if (preMotion == Motion::Jump2 || preMotion == Motion::Fall2) { nm = Motion::Fall2; }
+				else { nm = Motion::Fall; }
 			}
 			break;
 		case  Motion::TakeOff:	//飛び立ち
@@ -322,6 +333,7 @@ namespace  Player
 		case Motion::AirAttack: break;
 		case Motion::AirAttack2: break;
 		case Motion::AirAttack3: break;
+		case Motion::Dash: break;
 		case Motion::Unnon:	break;
 		}
 
@@ -336,13 +348,15 @@ namespace  Player
 			}
 			break;
 			//移動速度減衰を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
-		case Motion::Bound:
+		case Motion::Bound: 
 		case Motion::Unnon:	break;
 		}
 		//-----------------------------------------------------------------
 		//モーション毎に固有の処理
 		switch (this->motion) {
 		case  Motion::Stand:	//立っている
+			this->canJump = true;
+			this->canDash = true;
 			this->airattack = true;
 			this->attackBase = ML::Box2D(0, 0, 0, 0);
 			break;
@@ -358,6 +372,7 @@ namespace  Player
 			break;
 		case  Motion::Fall:		//落下中
 			if (inp.LStick.BL.on) {
+				this->angle_LR = Angle_LR::Left;
 				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
 			}
 			if (inp.LStick.BR.on) {
@@ -368,11 +383,11 @@ namespace  Player
 		case Motion::Fall2:
 			if (inp.LStick.BL.on) {
 				this->angle_LR = Angle_LR::Left;
-				this->moveVec.x = -this->maxSpeed;
+				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
 			}
 			if (inp.LStick.BR.on) {
 				this->angle_LR = Angle_LR::Right;
-				this->moveVec.x = this->maxSpeed;
+				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
 			}
 			break;
 		case  Motion::Jump:		//上昇中
@@ -404,12 +419,19 @@ namespace  Player
 			}
 			this->canJump = false;
 			break;
+		case Motion::Dash:
+			this->moveVec.y = 0;
+			if (this->angle_LR == Angle_LR::Right) { this->moveVec.x = 30; }
+			if (this->angle_LR == Angle_LR::Left) { this->moveVec.x = -30; }
+			if (this->moveCnt == 10) { this->moveVec.x = 0; }
+			this->canDash = false;
+			break;
 		case Motion::Landing:
-			this->canJump = true;
+			
 			break;
 		case  Motion::Attack:	//�U����
 			this->powerScale = 1.0f;
-			if(this->moveCnt == 6)this->MakeAttack();
+			if (this->moveCnt == 6)this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack2 = true; }
 			}
@@ -530,6 +552,8 @@ namespace  Player
 			{ ML::Box2D(-92, -62, 184, 120), ML::Box2D(412, 2244, 184, 120), defColor },	//48 空中攻撃4_2
 			{ ML::Box2D(-96, -30, 184, 88), ML::Box2D(608, 2276, 184, 88), defColor },		//49 空中攻撃4_3
 			{ ML::Box2D(-36, -38, 84, 96), ML::Box2D(664, 1232, 84, 96),defColor},			//50 ダメージ debugしてない
+			{ ML::Box2D(-98, -38, 142,112), ML::Box2D(814, 2256, 142, 112),defColor},			//51 ダッシュ
+
 		};
 		ML::Box2D attackTable[] = {
 			ML::Box2D(0,0,0,0),				//imageTable[21]	0
@@ -598,6 +622,7 @@ namespace  Player
 			work %= 2;
 			rtv = imageTable[work + 16];
 			break;
+		case Motion::Dash:		rtv = imageTable[51];	break;
 		case  Motion::TakeOff:	rtv = imageTable[18];	break;
 		case  Motion::Landing:	rtv = imageTable[19];	break;
 		case  Motion::Bound:	rtv = imageTable[50];	break;
@@ -660,7 +685,7 @@ namespace  Player
 		this->hitBase.x = -24;
 		this->hitBase.y = rtv.draw.y;
 		this->hitBase.w = 40;
-		this->hitBase.h = rtv.draw.h;		
+		this->hitBase.h = rtv.draw.h;
 		//	向きに応じて画像を左右反転する
 		if (Angle_LR::Left == this->angle_LR) {
 			rtv.draw.x = -rtv.draw.x;
@@ -672,7 +697,7 @@ namespace  Player
 			this->hitBase.h = 116;
 			this->hitBase.y = -58;
 		}
-		
+
 		rtv.draw = this->DrawScale(rtv.draw, this->drawScale);
 		rtv.src = this->DrawScale(rtv.src, this->drawScale);
 
@@ -684,6 +709,9 @@ namespace  Player
 	{
 		if (this->unHitTime > 0) {
 			return;//無敵時間中はダメージを受けない
+		}
+		if (this->motion == Motion::Dash) {
+			return;
 		}
 		this->unHitTime = 90;
 		this->hp.Addval(-at_.power);	//仮処理
