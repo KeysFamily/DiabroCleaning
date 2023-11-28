@@ -41,7 +41,6 @@ namespace  Map
 		auto result = this->LoadMap("map_start");
 		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
 
-		this->testCam = ML::Vec2(0, 0);
 		//★タスクの生成
 
 		return  true;
@@ -63,25 +62,6 @@ namespace  Map
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		auto inp = ge->in1->GetState();
-		int camSpeed = 10;
-		if (inp.LStick.BU.on == true)
-		{
-			this->testCam.y -= camSpeed;
-		}
-		if (inp.LStick.BD.on == true)
-		{
-			this->testCam.y += camSpeed;
-		}
-		if (inp.LStick.BL.on == true)
-		{
-			this->testCam.x -= camSpeed;
-		}
-		if (inp.LStick.BR.on == true)
-		{
-			this->testCam.x += camSpeed;
-		}
-
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -364,9 +344,7 @@ namespace  Map
 		if (this->hitBase.w < ge->camera2D.w) { ge->camera2D.x = m.left; }
 		if (this->hitBase.h < ge->camera2D.h) { ge->camera2D.y = m.top; }
 	}
-
-
-
+	//-------------------------------------------------------------------
 	//読み込み処理
 	bool Object::MapData::Load(const string& filePath_)
 	{

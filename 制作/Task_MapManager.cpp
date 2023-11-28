@@ -35,7 +35,7 @@ namespace  MapManager
 
 		//★データ初期化
 		this->mapSeed = (unsigned int)time(NULL);
-		srand(1701140554);
+		srand(mapSeed);
 		ge->printToDebugFile(to_string(mapSeed),1);
 		this->Generate();
 
@@ -72,6 +72,7 @@ namespace  MapManager
 	}
 	//-------------------------------------------------------------------
 	//その他のメソッド
+	//生成全般
 	void Object::Generate()
 	{
 		for (int y = 0; y < 30; ++y)
@@ -84,7 +85,7 @@ namespace  MapManager
 
 		map[0][0] = new MapObject("map_start");
 		map[0][1] = new Object::Connect(MapEnter::Left, MapExit::Right);
-		this->GenerateMap(2,0, 2, 6, MapEnter::Left);
+		this->GenerateMap(2, 0, 2, 6, MapEnter::Left);
 
 		//生成
 		for (int y = 0; y < 30; ++y)
@@ -98,7 +99,8 @@ namespace  MapManager
 			}
 		}
 	}
-
+	//-------------------------------------------------------------------
+	//1マップ生成処理
 	void Object::GenerateMap(int x_, int y_, int depth_, int depthRest_, MapEnter enter_)
 	{
 		enum GenerateDir
@@ -111,7 +113,7 @@ namespace  MapManager
 		//最下層なら次の生成処理は行わない
 		if (depthRest_ <= 1)
 		{
-			map[y_][x_] = new Map(enter_, MapExit::Non, depth_);
+			map[y_][x_] = new Area(enter_, MapExit::Non, depth_);
 			return;
 		}
 
@@ -124,7 +126,7 @@ namespace  MapManager
 		//生成可能な場所がなければ次の生成処理は行わない
 		if (cantGeneratesTotal >= 3)
 		{
-			map[y_][x_] = new Map(enter_, MapExit::Non, depth_);
+			map[y_][x_] = new Area(enter_, MapExit::Non, depth_);
 			return;
 		}
 
@@ -225,16 +227,42 @@ namespace  MapManager
 				}
 				GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
 			}
-			map[y_][x_] = new Map(enter_, exitDir, depth_);
+			map[y_][x_] = new Area(enter_, exitDir, depth_);
 			map[y_ + conY][x_ + conX] = new Connect(connectEnter, connectExit, connectExitSub);
 
 			finishedGenerate = false;
 		}
 	}
+	//-------------------------------------------------------------------
+	//ロード
+	void Object::MoveMap(const MapDir& mapDirection_)
+	{
+		switch (mapDirection_)
+		{
+		case MapDir::Up:
+			--currentPos.y;
+			break;
+		case MapDir::Down:
+			++currentPos.y;
+			break;
+		case MapDir::Left:
+			--currentPos.x;
+			break;
+		case MapDir::Right:
+			++currentPos.x;
+			break;
+		}
+
+		
+
+		auto mapObj = ge->GetTask<Map::Object>("Map");
+		mapObj->LoadMap(map[currentPos.y][currentPos.x]->mapName);
+
+	}
 
 
 
-
+	//-------------------------------------------------------------------
 	//消滅時の処理
 	void Object::Destroy()
 	{

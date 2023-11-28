@@ -15,6 +15,7 @@
 #include  "Task_GameUI.h"
 #include  "Task_MapManager.h"
 #include  "Task_GameUI_MiniMap.h"
+#include  "Task_MapTransition.h"
 
 namespace  Game
 {
@@ -50,7 +51,8 @@ namespace  Game
 
 		MapManager::Object::Create(true);
 		MiniMap::Object::Create(true);
-		
+		MapTransition::Object::Create(true);
+
 		auto map = Map::Object::Create(true);
 		map->render2D_Priority[1] = 0.9f;
 
@@ -87,6 +89,7 @@ namespace  Game
 		ge->KillAll_G("Enemy");
 		ge->KillAll_G("アイテム");
 		ge->KillAll_G("UI");
+		ge->KillAll_G("GameUI");
 		ge->KillAll_G(Player::defGroupName);
 		ge->KillAll_G(Map::defGroupName);
 		ge->KillAll_G(Sprite::defGroupName);

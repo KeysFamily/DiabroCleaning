@@ -87,7 +87,7 @@ namespace MapManager
 			Down,
 		};
 
-		class Map : public MapObject
+		class Area : public MapObject
 		{
 		private:
 			MapEnter enter;	//入口
@@ -96,7 +96,7 @@ namespace MapManager
 
 		public:
 
-			Map(MapEnter enter_, MapExit exit_, int depth_)
+			Area(MapEnter enter_, MapExit exit_, int depth_)
 				:enter(enter_)
 				, exit(exit_)
 				, depth(depth_)
@@ -146,6 +146,18 @@ namespace MapManager
 		int bossDepth;
 		unsigned int mapSeed;		//マップ生成のシード値
 		MapObject* map[30][30];
+		ML::Point currentPos;		//現在のマップ
+		
+		//マップのロードに使用する列挙体
+		enum class MapDir
+		{
+			Up,
+			Down,
+			Left,
+			Right
+		};
+		//ロード
+		void MoveMap(const MapDir& mapDirection_);
 
 	private:
 		void Generate();

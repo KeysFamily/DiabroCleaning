@@ -72,15 +72,17 @@ namespace  Map
 		};
 		map<int, SlopeData> slopeData;	//坂の情報のマップ配列
 
-		ML::Vec2 testCam;
 		int  arr[100][100];
 		ML::Box2D			hitBase;//ピクセル単位のマップサイズを持つ
+
+		bool  CheckHit(const  ML::Box2D& hit_);//あたり判定
+		ML::Vec2 CheckSlope(const ML::Box2D& hit_);//坂との当たり判定
+
 		//マップ読み込み
 		//param1:難易度までの名前
 		bool LoadMap(const string& mapName_);
 		bool LoadSlope(const string& filepath_);
-		bool  CheckHit(const  ML::Box2D& hit_);//あたり判定
-		ML::Vec2 CheckSlope(const ML::Box2D& hit_);//坂との当たり判定
+
 
 		//マップ外を見せないようにカメラを位置調整する
 		void  AdjustCameraPos();

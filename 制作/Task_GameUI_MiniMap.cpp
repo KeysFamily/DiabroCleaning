@@ -9,6 +9,7 @@
 #include  "MyPG.h"
 #include  "Task_GameUI_MiniMap.h"
 #include  "Task_MapManager.h"
+#include  "Task_MapTransition.h"
 
 namespace  MiniMap
 {
@@ -76,6 +77,21 @@ namespace  MiniMap
 			this->cameraPos.x += speed;
 		if (inp.RStick.BL.on)
 			this->cameraPos.x -= speed;
+
+		auto mt = ge->GetTask<MapTransition::Object>("MapTransition");
+		if(!mt)
+		{
+			return;
+		}
+		if (inp.RStick.BU.down)
+			mt->Appear(MapTransition::Object::TransitionDir::Up);
+		if (inp.RStick.BD.down)
+			mt->Appear(MapTransition::Object::TransitionDir::Down);
+		if (inp.RStick.BR.down)
+			mt->Appear(MapTransition::Object::TransitionDir::Right);
+		if (inp.RStick.BL.down)
+			mt->Appear(MapTransition::Object::TransitionDir::Left);
+
 	}
 	//-------------------------------------------------------------------
 	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
@@ -119,7 +135,7 @@ namespace  MiniMap
 			src_.y = this->res->imgChipSize.h * 2;
 		}
 
-		MapManager::Object::Map* map = dynamic_cast<MapManager::Object::Map*>(mapMng->map[y_][x_]);
+		MapManager::Object::Area* map = dynamic_cast<MapManager::Object::Area*>(mapMng->map[y_][x_]);
 		if (map)
 		{
 			src_.x = (int)map->GetExit() * this->res->imgChipSize.w;
