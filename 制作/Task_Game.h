@@ -47,5 +47,11 @@ namespace  Game
 	public:
 		//追加したい変数・メソッドはここに追加する
 		int cnt;
+
+		//◇◇◇◇◇◇◇◇◇◇
+		//以下22CI0333記述
+		OL::Limit<int> volume;
+		// ◆◆◆◆◆◆◆◆◆◆
+
 	};
 }

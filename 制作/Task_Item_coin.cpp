@@ -1,15 +1,17 @@
 //?------------------------------------------------------
-//タスク名:
-//作　成　者:
+//タスク名:Task_Item_coin
+//作　成　者:荻野　剛志
 //TODO:もしいれば下記へ記述
 //編　集　者:
-//作成年月日:
-//概　　　要:
-//?------------------------------------------------------
+//作成年月日:11/15
+//概　　　要:coinの元データ
+//------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_Map.h"
 #include  "Task_Player.h"
 #include  "Task_Item_coin.h"
+#include  "sound.h"
+#include  "Task_Map.h"
 
 namespace  Item_coin
 {
@@ -19,6 +21,11 @@ namespace  Item_coin
 	bool  Resource::Initialize()
 	{
 		this->img = DG::Image::Create("./data/image/coin.png");
+
+		//22ci0308
+		//se
+		se::LoadFile("se_get_coin", "./data/sound/se/se_select2.wav");
+		//
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -50,6 +57,7 @@ namespace  Item_coin
 		this->pos.x = 1300;
 		this->pos.y = 500;
 
+		se::LoadFile("se_get_coin", "./data/sound/se/se_select2.wav");
 		//★タスクの生成
 
 		return  true;
@@ -83,11 +91,10 @@ namespace  Item_coin
 		ML::Vec2  est = this->moveVec;
 		this->CheckMove(est);
 
-		if (animCnt > 60 * 3) {
-			//this->Kill();
-		}
-
-
+		//画面内にコインがあるか
+		auto map = ge->GetTask<Map::Object>("Map");
+		ML::Vec2 map_size (map->ObjectMap.width, map->ObjectMap.height);
+		this->out_coin(map_size.x,map_size.y);
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -123,6 +130,7 @@ namespace  Item_coin
 		}
 		//モーション更新
 		this->UpdateMotion(nm);
+
 	}
 
 	//------------------------------------------------------------------
@@ -222,8 +230,20 @@ namespace  Item_coin
 	{
 		from_->balanceMoney += 1;
 		this->Kill();
+		se::Play("se_get_coin");
 		//this->UpdateMotion(Motion::Bound);
 		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う
+	}
+
+	//------------------------------------------------------------------------------
+	//画面外にcoinが出たら消す処理
+	void Object::out_coin(int x_,int y_)
+	{
+		ML::Box2D drawsize(0, 0, x_ * 64, y_ * 64);
+		if ( drawsize.y>= this->pos.y || drawsize.h <= this->pos.y ||
+			drawsize.x >= this->pos.x || drawsize.w <= this->pos.x) {
+			this->Kill();
+		}
 	}
 
 

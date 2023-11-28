@@ -100,7 +100,7 @@ namespace  Player
 		//あたり判定
 		{
 			ML::Box2D me = this->hitBase.OffsetCopy(this->pos);
-			auto targets = ge->GetTasks<BChara>("アイテム");
+			auto targets = ge->GetTasks<BChara>("item");
 			for (auto it = targets->begin();
 				it != targets->end();
 				++it) {
