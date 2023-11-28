@@ -146,7 +146,6 @@ namespace  Player
 		auto  inp = this->controller->GetState();
 		int  nm = this->motion;	//とりあえず今の状態を指定
 
-
 		//思考（入力）や状況に応じてモーションを変更する事を目的としている。
 		//モーションの変更以外の処理は行わない
 		switch (nm) {
@@ -210,7 +209,7 @@ namespace  Player
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			break;
 		case Motion::Dash:
-			if (this->moveCnt > 10) {
+			if (this->moveCnt > 10 || true == this->CheckFront_LR()) {
 				if (preMotion == Motion::Jump2 || preMotion == Motion::Fall2) { nm = Motion::Fall2; }
 				else { nm = Motion::Fall; }
 			}
