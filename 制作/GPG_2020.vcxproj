@@ -149,6 +149,7 @@
     <ClCompile Include="Task_EnemySkeleton.cpp" />
     <ClCompile Include="Task_Game.cpp" />
     <ClCompile Include="Task_GameUI.cpp" />
+    <ClCompile Include="Task_GameUI_MiniMap.cpp" />
     <ClCompile Include="Task_Item_coin.cpp" />
     <ClCompile Include="Task_Item_coin_maneger.cpp" />
     <ClCompile Include="Task_Load.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Task_EnemySkeleton.h" />
     <ClInclude Include="Task_Game.h" />
     <ClInclude Include="Task_GameUI.h" />
+    <ClInclude Include="Task_GameUI_MiniMap.h" />
     <ClInclude Include="Task_Item_coin.h" />
     <ClInclude Include="Task_Item_coin_maneger.h" />
     <ClInclude Include="Task_Load.h" />

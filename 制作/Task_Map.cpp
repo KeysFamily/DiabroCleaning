@@ -12,7 +12,7 @@ namespace  Map
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/map/map96.png");
+		this->img = DG::Image::Create("./data/map/image/map96.png");
 		this->chipSize = 96;	//チップ画像のサイズ
 		this->drawSize = 64;	//描画するサイズ
 		this->turnNum = 64;		//画像の1行に含まれるチップの種類
