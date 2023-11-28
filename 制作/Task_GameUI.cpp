@@ -65,19 +65,24 @@ namespace  GameUI
 	{
 		auto player = ge->GetTask<BChara>("Player");
 		this->num = player->balanceMoney;
+		this->coinPos = ML::Vec2(32, 35);
+		this->numPos = ML::Vec2(50,20);
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		char nums[9];
-		sprintf(nums, "%08d", this->num);
+		char nums[7];
+		sprintf(nums, "%06d", this->num);
 		//8桁の数字表示
-		for (int i = 0; i < 8; ++i) {
+		for (int i = 0; i < 6; ++i) {
 			ML::Box2D draw(i * 20, 0, 20, 32);
 			ML::Box2D src((nums[i] - '0') * 20, 32, 20, 32);
 			this->res->num->Draw(draw.OffsetCopy(numPos), src);
 		}
+		ML::Box2D coin_draw(-20, -20, 40, 40);
+		ML::Box2D coin_src(0, 0, 32, 32);
+		this->res->coinImg->Draw(coin_draw.OffsetCopy(coinPos), coin_src);
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
