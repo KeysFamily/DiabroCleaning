@@ -8,13 +8,13 @@
 //作成年月日:
 //概　　　要:
 //?------------------------------------------------------
-#include "BChara.h"
+#include "GameEngine_Ver3_83.h"
 
-namespace  coin_maneger
+namespace  GameUI
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("coin_maneger");	//グループ名
-	const  string  defName("コイン生成");	//タスク名
+	const  string  defGroupName("UI");	//グループ名
+	const  string  defName("Noname");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -28,6 +28,8 @@ namespace  coin_maneger
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
+		DG::Image::SP coinImg;
+		DG::Image::SP	num;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -51,9 +53,7 @@ namespace  coin_maneger
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		int coin_Max;     //map内で描画させるコインの枚数
-		int coin_num;     //見えないcoinの枚数
-
-		void Create_coin(int x_, int y_, int rand_);
+		ML::Vec2 coinPos,numPos;
+		int num;
 	};
 }

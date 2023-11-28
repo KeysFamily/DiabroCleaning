@@ -1,20 +1,20 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//タスク名:
-//作　成　者:
+//タスク名:ミニマップ
+//作　成　者:土田誠也
 //TODO:もしいれば下記へ記述
 //編　集　者:
-//作成年月日:
+//作成年月日:2023/11/25
 //概　　　要:
 //?------------------------------------------------------
-#include "BChara.h"
+#include "GameEngine_Ver3_83.h"
 
-namespace  coin_maneger
+namespace  MiniMap
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("coin_maneger");	//グループ名
-	const  string  defName("コイン生成");	//タスク名
+	const  string  defGroupName("GameUI");	//グループ名
+	const  string  defName("MiniMap");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -28,6 +28,12 @@ namespace  coin_maneger
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
+		DG::Image::SP imgBG;
+		OL::Size2D imgBGSize;
+		DG::Image::SP imgChip;
+		OL::Size2D imgChipSize;
+
+
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -51,9 +57,12 @@ namespace  coin_maneger
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		int coin_Max;     //map内で描画させるコインの枚数
-		int coin_num;     //見えないcoinの枚数
+		ML::Vec2 pos;
+		ML::Vec2 cameraPos;
+		OL::Size2D screenSize;
+		ML::Vec2 screenOfs;
 
-		void Create_coin(int x_, int y_, int rand_);
+		void SetChip(ML::Box2D& src_, int x_, int y_);
+		void SetToScreen(ML::Box2D& drawBox_, ML::Box2D& srcBox_, const ML::Box2D& screen_);
 	};
 }

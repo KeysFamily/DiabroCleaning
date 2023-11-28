@@ -1,0 +1,50 @@
+[
+	{
+		"chipNum": 1,
+		"vecX": 1,
+		"vecY": -0.5,
+		"beginHeight": 0
+	},
+	{
+		"chipNum": 2,
+		"vecX": 1,
+		"vecY": -0.5,
+		"beginHeight": 0.5
+	},
+	{
+		"chipNum": 3,
+		"vecX": -1,
+		"vecY": -0.5,
+		"beginHeight": 0
+	},
+	{
+		"chipNum": 4,
+		"vecX": -1,
+		"vecY": -0.5,
+		"beginHeight": 0.5
+	},
+	{
+		"chipNum": 5,
+		"vecX": -1,
+		"vecY": 0.5,
+		"beginHeight": 0
+	},
+	{
+		"chipNum": 6,
+		"vecX": -1,
+		"vecY": 0.5,
+		"beginHeight": 0.5
+	},
+	{
+		"chipNum": 7,
+		"vecX": 1,
+		"vecY": 0.5,
+		"beginHeight": 0
+	},
+	{
+		"chipNum": 8,
+		"vecX": 1,
+		"vecY": 0.5,
+		"beginHeight": 0.5
+	}
+]

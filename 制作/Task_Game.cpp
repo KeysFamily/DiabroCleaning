@@ -12,6 +12,9 @@
 #include  "Task_EnemySkeleton.h"
 #include  "BEnemy.h"
 #include  "Task_Ending.h"
+#include  "Task_GameUI.h"
+#include  "Task_MapManager.h"
+#include  "Task_GameUI_MiniMap.h"
 
 #include  "sound.h"
 
@@ -54,6 +57,9 @@ namespace  Game
 		player->pos.y = 500;
 		player->render2D_Priority[1] = 0.5f;
 
+		MapManager::Object::Create(true);
+		MiniMap::Object::Create(true);
+		
 		auto map = Map::Object::Create(true);
 		map->render2D_Priority[1] = 0.9f;
 
@@ -73,6 +79,9 @@ namespace  Game
 
 		auto coin_man = coin_maneger::Object::Create(true);
 
+		auto UI = GameUI::Object::Create(true);
+		UI->numPos = ML::Vec2(50, 50);
+
 		this->cnt = 0;
 
 		return  true;
@@ -87,6 +96,8 @@ namespace  Game
 		ge->KillAll_G("Enemy");
         ge->KillAll_G("item");
 		ge->KillAll_G("coin_maneger");
+		ge->KillAll_G("アイテム");
+		ge->KillAll_G("UI");
 		ge->KillAll_G(Player::defGroupName);
 		ge->KillAll_G(Map::defGroupName);
 		ge->KillAll_G(Sprite::defGroupName);
@@ -103,6 +114,7 @@ namespace  Game
 	{
 		//(22CI0333)他のタスクで以下の処理は行わなくてよい
 		ge->qa_Player = ge->GetTask<Player::Object>(Player::defGroupName, Player::defName);
+		ge->qa_Map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 		ge->qa_Enemys = ge->GetTasks<BEnemy>("Enemy");
 
 		auto inp = ge->in1->GetState( );

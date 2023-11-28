@@ -14,6 +14,7 @@
 #include  "Task_Map.h"
 
 #include  "randomLib.h"
+#include  "Task_Item_coin_maneger.h"
 
 namespace  EnemySkeleton
 {
@@ -64,7 +65,7 @@ namespace  EnemySkeleton
 	{
 		//★データ＆タスク解放
 
-
+		this->DropCoins(10);
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
 		}
@@ -173,11 +174,15 @@ namespace  EnemySkeleton
 			break;
 		case Motion::Bound:
 			if (this->moveCnt >= 16 && this->CheckFoot()) {
-				nm = Motion::Stand;
+				if (this->preMotion == Motion::Walk) {
+					nm = Motion::Tracking;
+				}
+				else {
+					nm = Motion::Stand;
+				}
 			}
 			break;
 		case Motion::Lose:
-
 			break;
 		default:
 			break;
@@ -274,6 +279,7 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Lose:
+			if (this->moveCnt < 3) { Create_coin(this->pos.x, this->pos.y, 10); }
 			if (this->moveCnt >= 30) {
 				this->Kill();
 			}
@@ -403,7 +409,7 @@ namespace  EnemySkeleton
 		if (this->unHitTime > 0) { 
 			return; //無敵時間中は処理を受けない
 		}
-		this->unHitTime = 30;
+		//this->unHitTime = 20;
 		this->hp.Addval(-at_.power);
 		if (this->hp.vnow <= 0) {
 			this->UpdateMotion(Motion::Lose);
@@ -411,21 +417,21 @@ namespace  EnemySkeleton
 		}
 		//吹き飛ばされる
 		if (this->pos.x > from_->pos.x) {
-			this->moveVec = ML::Vec2(+3, -8);
+			this->moveVec = ML::Vec2(2, -3);
 		}
 		else {
-			this->moveVec = ML::Vec2(-3, -8);
+			this->moveVec = ML::Vec2(-2, -3);
 		}
 		this->UpdateMotion(Motion::Bound);
 	}
 
 	//-------------------------------------------------------------------
 	// Playerを索敵する
-	bool Object::SearchPlayer(int dist) {
+	bool Object::SearchPlayer(int distX_, int distY_) {
 		this->searchCnt = 0;
-		auto map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+		//auto map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 
-		if (ge->qa_Player == nullptr || map == nullptr) { return false; }
+		if (ge->qa_Player == nullptr || ge->qa_Map == nullptr) { return false; }
 		ML::Box2D eye(
 			this->hitBase.x,
 			this->hitBase.y,
@@ -441,10 +447,10 @@ namespace  EnemySkeleton
 		eye.Offset(this->pos);
 
 
-		for (int i = 0; i < dist; ++i) {
+		for (int i = 0; i < distX_; ++i) {
 			ge->debugRect(eye, 7, -ge->camera2D.x, -ge->camera2D.y);
 
-			if (map->CheckHit(eye))break;
+			if (ge->qa_Map->CheckHit(eye))break;
 			if (ge->qa_Player != nullptr && ge->qa_Player->CallHitBox().Hit(eye)) { return true; }
 
 			if (this->angle_LR == Angle_LR::Left) {

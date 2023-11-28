@@ -9,11 +9,67 @@
 #include  "MyPG.h"
 #include  "BEnemy.h"
 
+#include  "Task_Item_coin.h"
+
+#include  "nlohmann/json.hpp"
+using json = nlohmann::json;
+
+//-----------------------------------------------------------------------------
+//ファイル読み込み
+void BEnemy::InputJsonFile(string enemyName_) {
+	//****************************************
+	//ファイルから受け付けるもの
+	//・体力
+	//・ジャンプ力
+	//・左右 最大速度
+	//・左右 加速度
+	//・左右 減衰量
+	// 
+	//・無敵時間
+	// 
+	//・ドロップするお金の量
+	//・攻撃力
+	// 
+	//****************************************
+	ifstream f("./data/enemy/json/enemy.json");
+	if (!f.is_open()) return;//ファイルオープンに失敗
+	json data = json::parse(f);
+	auto& e = data[enemyName_];
+
+	int HP = e["HP"];
+	this->hp.SetValues(HP, 0, HP);
+	this->jumpPow = e["jumpPow"];
+	this->maxSpeed = e["maxSpeed"];
+	this->addSpeed = e["addSpeed"];
+	this->decSpeed = e["decSpeed"];
+	this->unHitTime = e["unHitTime"];
+
+
+	f.close();
+
+}
+
 //-----------------------------------------------------------------------------
 //アニメーション制御
 BChara::DrawInfo BEnemy::Anim() {
 	BChara::DrawInfo di{ ML::Box2D(),ML::Box2D(),ML::Color(1.0f,1.0f,1.0f,1.0f)};
 	return di;
+}
+
+//-----------------------------------------------------------------------------
+//Player索敵制御
+bool BEnemy::SearchPlayer(int distX_, int distY_) {
+	ML::MsgBox("処理が実装されていません");
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// コインをドロップする
+void BEnemy::DropCoins(unsigned int dropNum_) {
+	for (unsigned int i = 0; i < dropNum_; ++i) {
+		auto coin = Item_coin::Object::Create(true);
+		coin->pos = this->pos;
+	}
 }
 
 //-----------------------------------------------------------------------------

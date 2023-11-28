@@ -25,6 +25,7 @@ public:
 	ML::Box2D   map_hitBase;//マップ当たり判定
 	ML::Vec2	moveVec;	//移動ベクトル
 	int			moveCnt,preMoveCnt;	//行動カウンタ
+	int			tempCnt;	//一時カウンタ
 	OL::Limit<float> hp;
 	float		speed;      //移動スピード
 	//向き（2D視点）
@@ -58,6 +59,7 @@ public:
 		, moveVec(0, 0)
 		, moveCnt(0)
 		, preMoveCnt(0)
+		, tempCnt(0)
 		, hp()
 		, speed(0.f)
 		, angle(0.f)
@@ -103,7 +105,7 @@ public:
 	};
 	//攻撃情報
 	struct AttackInfo {
-		int	power;
+		float	power;
 		int	hit;
 		int element;
 		//その他必要に応じて
@@ -113,7 +115,8 @@ public:
 	virtual void Received(BChara* from_, AttackInfo at_);
 	//接触判定
 	virtual bool CheckHit(const ML::Box2D& hit_);
-
+	//コイン生成
+	void Create_coin(int x_, int y_, int rand_);
 protected:
 	virtual void Think() {}
 	virtual void Move() {}
