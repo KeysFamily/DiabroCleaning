@@ -114,7 +114,7 @@ namespace  MapTransition
 			}
 			imgHit.Offset(this->pos);
 
-			if (!imgHit.Hit(ge->GetScreenCenter()))
+			if (!imgHit.Hit(ge->GetScreenBox()))
 			{
 				this->Kill();
 			}

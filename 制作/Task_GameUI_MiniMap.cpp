@@ -81,6 +81,7 @@ namespace  MiniMap
 		auto mt = ge->GetTask<MapTransition::Object>("MapTransition");
 		if(!mt)
 		{
+			mt = MapTransition::Object::Create(true);
 			return;
 		}
 		if (inp.RStick.BU.down)
@@ -92,6 +93,8 @@ namespace  MiniMap
 		if (inp.RStick.BL.down)
 			mt->Appear(MapTransition::Object::TransitionDir::Left);
 
+		if (inp.L1.down)
+			mt->Disappear();
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
