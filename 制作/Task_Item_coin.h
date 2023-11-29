@@ -78,5 +78,8 @@ namespace  Item_coin
 
 		//デバック用
 		XI::GamePad::SP controller;
+
+		//画面外に出たらアイテムを消す処理
+		void out_coin(int x,int y);
 	};
 }

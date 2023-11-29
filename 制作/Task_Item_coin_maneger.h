@@ -13,7 +13,7 @@
 namespace  coin_maneger
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("コインマネージャ");	//グループ名
+	const  string  defGroupName("coin_maneger");	//グループ名
 	const  string  defName("コイン生成");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource

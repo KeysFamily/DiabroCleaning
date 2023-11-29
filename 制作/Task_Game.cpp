@@ -17,6 +17,8 @@
 #include  "Task_GameUI_MiniMap.h"
 #include  "Task_MapTransition.h"
 
+#include  "sound.h"
+
 namespace  Game
 {
 	Resource::WP  Resource::instance;
@@ -42,6 +44,13 @@ namespace  Game
 		this->res = Resource::Create();
 
 		//★データ初期化
+		
+		// ◇◇◇◇◇◇◇◇◇◇
+		//22ci0308
+		bgm::LoadFile("bgm3", "./data/sound/bgm/industrial_zone.mp3");
+		bgm::Play("bgm3");
+		//this->volume.SetValues(100, 0, 100);
+		// ◆◆◆◆◆◆◆◆◆◆
 
 		//★タスクの生成
 		auto player = Player::Object::Create(true);
@@ -87,6 +96,8 @@ namespace  Game
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
 		ge->KillAll_G("Enemy");
+        ge->KillAll_G("item");
+		ge->KillAll_G("coin_maneger");
 		ge->KillAll_G("アイテム");
 		ge->KillAll_G("UI");
 		ge->KillAll_G("GameUI");
