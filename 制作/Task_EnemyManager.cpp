@@ -39,7 +39,7 @@ namespace  EnemyManager
 		this->residentResource.push_back(EnemySkeleton::Resource::Create());
 		//★タスクの生成
 		SpawnEnemy();
-
+		ge->debugRectLoad();
 
 		return  true;
 	}
@@ -50,6 +50,7 @@ namespace  EnemyManager
 		//★データ＆タスク解放
 		this->residentResource.clear();
 		ge->KillAll_G("Enemy");
+		ge->debugRectReset();
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -78,6 +79,7 @@ namespace  EnemyManager
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		ge->debugRectDraw();
 	}
 
 	//-------------------------------------------------------------------

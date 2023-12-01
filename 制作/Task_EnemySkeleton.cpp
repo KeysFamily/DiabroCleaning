@@ -110,7 +110,7 @@ namespace  EnemySkeleton
 			if (this->moveCnt > 60 * 5) { nm = Motion::Stand; }
 			//ˆÈ~@ƒvƒŒƒCƒ„õ“G
 
-			if (this->searchCnt > 60 && this->SearchPlayer(1000)) {
+			if (this->searchCnt > 60 && this->SearchPlayer(800,192)) {
 				nm = Motion::Tracking;
 			}
 		}
@@ -124,7 +124,7 @@ namespace  EnemySkeleton
 
 			if (this->searchCnt > 30) {
 				this->searchCnt = 0;
-				if (!this->SearchPlayer(1000)) {
+				if (!this->SearchPlayer(1000,256)) {
 					//3‰ñŒ©‚Â‚©‚ç‚È‚¯‚ê‚Î’Êíˆ—‚É–ß‚·
 					if (++this->notFoundPlayerCnt > 3) {
 						this->notFoundPlayerCnt = 0;
@@ -434,30 +434,34 @@ namespace  EnemySkeleton
 		if (ge->qa_Player == nullptr || ge->qa_Map == nullptr) { return false; }
 		ML::Box2D eye(
 			this->hitBase.x,
-			this->hitBase.y,
+			this->hitBase.y + this->hitBase.h,
 			10,
-			this->hitBase.h
+			10
 		);
 		if (this->angle_LR == Angle_LR::Left) {
-			eye.Offset(-eye.w, 0);
+			eye.Offset(-eye.w, -eye.h);
 		}
 		else {
-			eye.Offset(this->hitBase.w, 0);
+			eye.Offset(this->hitBase.w, -eye.h);
 		}
 		eye.Offset(this->pos);
 
-
-		for (int i = 0; i < distX_; ++i) {
-			ge->debugRect(eye, 7, -ge->camera2D.x, -ge->camera2D.y);
-
+		int eyeW = eye.w;
+		int eyeH = eye.h;
+		for (int x = 0; x < distX_; x += eyeW) {
 			if (ge->qa_Map->CheckHit(eye))break;
-			if (ge->qa_Player != nullptr && ge->qa_Player->CallHitBox().Hit(eye)) { return true; }
-
+			for (int y = 0; y < distY_; y+=eyeH) {
+				ML::Box2D eb = eye.OffsetCopy(0, -y);
+				if (ge->qa_Map->CheckHit(eb))break;
+				if (ge->qa_Player != nullptr && ge->qa_Player->CallHitBox().Hit(eb)) { return true; }
+				ge->debugRect(eb, 4, -ge->camera2D.x, -ge->camera2D.y);
+				
+			}
 			if (this->angle_LR == Angle_LR::Left) {
-				eye.Offset(-1, 0);
+				eye.Offset(-eyeW, 0);
 			}
 			else {
-				eye.Offset(1, 0);
+				eye.Offset(eyeW, 0);
 			}
 		}
 
