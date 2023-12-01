@@ -9,8 +9,7 @@
 #include  "Task_Sprite.h"
 #include  "Task_Item_coin.h"
 #include  "Task_Item_coin_maneger.h"
-#include  "Task_EnemySkeleton.h"
-#include  "BEnemy.h"
+#include  "Task_EnemyManager.h"
 #include  "Task_Ending.h"
 #include  "Task_GameUI.h"
 #include  "Task_MapManager.h"
@@ -68,10 +67,6 @@ namespace  Game
 		spr->target = player;
 		spr->render2D_Priority[1] = 0.6f;
 
-		auto sk = EnemySkeleton::Object::Create(true);
-		sk->pos.x = 1100;
-		sk->pos.y = 500;
-
 		ge->camera2D.x = 0;
 		ge->camera2D.y = 0;
 		ge->camera2D.w = ge->screenWidth;
@@ -82,6 +77,8 @@ namespace  Game
 		auto UI = GameUI::Object::Create(true);
 		UI->numPos = ML::Vec2(50, 50);
 
+		EnemyManager::Object::Create(true);
+		
 		this->cnt = 0;
 
 		return  true;
@@ -93,11 +90,11 @@ namespace  Game
 
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
-		ge->KillAll_G("Enemy");
         ge->KillAll_G("item");
 		ge->KillAll_G("coin_maneger");
 		ge->KillAll_G("アイテム");
 		ge->KillAll_G("UI");
+		ge->KillAll_G(EnemyManager::defGroupName);
 		ge->KillAll_G(Player::defGroupName);
 		ge->KillAll_G(Map::defGroupName);
 		ge->KillAll_G(Sprite::defGroupName);
@@ -115,7 +112,6 @@ namespace  Game
 		//(22CI0333)他のタスクで以下の処理は行わなくてよい
 		ge->qa_Player = ge->GetTask<Player::Object>(Player::defGroupName, Player::defName);
 		ge->qa_Map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-		ge->qa_Enemys = ge->GetTasks<BEnemy>("Enemy");
 
 		auto inp = ge->in1->GetState( );
 
