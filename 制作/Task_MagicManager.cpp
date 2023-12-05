@@ -71,12 +71,14 @@ namespace  MagicManager
 				auto fb = FireBall::Object::Create(true); //(‰¼)
 				if (pl->balanceMoney > fb->cost) {
 					if (this->LR) {
-						fb->moveVec = ML::Vec2(5.0f, 0);
+						fb->angle_LR = BChara::Angle_LR::Right;
+						fb->moveVec = ML::Vec2(fb->speed, 0);
 						fb->pos.x = this->pos.x + 60;
 						fb->pos.y = this->pos.y;
 					}
 					if (!this->LR) {
-						fb->moveVec = ML::Vec2(-5.0f, 0);
+						fb->angle_LR = BChara::Angle_LR::Left;
+						fb->moveVec = ML::Vec2(-fb->speed, 0);
 						fb->pos.x = this->pos.x - 60;
 						fb->pos.y = this->pos.y;
 					}

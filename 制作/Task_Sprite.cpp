@@ -62,23 +62,23 @@ namespace  Sprite
 
 			//ターゲットの向きに合わせて自分の移動先を変更
 			if (tg->angle_LR == BChara::Angle_LR::Left) {
-				ML::Vec2  adjust(-100, 0);
+				ML::Vec2  adjust(-250, 0);
 				toVec += adjust;
 			}
 			else {
-				ML::Vec2  adjust(+100, 0);
+				ML::Vec2  adjust(+250, 0);
 				toVec += adjust;
 			}
 
 			//ターゲットに５％近づく
-			this->pos += toVec * 0.05f;
+			this->pos += toVec * 0.03f;
 		}
 
 		//カメラの位置を再調整
 		{
 			//プレイヤを画面の何処に置くか（今回は画面中央）
-			int  px = 1200;
-			int  py = 500;
+			int  px = 1920/2;
+			int  py = 600;
 			//プレイヤを画面中央に置いた時のカメラの左上座標を求める
 			int  cpx = int(this->pos.x) - px;
 			int  cpy = int(this->pos.y) - py;
