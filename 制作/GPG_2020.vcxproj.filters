@@ -38,6 +38,9 @@
     <Filter Include="MyPG\Task\Game\GameUI">
       <UniqueIdentifier>{1b318143-e58a-41ae-b35d-8b214154aa6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyPG\Task\Game\Majic">
+      <UniqueIdentifier>{b4b8e054-d770-4f47-bbc0-a199dd969647}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine_Ver3_83.cpp">
@@ -154,6 +157,11 @@
     <ClCompile Include="Task_GameUI_MiniMap.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
+    <ClCompile Include="Task_MagicManager.cpp">
+      <Filter>MyPG\Task\Game\Majic</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_FireBall.cpp">
+      <Filter>MyPG\Task\Game\Majic</Filter>
     <ClCompile Include="Task_EnemySkeleton.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
@@ -271,6 +279,11 @@
     <ClInclude Include="Task_GameUI_MiniMap.h">
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
+    <ClInclude Include="Task_MagicManager.h">
+      <Filter>MyPG\Task\Game\Majic</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_FireBall.h">
+      <Filter>MyPG\Task\Game\Majic</Filter>
     <ClInclude Include="Task_EnemySkeleton.h">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>

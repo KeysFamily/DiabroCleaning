@@ -5,9 +5,10 @@
 #include  "Task_Player.h"
 #include  "Task_Map.h"
 #include  "Task_Effect00.h"
-#include "Task_Item_coin.h"
+#include  "Task_Item_coin.h"
 #include  "BEnemy.h"
 #include  "Task_EnemySkeleton.h"
+#include  "Task_MagicManager.h"
 
 
 
@@ -64,7 +65,7 @@ namespace  Player
 		this->power = 1;
 		this->powerScale = 1.0f;
 		this->balanceMoney = 100;
-
+		this->magicSelect = Magic::FireBall;
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -134,10 +135,10 @@ namespace  Player
 		this->res->img->Draw(di.draw, di.src);
 
 
-		//ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
-		//ge->debugRectDraw();
-		//ge->debugRect(this->attackBase.OffsetCopy(this->pos), 5, -ge->camera2D.x, -ge->camera2D.y);
-		//ge->debugRectDraw();
+		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
+		ge->debugRectDraw();
+		ge->debugRect(this->attackBase.OffsetCopy(this->pos), 5, -ge->camera2D.x, -ge->camera2D.y);
+		ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
 	//思考＆状況判断　モーション決定
@@ -157,6 +158,7 @@ namespace  Player
 			if (inp.LStick.BD.on && inp.LStick.BR.on) { nm = Motion::CrouchWalk; }
 			if (inp.B1.down) { nm = Motion::TakeOff; }
 			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			if (this->CheckFoot() == false) {
 				tempCnt++;
 				if (tempCnt > 10) {
@@ -168,6 +170,7 @@ namespace  Player
 		case  Motion::Walk:		//歩いている
 			if (inp.B1.down) { nm = Motion::TakeOff; }
 			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			if (this->CheckFoot() == false) {
 				tempCnt++;
 				if (tempCnt > 18) {
@@ -210,6 +213,7 @@ namespace  Player
 			break;
 		case Motion::Dash:
 			if (this->moveCnt > 10 || true == this->CheckFront_LR()) {
+				this->moveVec.x = 0;
 				if (preMotion == Motion::Jump2 || preMotion == Motion::Fall2) { nm = Motion::Fall2; }
 				else { nm = Motion::Fall; }
 			}
@@ -305,6 +309,8 @@ namespace  Player
 		case Motion::AirAttack4:
 			if (this->moveCnt == 15) { nm = Motion::Stand; }
 			break;
+		case Motion::MagicAttack:
+			if (this->moveCnt >= 15 && inp.B3.off) { nm = Motion::Stand; }
 		}
 		//モーション更新
 		this->UpdateMotion(nm);
@@ -358,6 +364,7 @@ namespace  Player
 			this->canDash = true;
 			this->airattack = true;
 			this->attackBase = ML::Box2D(0, 0, 0, 0);
+			ge->KillAll_G("MagicManager");
 			break;
 		case  Motion::Walk:		//歩いている
 			if (inp.LStick.BL.on) {
@@ -476,6 +483,22 @@ namespace  Player
 			this->powerScale = 2.5f;
 			if (this->moveCnt == 1)this->MakeAttack();
 			break;
+		case Motion::MagicAttack:
+			if (this->moveCnt == 11) {
+				auto mj = MagicManager::Object::Create(true); //(仮)
+				switch (this->magicSelect) {
+				case Magic::NoMagic:
+					mj->magicSelect = mj->Magic::Unnon;
+					break;
+				case Magic::FireBall:
+					mj->magicSelect = mj->Magic::FireBall;
+					break;
+				}
+				if (this->angle_LR == Angle_LR::Left) { mj->LR = false; }
+				else if (this->angle_LR == Angle_LR::Right) { mj->LR = true; }
+				mj->pos = this->pos;
+			}
+			break;
 		case Motion::Crouch:	//しゃがむ
 			break;
 		case Motion::CrouchWalk:	//しゃがみながら移動
@@ -551,7 +574,13 @@ namespace  Player
 			{ ML::Box2D(-92, -62, 184, 120), ML::Box2D(412, 2244, 184, 120), defColor },	//48 空中攻撃4_2
 			{ ML::Box2D(-96, -30, 184, 88), ML::Box2D(608, 2276, 184, 88), defColor },		//49 空中攻撃4_3
 			{ ML::Box2D(-36, -38, 84, 96), ML::Box2D(664, 1232, 84, 96),defColor},			//50 ダメージ debugしてない
-			{ ML::Box2D(-98, -38, 142,112), ML::Box2D(814, 2256, 142, 112),defColor},			//51 ダッシュ
+			{ ML::Box2D(-98, -38, 142,112), ML::Box2D(814, 2256, 142, 112),defColor},		//51 ダッシュ
+			{ ML::Box2D(-48, -42, 72, 100), ML::Box2D(460, 1820, 72, 100),defColor},		//52 魔法1
+			{ ML::Box2D(-44, -42, 68, 100), ML::Box2D(664, 1820, 68, 100),defColor},		//53 魔法2
+			{ ML::Box2D(-48, -38, 108, 96), ML::Box2D(860, 1824, 108, 96),defColor},		//54 魔法3
+			{ ML::Box2D(-56, -38, 116, 96), ML::Box2D(1252, 1824, 116, 96),defColor},		//55 魔法4
+			{ ML::Box2D(-48, -38, 108, 96), ML::Box2D(60, 1972, 108, 96),defColor},			//56 魔法5
+			{ ML::Box2D(-56, -38, 116, 96), ML::Box2D(252, 1972, 116, 96),defColor},		//57 魔法6
 
 		};
 		ML::Box2D attackTable[] = {
@@ -677,6 +706,12 @@ namespace  Player
 			work %= 3;
 			rtv = imageTable[work + 47];
 			this->attackBase = attackTable[work + 26];
+			break;
+		case Motion::MagicAttack:
+			if (this->animCnt < 3)work = 0;
+			else if (this->animCnt >= 3 && this->animCnt < 6)work = 1;
+			else work = (this->animCnt / 8) % 4 + 2;
+			rtv = imageTable[work + 52];
 			break;
 		}
 
