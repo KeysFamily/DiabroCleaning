@@ -101,6 +101,8 @@ namespace  Game
 		ge->KillAll_G(Player::defGroupName);
 		ge->KillAll_G(Map::defGroupName);
 		ge->KillAll_G(Sprite::defGroupName);
+		ge->KillAll_G("MagicManager");
+		ge->KillAll_G("Magic");
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
 			auto next = Ending::Object::Create(true);
