@@ -24,12 +24,14 @@ namespace  Game
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
+		this->haikei = DG::Image::Create("./data/image/haikei.jpg");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
+		this->haikei.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -42,7 +44,7 @@ namespace  Game
 		this->res = Resource::Create();
 
 		//★データ初期化
-		
+		this->render2D_Priority[1] = 1;
 		// ◇◇◇◇◇◇◇◇◇◇
 		//22ci0308
 		bgm::LoadFile("bgm3", "./data/sound/bgm/industrial_zone.mp3");
@@ -133,6 +135,12 @@ namespace  Game
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		ML::Box2D draw(0, 0, 1920, 1080);
+		ML::Box2D src(0, 0, 1920, 1080);
+		
+		this->res->haikei->Draw(draw, src);	//仮で背景を用意する
+
+
 		ge->Dbg_ToDisplay(100, 100, "Game");
 	}
 

@@ -37,9 +37,9 @@ namespace  FireBall
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->hitBase = ML::Box2D(-13, -13, 26, 26);
+		this->hitBase = ML::Box2D(-26, -26, 52, 52);
 		this->pos = ML::Vec2(0, 0);
-		this->speed = 5.0f;
+		this->speed = 10.0f;
 		this->power = 5.0f;
 		this->cost = 10;
 		//★タスクの生成
@@ -97,9 +97,9 @@ namespace  FireBall
 		ML::Color  defColor(1, 1, 1, 1);
 		BChara::DrawInfo imageTable[] = {
 			//draw							src
-			{ ML::Box2D(-13,-13,26,26), ML::Box2D(0, 0, 26, 26), defColor },			//0
-			{ ML::Box2D(-13,-13,26,26), ML::Box2D(26, 0, 26, 26), defColor },			//1
-			{ ML::Box2D(-13,-13,26,26), ML::Box2D(26*2, 0, 26, 26), defColor },			//2
+			{ ML::Box2D(-26,-26,52,52), ML::Box2D(0, 0, 26, 26), defColor },			//0
+			{ ML::Box2D(-26,-26,52,52), ML::Box2D(26, 0, 26, 26), defColor },			//1
+			{ ML::Box2D(-26,-26,52,52), ML::Box2D(26*2, 0, 26, 26), defColor },			//2
 		};
 		BChara::DrawInfo  rtv;
 		int  work;

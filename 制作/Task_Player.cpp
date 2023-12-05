@@ -47,7 +47,7 @@ namespace  Player
 		this->angle_LR = Angle_LR::Right;
 		this->controller = ge->in1;
 		this->motion = Motion::Stand;		//キャラ初期状態
-		this->maxSpeed = 8.0f;		//最大移動速度（横）
+		this->maxSpeed = 9.0f;		//最大移動速度（横）
 		this->addSpeed = 1.0f;		//歩行加速度（地面の影響である程度打ち消される
 		this->crouchSpeed = 2.5f;	//しゃがみながら移動最大速度
 		this->decSpeed = 0.5f;		//接地状態の時の速度減衰量（摩擦
@@ -259,7 +259,7 @@ namespace  Player
 			if (inp.B4.down) { nm = Motion::Attack; }
 			break;
 		case  Motion::Attack:	//攻撃中
-			if (this->moveCnt == 25)
+			if (this->moveCnt == 20)
 			{
 				if (attack2 == true)
 				{
@@ -269,7 +269,7 @@ namespace  Player
 			}
 			break;
 		case Motion::Attack2:
-			if (this->moveCnt == 25)
+			if (this->moveCnt == 20)
 			{
 				if (attack3 == true)
 				{
@@ -279,7 +279,7 @@ namespace  Player
 			}
 			break;
 		case Motion::Attack3:
-			if (this->moveCnt == 30) { nm = Motion::Stand; }
+			if (this->moveCnt == 24) { nm = Motion::Stand; }
 			break;
 		case Motion::AirAttack:
 			if (this->moveCnt == 20)
@@ -437,7 +437,7 @@ namespace  Player
 			break;
 		case  Motion::Attack:	//�U����
 			this->powerScale = 1.0f;
-			if (this->moveCnt == 6)this->MakeAttack();
+			if (this->moveCnt == 5)this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack2 = true; }
 			}
@@ -445,7 +445,7 @@ namespace  Player
 		case  Motion::Attack2:	//�U����
 			this->powerScale = 1.5f;
 			this->attack2 = false;
-			if (this->moveCnt == 11)this->MakeAttack();
+			if (this->moveCnt == 9)this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack3 = true; }
 			}
@@ -453,7 +453,7 @@ namespace  Player
 		case  Motion::Attack3:	//�U����
 			this->powerScale = 2.0f;
 			this->attack3 = false;
-			if (this->moveCnt == 11)this->MakeAttack();
+			if (this->moveCnt == 9)this->MakeAttack();
 			break;
 		case Motion::AirAttack:
 			this->airattack = false;
@@ -665,19 +665,19 @@ namespace  Player
 			rtv = imageTable[work + 11];
 			break;
 		case Motion::Attack:
-			work = this->animCnt / 5;
+			work = this->animCnt / 4;
 			work %= 5;
 			rtv = imageTable[work + 21];
 			this->attackBase = attackTable[work + 0];
 			break;
 		case Motion::Attack2:
-			work = this->animCnt / 5;
+			work = this->animCnt / 4;
 			work %= 5;
 			rtv = imageTable[work + 26];
 			this->attackBase = attackTable[work + 5];
 			break;
 		case Motion::Attack3:
-			work = this->animCnt / 5;
+			work = this->animCnt / 4;
 			work %= 6;
 			rtv = imageTable[work + 31];
 			this->attackBase = attackTable[work + 10];
