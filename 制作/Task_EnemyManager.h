@@ -9,12 +9,26 @@
 //概　　　要:敵を管理する
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "BEnemy.h"
 
 namespace  EnemyManager
 {
 	//タスクに割り当てるグループ名と固有名
 	const  string  defGroupName("EnemyManager");	//グループ名
 	const  string  defName("Normal");	//タスク名
+
+	struct EnemyData {	//敵情報
+		float hp;
+		float jumpPow;
+		float maxSpeed;
+		float addSpeed;
+		float decSpeed;
+
+		int unHitTime;
+		int dropMoney;
+		int attackPow;
+	};
+
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -28,6 +42,12 @@ namespace  EnemyManager
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
+
+		
+		std::map<string, EnemyData> enemyDatas;
+		std::vector<string> enemyNames;
+
+		std::map<string, function<BEnemy::SP(bool)>> enemyInits;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -53,6 +73,9 @@ namespace  EnemyManager
 		//追加したい変数・メソッドはここに追加する
 		std::vector<BResource::SP> residentResource;
 
-		void SpawnEnemy();
+
+		
+		void SpawnEnemy(ML::Vec2 pos_);
+		void SpawnEnemy(string name_, ML::Vec2 pos_);
 	};
 }

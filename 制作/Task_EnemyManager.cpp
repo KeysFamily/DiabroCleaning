@@ -18,12 +18,51 @@ namespace  EnemyManager
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
+		//****************************************
+		//ファイルから受け付けるもの
+		//・体力
+		//・ジャンプ力
+		//・左右 最大速度
+		//・左右 加速度
+		//・左右 減衰量
+		// 
+		//・無敵時間
+		// 
+		//・ドロップするお金の量
+		//・攻撃力
+		// 
+		//****************************************
+		ifstream f("./data/enemy/enemy.json");
+		if (!f.is_open()) return false;//ファイルオープンに失敗
+		json data = json::parse(f);
+		for (auto& e : data["enemies"]) {
+			string en = e["name"];
+			EnemyData ed;
+			ed.hp        = e["hp"];
+			ed.jumpPow   = e["jumpPow"];
+			ed.maxSpeed  = e["maxSpeed"];
+			ed.addSpeed  = e["addSpeed"];
+			ed.decSpeed  = e["decSpeed"];
+			ed.unHitTime = e["unHitTime"];
+			ed.dropMoney = e["dropMoney"];
+			ed.attackPow = e["attack"];
+
+			this->enemyDatas[en] = ed;
+			this->enemyNames.push_back(en);
+		}
+		f.close();
+
+		this->enemyInits["Skeleton"] = EnemySkeleton::Object::Create;
+		
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
+		this->enemyDatas.clear();
+		this->enemyNames.clear();
+		this->enemyInits.clear();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -38,7 +77,7 @@ namespace  EnemyManager
 		//★データ初期化
 		this->residentResource.push_back(EnemySkeleton::Resource::Create());
 		//★タスクの生成
-		SpawnEnemy();
+		SpawnEnemy(ML::Vec2(1000, 600));
 		ge->debugRectLoad();
 
 		return  true;
@@ -71,8 +110,12 @@ namespace  EnemyManager
 			spos.x = ms.pos.x + ge->camera2D.x;
 			spos.y = ms.pos.y + ge->camera2D.y;
 
+#if false
 			auto sk = EnemySkeleton::Object::Create(true);
 			sk->pos = spos;
+#else
+			this->SpawnEnemy("Skeleton", spos);
+#endif
 		}
 	}
 	//-------------------------------------------------------------------
@@ -84,10 +127,29 @@ namespace  EnemyManager
 
 	//-------------------------------------------------------------------
 	// 敵スポーン
-	void Object::SpawnEnemy() {
-		auto sk = EnemySkeleton::Object::Create(true);
-		sk->pos.x = 1100;
-		sk->pos.y = 500;
+	void Object::SpawnEnemy(ML::Vec2 pos_) {
+
+		auto e = EnemySkeleton::Object::Create(true);
+		e->pos = pos_;
+	}
+
+	void Object::SpawnEnemy(string name_, ML::Vec2 pos_) {
+
+		if (this->res->enemyDatas.count(name_) > 0 &&
+			this->res->enemyInits.count(name_) > 0) {
+			//auto e = EnemySkeleton::Object::Create(true);
+			auto e       = this->res->enemyInits[name_](true);
+			e->pos       = pos_;
+			int HP       = this->res->enemyDatas[name_].hp;
+			e->hp.SetValues(HP, 0, HP);
+			e->jumpPow   = this->res->enemyDatas[name_].jumpPow;
+			e->maxSpeed  = this->res->enemyDatas[name_].maxSpeed;
+			e->addSpeed  = this->res->enemyDatas[name_].addSpeed;
+			e->decSpeed  = this->res->enemyDatas[name_].decSpeed;
+			e->unHitTime = this->res->enemyDatas[name_].unHitTime;
+			//e->dropMoney = this->res->enemyDatas[name].dropMoney;
+			//e->attackPow = this->res->enemyDatas[name].attackPow;
+		}
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
