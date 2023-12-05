@@ -65,7 +65,6 @@ namespace  EnemySkeleton
 	{
 		//★データ＆タスク解放
 
-		this->DropCoins(10);
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
 		}
@@ -110,7 +109,7 @@ namespace  EnemySkeleton
 			if (this->moveCnt > 60 * 5) { nm = Motion::Stand; }
 			//以降　プレイヤ索敵
 
-			if (this->searchCnt > 60 && this->SearchPlayer(1000)) {
+			if (this->searchCnt > 60 && this->SearchPlayer(800,192)) {
 				nm = Motion::Tracking;
 			}
 		}
@@ -124,7 +123,7 @@ namespace  EnemySkeleton
 
 			if (this->searchCnt > 30) {
 				this->searchCnt = 0;
-				if (!this->SearchPlayer(1000)) {
+				if (!this->SearchPlayer(1000,256)) {
 					//3回見つからなければ通常処理に戻す
 					if (++this->notFoundPlayerCnt > 3) {
 						this->notFoundPlayerCnt = 0;
@@ -135,7 +134,8 @@ namespace  EnemySkeleton
 					}
 				}
 				else {
-					if (this->SearchPlayer(75)) {
+					if (this->SearchPlayer(100, this->hitBase.h) && 
+						!this->SearchPlayer(ge->qa_Player->hitBase.w, this->hitBase.h)) {
 						//攻撃させる
 						nm = Motion::Attack;
 					}
@@ -231,12 +231,19 @@ namespace  EnemySkeleton
 		case Motion::Stand://立っている
 			break;
 		case Motion::Walk://歩いている
-		case Motion::Tracking://歩いている
 			if (this->angle_LR == Angle_LR::Left) {
 				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
 			}
 			else {
 				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
+			}
+			break;
+		case Motion::Tracking://歩いている
+			if (this->angle_LR == Angle_LR::Left) {
+				this->moveVec.x = max(-this->maxSpeed * 1.5f, this->moveVec.x - this->addSpeed);
+			}
+			else {
+				this->moveVec.x = min(+this->maxSpeed * 1.5f, this->moveVec.x + this->addSpeed);
 			}
 			break;
 		case Motion::Fall://落下中
@@ -250,10 +257,10 @@ namespace  EnemySkeleton
 		case Motion::Attack://攻撃中
 			if (this->moveCnt == 16) {
 				ML::Box2D hit(
-					this->hitBase.x, 
-					this->hitBase.y + this->hitBase.h / 2,
+					-this->hitBase.w / 2, 
+					this->hitBase.y,
 					this->hitBase.w,
-					this->hitBase.h / 2
+					this->hitBase.h
 				);
 				if (this->angle_LR == Angle_LR::Left) {
 					hit.Offset(-100, 0);
@@ -264,6 +271,7 @@ namespace  EnemySkeleton
 				hit.Offset(this->pos);
 
 				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
+				
 				BChara::AttackInfo ai = { 10,0,0 };
 				this->Attack_Std(Player::defGroupName, ai, hit);
 			}
@@ -279,7 +287,7 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Lose:
-			if (this->moveCnt < 3) { Create_coin(this->pos.x, this->pos.y, 10); }
+			if (this->moveCnt == 5) { this->DropCoins(10); }
 			if (this->moveCnt >= 30) {
 				this->Kill();
 			}
@@ -434,30 +442,34 @@ namespace  EnemySkeleton
 		if (ge->qa_Player == nullptr || ge->qa_Map == nullptr) { return false; }
 		ML::Box2D eye(
 			this->hitBase.x,
-			this->hitBase.y,
+			this->hitBase.y + this->hitBase.h,
 			10,
-			this->hitBase.h
+			10
 		);
 		if (this->angle_LR == Angle_LR::Left) {
-			eye.Offset(-eye.w, 0);
+			eye.Offset(-eye.w, -eye.h);
 		}
 		else {
-			eye.Offset(this->hitBase.w, 0);
+			eye.Offset(this->hitBase.w, -eye.h);
 		}
 		eye.Offset(this->pos);
 
-
-		for (int i = 0; i < distX_; ++i) {
-			ge->debugRect(eye, 7, -ge->camera2D.x, -ge->camera2D.y);
-
+		int eyeW = eye.w;
+		int eyeH = eye.h;
+		for (int x = 0; x < distX_; x += eyeW) {
 			if (ge->qa_Map->CheckHit(eye))break;
-			if (ge->qa_Player != nullptr && ge->qa_Player->CallHitBox().Hit(eye)) { return true; }
-
+			for (int y = 0; y < distY_; y += eyeH) {
+				ML::Box2D eb = eye.OffsetCopy(0, -y);
+				if (ge->qa_Map->CheckHit(eb))break;
+				if (ge->qa_Player != nullptr && ge->qa_Player->CallHitBox().Hit(eb)) { return true; }
+				ge->debugRect(eb, 4, -ge->camera2D.x, -ge->camera2D.y);
+				
+			}
 			if (this->angle_LR == Angle_LR::Left) {
-				eye.Offset(-1, 0);
+				eye.Offset(-eyeW, 0);
 			}
 			else {
-				eye.Offset(1, 0);
+				eye.Offset(eyeW, 0);
 			}
 		}
 

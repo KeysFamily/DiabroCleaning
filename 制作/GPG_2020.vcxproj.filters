@@ -154,9 +154,6 @@
     <ClCompile Include="Task_GameUI.cpp">
       <Filter>MyPG\Task\Game\GameUI</Filter>
     </ClCompile>
-    <ClCompile Include="Task_EnemySkeleton.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Task_GameUI_MiniMap.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
@@ -165,6 +162,11 @@
     </ClCompile>
     <ClCompile Include="Task_FireBall.cpp">
       <Filter>MyPG\Task\Game\Majic</Filter>
+    <ClCompile Include="Task_EnemySkeleton.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemyManager.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -274,9 +276,6 @@
     <ClInclude Include="Task_GameUI.h">
       <Filter>MyPG\Task\Game\GameUI</Filter>
     </ClInclude>
-    <ClInclude Include="Task_EnemySkeleton.h">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Task_GameUI_MiniMap.h">
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
@@ -285,6 +284,11 @@
     </ClInclude>
     <ClInclude Include="Task_FireBall.h">
       <Filter>MyPG\Task\Game\Majic</Filter>
+    <ClInclude Include="Task_EnemySkeleton.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemyManager.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
