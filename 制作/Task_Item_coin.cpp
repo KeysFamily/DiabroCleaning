@@ -179,7 +179,7 @@ namespace  Item_coin
 			switch (this->motion)
 			{
 			case Motion::Suction:
-				auto pl = ge->GetTask<Player::Object>("Player");
+				auto pl = ge->qa_Player;
 				this->target = pl;
 				if (auto  tg = this->target.lock()) {
 					//ターゲットへの相対座標を求める

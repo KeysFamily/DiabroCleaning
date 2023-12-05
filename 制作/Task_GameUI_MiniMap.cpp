@@ -85,13 +85,13 @@ namespace  MiniMap
 			return;
 		}
 		if (inp.RStick.BU.down)
-			mt->Appear(MapTransition::Object::TransitionDir::Up);
+			mt->Appear(Map::MapDir::Up);
 		if (inp.RStick.BD.down)
-			mt->Appear(MapTransition::Object::TransitionDir::Down);
+			mt->Appear(Map::MapDir::Down);
 		if (inp.RStick.BR.down)
-			mt->Appear(MapTransition::Object::TransitionDir::Right);
+			mt->Appear(Map::MapDir::Right);
 		if (inp.RStick.BL.down)
-			mt->Appear(MapTransition::Object::TransitionDir::Left);
+			mt->Appear(Map::MapDir::Left);
 
 		if (inp.L1.down)
 			mt->Disappear();
@@ -125,6 +125,32 @@ namespace  MiniMap
 	}
 	//-------------------------------------------------------------------
 	//関数定義
+	//-------------------------------------------------------------------
+	//マップの向きを画像の位置番号に変更
+	int Object::MapDirToImgPosNum(const Map::MapDir& mapDirection_)
+	{
+		switch (mapDirection_)
+		{
+		case Map::MapDir::Up:
+			return 0;
+			break;
+		case Map::MapDir::Down:
+			return 2;
+			break;
+		case Map::MapDir::Right:
+			return 1;
+			break;
+		case Map::MapDir::Left:
+			return 1;
+			break;
+		case Map::MapDir::Non:
+			return 0;
+			break;
+		}
+	}
+
+	//-------------------------------------------------------------------
+	//チップの設定
 	void Object::SetChip(ML::Box2D& src_, int x_, int y_)
 	{
 		auto mapMng = ge->GetTask<MapManager::Object>("MapManager");
@@ -138,21 +164,25 @@ namespace  MiniMap
 			src_.y = this->res->imgChipSize.h * 2;
 		}
 
+		//マップ
 		MapManager::Object::Area* map = dynamic_cast<MapManager::Object::Area*>(mapMng->map[y_][x_]);
 		if (map)
 		{
-			src_.x = (int)map->GetExit() * this->res->imgChipSize.w;
+			src_.x = MapDirToImgPosNum(map->GetExit()) * this->res->imgChipSize.w;
 			src_.y = this->res->imgChipSize.h * 2
-				+ (int)map->GetEnter() * this->res->imgChipSize.h;
+				+ MapDirToImgPosNum(map->GetEnter()) * this->res->imgChipSize.h;
 		}
+
+		//通路
 		MapManager::Object::Connect* connect = dynamic_cast<MapManager::Object::Connect*>(mapMng->map[y_][x_]);
 		if (connect)
 		{
-			src_.x = ((int)connect->GetExit() + (int)connect->GetExitSub()) * this->res->imgChipSize.w;
-			src_.y = (int)connect->GetEnter() * this->res->imgChipSize.h;
+			src_.x = (MapDirToImgPosNum(connect->GetExit()) + MapDirToImgPosNum(connect->GetExitSub())) * this->res->imgChipSize.w;
+			src_.y = MapDirToImgPosNum(connect->GetEnter()) * this->res->imgChipSize.h;
 		}
 	}
-
+	//-------------------------------------------------------------------
+	//チップをスクリーン内に収める
 	void Object::SetToScreen(ML::Box2D& drawBox_, ML::Box2D& srcBox_, const ML::Box2D& screen_)
 	{
 		//スクリーン

@@ -4,6 +4,7 @@
 //マップ
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "MapStruct.h"
 
 namespace  Map
 {
@@ -53,6 +54,7 @@ namespace  Map
 		//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
+		//マップチップデータ
 		struct MapData
 		{
 			int width;
@@ -62,8 +64,17 @@ namespace  Map
 			//読み込み処理
 			bool Load(const string& mapName_);
 		};
-		vector<MapData> drawMap;
-		MapData			ObjectMap;
+
+		//背景データ
+		struct BackMapData
+		{
+			DG::Image::SP img;	//画像
+			OL::Size2D imgSize;	//画像サイズ
+			float moveScale;	//カメラ移動によって画像が動く量
+		};
+		vector<BackMapData> backMap;	//背景
+		vector<MapData> drawMap;		//描画用チップデータ
+		MapData			ObjectMap;		//当たり判定用チップデータ
 
 		struct SlopeData
 		{
@@ -83,8 +94,19 @@ namespace  Map
 		bool LoadMap(const string& mapName_);
 		bool LoadSlope(const string& filepath_);
 
+		MapDir CheckExit(const ML::Box2D& hit_);		//出口判定
+
+		//マップ移動時のプレイヤーの座標
+		ML::Vec2 GetPlayerEnterPos(const MapDir& mapDirection_);
 
 		//マップ外を見せないようにカメラを位置調整する
 		void  AdjustCameraPos();
+
+		//背景外を見せないように位置調整する
+		void AdjustBGPos();
+
+
+	private:
+		bool  CheckHitTo(const  ML::Box2D& hit_, int chipNum_);//あたり判定
 	};
 }

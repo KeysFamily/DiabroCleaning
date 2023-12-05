@@ -277,6 +277,7 @@
     <ClInclude Include="Task_MapTransition.h">
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
+    <ClInclude Include="MapStruct.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GPG_20201.rc">

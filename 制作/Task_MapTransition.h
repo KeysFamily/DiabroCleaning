@@ -9,6 +9,7 @@
 //概　　　要:
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "MapStruct.h"
 
 namespace  MapTransition
 {
@@ -55,20 +56,15 @@ namespace  MapTransition
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		enum class TransitionDir
-		{
-			Up,
-			Down,
-			Right,
-			Left
-		};
-		void Appear(const TransitionDir& tDir_);
+		void Appear(const Map::MapDir& tDir_);
 		void Disappear();
+
+		bool CheckFinishedAppear();
 	private:
 		ML::Vec2 pos;
 		ML::Vec2 moveVec;
 		float moveSpeed;
-		TransitionDir tDir;
+		Map::MapDir tDir;
 		enum class Motion
 		{
 			Non,

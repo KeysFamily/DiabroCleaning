@@ -9,6 +9,8 @@
 //概　　　要:
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "MapStruct.h"
+#include "Task_MapTransition.h"
 
 namespace MapManager
 {
@@ -75,28 +77,16 @@ namespace MapManager
 			virtual string Generate() { return ""; };
 		};
 
-		enum class MapEnter
-		{
-			Up = 0,
-			Left
-		};
-		enum class MapExit
-		{
-			Non = 0,
-			Right,
-			Down,
-		};
-
 		class Area : public MapObject
 		{
 		private:
-			MapEnter enter;	//入口
-			MapExit exit;		//出口
+			Map::MapDir enter;	//入口
+			Map::MapDir exit;		//出口
 			int depth;		//マップの深度
 
 		public:
 
-			Area(MapEnter enter_, MapExit exit_, int depth_)
+			Area(Map::MapDir enter_, Map::MapDir exit_, int depth_)
 				:enter(enter_)
 				, exit(exit_)
 				, depth(depth_)
@@ -109,8 +99,8 @@ namespace MapManager
 			}
 
 			//ゲッタ
-			MapEnter GetEnter() { return enter; }
-			MapExit GetExit() { return exit; }
+			Map::MapDir GetEnter() { return enter; }
+			Map::MapDir GetExit() { return exit; }
 			int GetDepth() { return depth; }
 		};
 
@@ -118,11 +108,11 @@ namespace MapManager
 		class Connect : public MapObject
 		{
 		private:
-			MapEnter enter;
-			MapExit exit;
-			MapExit exitSub;
+			Map::MapDir enter;
+			Map::MapDir exit;
+			Map::MapDir exitSub;
 		public:
-			Connect(MapEnter enter_, MapExit exit_, MapExit exitSub_ = MapExit::Non)
+			Connect(Map::MapDir enter_, Map::MapDir exit_, Map::MapDir exitSub_ = Map::MapDir::Non)
 				:enter(enter_)
 				, exit(exit_)
 				, exitSub(exitSub_)
@@ -135,9 +125,9 @@ namespace MapManager
 			}
 
 			//ゲッタ
-			MapEnter GetEnter() { return enter; }
-			MapExit GetExit() { return exit; }
-			MapExit GetExitSub() { return exitSub; }
+			Map::MapDir GetEnter() { return enter; }
+			Map::MapDir GetExit() { return exit; }
+			Map::MapDir GetExitSub() { return exitSub; }
 
 		};
 
@@ -148,21 +138,19 @@ namespace MapManager
 		MapObject* map[30][30];
 		ML::Point currentPos;		//現在のマップ
 		
+		Map::MapDir moveMapDir;		//マップ移動時の方向
+		MapTransition::Object::SP mapTransition;	//マップトランジションへのポインタ
+
 		//マップのロードに使用する列挙体
-		enum class MapDir
-		{
-			Up,
-			Down,
-			Left,
-			Right
-		};
 		//ロード
-		void MoveMap(const MapDir& mapDirection_);
+		void MoveMap(const Map::MapDir& mapDirection_);
 
 	private:
 		void Generate();
-		void GenerateMap(int x_, int y_, int depth_, int depthRest_, MapEnter enter_);
+		void GenerateMap(int x_, int y_, int depth_, int depthRest_, Map::MapDir enter_);
 		void Destroy();		//消滅時の処理
+
+		void MoveMapUpDate();
 
 	};
 }

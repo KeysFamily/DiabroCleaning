@@ -180,6 +180,7 @@
     <ClInclude Include="easing.h" />
     <ClInclude Include="fpscounter.h" />
     <ClInclude Include="GameEngine_Ver3_83.h" />
+    <ClInclude Include="MapStruct.h" />
     <ClInclude Include="myLib.h" />
     <ClInclude Include="MyPG.h" />
     <ClInclude Include="OriginalLibrary.h" />

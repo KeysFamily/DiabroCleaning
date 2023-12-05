@@ -42,7 +42,7 @@ namespace  MapTransition
 		//★データ初期化
 		this->pos = ge->GetScreenCenter();
 		this->moveVec = ML::Vec2(0, 0);
-		this->moveSpeed = 200;
+		this->moveSpeed = 300;
 		this->motion = Motion::Non;
 		//★タスクの生成
 
@@ -77,16 +77,16 @@ namespace  MapTransition
 				bool passedCenter = false;
 				switch (this->tDir)
 				{
-				case TransitionDir::Up:
+				case Map::MapDir::Up:
 					passedCenter = this->pos.y < ge->GetScreenCenter().y;
 					break;
-				case TransitionDir::Down:
+				case Map::MapDir::Down:
 					passedCenter = this->pos.y > ge->GetScreenCenter().y;
 					break;
-				case TransitionDir::Right:
+				case Map::MapDir::Right:
 					passedCenter = this->pos.x > ge->GetScreenCenter().x;
 					break;
-				case TransitionDir::Left:
+				case Map::MapDir::Left:
 					passedCenter = this->pos.x < ge->GetScreenCenter().x;
 					break;
 				}
@@ -103,12 +103,12 @@ namespace  MapTransition
 			ML::Box2D imgHit(0, 0, 0, 0);
 			switch (this->tDir)
 			{
-			case TransitionDir::Up:
-			case TransitionDir::Down:
+			case Map::MapDir::Up:
+			case Map::MapDir::Down:
 				imgHit = OL::setBoxCenter(this->res->imgVSize);
 				break;
-			case TransitionDir::Right:
-			case TransitionDir::Left:
+			case Map::MapDir::Right:
+			case Map::MapDir::Left:
 				imgHit = OL::setBoxCenter(this->res->imgHSize);
 				break;
 			}
@@ -136,15 +136,15 @@ namespace  MapTransition
 
 		switch (this->tDir)
 		{
-		case TransitionDir::Up:
-		case TransitionDir::Down:
+		case Map::MapDir::Up:
+		case Map::MapDir::Down:
 			draw = OL::setBoxCenter(this->res->imgVSize);
 			src.w = this->res->imgVSize.w;
 			src.h = this->res->imgVSize.h;
 			img = this->res->imgV;
 			break;
-		case TransitionDir::Right:
-		case TransitionDir::Left:
+		case Map::MapDir::Right:
+		case Map::MapDir::Left:
 			draw = OL::setBoxCenter(this->res->imgHSize);
 			src.w = this->res->imgHSize.w;
 			src.h = this->res->imgHSize.h;
@@ -158,23 +158,23 @@ namespace  MapTransition
 	//-------------------------------------------------------------------
 	//その他メソッド
 	//トランジション出現
-	void Object::Appear(const TransitionDir& tDir_)
+	void Object::Appear(const Map::MapDir& tDir_)
 	{
 		switch (tDir_)
 		{
-		case TransitionDir::Up:
+		case Map::MapDir::Up:
 			this->pos.y += this->res->imgVSize.h;
 			this->moveVec.y = -this->moveSpeed;
 			break;
-		case TransitionDir::Down:
+		case Map::MapDir::Down:
 			this->pos.y -= this->res->imgVSize.h;
 			this->moveVec.y = this->moveSpeed;
 			break;
-		case TransitionDir::Right:
+		case Map::MapDir::Right:
 			this->pos.x -= this->res->imgHSize.w;
 			this->moveVec.x = this->moveSpeed;
 			break;
-		case TransitionDir::Left:
+		case Map::MapDir::Left:
 			this->pos.x += this->res->imgHSize.w;
 			this->moveVec.x = -this->moveSpeed;
 			break;
@@ -187,6 +187,11 @@ namespace  MapTransition
 	void Object::Disappear()
 	{
 		this->motion = Motion::Disappear;
+	}
+	//出現が終了したか
+	bool Object::CheckFinishedAppear()
+	{
+		return this->motion == Motion::Stop;
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド

@@ -8,8 +8,8 @@
 namespace  Sprite
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("オプション");	//グループ名
-	const  string  defName("妖精？");		//タスク名
+	const  string  defGroupName("Sprite");	//グループ名
+	const  string  defName("Sprite");		//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -48,6 +48,8 @@ namespace  Sprite
 	public:
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
-		//BCharaに含まれないモノのみここに追加する
+		//BCharaに含まれないモノのみここに追加するall at once
+	
+		void MoveImmediately();
 	};
 }

@@ -8,6 +8,7 @@
 #include "Task_Item_coin.h"
 #include  "BEnemy.h"
 #include  "Task_EnemySkeleton.h"
+#include "Task_MapManager.h"
 
 
 
@@ -65,6 +66,8 @@ namespace  Player
 		this->powerScale = 1.0f;
 		this->balanceMoney = 100;
 
+		this->karitime = 0;
+
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -114,6 +117,20 @@ namespace  Player
 					BChara::AttackInfo at = { 0, 0, 0 };
 					(*it)->Received(this, at);
 				}
+			}
+
+
+			++karitime;
+			if (karitime < 500)
+				return;
+
+			auto mapmove = ge->qa_Map->CheckExit(me);
+			if (mapmove != Map::MapDir::Non)
+			{
+				auto manager = ge->GetTask<MapManager::Object>("MapManager");
+				manager->MoveMap(mapmove);
+
+				karitime = 0;
 			}
 		}
 	}

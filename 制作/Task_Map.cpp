@@ -18,7 +18,7 @@ namespace  Map
 		this->turnNum = 64;		//画像の1行に含まれるチップの種類
 
 		this->debugFont = DG::Font::Create("non", 8, 16);	//数字フォント
-		this->drawObject = true;	//オブジェクトチップの数字描画
+		this->drawObject = false;	//オブジェクトチップの数字描画
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -67,6 +67,21 @@ namespace  Map
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		//背景の描画
+		for (auto& bglayer : this->backMap)
+		{
+			ML::Vec2 mapCenter(this->hitBase.x / 2, this->hitBase.y / 2);
+			ML::Vec2 cameraPos(ge->camera2D.x , ge->camera2D.y);
+			cameraPos *= bglayer.moveScale;
+			ML::Box2D draw = OL::setBoxCenter(bglayer.imgSize);
+			draw.Offset(mapCenter - cameraPos); 
+			
+
+			ML::Box2D src(0, 0, bglayer.imgSize.w, bglayer.imgSize.h);
+
+		}
+		
+		//マップチップの描画
 		for (auto& layer : this->drawMap)
 		{
 			for (int y = 0; y < layer.height; ++y)
@@ -112,8 +127,28 @@ namespace  Map
 	//マップ読み込み
 	bool Object::LoadMap(const string& mapName_)
 	{
-		//描画マップ読み込み
+
+		//背景マップ読み込み
 		int layerNum = 0;
+		ifstream ifs("./data/map/" + mapName_ + "/" + mapName_ + "BG.json");
+		if (!ifs.is_open())
+		{
+			return;
+		}
+		json backMapData = json::parse(ifs);
+		for (auto& bmd : backMapData["BackMap"])
+		{
+			BackMapData bglayer;
+			bglayer.img = DG::Image::Create(bmd["imgFilePath"]);
+			bglayer.imgSize.w = bmd["imgWidth"];
+			bglayer.imgSize.h = bmd["imgHeight"];
+			bglayer.moveScale = bmd["moveScale"];
+			this->backMap.push_back(bglayer);
+		}
+		ifs.close();
+
+		//描画マップ読み込み
+		layerNum = 0;
 		while (layerNum < 10)
 		{
 			MapData layer;
@@ -147,7 +182,7 @@ namespace  Map
 			== false)
 		{
 			return false;
-		}*/
+		}*/		
 
 
 		//当たり判定矩形設定
@@ -181,35 +216,7 @@ namespace  Map
 	//あたり判定
 	bool  Object::CheckHit(const  ML::Box2D& hit_)
 	{
-		ML::Rect  r = { hit_.x, hit_.y, hit_.x + hit_.w, hit_.y + hit_.h };
-		//矩形がマップ外に出ていたらサイズを変更する
-		ML::Rect  m = {
-			this->hitBase.x,
-			this->hitBase.y,
-			this->hitBase.x + this->hitBase.w,
-			this->hitBase.y + this->hitBase.h
-		};
-		if (r.left < m.left) { r.left = m.left; }
-		if (r.top < m.top) { r.top = m.top; }
-		if (r.right > m.right) { r.right = m.right; }
-		if (r.bottom > m.bottom) { r.bottom = m.bottom; }
-
-		//ループ範囲調整
-		int sx, sy, ex, ey;
-		sx = r.left / this->res->drawSize;
-		sy = r.top / this->res->drawSize;
-		ex = (r.right - 1) / this->res->drawSize;
-		ey = (r.bottom - 1) / this->res->drawSize;
-
-		//範囲内の障害物を探す
-		for (int y = sy; y <= ey; ++y) {
-			for (int x = sx; x <= ex; ++x) {
-				if (this->ObjectMap.chipdata[y][x] == 0) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return this->CheckHitTo(hit_, 0);
 	}
 	//-------------------------------------------------------------------
 	//坂とのあたり判定
@@ -318,6 +325,80 @@ namespace  Map
 			}
 		}
 		return result;
+	}
+
+	//-------------------------------------------------------------------
+	//マップ移動時のプレイヤーの座標
+	ML::Vec2 Object::GetPlayerEnterPos(const MapDir& mapDirection_)
+	{
+		//番号は13番～上,下,右,左の順で準備されている
+		int enterChip = 13 + (int)mapDirection_;
+		OL::Size2D mapSize(ObjectMap.width, ObjectMap.height);
+
+		//チップを探す
+		for (int y = 0; y < mapSize.h; ++y)
+		{
+			for (int x = 0; x < mapSize.w; ++x)
+			{
+				if (ObjectMap.chipdata[y][x] == enterChip)
+				{
+					return ML::Vec2(x, y) * this->res->drawSize;
+				}
+			}
+		}
+
+		return ML::Vec2(0, 0);
+	}
+	//-------------------------------------------------------------------
+	//出口判定
+	MapDir Object::CheckExit(const ML::Box2D& hit_)
+	{
+		//4方向
+		for (int i = 0; i < 4; ++i)
+		{
+			if (CheckHitTo(hit_, 13 + i))
+			{
+				return (MapDir)i;
+			}
+		}
+
+		return MapDir::Non;
+	}
+
+
+	//-------------------------------------------------------------------
+	//チップを指定する当たり判定
+	bool Object::CheckHitTo(const ML::Box2D& hit_, int chipNum_)
+	{
+		ML::Rect  r = { hit_.x, hit_.y, hit_.x + hit_.w, hit_.y + hit_.h };
+		//矩形がマップ外に出ていたらサイズを変更する
+		ML::Rect  m = {
+			this->hitBase.x,
+			this->hitBase.y,
+			this->hitBase.x + this->hitBase.w,
+			this->hitBase.y + this->hitBase.h
+		};
+		if (r.left < m.left) { r.left = m.left; }
+		if (r.top < m.top) { r.top = m.top; }
+		if (r.right > m.right) { r.right = m.right; }
+		if (r.bottom > m.bottom) { r.bottom = m.bottom; }
+
+		//ループ範囲調整
+		int sx, sy, ex, ey;
+		sx = r.left / this->res->drawSize;
+		sy = r.top / this->res->drawSize;
+		ex = (r.right - 1) / this->res->drawSize;
+		ey = (r.bottom - 1) / this->res->drawSize;
+
+		//範囲内の障害物を探す
+		for (int y = sy; y <= ey; ++y) {
+			for (int x = sx; x <= ex; ++x) {
+				if (this->ObjectMap.chipdata[y][x] == chipNum_) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	//-------------------------------------------------------------------
 	//マップ外を見せないようにカメラを位置調整する

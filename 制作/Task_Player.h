@@ -117,5 +117,9 @@ namespace  Player
 		//UŒ‚”­“®
 		void MakeAttack();
 
+
+		//‰¼ŠÔŒv‘ª
+		int karitime;
+
 	};
 }
