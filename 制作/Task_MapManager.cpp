@@ -87,7 +87,7 @@ namespace  MapManager
 		}
 
 		map[0][0] = new MapObject("map_start");
-		map[0][1] = new MapObject("map_start");
+		map[0][1] = new MapObject("pass_LeftRight");
 
 
 		//デバッグ用に処理をなくしている

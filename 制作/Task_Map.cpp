@@ -118,25 +118,28 @@ namespace  Map
 	{
 
 		//背景マップ読み込み
+		backMap.clear();
+
 		int layerNum = 0;
 		ifstream ifs("./data/map/" + mapName_ + "/" + mapName_ + "_BG.json");
-		if (!ifs.is_open())
+		if (ifs.is_open())
 		{
-			return false;
+			json backMapData = json::parse(ifs);
+			for (auto& bmd : backMapData["BackMap"])
+			{
+				BackMapData bglayer;
+				bglayer.img = DG::Image::Create(bmd["imgFilePath"]);
+				bglayer.imgSize.w = bmd["imgWidth"];
+				bglayer.imgSize.h = bmd["imgHeight"];
+				bglayer.moveScale = bmd["moveScale"];
+				this->backMap.push_back(bglayer);
+			}
+			ifs.close();
 		}
-		json backMapData = json::parse(ifs);
-		for (auto& bmd : backMapData["BackMap"])
-		{
-			BackMapData bglayer;
-			bglayer.img = DG::Image::Create(bmd["imgFilePath"]);
-			bglayer.imgSize.w = bmd["imgWidth"];
-			bglayer.imgSize.h = bmd["imgHeight"];
-			bglayer.moveScale = bmd["moveScale"];
-			this->backMap.push_back(bglayer);
-		}
-		ifs.close();
 
 		//描画マップ読み込み
+		drawMap.clear();
+
 		layerNum = 0;
 		while (layerNum < 10)
 		{
@@ -160,6 +163,8 @@ namespace  Map
 		}
 
 		//オブジェクトマップ読み込み
+		this->ObjectMap.chipdata.clear();
+
 		if (this->ObjectMap.Load("./data/map/" + mapName_ + "/" + mapName_ + "_H.csv")
 			 == false)
 		{
@@ -329,14 +334,20 @@ namespace  Map
 		{
 			for (int x = 0; x < mapSize.w; ++x)
 			{
-				if (ObjectMap.chipdata[y][x] == enterChip)
+				while (ObjectMap.chipdata[y][x] == enterChip)
 				{
-					return ML::Vec2(x, y) * this->res->drawSize;
+					++y;
+
+					if (ObjectMap.chipdata[y][x] != enterChip)
+					{
+						return ML::Vec2(x, y - 1) * this->res->drawSize;
+					}
 				}
 			}
 		}
 
 		return ML::Vec2(0, 0);
+
 	}
 	//-------------------------------------------------------------------
 	//出口判定
@@ -418,6 +429,11 @@ namespace  Map
 	//マップ外を見せないようにカメラを位置調整する
 	void  Object::DrawBackMap()
 	{
+		if (this->backMap.empty())
+		{
+			return;
+		}
+
 		for (auto& bglayer : this->backMap)
 		{
 			ML::Vec2 mapCenter(this->hitBase.w / 2, this->hitBase.h / 2);

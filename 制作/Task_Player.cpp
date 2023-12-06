@@ -121,7 +121,7 @@ namespace  Player
 
 
 			++karitime;
-			if (karitime < 500)
+			if (karitime < 60)
 				return;
 
 			auto mapmove = ge->qa_Map->CheckExit(me);
