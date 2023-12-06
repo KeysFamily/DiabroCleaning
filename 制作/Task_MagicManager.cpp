@@ -1,25 +1,29 @@
-//-------------------------------------------------------------------
-//かわいい妖精
-//-------------------------------------------------------------------
+//?------------------------------------------------------
+//タスク名:
+//作　成　者:
+//TODO:もしいれば下記へ記述
+//編　集　者:
+//作成年月日:
+//概　　　要:
+//?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Sprite.h"
-#include  "Task_Map.h"
+#include  "Task_MagicManager.h"
+#include  "Task_FireBall.h"
+#include  "Task_Player.h"
 
-namespace  Sprite
+namespace  MagicManager
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/image/妖精.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->img.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -32,8 +36,10 @@ namespace  Sprite
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->render2D_Priority[1] = 0.5f;
-		
+		this->moveCnt = 0;
+		this->LR = true;
+		this->pos = ML::Vec2(0, 0);
+		this->magicSelect = Magic::Unnon;
 		//★タスクの生成
 
 		return  true;
@@ -55,51 +61,40 @@ namespace  Sprite
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		//ターゲットが存在するか調べてからアクセス
-		if (auto  tg = this->target.lock()) {
-			//ターゲットへの相対座標を求める
-			ML::Vec2  toVec = tg->pos - this->pos;
-
-			//ターゲットの向きに合わせて自分の移動先を変更
-			if (tg->angle_LR == BChara::Angle_LR::Left) {
-				ML::Vec2  adjust(-250, 0);
-				toVec += adjust;
+		this->moveCnt++;
+		auto pl = ge->GetTask<BChara>("Player");
+		switch (this->magicSelect) {
+		case Magic::Unnon:
+			break;
+		case Magic::FireBall:
+			if (this->moveCnt % 30 == 1) {
+				auto fb = FireBall::Object::Create(true); //(仮)
+				if (pl->balanceMoney > fb->cost) {
+					if (this->LR) {
+						fb->angle_LR = BChara::Angle_LR::Right;
+						fb->moveVec = ML::Vec2(fb->speed, 0);
+						fb->pos.x = this->pos.x + 60;
+						fb->pos.y = this->pos.y;
+					}
+					if (!this->LR) {
+						fb->angle_LR = BChara::Angle_LR::Left;
+						fb->moveVec = ML::Vec2(-fb->speed, 0);
+						fb->pos.x = this->pos.x - 60;
+						fb->pos.y = this->pos.y;
+					}
+					pl->balanceMoney -= fb->cost;
+				}
+				else {
+					fb->Kill();
+				}
 			}
-			else {
-				ML::Vec2  adjust(+250, 0);
-				toVec += adjust;
-			}
-
-			//ターゲットに５％近づく
-			this->pos += toVec * 0.03f;
-		}
-
-		//カメラの位置を再調整
-		{
-			//プレイヤを画面の何処に置くか（今回は画面中央）
-			int  px = 1920/2;
-			int  py = 600;
-			//プレイヤを画面中央に置いた時のカメラの左上座標を求める
-			int  cpx = int(this->pos.x) - px;
-			int  cpy = int(this->pos.y) - py;
-			//カメラの座標を更新
-			ge->camera2D.x = cpx;
-			ge->camera2D.y = cpy;
-			if (auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName)) {
-				map->AdjustCameraPos();
-			}
+			break;
 		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		//ML::Box2D  draw(-16, -16, 32, 32);
-		//draw.Offset(this->pos);
-		//ML::Box2D  src(0, 0, 32, 32);
-
-		//draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
-		//this->res->img->Draw(draw, src, ML::Color(0.5f, 1, 1, 1));
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -114,7 +109,7 @@ namespace  Sprite
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
-				//（メソッド名が変なのは旧バージョンのコピーによるバグを回避するため
+				
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill

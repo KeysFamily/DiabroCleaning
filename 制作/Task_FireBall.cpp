@@ -1,18 +1,23 @@
-//-------------------------------------------------------------------
-//かわいい妖精
-//-------------------------------------------------------------------
+//?------------------------------------------------------
+//タスク名:
+//作　成　者:
+//TODO:もしいれば下記へ記述
+//編　集　者:
+//作成年月日:
+//概　　　要:
+//?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Sprite.h"
-#include  "Task_Map.h"
+#include  "Task_FireBall.h"
+#include  "BEnemy.h"
 
-namespace  Sprite
+namespace  FireBall
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/image/妖精.png");
+		this->img = DG::Image::Create("./data/image/fireball.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -32,8 +37,11 @@ namespace  Sprite
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->render2D_Priority[1] = 0.5f;
-		
+		this->hitBase = ML::Box2D(-26, -26, 52, 52);
+		this->pos = ML::Vec2(0, 0);
+		this->speed = 10.0f;
+		this->power = 5.0f;
+		this->cost = 10;
 		//★タスクの生成
 
 		return  true;
@@ -55,38 +63,19 @@ namespace  Sprite
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		//ターゲットが存在するか調べてからアクセス
-		if (auto  tg = this->target.lock()) {
-			//ターゲットへの相対座標を求める
-			ML::Vec2  toVec = tg->pos - this->pos;
-
-			//ターゲットの向きに合わせて自分の移動先を変更
-			if (tg->angle_LR == BChara::Angle_LR::Left) {
-				ML::Vec2  adjust(-250, 0);
-				toVec += adjust;
-			}
-			else {
-				ML::Vec2  adjust(+250, 0);
-				toVec += adjust;
-			}
-
-			//ターゲットに５％近づく
-			this->pos += toVec * 0.03f;
-		}
-
-		//カメラの位置を再調整
-		{
-			//プレイヤを画面の何処に置くか（今回は画面中央）
-			int  px = 1920/2;
-			int  py = 600;
-			//プレイヤを画面中央に置いた時のカメラの左上座標を求める
-			int  cpx = int(this->pos.x) - px;
-			int  cpy = int(this->pos.y) - py;
-			//カメラの座標を更新
-			ge->camera2D.x = cpx;
-			ge->camera2D.y = cpy;
-			if (auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName)) {
-				map->AdjustCameraPos();
+		this->moveCnt++;
+		this->animCnt++;
+		if (true == this->CheckFront_LR()) { this->Kill(); }
+		this->pos += this->moveVec;
+		auto enemys = ge->GetTasks<BChara>("Enemy");
+		for (auto it = enemys->begin();
+			it != enemys->end();
+			++it) {
+			if ((*it)->CheckHit(this->hitBase.OffsetCopy(this->pos))) {
+				BChara::AttackInfo at = { this->power, 0, 0 };
+				(*it)->Received(this, at);
+				this->Kill();
+				break;
 			}
 		}
 	}
@@ -94,14 +83,32 @@ namespace  Sprite
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		//ML::Box2D  draw(-16, -16, 32, 32);
-		//draw.Offset(this->pos);
-		//ML::Box2D  src(0, 0, 32, 32);
+		BChara::DrawInfo  di = this->Anim();
+		di.draw.Offset(this->pos);
+		//スクロール対応
+		di.draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
 
-		//draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
-		//this->res->img->Draw(draw, src, ML::Color(0.5f, 1, 1, 1));
+		this->res->img->Draw(di.draw, di.src);
 	}
+	//--------------------------------------------------------------------
+	// アニメーション制御
+	BChara::DrawInfo  Object::Anim()
+	{
+		ML::Color  defColor(1, 1, 1, 1);
+		BChara::DrawInfo imageTable[] = {
+			//draw							src
+			{ ML::Box2D(-26,-26,52,52), ML::Box2D(0, 0, 26, 26), defColor },			//0
+			{ ML::Box2D(-26,-26,52,52), ML::Box2D(26, 0, 26, 26), defColor },			//1
+			{ ML::Box2D(-26,-26,52,52), ML::Box2D(26*2, 0, 26, 26), defColor },			//2
+		};
+		BChara::DrawInfo  rtv;
+		int  work;
+		work = this->animCnt / 6;
+		work %= 3;
+		rtv = imageTable[work];
 
+		return rtv;
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -114,7 +121,7 @@ namespace  Sprite
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
-				//（メソッド名が変なのは旧バージョンのコピーによるバグを回避するため
+				
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill
