@@ -160,6 +160,9 @@
     <ClCompile Include="Task_EnemyManager.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Task_EnemySkyEye.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -275,6 +278,9 @@
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Task_EnemyManager.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemySkyEye.h">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
