@@ -68,18 +68,7 @@ namespace  Map
 	void  Object::Render2D_AF()
 	{
 		//背景の描画
-		for (auto& bglayer : this->backMap)
-		{
-			ML::Vec2 mapCenter(this->hitBase.x / 2, this->hitBase.y / 2);
-			ML::Vec2 cameraPos(ge->camera2D.x , ge->camera2D.y);
-			cameraPos *= bglayer.moveScale;
-			ML::Box2D draw = OL::setBoxCenter(bglayer.imgSize);
-			draw.Offset(mapCenter - cameraPos); 
-			
-
-			ML::Box2D src(0, 0, bglayer.imgSize.w, bglayer.imgSize.h);
-
-		}
+		this->DrawBackMap();
 		
 		//マップチップの描画
 		for (auto& layer : this->drawMap)
@@ -130,10 +119,10 @@ namespace  Map
 
 		//背景マップ読み込み
 		int layerNum = 0;
-		ifstream ifs("./data/map/" + mapName_ + "/" + mapName_ + "BG.json");
+		ifstream ifs("./data/map/" + mapName_ + "/" + mapName_ + "_BG.json");
 		if (!ifs.is_open())
 		{
-			return;
+			return false;
 		}
 		json backMapData = json::parse(ifs);
 		for (auto& bmd : backMapData["BackMap"])
@@ -418,12 +407,45 @@ namespace  Map
 
 		//カメラの位置を調整
 		if (c.right > m.right) { ge->camera2D.x = m.right - ge->camera2D.w; }
-		if (c.bottom > m.bottom) { ge->camera2D.y = m.bottom-ge->camera2D.h; }
+		if (c.bottom > m.bottom) { ge->camera2D.y = m.bottom - ge->camera2D.h; }
 		if (c.left < m.left) { ge->camera2D.x = m.left; }
 		if (c.top < m.top) { ge->camera2D.y = m.top; }
 		//マップがカメラより小さい場合
 		if (this->hitBase.w < ge->camera2D.w) { ge->camera2D.x = m.left; }
 		if (this->hitBase.h < ge->camera2D.h) { ge->camera2D.y = m.top; }
+	}
+	//-------------------------------------------------------------------
+	//マップ外を見せないようにカメラを位置調整する
+	void  Object::DrawBackMap()
+	{
+		for (auto& bglayer : this->backMap)
+		{
+			ML::Vec2 mapCenter(this->hitBase.w / 2, this->hitBase.h / 2);
+			ML::Vec2 cameraPos(ge->camera2D.x, ge->camera2D.y);
+			cameraPos += OL::BoxCenterPos(ge->camera2D);
+			ML::Box2D draw = OL::setBoxCenter(bglayer.imgSize);
+			draw.Offset(ge->GetScreenCenter());
+			draw.Offset((mapCenter - cameraPos) * bglayer.moveScale);
+
+
+			//スクリーンとマップの範囲を用意
+			ML::Rect  c = OL::BoxToRect(ge->GetScreenBox());
+			ML::Rect  bg = OL::BoxToRect(draw);
+
+			//スクリーンの位置を調整
+			if (c.right > bg.right) { draw.x = c.right - draw.w; }
+			if (c.bottom > bg.bottom) { draw.y = c.bottom - draw.h; }
+			if (c.left < bg.left) { draw.x = c.left; }
+			if (c.top < bg.top) { draw.y = c.top; }
+			//マップがスクリーンより小さい場合
+			if (draw.w < ge->screenWidth) { draw.x = c.left; }
+			if (draw.h < ge->screenHeight) { draw.y = c.top; }
+
+			ML::Box2D src(0, 0, bglayer.imgSize.w, bglayer.imgSize.h);
+
+			bglayer.img->Draw(draw, src);
+		}
+
 	}
 	//-------------------------------------------------------------------
 	//読み込み処理

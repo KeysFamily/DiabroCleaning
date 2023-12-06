@@ -102,11 +102,12 @@ namespace  Map
 		//マップ外を見せないようにカメラを位置調整する
 		void  AdjustCameraPos();
 
-		//背景外を見せないように位置調整する
-		void AdjustBGPos();
 
 
 	private:
 		bool  CheckHitTo(const  ML::Box2D& hit_, int chipNum_);//あたり判定
+		//背景の描画
+		void DrawBackMap();
+
 	};
 }
