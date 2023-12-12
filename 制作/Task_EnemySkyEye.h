@@ -10,11 +10,11 @@
 //?------------------------------------------------------
 #include "BEnemy.h"
 
-namespace  EnemySkeleton
+namespace  EnemySkyEye
 {
 	//タスクに割り当てるグループ名と固有名
 	const  string  defGroupName("Enemy");	//グループ名
-	const  string  defName("SkyEye");		//タスク名
+	const  string  defName("Skeleton");		//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -53,6 +53,10 @@ namespace  EnemySkeleton
 	public:
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
+		ML::Vec2 targetPos;				//ターゲットポジション
+		float altitude;					//通常高度
+
+
 		void Think()override;			//思考＆状況判断
 		void Move()override;			//モーションに対応した処理
 		BChara::DrawInfo Anim()override;//アニメーション制御

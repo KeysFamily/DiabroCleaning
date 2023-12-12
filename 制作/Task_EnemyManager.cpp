@@ -10,6 +10,7 @@
 #include  "Task_EnemyManager.h"
 
 #include  "Task_EnemySkeleton.h"
+#include  "Task_EnemySkyEye.h"
 
 namespace  EnemyManager
 {
@@ -53,6 +54,7 @@ namespace  EnemyManager
 		f.close();
 
 		this->enemyInits["Skeleton"] = EnemySkeleton::Object::Create;
+		this->enemyInits["SkyEye"] = EnemySkyEye::Object::Create;
 		
 		return true;
 	}
@@ -77,7 +79,8 @@ namespace  EnemyManager
 		//★データ初期化
 		this->residentResource.push_back(EnemySkeleton::Resource::Create());
 		//★タスクの生成
-		SpawnEnemy(ML::Vec2(1000, 600));
+		//SpawnEnemy("Skeleton",ML::Vec2(1000, 600));
+		SpawnEnemy("SkyEye", ML::Vec2(1300, 500));
 		ge->debugRectLoad();
 
 		return  true;
@@ -116,6 +119,13 @@ namespace  EnemyManager
 #else
 			this->SpawnEnemy("Skeleton", spos);
 #endif
+		}
+		if (ms.RB.down) {
+			ML::Vec2 spos;
+			spos.x = ms.pos.x + ge->camera2D.x;
+			spos.y = ms.pos.y + ge->camera2D.y;
+
+			this->SpawnEnemy("SkyEye", spos);
 		}
 	}
 	//-------------------------------------------------------------------

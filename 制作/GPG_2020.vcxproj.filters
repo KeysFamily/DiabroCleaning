@@ -46,48 +46,262 @@
     <ClCompile Include="Task_WaterBlast.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BChara.h" />
-    <ClInclude Include="BEnemy.h" />
-    <ClInclude Include="DG2014\DG2014_DGObject.h" />
-    <ClInclude Include="DG2014\DG2014_Effect.h" />
-    <ClInclude Include="DG2014\DG2014_Font.h" />
-    <ClInclude Include="DG2014\DG2014_Image.h" />
-    <ClInclude Include="DG2014\DG2014_IndexBuffer.h" />
-    <ClInclude Include="DG2014\DG2014_InputLayout.h" />
-    <ClInclude Include="DG2014\DG2014_Mesh.h" />
-    <ClInclude Include="DG2014\DG2014_Texture.h" />
-    <ClInclude Include="DG2014\DG2014_Ver3_6.h" />
-    <ClInclude Include="DG2014\DG2014_VertexBuffer.h" />
-    <ClInclude Include="DG2014\DG2014_VertexContainer.h" />
-    <ClInclude Include="Dm2008_Ver1_4.h" />
-    <ClInclude Include="easing.h" />
-    <ClInclude Include="fpscounter.h" />
-    <ClInclude Include="GameEngine_Ver3_83.h" />
-    <ClInclude Include="myLib.h" />
-    <ClInclude Include="MyPG.h" />
-    <ClInclude Include="OriginalLibrary.h" />
-    <ClInclude Include="randomLib.h" />
+    <ClCompile Include="GameEngine_Ver3_83.cpp">
+      <Filter>GameEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Dm2008_Ver1_4.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="XI2018_Ver1_0.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_DGObject.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Effect.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Font.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Image.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_IndexBuffer.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_InputLayout.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Mesh.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_MeshSOBFile.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Texture.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Ver3_6.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_VertexBuffer.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_VertexContainer.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="myLib.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="MyPG.cpp">
+      <Filter>MyPG</Filter>
+    </ClCompile>
+    <ClCompile Include="WinMain.cpp">
+      <Filter>MyPG</Filter>
+    </ClCompile>
+    <ClCompile Include="fpscounter.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="randomLib.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Effect00.cpp">
+      <Filter>MyPG\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="easing.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="BChara.cpp">
+      <Filter>MyPG\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="OriginalLibrary.cpp">
+      <Filter>MyPG</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Map.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Player.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Load.cpp">
+      <Filter>MyPG\Task\Load</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Sprite.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="BEnemy.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Game.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Title.cpp">
+      <Filter>MyPG\Task\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Ending.cpp">
+      <Filter>MyPG\Task\Ending</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Item_coin.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Item_coin_maneger.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_MapManager.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_GameUI.cpp">
+      <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_GameUI_MiniMap.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_MagicManager.cpp">
+      <Filter>MyPG\Task\Game\Majic</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_FireBall.cpp">
+      <Filter>MyPG\Task\Game\Majic</Filter>
+    <ClCompile Include="Task_EnemySkeleton.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemyManager.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemySkyEye.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameEngine_Ver3_83.h">
+      <Filter>GameEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Dm2008_Ver1_4.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="XI2018_Ver1_0.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="DG2014\DG2014_DGObject.h">
+      <Filter>Lib\DG2014</Filter>
+    </ClInclude>
+    <ClInclude Include="DG2014\DG2014_Effect.h">
+      <Filter>Lib\DG2014</Filter>
+    </ClInclude>
+    <ClInclude Include="DG2014\DG2014_Font.h">
+      <Filter>Lib\DG2014</Filter>
+    </ClInclude>
+    <ClInclude Include="DG2014\DG2014_Image.h">
+      <Filter>Lib\DG2014</Filter>
+    </ClInclude>
+    <ClInclude Include="DG2014\DG2014_IndexBuffer.h">
+      <Filter>Lib\DG2014</Filter>
+    </ClInclude>
+    <ClInclude Include="DG2014\DG2014_InputLayout.h">
+      <Filter>Lib\DG2014</Filter>
+    </ClInclude>
+    <ClInclude Include="DG2014\DG2014_Mesh.h">
+      <Filter>Lib\DG2014</Filter>
+    </ClInclude>
+    <ClInclude Include="DG2014\DG2014_Texture.h">
+      <Filter>Lib\DG2014</Filter>
+    </ClInclude>
+    <ClInclude Include="DG2014\DG2014_Ver3_6.h">
+      <Filter>Lib\DG2014</Filter>
+    </ClInclude>
+    <ClInclude Include="DG2014\DG2014_VertexBuffer.h">
+      <Filter>Lib\DG2014</Filter>
+    </ClInclude>
+    <ClInclude Include="DG2014\DG2014_VertexContainer.h">
+      <Filter>Lib\DG2014</Filter>
+    </ClInclude>
+    <ClInclude Include="myLib.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPG.h">
+      <Filter>MyPG</Filter>
+    </ClInclude>
+    <ClInclude Include="fpscounter.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="randomLib.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Effect00.h">
+      <Filter>MyPG\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="easing.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="sound.h" />
-    <ClInclude Include="Task_Effect00.h" />
-    <ClInclude Include="Task_Ending.h" />
-    <ClInclude Include="Task_EnemyManager.h" />
-    <ClInclude Include="Task_EnemySkeleton.h" />
-    <ClInclude Include="Task_FireBall.h" />
-    <ClInclude Include="Task_Game.h" />
-    <ClInclude Include="Task_GameUI.h" />
-    <ClInclude Include="Task_GameUI_MiniMap.h" />
-    <ClInclude Include="Task_Item_coin.h" />
-    <ClInclude Include="Task_Item_coin_maneger.h" />
-    <ClInclude Include="Task_Load.h" />
-    <ClInclude Include="Task_MagicManager.h" />
-    <ClInclude Include="Task_Map.h" />
-    <ClInclude Include="Task_MapManager.h" />
-    <ClInclude Include="Task_Player.h" />
-    <ClInclude Include="Task_Sprite.h" />
-    <ClInclude Include="Task_Title.h" />
-    <ClInclude Include="XI2018_Ver1_0.h" />
+    <ClInclude Include="BChara.h">
+      <Filter>MyPG\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="OriginalLibrary.h">
+      <Filter>MyPG</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Map.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Player.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Load.h">
+      <Filter>MyPG\Task\Load</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Sprite.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="BEnemy.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Game.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Title.h">
+      <Filter>MyPG\Task\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Ending.h">
+      <Filter>MyPG\Task\Ending</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Item_coin.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Item_coin_maneger.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_MapManager.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_GameUI.h">
+      <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_GameUI_MiniMap.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_MagicManager.h">
+      <Filter>MyPG\Task\Game\Majic</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_FireBall.h">
+      <Filter>MyPG\Task\Game\Majic</Filter>
+    </ClInclude>
     <ClInclude Include="Task_WaterBlast.h" />
+      <Filter>MyPG\Task\Game\Majic</Filter>
+    <ClInclude Include="Task_EnemySkeleton.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemyManager.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemySkyEye.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GPG_20201.rc" />

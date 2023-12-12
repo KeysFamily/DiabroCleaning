@@ -148,6 +148,7 @@
     <ClCompile Include="Task_Ending.cpp" />
     <ClCompile Include="Task_EnemyManager.cpp" />
     <ClCompile Include="Task_EnemySkeleton.cpp" />
+    <ClCompile Include="Task_EnemySkyEye.cpp" />
     <ClCompile Include="Task_FireBall.cpp" />
     <ClCompile Include="Task_Game.cpp" />
     <ClCompile Include="Task_GameUI.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Task_Ending.h" />
     <ClInclude Include="Task_EnemyManager.h" />
     <ClInclude Include="Task_EnemySkeleton.h" />
+    <ClInclude Include="Task_EnemySkyEye.h" />
     <ClInclude Include="Task_FireBall.h" />
     <ClInclude Include="Task_Game.h" />
     <ClInclude Include="Task_GameUI.h" />

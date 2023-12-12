@@ -1,13 +1,13 @@
 //?------------------------------------------------------
-//タスク名　:敵Skeleton
+//タスク名　:敵SkyEye
 //作　成　者:22CI0333 長谷川勇一朗
 //TODO:もしいれば下記へ記述
 //編　集　者:
 //作成年月日:
-//概　　　要:敵Skeletonの動作
+//概　　　要:敵SkyEyeの動作
 //?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_EnemySkeleton.h"
+#include  "Task_EnemySkyEye.h"
 
 #include  "Task_Player.h"
 
@@ -15,15 +15,34 @@
 
 #include  "randomLib.h"
 #include  "Task_Item_coin_maneger.h"
+//-----------------------------------------------------------------------
+// SkyEye
+// 空中雑魚敵
+// 
+// 通常時 空中を右往左往する。
+// 攻撃時 プレイヤーに突進する。地面にぶつからないように飛行する
+// 各モードの処理
+// 
+// Stand,	// N停止
+// Walk,	// N通常飛行
+// Tracking,// A索敵(標的へ体当たりを開始)
+// Attack,	// A攻撃(体当たり)
+// Fall,	// 落下(死亡時のみ)
+// Landing,	// 着地
+// Turn,	// 逆を向く
+// Bound,	// 弾き飛ばされている(ノックバック処理)
+// Lose,	// 消滅中
+//-----------------------------------------------------------------------
 
-namespace  EnemySkeleton
+
+namespace  EnemySkyEye
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/enemy/image/SkeletonsX4.png");
+		this->img = DG::Image::Create("./data/enemy/image/SkyEye.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -44,7 +63,7 @@ namespace  EnemySkeleton
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.6f;
-		this->hitBase = OL::setBoxCenter(62, 102);
+		this->hitBase = OL::setBoxCenter(50, 50);
 		this->angle_LR = Angle_LR::Left;
 		this->motion = Motion::Stand;
 		this->maxSpeed = 2.0f;
@@ -55,6 +74,8 @@ namespace  EnemySkeleton
 		this->gravity = ML::Gravity(32.0f) * 5.0f;
 		const int HP = 10;
 		this->hp.SetValues(HP, 0, HP);
+		this->targetPos = ML::Vec2();
+		this->altitude = -1000.0f;
 		//★タスクの生成
 
 		return  true;
@@ -96,22 +117,17 @@ namespace  EnemySkeleton
 		switch (nm)
 		{
 		case Motion::Stand:	//立っている
-			nm = Motion::Walk;
-			if (!this->CheckFoot()) { nm = Motion::Fall; }//足元障害なしなら落下させる
-
-			//if (this->moveCnt > 60 * 3) { nm = Motion::Walk; }
+			if (this->moveCnt > 1) {
+				nm = Motion::Walk;
+			}
 			break;
 		case Motion::Walk:	//歩いている
 		{
-			if (this->CheckFront_LR() || !this->CheckFrontFoot_LR()) {
+			if (this->CheckFront_LR()) {
 				nm = Motion::Turn;
 			}//もし壁に当たったら向きを変える
-			if (!this->CheckFoot()) { nm = Motion::Fall; }//足元障害なしなら落下させる
 
-			if (this->moveCnt > 60 * 5) { nm = Motion::Stand; }
-			//以降　プレイヤ索敵
-
-			if (this->searchCnt > 60 && this->SearchPlayer(800,192)) {
+			if (this->searchCnt > 60 && this->SearchPlayer(800,256)) {
 				nm = Motion::Tracking;
 			}
 		}
@@ -119,31 +135,21 @@ namespace  EnemySkeleton
 
 		case Motion::Tracking:
 			//追跡時の処理
-			if (this->CheckFront_LR() || !this->CheckFrontFoot_LR()) {
-				nm = Motion::Turn;
-			}//もし壁に当たったら向きを変える
-
-			if (this->searchCnt > 30) {
-				this->searchCnt = 0;
-				if (!this->SearchPlayer(1000,256)) {
-					//3回見つからなければ通常処理に戻す
-					if (++this->notFoundPlayerCnt > 3) {
-						this->notFoundPlayerCnt = 0;
-						nm = Motion::Stand;
-					}
-					else {
-						nm = Motion::Turn;
-					}
+			//if (this->CheckFront_LR() || !this->CheckFrontFoot_LR()) {
+			//	nm = Motion::Turn;
+			//}//もし壁に当たったら向きを変える
+			//もしも衝突せずに
+			if (this->CallHitBox().Hit(this->targetPos)) {
+				if (this->SearchPlayer(this->hitBase.w, this->hitBase.h)) {
+					//攻撃させる
+					nm = Motion::Attack;
 				}
 				else {
-					if (this->SearchPlayer(100, this->hitBase.h) && 
-						!this->SearchPlayer(ge->qa_Player->hitBase.w, this->hitBase.h)) {
-						//攻撃させる
-						nm = Motion::Attack;
-					}
+					nm = Motion::Walk;
 				}
 			}
-			if (!this->CheckFoot()) { nm = Motion::Fall; }//足元障害なしなら落下させる
+
+
 
 			break;
 		case Motion::Turn:
@@ -158,30 +164,20 @@ namespace  EnemySkeleton
 			break;
 		case Motion::Fall:	//下降中
 			if (this->CheckFoot()) { 
-				if (this->preMotion == Motion::Tracking) {
-					nm = Motion::Tracking;
-				}
-				else {
-					nm = Motion::Stand;
-				}
+				nm = Motion::Lose;
 			}//足元障害ありで着地する
 			break;
 		case Motion::Attack://攻撃中
-			if (this->moveCnt > 36) {
-				nm = this->preMotion;
+			if (this->moveCnt > 16) {
+				nm = Motion::Stand;
 			}
 			break;
 		case Motion::Landing://着地
 			if (!this->CheckFoot()) { nm = Motion::Fall; }//足元障害なしなら落下させる
 			break;
 		case Motion::Bound:
-			if (this->moveCnt >= 16 && this->CheckFoot()) {
-				if (this->preMotion == Motion::Walk) {
-					nm = Motion::Tracking;
-				}
-				else {
-					nm = Motion::Stand;
-				}
+			if (this->moveCnt >= 60) {
+				nm = Motion::Stand;
 			}
 			break;
 		case Motion::Lose:
@@ -197,7 +193,7 @@ namespace  EnemySkeleton
 	void Object::Move(){
 		//重力加速
 		switch (this->motion) {
-		default:
+		case Motion::Fall:
 			//上昇中もしくは足元に地面がない
 			if (this->moveVec.y < 0 || !this->CheckFoot()) {
 				this->moveVec.y = min(this->moveVec.y + this->gravity, this->maxFallSpeed);
@@ -208,7 +204,7 @@ namespace  EnemySkeleton
 			}
 			break;
 			//重力加速を無効化する必要があるモーションは下にcaseを書く（現在対象なし）
-		case Motion::Unnon:		break;
+		default:				break;
 		}
 
 		//移動速度減衰
@@ -231,23 +227,47 @@ namespace  EnemySkeleton
 		switch (this->motion)
 		{
 		case Motion::Stand://立っている
+			if (this->altitude < -50.0f) {
+				this->altitude = this->pos.y;
+			}
 			break;
 		case Motion::Walk://歩いている
+		{	//左右移動処理
 			if (this->angle_LR == Angle_LR::Left) {
 				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
 			}
 			else {
 				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
 			}
-			break;
-		case Motion::Tracking://歩いている
-			if (this->angle_LR == Angle_LR::Left) {
-				this->moveVec.x = max(-this->maxSpeed * 1.5f, this->moveVec.x - this->addSpeed);
+
+			//上下移動処理
+			if (ge->qa_Map != nullptr) {
+				float diffY = this->altitude - this->pos.y;
+
+				ML::Vec2 smPos = this->pos;
+				smPos.y += diffY * 0.05f;
+				if (!ge->qa_Map->CheckHit(this->hitBase.OffsetCopy(smPos))) {
+					this->pos.y += diffY * 0.05f;
+
+				}
 			}
-			else {
-				this->moveVec.x = min(+this->maxSpeed * 1.5f, this->moveVec.x + this->addSpeed);
-			}
-			break;
+
+		}	break;
+		case Motion::Tracking://索敵
+		{
+			ML::Vec2 diff = this->targetPos - this->pos;
+
+			float angRad = atan2(diff.y, diff.x);
+			this->moveVec.x = 7.5f * cos(angRad);
+			this->moveVec.y = 7.5f * sin(angRad);
+
+			//if (this->angle_LR == Angle_LR::Left) {
+			//	this->moveVec.x = max(-this->maxSpeed * 1.5f, this->moveVec.x - this->addSpeed);
+			//}
+			//else {
+			//	this->moveVec.x = min(+this->maxSpeed * 1.5f, this->moveVec.x + this->addSpeed);
+			//}
+		}	break;
 		case Motion::Fall://落下中
 			if (this->angle_LR == Angle_LR::Left) {
 				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
@@ -257,19 +277,8 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Attack://攻撃中
-			if (this->moveCnt == 16) {
-				ML::Box2D hit(
-					-this->hitBase.w / 2, 
-					this->hitBase.y,
-					this->hitBase.w,
-					this->hitBase.h
-				);
-				if (this->angle_LR == Angle_LR::Left) {
-					hit.Offset(-100, 0);
-				}
-				else {
-					hit.Offset(100, 0);
-				}
+			if (this->moveCnt == 15) {
+				ML::Box2D hit = this->hitBase;
 				hit.Offset(this->pos);
 
 				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
@@ -294,6 +303,9 @@ namespace  EnemySkeleton
 				this->Kill();
 			}
 			break;
+		case Motion::Bound:
+			this->moveVec *= 0.98f;
+			break;
 		}
 	}
 	
@@ -303,75 +315,34 @@ namespace  EnemySkeleton
 		ML::Color defColor(1.0f, 1.0f, 1.0f, 1.0f);
 		BEnemy::DrawInfo imageTable[] = {
 			//Idle
-			{ML::Box2D(-31,-77,96,128),ML::Box2D(  0,0,96,128),defColor},		//1		0
-			{ML::Box2D(-31,-77,96,128),ML::Box2D( 96,0,96,128),defColor},		//2
-			{ML::Box2D(-31,-77,96,128),ML::Box2D(192,0,96,128),defColor},		//3
-			{ML::Box2D(-31,-77,96,128),ML::Box2D(288,0,96,128),defColor},		//4
-			{ML::Box2D(-31,-77,96,128),ML::Box2D(384,0,96,128),defColor},		//5
-			{ML::Box2D(-31,-77,96,128),ML::Box2D(480,0,96,128),defColor},		//6
-			{ML::Box2D(-31,-77,96,128),ML::Box2D(576,0,96,128),defColor},		//7
-			{ML::Box2D(-31,-77,96,128),ML::Box2D(672,0,96,128),defColor},		//8
-			{ML::Box2D(-31,-77,96,128),ML::Box2D(768,0,96,128),defColor},		//9
-			{ML::Box2D(-31,-77,96,128),ML::Box2D(864,0,96,128),defColor},		//10
-			{ML::Box2D(-31,-77,96,128),ML::Box2D(960,0,96,128),defColor},		//11	10
-			//Walk
-			{ML::Box2D(-31,-82,88,132),ML::Box2D(   0,128,88,132),defColor},	//1		11
-			{ML::Box2D(-31,-82,88,132),ML::Box2D(  88,128,88,132),defColor},	//2
-			{ML::Box2D(-31,-82,88,132),ML::Box2D( 176,128,88,132),defColor},	//3
-			{ML::Box2D(-31,-82,88,132),ML::Box2D( 264,128,88,132),defColor},	//4
-			{ML::Box2D(-31,-82,88,132),ML::Box2D( 352,128,88,132),defColor},	//5
-			{ML::Box2D(-31,-82,88,132),ML::Box2D( 440,128,88,132),defColor},	//6
-			{ML::Box2D(-31,-82,88,132),ML::Box2D( 528,128,88,132),defColor},	//7
-			{ML::Box2D(-31,-82,88,132),ML::Box2D( 616,128,88,132),defColor},	//8
-			{ML::Box2D(-31,-82,88,132),ML::Box2D( 704,128,88,132),defColor},	//9
-			{ML::Box2D(-31,-82,88,132),ML::Box2D( 792,128,88,132),defColor},	//10
-			{ML::Box2D(-31,-82,88,132),ML::Box2D( 880,128,88,132),defColor},	//11
-			{ML::Box2D(-31,-82,88,132),ML::Box2D( 968,128,88,132),defColor},	//12
-			{ML::Box2D(-31,-82,88,132),ML::Box2D(1056,128,88,132),defColor},	//13	23
-			//Attack
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(   0,260,172,148),defColor},	//1		24
-			{ML::Box2D(-41,-97,172,148),ML::Box2D( 172,260,172,148),defColor},	//2
-			{ML::Box2D(-41,-97,172,148),ML::Box2D( 344,260,172,148),defColor},	//3
-			{ML::Box2D(-41,-97,172,148),ML::Box2D( 516,260,172,148),defColor},	//4
-			{ML::Box2D(-41,-97,172,148),ML::Box2D( 688,260,172,148),defColor},	//5
-			{ML::Box2D(-41,-97,172,148),ML::Box2D( 860,260,172,148),defColor},	//6
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(1032,260,172,148),defColor},	//7
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(1204,260,172,148),defColor},	//8
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(1376,260,172,148),defColor},	//9
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(1548,260,172,148),defColor},	//10
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(1720,260,172,148),defColor},	//11
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(1892,260,172,148),defColor},	//12
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(2064,260,172,148),defColor},	//13
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(2236,260,172,148),defColor},	//14
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(2408,260,172,148),defColor},	//15
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(2580,260,172,148),defColor},	//16
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(2752,260,172,148),defColor},	//17
-			{ML::Box2D(-41,-97,172,148),ML::Box2D(2924,260,172,148),defColor},	//18	41
-			//Hit
-			{ML::Box2D(-52,-77,120,128),ML::Box2D(  0,408,120,128),defColor},	//1		42
-			{ML::Box2D(-52,-77,120,128),ML::Box2D(120,408,120,128),defColor},	//2
-			{ML::Box2D(-52,-77,120,128),ML::Box2D(240,408,120,128),defColor},	//3
-			{ML::Box2D(-52,-77,120,128),ML::Box2D(360,408,120,128),defColor},	//4
-			{ML::Box2D(-52,-77,120,128),ML::Box2D(480,408,120,128),defColor},	//5
-			{ML::Box2D(-52,-77,120,128),ML::Box2D(600,408,120,128),defColor},	//6
-			{ML::Box2D(-52,-77,120,128),ML::Box2D(720,408,120,128),defColor},	//7
-			{ML::Box2D(-52,-77,120,128),ML::Box2D(840,408,120,128),defColor},	//8		49
+			{this->hitBase,ML::Box2D(  0,  0,50,50),defColor},	//1		0
+			{this->hitBase,ML::Box2D( 50,  0,50,50),defColor},	//2
+			{this->hitBase,ML::Box2D(100,  0,50,50),defColor},	//3
+			{this->hitBase,ML::Box2D(150,  0,50,50),defColor},	//4
+			{this->hitBase,ML::Box2D(200,  0,50,50),defColor},	//5
+			{this->hitBase,ML::Box2D(250,  0,50,50),defColor},	//6
+			{this->hitBase,ML::Box2D(300,  0,50,50),defColor},	//7
+			{this->hitBase,ML::Box2D(350,  0,50,50),defColor},	//8		7
+
+			//Att
+			{this->hitBase,ML::Box2D(  0, 50,50,50),defColor},	//1		8
+			{this->hitBase,ML::Box2D( 50, 50,50,50),defColor},	//2
+			{this->hitBase,ML::Box2D(100, 50,50,50),defColor},	//3
+			{this->hitBase,ML::Box2D(150, 50,50,50),defColor},	//4
+			{this->hitBase,ML::Box2D(200, 50,50,50),defColor},	//5
+			{this->hitBase,ML::Box2D(250, 50,50,50),defColor},	//6
+			{this->hitBase,ML::Box2D(300, 50,50,50),defColor},	//7
+			{this->hitBase,ML::Box2D(350, 50,50,50),defColor},	//8		15
+			//Damage
+			{this->hitBase,ML::Box2D(  0,100,50,50),defColor},	//1		16
+			{this->hitBase,ML::Box2D( 50,100,50,50),defColor},	//2
+			{this->hitBase,ML::Box2D(100,100,50,50),defColor},	//3
+			{this->hitBase,ML::Box2D(150,100,50,50),defColor},	//4		19
 			//Dead
-			{ML::Box2D(-71,-77,132,128),ML::Box2D(   0,536,132,128),defColor},	//1		50
-			{ML::Box2D(-71,-77,132,128),ML::Box2D( 132,536,132,128),defColor},	//2
-			{ML::Box2D(-71,-77,132,128),ML::Box2D( 264,536,132,128),defColor},	//3
-			{ML::Box2D(-71,-77,132,128),ML::Box2D( 396,536,132,128),defColor},	//4
-			{ML::Box2D(-71,-77,132,128),ML::Box2D( 528,536,132,128),defColor},	//5
-			{ML::Box2D(-71,-77,132,128),ML::Box2D( 660,536,132,128),defColor},	//6
-			{ML::Box2D(-71,-77,132,128),ML::Box2D( 792,536,132,128),defColor},	//7
-			{ML::Box2D(-71,-77,132,128),ML::Box2D( 924,536,132,128),defColor},	//8
-			{ML::Box2D(-71,-77,132,128),ML::Box2D(1056,536,132,128),defColor},	//9
-			{ML::Box2D(-71,-77,132,128),ML::Box2D(1188,536,132,128),defColor},	//10
-			{ML::Box2D(-71,-77,132,128),ML::Box2D(1320,536,132,128),defColor},	//11
-			{ML::Box2D(-71,-77,132,128),ML::Box2D(1452,536,132,128),defColor},	//12
-			{ML::Box2D(-71,-77,132,128),ML::Box2D(1584,536,132,128),defColor},	//13
-			{ML::Box2D(-71,-77,132,128),ML::Box2D(1716,536,132,128),defColor},	//14
-			{ML::Box2D(-71,-77,132,128),ML::Box2D(1848,536,132,128),defColor},	//15	64
+			{this->hitBase,ML::Box2D(  0,150,50,50),defColor},	//1		20
+			{this->hitBase,ML::Box2D( 50,150,50,50),defColor},	//2
+			{this->hitBase,ML::Box2D(100,150,50,50),defColor},	//3
+			{this->hitBase,ML::Box2D(150,150,50,50),defColor},	//4		23
 		};
 		int work;
 		BEnemy::DrawInfo rtv;
@@ -386,31 +357,31 @@ namespace  EnemySkeleton
 		case Motion::Tracking:
 		case Motion::Walk:
 			work = this->animCnt / 2;
-			work %= 13;
-			rtv = imageTable[work + 11];
+			work %= 8;
+			rtv = imageTable[work];
 			if (this->motion == Motion::Tracking) {
 				rtv.color = ML::Color(1.0f, 1.0f, 0.0f, 0.0f);
 			}
 			break;
 		case Motion::Attack:
 			work = this->animCnt / 2;
-			work %= 18;
-			rtv = imageTable[work + 24];
+			work %= 8;
+			rtv = imageTable[work + 8];
 			break;
 		case Motion::Bound:
 			work = this->animCnt / 2;
-			if (work < 8) {
-				work %= 8;
-				rtv = imageTable[work + 42];
+			if (work < 4) {
+				work %= 4;
+				rtv = imageTable[work + 16];
 			}
 			else {
-				rtv = imageTable[49];
+				rtv = imageTable[19];
 			}
 			break;
 		case Motion::Lose:
 			work = this->animCnt / 2;
-			work %= 15;
-			rtv = imageTable[work + 50];
+			work %= 4;
+			rtv = imageTable[work + 20];
 			break;
 		}
 		if (this->angle_LR == Angle_LR::Left) {
@@ -441,43 +412,83 @@ namespace  EnemySkeleton
 	}
 
 	//-------------------------------------------------------------------
-	// Playerを索敵する
+	// Playerを索敵する xは前方の索敵範囲yは上下の索敵範囲
 	bool Object::SearchPlayer(int distX_, int distY_) {
+		bool isFoundPlayer = false;
 		this->searchCnt = 0;
-		//auto map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-
 		if (ge->qa_Player == nullptr || ge->qa_Map == nullptr) { return false; }
-		ML::Box2D eye(
-			this->hitBase.x,
-			this->hitBase.y + this->hitBase.h,
-			10,
-			10
-		);
+
+		//当たり判定矩形の作成
+		ML::Box2D eye = OL::setBoxCenter(30, 30);
 		if (this->angle_LR == Angle_LR::Left) {
 			eye.Offset(-eye.w, -eye.h);
 		}
 		else {
-			eye.Offset(this->hitBase.w, -eye.h);
+			eye.Offset(eye.w, -eye.h);
 		}
 		eye.Offset(this->pos);
 
 		int eyeW = eye.w;
 		int eyeH = eye.h;
-		for (int x = 0; x < distX_; x += eyeW) {
+
+		//プレイヤーが矩形内にいるか？
+		for (int x = this->hitBase.w; x < distX_; x += eyeW) {
 			if (ge->qa_Map->CheckHit(eye))break;
 			for (int y = 0; y < distY_; y += eyeH) {
-				ML::Box2D eb = eye.OffsetCopy(0, -y);
+				ML::Box2D eb = eye.OffsetCopy(0, y);
 				if (ge->qa_Map->CheckHit(eb))break;
-				if (ge->qa_Player != nullptr && ge->qa_Player->CallHitBox().Hit(eb)) { return true; }
+				if (ge->qa_Player->CallHitBox().Hit(eb)) {
+					this->targetPos = ML::Vec2(
+						GetRandom<float>(eb.x, eb.x + eb.w),
+						GetRandom<float>(eb.y, eb.y + eb.h)
+					);
+					isFoundPlayer = true;
+					goto Check;
+				}
 				ge->debugRect(eb, 4, -ge->camera2D.x, -ge->camera2D.y);
 				
 			}
+			for (int y = 0; y > -distY_; y -= eyeH) {
+				ML::Box2D eb = eye.OffsetCopy(0, y);
+				if (ge->qa_Map->CheckHit(eb))break;
+				if (ge->qa_Player->CallHitBox().Hit(eb)) { 
+					this->targetPos = ML::Vec2(
+						GetRandom<float>(eb.x, eb.x + eb.w),
+						GetRandom<float>(eb.y, eb.y + eb.h)
+					);
+					isFoundPlayer = true;
+					goto Check;
+				}
+				ge->debugRect(eb, 4, -ge->camera2D.x, -ge->camera2D.y);
+
+			}
+
+
 			if (this->angle_LR == Angle_LR::Left) {
 				eye.Offset(-eyeW, 0);
 			}
 			else {
 				eye.Offset(eyeW, 0);
 			}
+		}
+	Check:
+		//いた場合はここに飛ぶ
+		//注意：goto文は暗黙のルールで基本的には使わない。
+		//　　　今回は深いネストから脱出するために使用した。
+		if (isFoundPlayer) {
+			ML::Vec2 smDiff = this->targetPos - this->pos;
+			float angRad = atan2(smDiff.y, smDiff.x);
+
+			float smMoveX = 25.0f * cos(angRad);
+			float smMoveY = 25.0f * sin(angRad);
+
+			while (!this->CallHitBox().OffsetCopy(smDiff).Hit(this->pos)) {
+				if (ge->qa_Map->CheckHit(this->CallHitBox().OffsetCopy(smDiff)))return false;
+
+				smDiff.x -= smMoveX;
+				smDiff.y -= smMoveY;
+			}
+			return true;
 		}
 
 		return false;
