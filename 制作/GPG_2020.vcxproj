@@ -159,6 +159,7 @@
     <ClCompile Include="Task_MagicManager.cpp" />
     <ClCompile Include="Task_Map.cpp" />
     <ClCompile Include="Task_MapManager.cpp" />
+    <ClCompile Include="Task_MapTransition.cpp" />
     <ClCompile Include="Task_Player.cpp" />
     <ClCompile Include="Task_Sprite.cpp" />
     <ClCompile Include="Task_Title.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="easing.h" />
     <ClInclude Include="fpscounter.h" />
     <ClInclude Include="GameEngine_Ver3_83.h" />
+    <ClInclude Include="MapStruct.h" />
     <ClInclude Include="myLib.h" />
     <ClInclude Include="MyPG.h" />
     <ClInclude Include="OriginalLibrary.h" />
@@ -205,6 +207,7 @@
     <ClInclude Include="Task_MagicManager.h" />
     <ClInclude Include="Task_Map.h" />
     <ClInclude Include="Task_MapManager.h" />
+    <ClInclude Include="Task_MapTransition.h" />
     <ClInclude Include="Task_Player.h" />
     <ClInclude Include="Task_Sprite.h" />
     <ClInclude Include="Task_Title.h" />

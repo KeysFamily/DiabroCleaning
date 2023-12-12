@@ -126,5 +126,16 @@ namespace  Player
 		//攻撃発動
 		void MakeAttack();
 
+		//--------------------------------------
+		//0329
+		//マップ移動処理
+		OL::Limit<int> moveMapCoolTime;		//マップ移動のクールタイム
+		void CheckMoveMap();				//マップ移動判定
+		bool CheckFallGround(float preY_, float estY_);				//すり抜ける床判定
+		bool CheckFoot() override;
+		//めり込まない移動処理
+		virtual  void  CheckMove(ML::Vec2& e_) override;
+
+		//--------------------------------------
 	};
 }

@@ -8,6 +8,7 @@
 #include  "Task_Item_coin.h"
 #include  "BEnemy.h"
 #include  "Task_EnemySkeleton.h"
+#include "Task_MapManager.h"
 #include  "Task_MagicManager.h"
 
 
@@ -67,6 +68,12 @@ namespace  Player
 		this->balanceMoney = 100;
 		this->magicSelect = Magic::WaterBlast; //仮
 		ge->debugRectLoad();
+
+
+		//--------------------------------------
+		//0329
+		this->moveMapCoolTime.SetValues(0, 0, 60);
+		//--------------------------------------
 		//★タスクの生成
 
 		return  true;
@@ -795,6 +802,117 @@ namespace  Player
 		return sample;
 	}
 
+	//-------------------------------------------------------------------
+	//マップ移動
+	void Object::CheckMoveMap()
+	{
+		this->moveMapCoolTime.Addval(1);
+
+		//クールタイムが終了していなければ行わない
+		if (this->moveMapCoolTime.IsMax() == false)
+			return;
+
+		auto mapmove = ge->qa_Map->CheckExit(this->CallHitBox());
+		if (mapmove != Map::MapDir::Non)
+		{
+			auto manager = ge->GetTask<MapManager::Object>("MapManager");
+			manager->MoveMap(mapmove);
+
+			this->moveMapCoolTime.Setval(this->moveMapCoolTime.vmin);
+		}
+	}
+	//-------------------------------------------------------------------
+	//めり込まない移動処理
+	void Object::CheckMove(ML::Vec2& e_)
+	{
+		//マップが存在するか調べてからアクセス
+		auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+		if (nullptr == map) { return; }//マップが無ければ判定しない(出来ない）
+
+		//横軸に対する移動
+		while (e_.x != 0) {
+			float  preX = this->pos.x;
+			if (e_.x >= 1) { this->pos.x += 1;		e_.x -= 1; }
+			else if (e_.x <= -1) { this->pos.x -= 1;		e_.x += 1; }
+			else { this->pos.x += e_.x;		e_.x = 0; }
+			ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
+
+			//坂道判定
+			this->pos += map->CheckSlope(hit);
+
+			if (true == map->CheckHit(hit)) {
+				this->pos.x = preX;		//移動をキャンセル
+				break;
+			}
+		}
+		//縦軸に対する移動
+		while (e_.y != 0) {
+			float  preY = this->pos.y;
+			if (e_.y >= 1) { this->pos.y += 1;		e_.y -= 1; }
+			else if (e_.y <= -1) { this->pos.y -= 1;		e_.y += 1; }
+			else { this->pos.y += e_.y;		e_.y = 0; }
+			ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
+
+			//坂道判定
+			this->pos += map->CheckSlope(hit);
+
+			if (true == map->CheckHit(hit)) {
+				this->pos.y = preY;		//移動をキャンセル
+				break;
+			}
+			if (true == CheckFallGround(preY, e_.y))
+			{
+				this->pos.y = preY;
+				break;
+			}
+		}
+	}
+	//-------------------------------------------------------------------
+	//足元判定
+	bool Object::CheckFoot()
+	{
+		//あたり判定を基にして足元矩形を生成
+		ML::Box2D  foot(this->hitBase.x,
+			this->hitBase.y + this->hitBase.h,
+			this->hitBase.w,
+			1);
+		foot.Offset(this->pos);
+
+		auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+		if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
+		if (map->CheckHit(foot))
+		{
+			return true;
+		}
+		if (map->CheckSlope(foot) != ML::Vec2(0, 0))
+		{
+			return true;
+		}
+		if (map->CheckFallGround(foot))
+		{
+			//すり抜ける床は落下中ではない時だけ判定する
+			ML::Box2D upPix = foot.OffsetCopy(0, -1);
+			return map->CheckFallGround(upPix) == false;
+		}
+
+		return false;
+	}
+	//-------------------------------------------------------------------
+	//すり抜ける床判定
+	bool Object::CheckFallGround(float preY_, float estY_)
+	{
+		if (estY_ < 0)
+		{
+			return false;
+		}
+
+		if (ge->qa_Map->CheckFallGround(this->hitBase.OffsetCopy(this->pos.x, preY_)) == true)
+		{
+			return false;
+		}
+
+		return ge->qa_Map->CheckFallGround(this->CallHitBox());
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

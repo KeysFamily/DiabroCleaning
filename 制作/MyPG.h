@@ -15,6 +15,7 @@
 #include "BEnemy.h"
 #include "Task_Player.h"
 #include "Task_Map.h"
+#include "MapStruct.h"
 
 #include "easing.h"
 

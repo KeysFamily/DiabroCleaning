@@ -1,0 +1,10 @@
+{
+	"BackMap": [
+		{
+			"imgFilePath": "./data/map/backMap/bg2.jpg",
+			"imgWidth": 3200,
+			"imgHeight": 2400,
+			"moveScale": 0.3
+		}
+	]
+}

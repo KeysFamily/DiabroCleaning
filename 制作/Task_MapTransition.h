@@ -1,25 +1,26 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//タスク名:
-//作　成　者:
+//タスク名:マップ遷移エフェクト
+//作　成　者:土田誠也
 //TODO:もしいれば下記へ記述
 //編　集　者:
 //作成年月日:
 //概　　　要:
 //?------------------------------------------------------
-#include "BChara.h"
+#include "GameEngine_Ver3_83.h"
+#include "MapStruct.h"
 
-namespace  Item_coin
+namespace  MapTransition
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("item");	//グループ名
-	const  string  defName("coin");		//タスク名
+	const  string  defGroupName("MapTransition");	//グループ名
+	const  string  defName("MapTransition");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
-		bool  Initialize()		override;
-		bool  Finalize()		override;
+		bool  Initialize()	override;
+		bool  Finalize()	override;
 		Resource();
 	public:
 		~Resource();
@@ -27,14 +28,16 @@ namespace  Item_coin
 		typedef  weak_ptr<Resource>		WP;
 		static   WP  instance;
 		static  Resource::SP  Create();
-	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//共有する変数はここに追加する
-		DG::Image::SP img;
-
+		DG::Image::SP imgV;
+		DG::Image::SP imgH;
+		OL::Size2D imgVSize;
+		OL::Size2D imgHSize;
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BChara
+	class  Object : public  BTask
 	{
+	//変更不可◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	public:
 		virtual  ~Object();
 		typedef  shared_ptr<Object>		SP;
@@ -43,44 +46,32 @@ namespace  Item_coin
 		static  Object::SP  Create(bool flagGameEnginePushBack_);
 		Resource::SP	res;
 	private:
-
 		Object();
 		bool  B_Initialize();
 		bool  B_Finalize();
 		bool  Initialize();	//「初期化」タスク生成時に１回だけ行う処理
-		void  UpDate()		override;	//「実行」１フレーム毎に行う処理
-		void  Render2D_AF()	override;	//「2D描画」１フレーム毎に行う処理
+		void  UpDate()			override;//「実行」１フレーム毎に行う処理
+		void  Render2D_AF()		override;//「2D描画」１フレーム毎に行う処理
 		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
-	public:
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+	public:
 		//追加したい変数・メソッドはここに追加する
-		//BCharaに含まれないモノのみここに追加する
-		//思考＆状況判断(ステータス決定）
+		void Appear(const Map::MapDir& tDir_);
+		void Disappear();
 
-		enum Motion
+		bool CheckFinishedAppear();
+	private:
+		ML::Vec2 pos;
+		ML::Vec2 moveVec;
+		float moveSpeed;
+		Map::MapDir tDir;
+		enum class Motion
 		{
-			Unnon = -1,	//	無効(使えません）
-			Stand,		//	停止
-			Jump,		//	ジャン
-			Fall,		//	落下
-			Suction,    //　プレイヤに集める
-			Landing,	//	着地
-			Bound,		//	弾き飛ばされてる
-			Lose,		//  消滅中
+			Non,
+			Appear,
+			Stop,
+			Disappear
 		};
-
-		void  Think();
-		//モーションに対応した処理
-		void  Move();
-		//アニメーション制御
-		BChara::DrawInfo  Anim();
-		//接触時の応答処理(必ず受け身の処理として実装する)
-		void Received(BChara* from_, AttackInfo at_) override;
-
-		//デバック用
-		XI::GamePad::SP controller;
-
-		//画面外に出たらアイテムを消す処理
-		void out_coin(int x,int y);
+		Motion motion;
 	};
 }
