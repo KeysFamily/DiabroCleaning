@@ -843,6 +843,12 @@ ge->debugRect(me, DEBUGRECTMODE::RED ,- ge->camera2D.x, -ge->camera2D.y);
 
 		//デバッグ用フォントの準備
 		this->debugFont = DG::Font::Create("ＭＳ ゴシック", 6, 16);
+		//デバッグ用時間計測の準備
+		this->debugPrintTimeCnt = 0;
+		//デバッグファイルの初期化
+		ofstream ofs("./data/debug/Debug.txt");
+		ofs << "" << endl;
+		ofs.close();
 
 		//デフォルトカメラ
 		this->camera[0] = MyPG::Camera::Create(
@@ -967,11 +973,20 @@ ge->debugRect(me, DEBUGRECTMODE::RED ,- ge->camera2D.x, -ge->camera2D.y);
 		return ML::Vec2(screenWidth / 2.0f, screenHeight / 2.0f);
 	}
 	//デバッグ関数
-	void MyGameEngine::printToDebugFile(string debugstr_) 
+	//param1:出力する文字列
+	//param2:何フレームごとに出力するか
+	void MyGameEngine::printToDebugFile(string debugstr_, int distance_) 
 	{
-		ofstream ofs("./data/debug/Debug.txt", ofstream::app);
-		ofs << debugstr_ << endl;
-		ofs.close();
+#ifdef MYDEBUG
+		++this->debugPrintTimeCnt;
+
+		if (this->debugPrintTimeCnt % distance_ == 0)
+		{
+			ofstream ofs("./data/debug/Debug.txt", ofstream::app);
+			ofs << debugstr_ << endl;
+			ofs.close();
+		}
+#endif
 	}
 
 	//◆◆◆◆◆◆◆◆◆◆

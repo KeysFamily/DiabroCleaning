@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------
-//ƒQ[ƒ€–{•Ò
+//ã‚²ãƒ¼ãƒ æœ¬ç·¨
 //-------------------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_Game.h"
@@ -7,109 +7,158 @@
 #include  "Task_Player.h"
 #include  "Task_Map.h"
 #include  "Task_Sprite.h"
-
+#include  "Task_Item_coin.h"
+#include  "Task_Item_coin_maneger.h"
+#include  "Task_EnemyManager.h"
 #include  "Task_Ending.h"
+#include  "Task_GameUI.h"
+#include  "Task_MapManager.h"
+#include  "Task_GameUI_MiniMap.h"
+
+#include  "sound.h"
 
 namespace  Game
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
-	//ƒŠƒ\[ƒX‚Ì‰Šú‰»
+	//ãƒªã‚½ãƒ¼ã‚¹ã®åˆæœŸåŒ–
 	bool  Resource::Initialize()
 	{
+		this->haikei = DG::Image::Create("./data/image/haikei.jpg");
 		return true;
 	}
 	//-------------------------------------------------------------------
-	//ƒŠƒ\[ƒX‚Ì‰ğ•ú
+	//ãƒªã‚½ãƒ¼ã‚¹ã®è§£æ”¾
 	bool  Resource::Finalize()
 	{
+		this->haikei.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
-	//u‰Šú‰»vƒ^ƒXƒN¶¬‚É‚P‰ñ‚¾‚¯s‚¤ˆ—
+	//ã€ŒåˆæœŸåŒ–ã€ã‚¿ã‚¹ã‚¯ç”Ÿæˆæ™‚ã«ï¼‘å›ã ã‘è¡Œã†å‡¦ç†
 	bool  Object::Initialize()
 	{
-		//ƒX[ƒp[ƒNƒ‰ƒX‰Šú‰»
+		//ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚¯ãƒ©ã‚¹åˆæœŸåŒ–
 		__super::Initialize(defGroupName, defName, true);
-		//ƒŠƒ\[ƒXƒNƒ‰ƒX¶¬orƒŠƒ\[ƒX‹¤—L
+		//ãƒªã‚½ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹ç”Ÿæˆorãƒªã‚½ãƒ¼ã‚¹å…±æœ‰
 		this->res = Resource::Create();
 
-		//šƒf[ƒ^‰Šú‰»
+		//â˜…ãƒ‡ãƒ¼ã‚¿åˆæœŸåŒ–
+		this->render2D_Priority[1] = 1;
+		// â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡â—‡
+		//22ci0308
+		bgm::LoadFile("bgm3", "./data/sound/bgm/industrial_zone.mp3");
+		bgm::Play("bgm3");
+		//this->volume.SetValues(100, 0, 100);
+		// â—†â—†â—†â—†â—†â—†â—†â—†â—†â—†
 
-		//šƒ^ƒXƒN‚Ì¶¬
+		//â˜…ã‚¿ã‚¹ã‚¯ã®ç”Ÿæˆ
 		auto player = Player::Object::Create(true);
-
 		player->pos.x = 1200;
 		player->pos.y = 500;
 		player->render2D_Priority[1] = 0.5f;
+
+		MapManager::Object::Create(true);
+		MiniMap::Object::Create(true);
+		
 		auto map = Map::Object::Create(true);
 		map->render2D_Priority[1] = 0.9f;
+
 		auto spr = Sprite::Object::Create(true);
 		spr->pos = player->pos;
 		spr->target = player;
 		spr->render2D_Priority[1] = 0.6f;
+
 		ge->camera2D.x = 0;
 		ge->camera2D.y = 0;
 		ge->camera2D.w = ge->screenWidth;
 		ge->camera2D.h = ge->screenHeight;
 
-		
+		auto coin_man = coin_maneger::Object::Create(true);
 
+		auto UI = GameUI::Object::Create(true);
+		UI->numPos = ML::Vec2(50, 50);
+
+		EnemyManager::Object::Create(true);
+		
+		this->cnt = 0;
 
 		return  true;
 	}
 	//-------------------------------------------------------------------
-	//uI—¹vƒ^ƒXƒNÁ–Å‚É‚P‰ñ‚¾‚¯s‚¤ˆ—
+	//ã€Œçµ‚äº†ã€ã‚¿ã‚¹ã‚¯æ¶ˆæ»…æ™‚ã«ï¼‘å›ã ã‘è¡Œã†å‡¦ç†
 	bool  Object::Finalize()
 	{
-		//šƒf[ƒ^•ƒ^ƒXƒN‰ğ•ú
-		ge->KillAll_G("–{•Ò");
+
+		//â˜…ãƒ‡ãƒ¼ã‚¿ï¼†ã‚¿ã‚¹ã‚¯è§£æ”¾
+		ge->KillAll_G("æœ¬ç·¨");
+        ge->KillAll_G("item");
+		ge->KillAll_G("coin_maneger");
+		ge->KillAll_G("ã‚¢ã‚¤ãƒ†ãƒ ");
+		ge->KillAll_G("UI");
+		ge->KillAll_G(EnemyManager::defGroupName);
 		ge->KillAll_G(Player::defGroupName);
 		ge->KillAll_G(Map::defGroupName);
 		ge->KillAll_G(Sprite::defGroupName);
+		ge->KillAll_G("MagicManager");
+		ge->KillAll_G("Magic");
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
-			//šˆø‚«Œp‚¬ƒ^ƒXƒN‚Ì¶¬
+			//â˜…å¼•ãç¶™ãã‚¿ã‚¹ã‚¯ã®ç”Ÿæˆ
 			auto next = Ending::Object::Create(true);
 		}
 
 		return  true;
 	}
 	//-------------------------------------------------------------------
-	//uXVv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
+	//ã€Œæ›´æ–°ã€ï¼‘ãƒ•ãƒ¬ãƒ¼ãƒ æ¯ã«è¡Œã†å‡¦ç†
 	void  Object::UpDate()
 	{
+		//(22CI0333)ä»–ã®ã‚¿ã‚¹ã‚¯ã§ä»¥ä¸‹ã®å‡¦ç†ã¯è¡Œã‚ãªãã¦ã‚ˆã„
+		ge->qa_Player = ge->GetTask<Player::Object>(Player::defGroupName, Player::defName);
+		ge->qa_Map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+
 		auto inp = ge->in1->GetState( );
+
+		this->cnt++;
+
 		if (inp.ST.down && ge->getCounterFlag("Game") != ge->ACTIVE) {
-			ge->StartCounter("Game", 45); //ƒtƒF[ƒh‚Í90ƒtƒŒ[ƒ€‚È‚Ì‚Å”¼•ª‚Ì45‚ÅØ‚è‘Ö‚¦
+			ge->StartCounter("Game", 45); //ãƒ•ã‚§ãƒ¼ãƒ‰ã¯90ãƒ•ãƒ¬ãƒ¼ãƒ ãªã®ã§åŠåˆ†ã®45ã§åˆ‡ã‚Šæ›¿ãˆ
 			ge->CreateEffect(98, ML::Vec2(0, 0));
 
 		}
 		if (ge->getCounterFlag("Game") == ge->LIMIT) {
 			this->Kill();
 		}
+
 	}
 	//-------------------------------------------------------------------
-	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
+	//ã€Œï¼’ï¼¤æç”»ã€ï¼‘ãƒ•ãƒ¬ãƒ¼ãƒ æ¯ã«è¡Œã†å‡¦ç†
 	void  Object::Render2D_AF()
 	{
+		ML::Box2D draw(0, 0, 1920, 1080);
+		ML::Box2D src(0, 0, 1920, 1080);
+		
+		this->res->haikei->Draw(draw, src);	//ä»®ã§èƒŒæ™¯ã‚’ç”¨æ„ã™ã‚‹
+
+
 		ge->Dbg_ToDisplay(100, 100, "Game");
 	}
 
-	//šššššššššššššššššššššššššššššššššššššššššš
-	//ˆÈ‰º‚ÍŠî–{“I‚É•ÏX•s—v‚Èƒƒ\ƒbƒh
-	//šššššššššššššššššššššššššššššššššššššššššš
+	//â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…
+	//ä»¥ä¸‹ã¯åŸºæœ¬çš„ã«å¤‰æ›´ä¸è¦ãªãƒ¡ã‚½ãƒƒãƒ‰
+	//â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…â˜…
 	//-------------------------------------------------------------------
-	//ƒ^ƒXƒN¶¬‘‹Œû
+	//ã‚¿ã‚¹ã‚¯ç”Ÿæˆçª“å£
 	Object::SP  Object::Create(bool  flagGameEnginePushBack_)
 	{
 		Object::SP  ob = Object::SP(new  Object());
 		if (ob) {
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
-				ge->PushBack(ob);//ƒQ[ƒ€ƒGƒ“ƒWƒ“‚É“o˜^
+				ge->PushBack(ob);//ã‚²ãƒ¼ãƒ ã‚¨ãƒ³ã‚¸ãƒ³ã«ç™»éŒ²
 			}
 			if (!ob->B_Initialize()) {
-				ob->Kill();//ƒCƒjƒVƒƒƒ‰ƒCƒY‚É¸”s‚µ‚½‚çKill
+				ob->Kill();//ã‚¤ãƒ‹ã‚·ãƒ£ãƒ©ã‚¤ã‚ºã«å¤±æ•—ã—ãŸã‚‰Kill
 			}
 			return  ob;
 		}
@@ -130,7 +179,7 @@ namespace  Game
 	//-------------------------------------------------------------------
 	Object::Object() {	}
 	//-------------------------------------------------------------------
-	//ƒŠƒ\[ƒXƒNƒ‰ƒX‚Ì¶¬
+	//ãƒªã‚½ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹ã®ç”Ÿæˆ
 	Resource::SP  Resource::Create()
 	{
 		if (auto sp = instance.lock()) {

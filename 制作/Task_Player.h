@@ -61,6 +61,43 @@ namespace  Player
 
 		XI::GamePad::SP  controller;
 
+		//キャラクタの行動状態フラグ
+		enum Motion
+		{
+			Unnon = -1,	//	無効(使えません）
+			Stand,		//	停止
+			Walk,		//	歩行
+			Attack,		//	攻撃1
+			Attack2,	//	攻撃2
+			Attack3,	//	攻撃3
+			AirAttack,	//	空中攻撃1
+			AirAttack2,	//	空中攻撃2
+			AirAttack3,	//	空中攻撃3
+			AirAttack4,	//	空中攻撃4
+			Jump,		//	ジャンプ
+			Jump2,		//	二段ジャンプ
+			Fall,		//	落下
+			Fall2,		//	落下(二段ジャンプ後)
+			TakeOff,	//	飛び立つ瞬間
+			Landing,	//	着地
+			Crouch,		//  しゃがみ
+			CrouchWalk,	//	しゃがみながら移動
+			Turn,		//	方向転換
+			Bound,		//	弾き飛ばされてる
+			Lose,		//  消滅中
+			Dash,		//  ダッシュ
+			MagicAttack,//	魔法
+		};
+
+		enum Magic
+		{
+			NoMagic = -1,	//  無効
+			FireBall,
+			WaterBlast,
+			Thunder,
+		};
+		Magic magicSelect;
+
 		//思考＆状況判断(ステータス決定）
 		void  Think();
 		//モーションに対応した処理
@@ -72,6 +109,34 @@ namespace  Player
 
 		//倍率
 		ML::Box2D DrawScale(ML::Box2D& me ,const int drawScale);
-		
+		//攻撃判定
+		ML::Box2D attackBase;
+		//連続攻撃フラグ
+		bool attack2, attack3;
+		//空中攻撃フラグ
+		bool airattack;
+		//二段ジャンプフラグ
+		bool canJump;
+		bool canDash;
+
+		//攻撃力
+		int power;
+		//攻撃力倍率
+		float powerScale;
+
+		//攻撃発動
+		void MakeAttack();
+
+		//--------------------------------------
+		//0329
+		//マップ移動処理
+		OL::Limit<int> moveMapCoolTime;		//マップ移動のクールタイム
+		void CheckMoveMap();				//マップ移動判定
+		bool CheckFallGround(float preY_, float estY_);				//すり抜ける床判定
+		bool CheckFoot() override;
+		//めり込まない移動処理
+		virtual  void  CheckMove(ML::Vec2& e_) override;
+
+		//--------------------------------------
 	};
 }

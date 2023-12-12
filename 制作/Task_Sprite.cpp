@@ -33,7 +33,7 @@ namespace  Sprite
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.5f;
-
+		
 		//★タスクの生成
 
 		return  true;
@@ -62,6 +62,55 @@ namespace  Sprite
 
 			//ターゲットの向きに合わせて自分の移動先を変更
 			if (tg->angle_LR == BChara::Angle_LR::Left) {
+				ML::Vec2  adjust(-250, 0);
+				toVec += adjust;
+			}
+			else {
+				ML::Vec2  adjust(+250, 0);
+				toVec += adjust;
+			}
+
+			//ターゲットに５％近づく
+			this->pos += toVec * 0.03f;
+		}
+
+		//カメラの位置を再調整
+		{
+			//プレイヤを画面の何処に置くか（今回は画面中央）
+			int  px = 1920/2;
+			int  py = 600;
+			//プレイヤを画面中央に置いた時のカメラの左上座標を求める
+			int  cpx = int(this->pos.x) - px;
+			int  cpy = int(this->pos.y) - py;
+			//カメラの座標を更新
+			ge->camera2D.x = cpx;
+			ge->camera2D.y = cpy;
+			if (auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName)) {
+				map->AdjustCameraPos();
+			}
+		}
+	}
+	//-------------------------------------------------------------------
+	//「２Ｄ描画」１フレーム毎に行う処理
+	void  Object::Render2D_AF()
+	{
+		//ML::Box2D  draw(-16, -16, 32, 32);
+		//draw.Offset(this->pos);
+		//ML::Box2D  src(0, 0, 32, 32);
+
+		//draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+		//this->res->img->Draw(draw, src, ML::Color(0.5f, 1, 1, 1));
+	}
+	//-------------------------------------------------------------------
+	//一気に移動
+	void Object::MoveImmediately()
+	{
+		if (auto  tg = this->target.lock()) {
+			//ターゲットへの相対座標を求める
+			ML::Vec2  toVec = tg->pos - this->pos;
+
+			//ターゲットの向きに合わせて自分の移動先を変更
+			if (tg->angle_LR == BChara::Angle_LR::Left) {
 				ML::Vec2  adjust(-100, 0);
 				toVec += adjust;
 			}
@@ -71,7 +120,7 @@ namespace  Sprite
 			}
 
 			//ターゲットに５％近づく
-			this->pos += toVec * 0.05f;
+			this->pos += toVec;
 		}
 
 		//カメラの位置を再調整
@@ -90,18 +139,6 @@ namespace  Sprite
 			}
 		}
 	}
-	//-------------------------------------------------------------------
-	//「２Ｄ描画」１フレーム毎に行う処理
-	void  Object::Render2D_AF()
-	{
-		ML::Box2D  draw(-16, -16, 32, 32);
-		draw.Offset(this->pos);
-		ML::Box2D  src(0, 0, 32, 32);
-
-		draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
-		this->res->img->Draw(draw, src, ML::Color(0.5f, 1, 1, 1));
-	}
-
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

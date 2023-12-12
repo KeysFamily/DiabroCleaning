@@ -23,6 +23,7 @@ namespace  Game
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
+		DG::Image::SP	haikei;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -46,6 +47,12 @@ namespace  Game
 		//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
+		int cnt;
+
+		//◇◇◇◇◇◇◇◇◇◇
+		//以下22CI0333記述
+		OL::Limit<int> volume;
+		// ◆◆◆◆◆◆◆◆◆◆
 
 	};
 }

@@ -24,9 +24,9 @@ public:
 	ML::Box2D   hitBase;	//あたり判定範囲
 	ML::Box2D   map_hitBase;//マップ当たり判定
 	ML::Vec2	moveVec;	//移動ベクトル
-	int			moveCnt;	//行動カウンタ
-	float       hp;         //体力
-	float		maxHp;		//最大体力
+	int			moveCnt,preMoveCnt;	//行動カウンタ
+	int			tempCnt;	//一時カウンタ
+	OL::Limit<float> hp;
 	float		speed;      //移動スピード
 	//向き（2D視点）
 	float angle;
@@ -35,30 +35,12 @@ public:
 	Angle_LR	angle_LR;
 	WP			target;
 
+
 	//キャラクタの行動状態フラグ
-	enum class Motion
-	{
-		Unnon = -1,	//	無効(使えません）
-		Stand,		//	停止
-		Walk,		//	歩行
-		Attack,		//	攻撃1
-		Attack2,	//	攻撃2
-		Attack3,	//	攻撃3
-		Jump,		//	ジャンプ
-		Jump2,		//	二段ジャンプ
-		Fall,		//	落下
-		Fall2,		//	落下(二段ジャンプ後)
-		TakeOff,	//	飛び立つ瞬間
-		Landing,	//	着地
-		Crouch,		//  しゃがみ
-		CrouchWalk,	//	しゃがみながら移動
-		Turn,		//	方向転換
-		Bound,		//	弾き飛ばされてる
-		Lose,		//  消滅中
-	};
-	Motion			motion;			//	現在の行動を示すフラグ
+	int			motion,preMotion;	//	現在の行動を示すフラグ
 	int				animCnt;		//　アニメーションカウンタ
 	float			jumpPow;		//	ジャンプ初速
+	float           fallSpeed;
 	float			maxFallSpeed;	//	落下最大速度
 	float			gravity;		//	フレーム単位の加算量
 	float			maxSpeed;		//	左右方向への移動の加算量
@@ -66,6 +48,7 @@ public:
 	float			crouchSpeed;	//	しゃがみながら移動の最大速度
 	float			decSpeed;		//	左右方向への移動の減衰量
 	int				unHitTime;		//　無敵時間
+	int             balanceMoney;   //  所持金
 
 	//メンバ変数に最低限の初期化を行う
 	//★★メンバ変数を追加したら必ず初期化も追加する事★★
@@ -75,14 +58,17 @@ public:
 		, map_hitBase(0, 0, 0, 0)
 		, moveVec(0, 0)
 		, moveCnt(0)
-		, hp(1.f)
-		, maxHp(1.f)
+		, preMoveCnt(0)
+		, tempCnt(0)
+		, hp()
 		, speed(0.f)
 		, angle(0.f)
 		, angle_LR(Angle_LR::Right)
-		, motion(Motion::Stand)
+		, motion(-1)
+		, preMotion(-1)
 		, animCnt(0)
 		, jumpPow(0.f)
+		, fallSpeed(0.f)
 		, maxFallSpeed(0.f)
 		, gravity(0.f)
 		, maxSpeed(0.f)
@@ -90,6 +76,7 @@ public:
 		, crouchSpeed(0.f)
 		, decSpeed(0.f)
 		, unHitTime(0)
+		, balanceMoney(0)
 	{
 	}
 	virtual  ~BChara() {}
@@ -101,7 +88,7 @@ public:
 	//めり込まない移動処理
 	virtual  void  CheckMove(ML::Vec2& est_);
 	//足元接触判定
-	bool  CheckFoot();
+	virtual bool  CheckFoot();
 	//頭上接触判定
 	virtual  bool  CheckHead();
 	//正面接触判定（サイドビューゲーム専用）
@@ -109,7 +96,7 @@ public:
 	//正面足元チェック（サイドビューゲーム専用）
 	virtual  bool  CheckFrontFoot_LR();
 	//モーションを更新（変更なしの場合	false)
-	bool  UpdateMotion(Motion  nm_);
+	bool  UpdateMotion(int nm_);
 
 	//	アニメーション情報構造体
 	struct DrawInfo {
@@ -118,7 +105,7 @@ public:
 	};
 	//攻撃情報
 	struct AttackInfo {
-		int	power;
+		float	power;
 		int	hit;
 		int element;
 		//その他必要に応じて
@@ -128,7 +115,8 @@ public:
 	virtual void Received(BChara* from_, AttackInfo at_);
 	//接触判定
 	virtual bool CheckHit(const ML::Box2D& hit_);
-
+	//コイン生成
+	void Create_coin(int x_, int y_, int rand_);
 protected:
 	virtual void Think() {}
 	virtual void Move() {}
