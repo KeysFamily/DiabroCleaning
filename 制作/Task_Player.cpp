@@ -53,7 +53,7 @@ namespace  Player
 		this->crouchSpeed = 2.5f;	//しゃがみながら移動最大速度
 		this->decSpeed = 0.5f;		//接地状態の時の速度減衰量（摩擦
 		this->maxFallSpeed = 11.0f;	//最大落下速度
-		this->jumpPow = -12.5f;		//ジャンプ力（初速）
+		this->jumpPow = -15.5f;		//ジャンプ力（初速）
 		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
 		this->drawScale = 1;
 		this->attack2 = false;
@@ -124,6 +124,8 @@ namespace  Player
 				}
 			}
 		}
+
+		this->CheckMoveMap();
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理

@@ -74,7 +74,7 @@ namespace MapManager
 				, visited(false)
 			{}
 
-			virtual string Generate() { return ""; };
+			virtual void Generate() { return; };
 		};
 
 		class Area : public MapObject
@@ -93,9 +93,24 @@ namespace MapManager
 			{
 			}
 
-			string Generate() override
+			void Generate() override
 			{
-				return "1";
+				string genMapName = "map_";
+				string mapDirStr[4] = { "Up", "Down", "Right", "Left" };
+
+				genMapName += mapDirStr[(int)enter];
+				if (exit == Map::MapDir::Non)
+				{
+					genMapName += mapDirStr[(int)enter];
+				}
+				else
+				{
+					genMapName += mapDirStr[(int)exit];
+				}
+
+				genMapName += "_1";
+
+				this->mapName = genMapName;
 			}
 
 			//ゲッタ
@@ -119,9 +134,30 @@ namespace MapManager
 			{
 			}
 
-			string Generate() override
+			void Generate() override
 			{
-				return "2";
+				string genMapName = "pass_";
+				string mapDirStr[4] = { "Up", "Down", "Right", "Left" };
+
+				genMapName += mapDirStr[(int)enter];
+
+				if (exitSub != Map::MapDir::Non)
+				{
+					if (exit == Map::MapDir::Down)
+					{
+						genMapName += mapDirStr[(int)exitSub] + mapDirStr[(int)exit];
+					}
+					else
+					{
+						genMapName += mapDirStr[(int)exit] + mapDirStr[(int)exitSub];
+					}
+				}
+				else
+				{
+					genMapName += mapDirStr[(int)exit];
+				}
+
+				this->mapName = genMapName;
 			}
 
 			//ゲッタ

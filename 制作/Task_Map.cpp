@@ -171,12 +171,14 @@ namespace  Map
 			return false;
 		}
 
-		//生成マップ読み込み
-		/*if (this->ObjectMap.Load("./data/map/" + mapName_ + "/" + mapName_ + "_gen.csv")
+		//エンティティマップ読み込み
+		this->GenerateMap.chipdata.clear();
+
+		if (this->GenerateMap.Load("./data/map/" + mapName_ + "/" + mapName_ + "_gens.csv")
 			== false)
 		{
 			return false;
-		}*/		
+		}		
 
 
 		//当たり判定矩形設定
@@ -331,23 +333,18 @@ namespace  Map
 	//マップ移動時のプレイヤーの座標
 	ML::Vec2 Object::GetPlayerEnterPos(const MapDir& mapDirection_)
 	{
-		//番号は13番～上,下,右,左の順で準備されている
-		int enterChip = 13 + (int)mapDirection_;
-		OL::Size2D mapSize(ObjectMap.width, ObjectMap.height);
+		//番号は8番～上,下,右,左の順で準備されている
+		int enterChip = 8 + (int)mapDirection_;
+		OL::Size2D mapSize(GenerateMap.width, GenerateMap.height);
 
 		//チップを探す
 		for (int y = 0; y < mapSize.h; ++y)
 		{
 			for (int x = 0; x < mapSize.w; ++x)
 			{
-				while (ObjectMap.chipdata[y][x] == enterChip)
+				while (GenerateMap.chipdata[y][x] == enterChip)
 				{
-					++y;
-
-					if (ObjectMap.chipdata[y][x] != enterChip)
-					{
-						return ML::Vec2(x, y - 1) * this->res->drawSize;
-					}
+					return ML::Vec2(x, y) * this->res->drawSize;
 				}
 			}
 		}
