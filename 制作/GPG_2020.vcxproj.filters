@@ -1,6 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="MyPG">
+      <UniqueIdentifier>{b35a18ec-194d-4fea-852c-04cef35dd4c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{03edeb10-2dce-4448-9773-e351d54f2af1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine">
+      <UniqueIdentifier>{7ec743ff-cd39-4503-b15a-b383d90b63cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib\DG2014">
+      <UniqueIdentifier>{69163297-886a-4dac-b189-d31c213e0fee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Task">
+      <UniqueIdentifier>{ac267129-d8b1-4447-8bb5-09a39c81010e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Task\Game">
+      <UniqueIdentifier>{3dd18d8e-0ad1-46da-9f35-a5854eac44d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Task\Load">
+      <UniqueIdentifier>{7bf91148-d91f-4e7c-b97b-71264b73ee54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Task\Game\Enemy">
+      <UniqueIdentifier>{7dea24d0-b10c-4940-823b-0fc3755b7c67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Task\Title">
+      <UniqueIdentifier>{702e1b63-5034-4108-b450-53a9ac282496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Task\Ending">
+      <UniqueIdentifier>{679dd661-f1aa-454e-9227-6e328573c479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Task\Game\GameUI">
+      <UniqueIdentifier>{1b318143-e58a-41ae-b35d-8b214154aa6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Task\Game\Majic">
+      <UniqueIdentifier>{b4b8e054-d770-4f47-bbc0-a199dd969647}</UniqueIdentifier>
+    </Filter>
     <ClCompile Include="BChara.cpp" />
     <ClCompile Include="BEnemy.cpp" />
     <ClCompile Include="DG2014\DG2014_DGObject.cpp" />
@@ -165,6 +205,7 @@
     </ClCompile>
     <ClCompile Include="Task_FireBall.cpp">
       <Filter>MyPG\Task\Game\Majic</Filter>
+	</ClCompile>
     <ClCompile Include="Task_EnemySkeleton.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
