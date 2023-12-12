@@ -92,7 +92,8 @@ namespace  Player
 		enum Magic
 		{
 			NoMagic = -1,	//  –³Œø
-			FireBall,	
+			FireBall,
+			WaterBlast
 		};
 		Magic magicSelect;
 

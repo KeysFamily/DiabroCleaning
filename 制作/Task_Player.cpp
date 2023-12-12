@@ -65,7 +65,7 @@ namespace  Player
 		this->power = 1;
 		this->powerScale = 1.0f;
 		this->balanceMoney = 100;
-		this->magicSelect = Magic::FireBall;
+		this->magicSelect = Magic::WaterBlast; //仮
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -311,6 +311,7 @@ namespace  Player
 			break;
 		case Motion::MagicAttack:
 			if (this->moveCnt >= 15 && inp.B3.off) { nm = Motion::Stand; }
+			break;
 		}
 		//モーション更新
 		this->UpdateMotion(nm);
@@ -492,6 +493,9 @@ namespace  Player
 					break;
 				case Magic::FireBall:
 					mj->magicSelect = mj->Magic::FireBall;
+					break;
+				case Magic::WaterBlast:
+					mj->magicSelect = mj->Magic::WaterBlast;
 					break;
 				}
 				if (this->angle_LR == Angle_LR::Left) { mj->LR = false; }
