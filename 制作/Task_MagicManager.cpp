@@ -10,6 +10,7 @@
 #include  "Task_MagicManager.h"
 #include  "Task_FireBall.h"
 #include  "Task_WaterBlast.h"
+#include  "Task_Thunder.h"
 #include  "Task_Player.h"
 
 namespace  MagicManager
@@ -103,6 +104,29 @@ namespace  MagicManager
 						wb->pos.y = this->pos.y;
 					}
 					pl->balanceMoney -= wb->cost;
+				}
+			}
+			break;
+		case Magic::Thunder:
+			if (this->moveCnt % 30 == 1) {
+				auto th = Thunder::Object::Create(true); //(‰¼)
+				if (pl->balanceMoney > th->cost) {
+					if (this->LR) {
+						th->angle_LR = BChara::Angle_LR::Right;
+						th->moveVec = ML::Vec2(th->speed, 0);
+						th->pos.x = pl->pos.x + 60;
+						th->pos.y = pl->pos.y;
+					}
+					if (!this->LR) {
+						th->angle_LR = BChara::Angle_LR::Left;
+						th->moveVec = ML::Vec2(-th->speed, 0);
+						th->pos.x = pl->pos.x - 60;
+						th->pos.y = pl->pos.y;
+					}
+					pl->balanceMoney -= th->cost;
+				}
+				else {
+					th->Kill();
 				}
 			}
 			break;

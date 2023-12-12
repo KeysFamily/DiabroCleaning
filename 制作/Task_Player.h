@@ -93,7 +93,8 @@ namespace  Player
 		{
 			NoMagic = -1,	//  –³Œø
 			FireBall,
-			WaterBlast
+			WaterBlast,
+			Thunder,
 		};
 		Magic magicSelect;
 

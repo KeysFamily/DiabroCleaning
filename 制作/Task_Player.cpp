@@ -65,7 +65,7 @@ namespace  Player
 		this->power = 1;
 		this->powerScale = 1.0f;
 		this->balanceMoney = 100;
-		this->magicSelect = Magic::WaterBlast; //仮
+		this->magicSelect = Magic::Thunder; //仮
 		ge->debugRectLoad();
 		//★タスクの生成
 
@@ -188,6 +188,7 @@ namespace  Player
 				if (inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
+			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			break;
 		case Motion::Jump2:
 			if (this->moveVec.y >= 0) { nm = Motion::Fall2; }
@@ -195,6 +196,7 @@ namespace  Player
 				if (inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
+			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			break;
 		case  Motion::Fall:		//落下中
 			if (this->CheckFoot() == true) { nm = Motion::Landing; }
@@ -203,6 +205,7 @@ namespace  Player
 				if (inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
+			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			break;
 		case Motion::Fall2:
 			if (this->CheckFoot() == true) { nm = Motion::Landing; }
@@ -210,6 +213,7 @@ namespace  Player
 				if (inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
+			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			break;
 		case Motion::Dash:
 			if (this->moveCnt > 10 || true == this->CheckFront_LR()) {
@@ -496,6 +500,9 @@ namespace  Player
 					break;
 				case Magic::WaterBlast:
 					mj->magicSelect = mj->Magic::WaterBlast;
+					break;
+				case Magic::Thunder:
+					mj->magicSelect = mj->Magic::Thunder;
 					break;
 				}
 				if (this->angle_LR == Angle_LR::Left) { mj->LR = false; }
