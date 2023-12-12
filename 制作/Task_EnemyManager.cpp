@@ -155,15 +155,15 @@ namespace  EnemyManager
 			//auto e = EnemySkeleton::Object::Create(true);
 			auto e       = this->res->enemyInits[name_](true);
 			e->pos       = pos_;
-			int HP       = this->res->enemyDatas[name_].hp;
+			float HP       = this->res->enemyDatas[name_].hp;
 			e->hp.SetValues(HP, 0, HP);
 			e->jumpPow   = this->res->enemyDatas[name_].jumpPow;
 			e->maxSpeed  = this->res->enemyDatas[name_].maxSpeed;
 			e->addSpeed  = this->res->enemyDatas[name_].addSpeed;
 			e->decSpeed  = this->res->enemyDatas[name_].decSpeed;
 			e->unHitTime = this->res->enemyDatas[name_].unHitTime;
-			//e->dropMoney = this->res->enemyDatas[name].dropMoney;
-			//e->attackPow = this->res->enemyDatas[name].attackPow;
+			e->dropMoney = this->res->enemyDatas[name_].dropMoney;
+			e->attackPow = this->res->enemyDatas[name_].attackPow;
 		}
 	}
 

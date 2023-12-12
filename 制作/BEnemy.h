@@ -37,13 +37,18 @@ public:
 		Lose,		// 消滅中
 	};
 	int searchCnt;			//索敵カウント
-	int notFoundPlayerCnt;	//プレイヤが探せなかったとき	
+	int notFoundPlayerCnt;	//プレイヤが探せなかったとき
+
+	int dropMoney;			//ドロップするお金の量
+	int attackPow;			//攻撃力
 
 	//メンバ変数に最低限の初期化を行う
 	//★★メンバ変数を追加したら必ず初期化も追加する事★★
 	BEnemy()
 		: searchCnt(0)
 		, notFoundPlayerCnt(0)
+		, dropMoney(0)
+		, attackPow(0)
 	{
 	}
 	virtual  ~BEnemy() {}
