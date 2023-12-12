@@ -17,7 +17,7 @@ namespace  FireBall
 	//ƒŠƒ\[ƒX‚Ì‰Šú‰»
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/image/fireball.png");
+		this->img = DG::Image::Create("./data/effect/fireball.png");
 		return true;
 	}
 	//-------------------------------------------------------------------

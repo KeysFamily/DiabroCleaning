@@ -9,6 +9,7 @@
 #include  "MyPG.h"
 #include  "Task_MagicManager.h"
 #include  "Task_FireBall.h"
+#include  "Task_WaterBlast.h"
 #include  "Task_Player.h"
 
 namespace  MagicManager
@@ -86,6 +87,22 @@ namespace  MagicManager
 				}
 				else {
 					fb->Kill();
+				}
+			}
+			break;
+		case Magic::WaterBlast:
+			if (this->moveCnt == 1) {
+				auto wb = WaterBlast::Object::Create(true);
+				if (pl->balanceMoney > wb->cost) {
+					if (this->LR) {
+						wb->pos.x = this->pos.x + 100;
+						wb->pos.y = this->pos.y;
+					}
+					if (!this->LR) {
+						wb->pos.x = this->pos.x - 100;
+						wb->pos.y = this->pos.y;
+					}
+					pl->balanceMoney -= wb->cost;
 				}
 			}
 			break;
