@@ -38,10 +38,10 @@
     <Filter Include="MyPG\Task\Game\GameUI">
       <UniqueIdentifier>{1b318143-e58a-41ae-b35d-8b214154aa6a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MyPG\Task\Game\Majic">
+    <ClCompile Include="WinMain.cpp" />
+    <Filter Include="MyPG\Task\Game\Magic">
       <UniqueIdentifier>{b4b8e054-d770-4f47-bbc0-a199dd969647}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine_Ver3_83.cpp">
@@ -159,10 +159,10 @@
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
     <ClCompile Include="Task_MagicManager.cpp">
-      <Filter>MyPG\Task\Game\Majic</Filter>
+      <Filter>MyPG\Task\Game\Magic</Filter>
     </ClCompile>
     <ClCompile Include="Task_FireBall.cpp">
-      <Filter>MyPG\Task\Game\Majic</Filter>
+      <Filter>MyPG\Task\Game\Magic</Filter>
     </ClCompile>
     <ClCompile Include="Task_EnemySkeleton.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
@@ -237,7 +237,7 @@
       <Filter>Lib</Filter>
     </ClCompile>
     <ClCompile Include="Task_WaterBlast.cpp">
-      <Filter>MyPG\Task\Game\Majic</Filter>
+      <Filter>MyPG\Task\Game\Magic</Filter>
     </ClCompile>
     <ClCompile Include="Task_FireBall.cpp">
       <Filter>MyPG\Task\Game\Majic</Filter>
@@ -301,6 +301,9 @@
     </ClCompile>
     <ClCompile Include="Task_MapTransition.cpp">
       <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Thunder.cpp">
+      <Filter>MyPG\Task\Game\Magic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -414,13 +417,13 @@
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
     <ClInclude Include="Task_MagicManager.h">
-      <Filter>MyPG\Task\Game\Majic</Filter>
+      <Filter>MyPG\Task\Game\Magic</Filter>
     </ClInclude>
     <ClInclude Include="Task_FireBall.h">
-      <Filter>MyPG\Task\Game\Majic</Filter>
+      <Filter>MyPG\Task\Game\Magic</Filter>
     </ClInclude>
     <ClInclude Include="Task_WaterBlast.h">
-      <Filter>MyPG\Task\Game\Majic</Filter>
+      <Filter>MyPG\Task\Game\Magic</Filter>
     </ClInclude>
     <ClInclude Include="Task_EnemySkeleton.h">
       <Filter>MyPG\Task\Game\Enemy</Filter>
@@ -434,6 +437,9 @@
     <ClInclude Include="MapStruct.h" />
     <ClInclude Include="Task_MapTransition.h">
       <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Thunder.h">
+      <Filter>MyPG\Task\Game\Magic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
