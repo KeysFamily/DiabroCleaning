@@ -88,6 +88,7 @@ namespace  Map
 
 		bool  CheckHit(const  ML::Box2D& hit_);//あたり判定
 		ML::Vec2 CheckSlope(const ML::Box2D& hit_);//坂との当たり判定
+		bool CheckFallGround(const ML::Box2D& hit_);//すり抜ける床判定
 
 		//マップ読み込み
 		//param1:難易度までの名前

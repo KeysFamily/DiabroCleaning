@@ -18,7 +18,7 @@ namespace  Map
 		this->turnNum = 64;		//画像の1行に含まれるチップの種類
 
 		this->debugFont = DG::Font::Create("non", 8, 16);	//数字フォント
-		this->drawObject = false;	//オブジェクトチップの数字描画
+		this->drawObject = true;	//オブジェクトチップの数字描画
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -319,6 +319,12 @@ namespace  Map
 			}
 		}
 		return result;
+	}
+	//-------------------------------------------------------------------
+	//すり抜ける床判定
+	bool  Object::CheckFallGround(const  ML::Box2D& hit_)
+	{
+		return this->CheckHitTo(hit_, 9);
 	}
 
 	//-------------------------------------------------------------------

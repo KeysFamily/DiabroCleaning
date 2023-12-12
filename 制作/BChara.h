@@ -88,7 +88,7 @@ public:
 	//めり込まない移動処理
 	virtual  void  CheckMove(ML::Vec2& est_);
 	//足元接触判定
-	bool  CheckFoot();
+	virtual bool  CheckFoot();
 	//頭上接触判定
 	virtual  bool  CheckHead();
 	//正面接触判定（サイドビューゲーム専用）
