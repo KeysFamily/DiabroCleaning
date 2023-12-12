@@ -162,6 +162,7 @@
     <ClCompile Include="Task_MapTransition.cpp" />
     <ClCompile Include="Task_Player.cpp" />
     <ClCompile Include="Task_Sprite.cpp" />
+    <ClCompile Include="Task_Thunder.cpp" />
     <ClCompile Include="Task_Title.cpp" />
     <ClCompile Include="Task_WaterBlast.cpp" />
     <ClCompile Include="WinMain.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="Task_MapTransition.h" />
     <ClInclude Include="Task_Player.h" />
     <ClInclude Include="Task_Sprite.h" />
+    <ClInclude Include="Task_Thunder.h" />
     <ClInclude Include="Task_Title.h" />
     <ClInclude Include="Task_WaterBlast.h" />
     <ClInclude Include="XI2018_Ver1_0.h" />

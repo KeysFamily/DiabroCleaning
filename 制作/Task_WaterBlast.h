@@ -60,8 +60,6 @@ namespace  WaterBlast
 		//アニメーション制御
 		BChara::DrawInfo  Anim();
 
-		XI::GamePad::SP  controller;
-
 		enum Motion
 		{
 			Unnon = -1,
