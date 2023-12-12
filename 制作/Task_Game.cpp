@@ -9,13 +9,11 @@
 #include  "Task_Sprite.h"
 #include  "Task_Item_coin.h"
 #include  "Task_Item_coin_maneger.h"
-#include  "Task_EnemySkeleton.h"
-#include  "BEnemy.h"
+#include  "Task_EnemyManager.h"
 #include  "Task_Ending.h"
 #include  "Task_GameUI.h"
 #include  "Task_MapManager.h"
 #include  "Task_GameUI_MiniMap.h"
-#include  "Task_MapTransition.h"
 
 #include  "sound.h"
 
@@ -26,12 +24,14 @@ namespace  Game
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
+		this->haikei = DG::Image::Create("./data/image/haikei.jpg");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
+		this->haikei.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -44,7 +44,7 @@ namespace  Game
 		this->res = Resource::Create();
 
 		//★データ初期化
-		
+		this->render2D_Priority[1] = 1;
 		// ◇◇◇◇◇◇◇◇◇◇
 		//22ci0308
 		bgm::LoadFile("bgm3", "./data/sound/bgm/industrial_zone.mp3");
@@ -60,8 +60,7 @@ namespace  Game
 
 		MapManager::Object::Create(true);
 		MiniMap::Object::Create(true);
-		MapTransition::Object::Create(true);
-
+		
 		auto map = Map::Object::Create(true);
 		map->render2D_Priority[1] = 0.9f;
 
@@ -69,10 +68,6 @@ namespace  Game
 		spr->pos = player->pos;
 		spr->target = player;
 		spr->render2D_Priority[1] = 0.6f;
-
-		auto sk = EnemySkeleton::Object::Create(true);
-		sk->pos.x = 1100;
-		sk->pos.y = 500;
 
 		ge->camera2D.x = 0;
 		ge->camera2D.y = 0;
@@ -84,6 +79,8 @@ namespace  Game
 		auto UI = GameUI::Object::Create(true);
 		UI->numPos = ML::Vec2(50, 50);
 
+		EnemyManager::Object::Create(true);
+		
 		this->cnt = 0;
 
 		return  true;
@@ -95,15 +92,16 @@ namespace  Game
 
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
-		ge->KillAll_G("Enemy");
         ge->KillAll_G("item");
 		ge->KillAll_G("coin_maneger");
 		ge->KillAll_G("アイテム");
 		ge->KillAll_G("UI");
-		ge->KillAll_G("GameUI");
+		ge->KillAll_G(EnemyManager::defGroupName);
 		ge->KillAll_G(Player::defGroupName);
 		ge->KillAll_G(Map::defGroupName);
 		ge->KillAll_G(Sprite::defGroupName);
+		ge->KillAll_G("MagicManager");
+		ge->KillAll_G("Magic");
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
 			auto next = Ending::Object::Create(true);
@@ -118,7 +116,6 @@ namespace  Game
 		//(22CI0333)他のタスクで以下の処理は行わなくてよい
 		ge->qa_Player = ge->GetTask<Player::Object>(Player::defGroupName, Player::defName);
 		ge->qa_Map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-		ge->qa_Enemys = ge->GetTasks<BEnemy>("Enemy");
 
 		auto inp = ge->in1->GetState( );
 
@@ -138,6 +135,12 @@ namespace  Game
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		ML::Box2D draw(0, 0, 1920, 1080);
+		ML::Box2D src(0, 0, 1920, 1080);
+		
+		this->res->haikei->Draw(draw, src);	//仮で背景を用意する
+
+
 		ge->Dbg_ToDisplay(100, 100, "Game");
 	}
 

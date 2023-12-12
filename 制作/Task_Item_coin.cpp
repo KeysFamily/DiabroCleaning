@@ -92,7 +92,7 @@ namespace  Item_coin
 		this->CheckMove(est);
 
 		//画面内にコインがあるか
-		auto map = ge->GetTask<Map::Object>("Map");
+		auto map = ge->qa_Map;
 		ML::Vec2 map_size (map->ObjectMap.width, map->ObjectMap.height);
 		this->out_coin(map_size.x,map_size.y);
 	}
@@ -179,8 +179,8 @@ namespace  Item_coin
 			switch (this->motion)
 			{
 			case Motion::Suction:
-				auto pl = ge->qa_Player;
-				this->target = pl;
+				//auto pl = ge->GetTask<Player::Object>("Player");
+				this->target = ge->qa_Player;
 				if (auto  tg = this->target.lock()) {
 					//ターゲットへの相対座標を求める
 					ML::Vec2  toVec = tg->pos - this->pos;

@@ -86,7 +86,16 @@ namespace  Player
 			Bound,		//	弾き飛ばされてる
 			Lose,		//  消滅中
 			Dash,		//  ダッシュ
+			MagicAttack,//	魔法
 		};
+
+		enum Magic
+		{
+			NoMagic = -1,	//  無効
+			FireBall,
+			WaterBlast
+		};
+		Magic magicSelect;
 
 		//思考＆状況判断(ステータス決定）
 		void  Think();
