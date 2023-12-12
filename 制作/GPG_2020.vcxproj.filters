@@ -41,49 +41,7 @@
     <Filter Include="MyPG\Task\Game\Majic">
       <UniqueIdentifier>{b4b8e054-d770-4f47-bbc0-a199dd969647}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="BChara.cpp" />
-    <ClCompile Include="BEnemy.cpp" />
-    <ClCompile Include="DG2014\DG2014_DGObject.cpp" />
-    <ClCompile Include="DG2014\DG2014_Effect.cpp" />
-    <ClCompile Include="DG2014\DG2014_Font.cpp" />
-    <ClCompile Include="DG2014\DG2014_Image.cpp" />
-    <ClCompile Include="DG2014\DG2014_IndexBuffer.cpp" />
-    <ClCompile Include="DG2014\DG2014_InputLayout.cpp" />
-    <ClCompile Include="DG2014\DG2014_Mesh.cpp" />
-    <ClCompile Include="DG2014\DG2014_MeshSOBFile.cpp" />
-    <ClCompile Include="DG2014\DG2014_Texture.cpp" />
-    <ClCompile Include="DG2014\DG2014_Ver3_6.cpp" />
-    <ClCompile Include="DG2014\DG2014_VertexBuffer.cpp" />
-    <ClCompile Include="DG2014\DG2014_VertexContainer.cpp" />
-    <ClCompile Include="Dm2008_Ver1_4.cpp" />
-    <ClCompile Include="easing.cpp" />
-    <ClCompile Include="fpscounter.cpp" />
-    <ClCompile Include="GameEngine_Ver3_83.cpp" />
-    <ClCompile Include="myLib.cpp" />
-    <ClCompile Include="MyPG.cpp" />
-    <ClCompile Include="OriginalLibrary.cpp" />
-    <ClCompile Include="randomLib.cpp" />
-    <ClCompile Include="sound.cpp" />
-    <ClCompile Include="Task_Effect00.cpp" />
-    <ClCompile Include="Task_Ending.cpp" />
-    <ClCompile Include="Task_EnemyManager.cpp" />
-    <ClCompile Include="Task_EnemySkeleton.cpp" />
-    <ClCompile Include="Task_FireBall.cpp" />
-    <ClCompile Include="Task_Game.cpp" />
-    <ClCompile Include="Task_GameUI.cpp" />
-    <ClCompile Include="Task_GameUI_MiniMap.cpp" />
-    <ClCompile Include="Task_Item_coin.cpp" />
-    <ClCompile Include="Task_Item_coin_maneger.cpp" />
-    <ClCompile Include="Task_Load.cpp" />
-    <ClCompile Include="Task_MagicManager.cpp" />
-    <ClCompile Include="Task_Map.cpp" />
-    <ClCompile Include="Task_MapManager.cpp" />
-    <ClCompile Include="Task_Player.cpp" />
-    <ClCompile Include="Task_Sprite.cpp" />
-    <ClCompile Include="Task_Title.cpp" />
     <ClCompile Include="WinMain.cpp" />
-    <ClCompile Include="XI2018_Ver1_0.cpp" />
-    <ClCompile Include="Task_WaterBlast.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine_Ver3_83.cpp">
@@ -205,7 +163,7 @@
     </ClCompile>
     <ClCompile Include="Task_FireBall.cpp">
       <Filter>MyPG\Task\Game\Majic</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="Task_EnemySkeleton.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
@@ -214,6 +172,135 @@
     </ClCompile>
     <ClCompile Include="Task_EnemySkyEye.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_DGObject.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Effect.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Font.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Image.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_IndexBuffer.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_InputLayout.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Mesh.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_MeshSOBFile.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Texture.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_Ver3_6.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_VertexBuffer.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="DG2014\DG2014_VertexContainer.cpp">
+      <Filter>Lib\DG2014</Filter>
+    </ClCompile>
+    <ClCompile Include="easing.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="fpscounter.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="XI2018_Ver1_0.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="myLib.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="randomLib.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="BChara.cpp">
+      <Filter>MyPG\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="BEnemy.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Dm2008_Ver1_4.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_WaterBlast.cpp">
+      <Filter>MyPG\Task\Game\Majic</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_FireBall.cpp">
+      <Filter>MyPG\Task\Game\Majic</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_MagicManager.cpp">
+      <Filter>MyPG\Task\Game\Majic</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEngine_Ver3_83.cpp">
+      <Filter>GameEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemyManager.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemySkeleton.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Ending.cpp">
+      <Filter>MyPG\Task\Ending</Filter>
+    </ClCompile>
+    <ClCompile Include="OriginalLibrary.cpp">
+      <Filter>MyPG</Filter>
+    </ClCompile>
+    <ClCompile Include="MyPG.cpp">
+      <Filter>MyPG</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Effect00.cpp">
+      <Filter>MyPG\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Game.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_GameUI_MiniMap.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Item_coin_maneger.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Item_coin.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Map.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_MapManager.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Player.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Sprite.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_GameUI.cpp">
+      <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Title.cpp">
+      <Filter>MyPG\Task\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Load.cpp">
+      <Filter>MyPG\Task\Load</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_MapTransition.cpp">
+      <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -332,8 +419,9 @@
     <ClInclude Include="Task_FireBall.h">
       <Filter>MyPG\Task\Game\Majic</Filter>
     </ClInclude>
-    <ClInclude Include="Task_WaterBlast.h" />
+    <ClInclude Include="Task_WaterBlast.h">
       <Filter>MyPG\Task\Game\Majic</Filter>
+    </ClInclude>
     <ClInclude Include="Task_EnemySkeleton.h">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
@@ -343,11 +431,19 @@
     <ClInclude Include="Task_EnemySkyEye.h">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="MapStruct.h" />
+    <ClInclude Include="Task_MapTransition.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="GPG_20201.rc" />
+    <Image Include="data\Gp3.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="data\Gp3.ico" />
+    <ResourceCompile Include="GPG_20201.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
