@@ -55,6 +55,8 @@ namespace  EnemySkeleton
 		this->gravity = ML::Gravity(32.0f) * 5.0f;
 		const int HP = 10;
 		this->hp.SetValues(HP, 0, HP);
+		this->attackPow = 10;
+		this->dropMoney = 10;
 		//šƒ^ƒXƒN‚Ì¶¬
 
 		return  true;
@@ -274,7 +276,7 @@ namespace  EnemySkeleton
 
 				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
 				
-				BChara::AttackInfo ai = { 10,0,0 };
+				BChara::AttackInfo ai = { this->attackPow,0,0 };
 				this->Attack_Std(Player::defGroupName, ai, hit);
 			}
 			break;
@@ -289,7 +291,7 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Lose:
-			if (this->moveCnt == 5) { this->DropCoins(10); }
+			if (this->moveCnt == 5) { this->DropCoins(this->dropMoney); }
 			if (this->moveCnt >= 30) {
 				this->Kill();
 			}
