@@ -62,6 +62,9 @@ namespace  MiniMap
 		OL::Size2D screenSize;
 		ML::Vec2 screenOfs;
 
+		//マップの向きを画像の位置番号に変更
+		int MapDirToImgPosNum(const Map::MapDir& mapDirection_);
+
 		void SetChip(ML::Box2D& src_, int x_, int y_);
 		void SetToScreen(ML::Box2D& drawBox_, ML::Box2D& srcBox_, const ML::Box2D& screen_);
 	};

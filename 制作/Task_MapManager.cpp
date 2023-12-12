@@ -8,6 +8,8 @@
 //?------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_MapManager.h"
+#include  "Task_MapTransition.h"
+#include  "Task_Sprite.h"
 
 namespace  MapManager
 {
@@ -35,11 +37,11 @@ namespace  MapManager
 
 		//★データ初期化
 		this->mapSeed = (unsigned int)time(NULL);
-		srand(1701140554);
+		srand(mapSeed);
 		ge->printToDebugFile(to_string(mapSeed),1);
 		this->Generate();
 
-
+		this->moveMapDir = Map::MapDir::Non;
 
 		//★タスクの生成
 
@@ -64,6 +66,7 @@ namespace  MapManager
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		MoveMapUpDate();
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -72,6 +75,7 @@ namespace  MapManager
 	}
 	//-------------------------------------------------------------------
 	//その他のメソッド
+	//生成全般
 	void Object::Generate()
 	{
 		for (int y = 0; y < 30; ++y)
@@ -83,8 +87,15 @@ namespace  MapManager
 		}
 
 		map[0][0] = new MapObject("map_start");
-		map[0][1] = new Object::Connect(MapEnter::Left, MapExit::Right);
-		this->GenerateMap(2,0, 2, 6, MapEnter::Left);
+		map[0][1] = new MapObject("pass_LeftRight");
+
+
+		//デバッグ用に処理をなくしている
+#if false
+		map[0][1] = new Object::Connect(Map::MapDir::Left, Map::MapDir::Right);
+
+
+		this->GenerateMap(2, 0, 2, 6, Map::MapDir::Left);
 
 		//生成
 		for (int y = 0; y < 30; ++y)
@@ -97,9 +108,11 @@ namespace  MapManager
 				}
 			}
 		}
+#endif
 	}
-
-	void Object::GenerateMap(int x_, int y_, int depth_, int depthRest_, MapEnter enter_)
+	//-------------------------------------------------------------------
+	//1マップ生成処理
+	void Object::GenerateMap(int x_, int y_, int depth_, int depthRest_, Map::MapDir enter_)
 	{
 		enum GenerateDir
 		{
@@ -111,7 +124,7 @@ namespace  MapManager
 		//最下層なら次の生成処理は行わない
 		if (depthRest_ <= 1)
 		{
-			map[y_][x_] = new Map(enter_, MapExit::Non, depth_);
+			map[y_][x_] = new Area(enter_, Map::MapDir::Non, depth_);
 			return;
 		}
 
@@ -124,7 +137,7 @@ namespace  MapManager
 		//生成可能な場所がなければ次の生成処理は行わない
 		if (cantGeneratesTotal >= 3)
 		{
-			map[y_][x_] = new Map(enter_, MapExit::Non, depth_);
+			map[y_][x_] = new Area(enter_, Map::MapDir::Non, depth_);
 			return;
 		}
 
@@ -143,12 +156,12 @@ namespace  MapManager
 		int genY = 0;
 		int conX = 0;
 		int conY = 0;
-		MapEnter enterDir;
-		MapExit exitDir;
+		Map::MapDir enterDir;
+		Map::MapDir exitDir;
 
-		MapEnter connectEnter = MapEnter::Up;
-		MapExit connectExit = MapExit::Right;
-		MapExit connectExitSub = MapExit::Non;
+		Map::MapDir connectEnter = Map::MapDir::Up;
+		Map::MapDir connectExit = Map::MapDir::Right;
+		Map::MapDir connectExitSub = Map::MapDir::Non;
 
 		//生成が完了するまでループする
 		bool finishedGenerate = true;
@@ -169,10 +182,10 @@ namespace  MapManager
 				genY = 0;
 				conX = 1;
 				conY = 0;
-				enterDir = MapEnter::Left;
-				connectEnter = MapEnter::Left;
-				exitDir = MapExit::Right;
-				connectExit = MapExit::Right;
+				enterDir = Map::MapDir::Left;
+				connectEnter = Map::MapDir::Left;
+				exitDir = Map::MapDir::Right;
+				connectExit = Map::MapDir::Right;
 				break;
 			case GenerateDir::Down:
 				if (map[y_ + 2][x_] != nullptr || map[y_ + 1][x_] != nullptr)
@@ -183,10 +196,10 @@ namespace  MapManager
 				genY = 2;
 				conX = 0;
 				conY = 1;
-				enterDir = MapEnter::Up;
-				connectEnter = MapEnter::Up;
-				exitDir = MapExit::Down;
-				connectExit = MapExit::Down;
+				enterDir = Map::MapDir::Up;
+				connectEnter = Map::MapDir::Up;
+				exitDir = Map::MapDir::Down;
+				connectExit = Map::MapDir::Down;
 				break;
 			case GenerateDir::RightDown:
 				if (map[y_ + 1][x_ + 1] != nullptr || map[y_ + 1][x_] != nullptr && map[y_][x_ + 1] != nullptr)
@@ -197,10 +210,10 @@ namespace  MapManager
 				genY = 1;
 				conX = 1;
 				conY = 0;
-				enterDir = MapEnter::Up;
-				connectEnter = MapEnter::Left;
-				exitDir = MapExit::Right;
-				connectExit = MapExit::Down;
+				enterDir = Map::MapDir::Up;
+				connectEnter = Map::MapDir::Left;
+				exitDir = Map::MapDir::Right;
+				connectExit = Map::MapDir::Down;
 				break;
 			}
 
@@ -213,28 +226,83 @@ namespace  MapManager
 			{
 				genX = 1;
 				genY = 1;
-				if (enterDir == MapEnter::Up)
+				if (enterDir == Map::MapDir::Up)
 				{
-					enterDir = MapEnter::Left;
-					connectExitSub = MapExit::Right;
+					enterDir = Map::MapDir::Left;
+					connectExitSub = Map::MapDir::Right;
 				}
 				else
 				{
-					enterDir = MapEnter::Up;
-					connectExitSub = MapExit::Down;
+					enterDir = Map::MapDir::Up;
+					connectExitSub = Map::MapDir::Down;
 				}
 				GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
 			}
-			map[y_][x_] = new Map(enter_, exitDir, depth_);
+			map[y_][x_] = new Area(enter_, exitDir, depth_);
 			map[y_ + conY][x_ + conX] = new Connect(connectEnter, connectExit, connectExitSub);
 
 			finishedGenerate = false;
 		}
 	}
+	//-------------------------------------------------------------------
+	//ロード
+	void Object::MoveMap(const Map::MapDir& mapDirection_)
+	{
+		if (this->moveMapDir != Map::MapDir::Non)
+		{
+			return;
+		}
 
+		this->moveMapDir = mapDirection_;
+		this->mapTransition = MapTransition::Object::Create(true);
+		this->mapTransition->Appear(Map::MapFunc::ReverseMapDir(mapDirection_));
+	}
 
+	void Object::MoveMapUpDate()
+	{
+		if (this->moveMapDir == Map::MapDir::Non)
+		{
+			return;
+		}
 
+		if (this->mapTransition == nullptr)
+		{
+			return;
+		}
 
+		if (this->mapTransition->CheckFinishedAppear() == false)
+		{
+			return;
+		}
+
+		switch (this->moveMapDir)
+		{
+		case Map::MapDir::Up:
+			--currentPos.y;
+			break;
+		case Map::MapDir::Down:
+			++currentPos.y;
+			break;
+		case Map::MapDir::Left:
+			--currentPos.x;
+			break;
+		case Map::MapDir::Right:
+			++currentPos.x;
+			break;
+		}
+
+		ge->qa_Map->LoadMap(map[currentPos.y][currentPos.x]->mapName);
+		ge->qa_Player->pos = ge->qa_Map->GetPlayerEnterPos(Map::MapFunc::ReverseMapDir(moveMapDir));
+		auto camera = ge->GetTask<Sprite::Object>("Sprite");
+		camera->MoveImmediately();
+
+		this->mapTransition->Disappear();
+
+		this->moveMapDir = Map::MapDir::Non;
+		this->mapTransition = nullptr;
+	}
+
+	//-------------------------------------------------------------------
 	//消滅時の処理
 	void Object::Destroy()
 	{

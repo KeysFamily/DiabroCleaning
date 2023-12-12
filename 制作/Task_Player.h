@@ -86,7 +86,16 @@ namespace  Player
 			Bound,		//	弾き飛ばされてる
 			Lose,		//  消滅中
 			Dash,		//  ダッシュ
+			MagicAttack,//	魔法
 		};
+
+		enum Magic
+		{
+			NoMagic = -1,	//  無効
+			FireBall,
+			WaterBlast
+		};
+		Magic magicSelect;
 
 		//思考＆状況判断(ステータス決定）
 		void  Think();
@@ -117,5 +126,16 @@ namespace  Player
 		//攻撃発動
 		void MakeAttack();
 
+		//--------------------------------------
+		//0329
+		//マップ移動処理
+		OL::Limit<int> moveMapCoolTime;		//マップ移動のクールタイム
+		void CheckMoveMap();				//マップ移動判定
+		bool CheckFallGround(float preY_, float estY_);				//すり抜ける床判定
+		bool CheckFoot() override;
+		//めり込まない移動処理
+		virtual  void  CheckMove(ML::Vec2& e_) override;
+
+		//--------------------------------------
 	};
 }

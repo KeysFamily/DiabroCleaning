@@ -5,9 +5,11 @@
 #include  "Task_Player.h"
 #include  "Task_Map.h"
 #include  "Task_Effect00.h"
-#include "Task_Item_coin.h"
+#include  "Task_Item_coin.h"
 #include  "BEnemy.h"
 #include  "Task_EnemySkeleton.h"
+#include "Task_MapManager.h"
+#include  "Task_MagicManager.h"
 
 
 
@@ -46,7 +48,7 @@ namespace  Player
 		this->angle_LR = Angle_LR::Right;
 		this->controller = ge->in1;
 		this->motion = Motion::Stand;		//キャラ初期状態
-		this->maxSpeed = 8.0f;		//最大移動速度（横）
+		this->maxSpeed = 9.0f;		//最大移動速度（横）
 		this->addSpeed = 1.0f;		//歩行加速度（地面の影響である程度打ち消される
 		this->crouchSpeed = 2.5f;	//しゃがみながら移動最大速度
 		this->decSpeed = 0.5f;		//接地状態の時の速度減衰量（摩擦
@@ -64,8 +66,14 @@ namespace  Player
 		this->power = 1;
 		this->powerScale = 1.0f;
 		this->balanceMoney = 100;
-
+		this->magicSelect = Magic::WaterBlast; //仮
 		ge->debugRectLoad();
+
+
+		//--------------------------------------
+		//0329
+		this->moveMapCoolTime.SetValues(0, 0, 60);
+		//--------------------------------------
 		//★タスクの生成
 
 		return  true;
@@ -134,10 +142,10 @@ namespace  Player
 		this->res->img->Draw(di.draw, di.src);
 
 
-		//ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
-		//ge->debugRectDraw();
-		//ge->debugRect(this->attackBase.OffsetCopy(this->pos), 5, -ge->camera2D.x, -ge->camera2D.y);
-		//ge->debugRectDraw();
+		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
+		ge->debugRectDraw();
+		ge->debugRect(this->attackBase.OffsetCopy(this->pos), 5, -ge->camera2D.x, -ge->camera2D.y);
+		ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
 	//思考＆状況判断　モーション決定
@@ -157,6 +165,7 @@ namespace  Player
 			if (inp.LStick.BD.on && inp.LStick.BR.on) { nm = Motion::CrouchWalk; }
 			if (inp.B1.down) { nm = Motion::TakeOff; }
 			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			if (this->CheckFoot() == false) {
 				tempCnt++;
 				if (tempCnt > 10) {
@@ -168,6 +177,7 @@ namespace  Player
 		case  Motion::Walk:		//歩いている
 			if (inp.B1.down) { nm = Motion::TakeOff; }
 			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			if (this->CheckFoot() == false) {
 				tempCnt++;
 				if (tempCnt > 18) {
@@ -210,6 +220,7 @@ namespace  Player
 			break;
 		case Motion::Dash:
 			if (this->moveCnt > 10 || true == this->CheckFront_LR()) {
+				this->moveVec.x = 0;
 				if (preMotion == Motion::Jump2 || preMotion == Motion::Fall2) { nm = Motion::Fall2; }
 				else { nm = Motion::Fall; }
 			}
@@ -255,7 +266,7 @@ namespace  Player
 			if (inp.B4.down) { nm = Motion::Attack; }
 			break;
 		case  Motion::Attack:	//攻撃中
-			if (this->moveCnt == 25)
+			if (this->moveCnt == 20)
 			{
 				if (attack2 == true)
 				{
@@ -265,7 +276,7 @@ namespace  Player
 			}
 			break;
 		case Motion::Attack2:
-			if (this->moveCnt == 25)
+			if (this->moveCnt == 20)
 			{
 				if (attack3 == true)
 				{
@@ -275,7 +286,7 @@ namespace  Player
 			}
 			break;
 		case Motion::Attack3:
-			if (this->moveCnt == 30) { nm = Motion::Stand; }
+			if (this->moveCnt == 24) { nm = Motion::Stand; }
 			break;
 		case Motion::AirAttack:
 			if (this->moveCnt == 20)
@@ -304,6 +315,9 @@ namespace  Player
 			break;
 		case Motion::AirAttack4:
 			if (this->moveCnt == 15) { nm = Motion::Stand; }
+			break;
+		case Motion::MagicAttack:
+			if (this->moveCnt >= 15 && inp.B3.off) { nm = Motion::Stand; }
 			break;
 		}
 		//モーション更新
@@ -358,6 +372,7 @@ namespace  Player
 			this->canDash = true;
 			this->airattack = true;
 			this->attackBase = ML::Box2D(0, 0, 0, 0);
+			ge->KillAll_G("MagicManager");
 			break;
 		case  Motion::Walk:		//歩いている
 			if (inp.LStick.BL.on) {
@@ -430,7 +445,7 @@ namespace  Player
 			break;
 		case  Motion::Attack:	//�U����
 			this->powerScale = 1.0f;
-			if (this->moveCnt == 6)this->MakeAttack();
+			if (this->moveCnt == 5)this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack2 = true; }
 			}
@@ -438,7 +453,7 @@ namespace  Player
 		case  Motion::Attack2:	//�U����
 			this->powerScale = 1.5f;
 			this->attack2 = false;
-			if (this->moveCnt == 11)this->MakeAttack();
+			if (this->moveCnt == 9)this->MakeAttack();
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack3 = true; }
 			}
@@ -446,7 +461,7 @@ namespace  Player
 		case  Motion::Attack3:	//�U����
 			this->powerScale = 2.0f;
 			this->attack3 = false;
-			if (this->moveCnt == 11)this->MakeAttack();
+			if (this->moveCnt == 9)this->MakeAttack();
 			break;
 		case Motion::AirAttack:
 			this->airattack = false;
@@ -475,6 +490,25 @@ namespace  Player
 		case Motion::AirAttack4:
 			this->powerScale = 2.5f;
 			if (this->moveCnt == 1)this->MakeAttack();
+			break;
+		case Motion::MagicAttack:
+			if (this->moveCnt == 11) {
+				auto mj = MagicManager::Object::Create(true); //(仮)
+				switch (this->magicSelect) {
+				case Magic::NoMagic:
+					mj->magicSelect = mj->Magic::Unnon;
+					break;
+				case Magic::FireBall:
+					mj->magicSelect = mj->Magic::FireBall;
+					break;
+				case Magic::WaterBlast:
+					mj->magicSelect = mj->Magic::WaterBlast;
+					break;
+				}
+				if (this->angle_LR == Angle_LR::Left) { mj->LR = false; }
+				else if (this->angle_LR == Angle_LR::Right) { mj->LR = true; }
+				mj->pos = this->pos;
+			}
 			break;
 		case Motion::Crouch:	//しゃがむ
 			break;
@@ -551,7 +585,13 @@ namespace  Player
 			{ ML::Box2D(-92, -62, 184, 120), ML::Box2D(412, 2244, 184, 120), defColor },	//48 空中攻撃4_2
 			{ ML::Box2D(-96, -30, 184, 88), ML::Box2D(608, 2276, 184, 88), defColor },		//49 空中攻撃4_3
 			{ ML::Box2D(-36, -38, 84, 96), ML::Box2D(664, 1232, 84, 96),defColor},			//50 ダメージ debugしてない
-			{ ML::Box2D(-98, -38, 142,112), ML::Box2D(814, 2256, 142, 112),defColor},			//51 ダッシュ
+			{ ML::Box2D(-98, -38, 142,112), ML::Box2D(814, 2256, 142, 112),defColor},		//51 ダッシュ
+			{ ML::Box2D(-48, -42, 72, 100), ML::Box2D(460, 1820, 72, 100),defColor},		//52 魔法1
+			{ ML::Box2D(-44, -42, 68, 100), ML::Box2D(664, 1820, 68, 100),defColor},		//53 魔法2
+			{ ML::Box2D(-48, -38, 108, 96), ML::Box2D(860, 1824, 108, 96),defColor},		//54 魔法3
+			{ ML::Box2D(-56, -38, 116, 96), ML::Box2D(1252, 1824, 116, 96),defColor},		//55 魔法4
+			{ ML::Box2D(-48, -38, 108, 96), ML::Box2D(60, 1972, 108, 96),defColor},			//56 魔法5
+			{ ML::Box2D(-56, -38, 116, 96), ML::Box2D(252, 1972, 116, 96),defColor},		//57 魔法6
 
 		};
 		ML::Box2D attackTable[] = {
@@ -636,19 +676,19 @@ namespace  Player
 			rtv = imageTable[work + 11];
 			break;
 		case Motion::Attack:
-			work = this->animCnt / 5;
+			work = this->animCnt / 4;
 			work %= 5;
 			rtv = imageTable[work + 21];
 			this->attackBase = attackTable[work + 0];
 			break;
 		case Motion::Attack2:
-			work = this->animCnt / 5;
+			work = this->animCnt / 4;
 			work %= 5;
 			rtv = imageTable[work + 26];
 			this->attackBase = attackTable[work + 5];
 			break;
 		case Motion::Attack3:
-			work = this->animCnt / 5;
+			work = this->animCnt / 4;
 			work %= 6;
 			rtv = imageTable[work + 31];
 			this->attackBase = attackTable[work + 10];
@@ -677,6 +717,12 @@ namespace  Player
 			work %= 3;
 			rtv = imageTable[work + 47];
 			this->attackBase = attackTable[work + 26];
+			break;
+		case Motion::MagicAttack:
+			if (this->animCnt < 3)work = 0;
+			else if (this->animCnt >= 3 && this->animCnt < 6)work = 1;
+			else work = (this->animCnt / 8) % 4 + 2;
+			rtv = imageTable[work + 52];
 			break;
 		}
 
@@ -756,6 +802,117 @@ namespace  Player
 		return sample;
 	}
 
+	//-------------------------------------------------------------------
+	//マップ移動
+	void Object::CheckMoveMap()
+	{
+		this->moveMapCoolTime.Addval(1);
+
+		//クールタイムが終了していなければ行わない
+		if (this->moveMapCoolTime.IsMax() == false)
+			return;
+
+		auto mapmove = ge->qa_Map->CheckExit(this->CallHitBox());
+		if (mapmove != Map::MapDir::Non)
+		{
+			auto manager = ge->GetTask<MapManager::Object>("MapManager");
+			manager->MoveMap(mapmove);
+
+			this->moveMapCoolTime.Setval(this->moveMapCoolTime.vmin);
+		}
+	}
+	//-------------------------------------------------------------------
+	//めり込まない移動処理
+	void Object::CheckMove(ML::Vec2& e_)
+	{
+		//マップが存在するか調べてからアクセス
+		auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+		if (nullptr == map) { return; }//マップが無ければ判定しない(出来ない）
+
+		//横軸に対する移動
+		while (e_.x != 0) {
+			float  preX = this->pos.x;
+			if (e_.x >= 1) { this->pos.x += 1;		e_.x -= 1; }
+			else if (e_.x <= -1) { this->pos.x -= 1;		e_.x += 1; }
+			else { this->pos.x += e_.x;		e_.x = 0; }
+			ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
+
+			//坂道判定
+			this->pos += map->CheckSlope(hit);
+
+			if (true == map->CheckHit(hit)) {
+				this->pos.x = preX;		//移動をキャンセル
+				break;
+			}
+		}
+		//縦軸に対する移動
+		while (e_.y != 0) {
+			float  preY = this->pos.y;
+			if (e_.y >= 1) { this->pos.y += 1;		e_.y -= 1; }
+			else if (e_.y <= -1) { this->pos.y -= 1;		e_.y += 1; }
+			else { this->pos.y += e_.y;		e_.y = 0; }
+			ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
+
+			//坂道判定
+			this->pos += map->CheckSlope(hit);
+
+			if (true == map->CheckHit(hit)) {
+				this->pos.y = preY;		//移動をキャンセル
+				break;
+			}
+			if (true == CheckFallGround(preY, e_.y))
+			{
+				this->pos.y = preY;
+				break;
+			}
+		}
+	}
+	//-------------------------------------------------------------------
+	//足元判定
+	bool Object::CheckFoot()
+	{
+		//あたり判定を基にして足元矩形を生成
+		ML::Box2D  foot(this->hitBase.x,
+			this->hitBase.y + this->hitBase.h,
+			this->hitBase.w,
+			1);
+		foot.Offset(this->pos);
+
+		auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+		if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
+		if (map->CheckHit(foot))
+		{
+			return true;
+		}
+		if (map->CheckSlope(foot) != ML::Vec2(0, 0))
+		{
+			return true;
+		}
+		if (map->CheckFallGround(foot))
+		{
+			//すり抜ける床は落下中ではない時だけ判定する
+			ML::Box2D upPix = foot.OffsetCopy(0, -1);
+			return map->CheckFallGround(upPix) == false;
+		}
+
+		return false;
+	}
+	//-------------------------------------------------------------------
+	//すり抜ける床判定
+	bool Object::CheckFallGround(float preY_, float estY_)
+	{
+		if (estY_ < 0)
+		{
+			return false;
+		}
+
+		if (ge->qa_Map->CheckFallGround(this->hitBase.OffsetCopy(this->pos.x, preY_)) == true)
+		{
+			return false;
+		}
+
+		return ge->qa_Map->CheckFallGround(this->CallHitBox());
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
