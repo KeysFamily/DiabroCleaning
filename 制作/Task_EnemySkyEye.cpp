@@ -97,7 +97,7 @@ namespace  EnemySkyEye
 	void  Object::UpDate()
 	{
 		this->UpDate_Std();
-		BChara::AttackInfo ai = { 5,0,0 };
+		BChara::AttackInfo ai = { 1,0,0 };
 		this->Attack_Std(Player::defGroupName, ai, this->CallHitBox());
 	}
 	//-------------------------------------------------------------------
@@ -105,7 +105,6 @@ namespace  EnemySkyEye
 	void  Object::Render2D_AF()
 	{
 		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
-
 		this->Render_Std(this->res->img);
 		
 	}
@@ -122,7 +121,6 @@ namespace  EnemySkyEye
 			}
 			break;
 		case Motion::Walk:	//歩いている
-		{
 			if (this->CheckFront_LR()) {
 				nm = Motion::Turn;
 			}//もし壁に当たったら向きを変える
@@ -130,14 +128,9 @@ namespace  EnemySkyEye
 			if (this->searchCnt > 60 && this->SearchPlayer(800,256)) {
 				nm = Motion::Tracking;
 			}
-		}
 			break;
 
 		case Motion::Tracking:
-			//追跡時の処理
-			//if (this->CheckFront_LR() || !this->CheckFrontFoot_LR()) {
-			//	nm = Motion::Turn;
-			//}//もし壁に当たったら向きを変える
 			//もしも衝突せずに
 			if (this->CallHitBox().Hit(this->targetPos)) {
 				if (this->SearchPlayer(this->hitBase.w, this->hitBase.h)) {
@@ -148,9 +141,6 @@ namespace  EnemySkyEye
 					nm = Motion::Walk;
 				}
 			}
-
-
-
 			break;
 		case Motion::Turn:
 			if (this->moveCnt >= 5) { 
@@ -239,17 +229,21 @@ namespace  EnemySkyEye
 			else {
 				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
 			}
+			this->moveVec.y = 0.0f;
 
 			//上下移動処理
 			if (ge->qa_Map != nullptr) {
 				float diffY = this->altitude - this->pos.y;
 
+				//移動をシミュレート
 				ML::Vec2 smPos = this->pos;
 				smPos.y += diffY * 0.05f;
 				if (!ge->qa_Map->CheckHit(this->hitBase.OffsetCopy(smPos))) {
-					this->pos.y += diffY * 0.05f;
-
+					//移動先で衝突しなければ、オブジェクトを移動させる
+					ge->Dbg_ToDisplay(smPos.x, smPos.y - 50, "衝突なし、移動続行");
+					this->pos = smPos;
 				}
+
 			}
 
 		}	break;
@@ -260,13 +254,6 @@ namespace  EnemySkyEye
 			float angRad = atan2(diff.y, diff.x);
 			this->moveVec.x = 7.5f * cos(angRad);
 			this->moveVec.y = 7.5f * sin(angRad);
-
-			//if (this->angle_LR == Angle_LR::Left) {
-			//	this->moveVec.x = max(-this->maxSpeed * 1.5f, this->moveVec.x - this->addSpeed);
-			//}
-			//else {
-			//	this->moveVec.x = min(+this->maxSpeed * 1.5f, this->moveVec.x + this->addSpeed);
-			//}
 		}	break;
 		case Motion::Fall://落下中
 			if (this->angle_LR == Angle_LR::Left) {
@@ -298,8 +285,8 @@ namespace  EnemySkyEye
 			}
 			break;
 		case Motion::Lose:
-			if (this->moveCnt == 5) { this->DropCoins(10); }
-			if (this->moveCnt >= 30) {
+			if (this->moveCnt == 7) { this->DropCoins(10); }
+			if (this->moveCnt >= 8) {
 				this->Kill();
 			}
 			break;
@@ -398,7 +385,7 @@ namespace  EnemySkyEye
 		//this->unHitTime = 20;
 		this->hp.Addval(-at_.power);
 		if (this->hp.vnow <= 0) {
-			this->UpdateMotion(Motion::Lose);
+			this->UpdateMotion(Motion::Fall);
 			return;
 		}
 		//吹き飛ばされる

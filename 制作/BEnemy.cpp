@@ -77,12 +77,14 @@ void BEnemy::DropCoins(unsigned int dropNum_) {
 //-----------------------------------------------------------------------------
 // ‹¤’Ê‚ÌUŒ‚ˆ—
 bool BEnemy::Attack_Std(string gn_, BChara::AttackInfo at_, ML::Box2D AttackHit_) {
-	ML::Box2D me = this->CallHitBox();
-	auto targets = ge->GetTasks<BChara>(gn_);
-	for (auto it = targets->begin(); it != targets->end(); ++it) {
-		if ((*it)->CheckHit(AttackHit_)) {
-			(*it)->Received(this, at_);
-			return true;
+	if (this->hp.vnow > 0) {
+		ML::Box2D me = this->CallHitBox();
+		auto targets = ge->GetTasks<BChara>(gn_);
+		for (auto it = targets->begin(); it != targets->end(); ++it) {
+			if ((*it)->CheckHit(AttackHit_)) {
+				(*it)->Received(this, at_);
+				return true;
+			}
 		}
 	}
 	return false;
@@ -100,6 +102,9 @@ void BEnemy::UpDate_Std() {
 	this->Move();
 	ML::Vec2 est = this->moveVec;
 	this->CheckMove(est);
+	if (ge->qa_Map != nullptr && !ge->qa_Map->hitBase.Hit(this->CallHitBox())) {
+		this->Kill();
+	}
 }
 //-----------------------------------------------------------------------------
 // ‹¤’Ê‚Ì•`‰æˆ—

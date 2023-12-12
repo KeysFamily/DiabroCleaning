@@ -14,7 +14,7 @@ namespace  EnemySkeleton
 {
 	//タスクに割り当てるグループ名と固有名
 	const  string  defGroupName("Enemy");	//グループ名
-	const  string  defName("SkyEye");		//タスク名
+	const  string  defName("Skeleton");		//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{

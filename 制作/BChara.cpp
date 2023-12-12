@@ -61,18 +61,18 @@ bool  BChara::CheckHead()
 	head.Offset((int)this->pos.x, (int)this->pos.y);
 
 
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-	if (nullptr == map) { return false; }//マップが無ければ判定しない(出来ない）
-	return map->CheckHit(head)
-		|| map->CheckSlope(head) != ML::Vec2(0,0);
+	
+	if (nullptr == ge->qa_Map) { return false; }//マップが無ければ判定しない(出来ない）
+	return ge->qa_Map->CheckHit(head)
+		|| ge->qa_Map->CheckSlope(head) != ML::Vec2(0,0);
 }
 //-----------------------------------------------------------------------------
 //めり込まない移動処理
 void BChara::CheckMove(ML::Vec2& e_)
 {
 	//マップが存在するか調べてからアクセス
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-	if (nullptr == map) { return; }//マップが無ければ判定しない(出来ない）
+	
+	if (nullptr == ge->qa_Map) { return; }//マップが無ければ判定しない(出来ない）
 
 	//横軸に対する移動
 	while (e_.x != 0) {
@@ -83,9 +83,9 @@ void BChara::CheckMove(ML::Vec2& e_)
 		ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
 
 		//坂道判定
-		this->pos += map->CheckSlope(hit);
+		this->pos += ge->qa_Map->CheckSlope(hit);
 
-		if (true == map->CheckHit(hit)) {
+		if (true == ge->qa_Map->CheckHit(hit)) {
 			this->pos.x = preX;		//移動をキャンセル
 			break;
 		}
@@ -99,9 +99,9 @@ void BChara::CheckMove(ML::Vec2& e_)
 		ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
 
 		//坂道判定
-		this->pos += map->CheckSlope(hit);
+		this->pos += ge->qa_Map->CheckSlope(hit);
 
-		if (true == map->CheckHit(hit)) {
+		if (true == ge->qa_Map->CheckHit(hit)) {
 			this->pos.y = preY;		//移動をキャンセル
 			break;
 		}
@@ -118,11 +118,11 @@ bool  BChara::CheckFoot()
 		1);
 	foot.Offset(this->pos);
 
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-	if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
+	
+	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
 	//マップと接触判定
-	return map->CheckHit(foot)
-		|| map->CheckSlope(foot) != ML::Vec2(0, 0);
+	return ge->qa_Map->CheckHit(foot)
+		|| ge->qa_Map->CheckSlope(foot) != ML::Vec2(0, 0);
 }
 //-----------------------------------------------------------------------------
 //正面接触判定（サイドビューゲーム専用）
@@ -142,10 +142,10 @@ bool  BChara::CheckFront_LR()
 	}
 	//現在の位置に合わせる
 	front.Offset((int)this->pos.x, (int)this->pos.y);
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-	if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
+	
+	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
 	//マップと接触判定
-	return map->CheckHit(front);
+	return ge->qa_Map->CheckHit(front);
 }
 //-----------------------------------------------------------------------------
 //正面足元チェック（サイドビューゲーム専用）
@@ -165,10 +165,10 @@ bool  BChara::CheckFrontFoot_LR()
 	}
 	//現在の位置に合わせる
 	frontFoot.Offset((int)this->pos.x, (int)this->pos.y);
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-	if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
+
+	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
 	//マップと接触判定
-	return map->CheckHit(frontFoot);
+	return ge->qa_Map->CheckHit(frontFoot);
 }
 //-----------------------------------------------------------------------------
 //接触判定
