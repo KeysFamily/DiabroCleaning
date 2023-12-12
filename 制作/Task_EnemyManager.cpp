@@ -53,6 +53,9 @@ namespace  EnemyManager
 		}
 		f.close();
 
+		//TODO: 新たに敵を追加をする際にここに追加。
+		// 必ず敵の名前は大文字で始めること
+		//記入例）this->enemyInits["Name"] = EnemyName::Object::Create;
 		this->enemyInits["Skeleton"] = EnemySkeleton::Object::Create;
 		this->enemyInits["SkyEye"] = EnemySkyEye::Object::Create;
 		
@@ -78,6 +81,7 @@ namespace  EnemyManager
 
 		//★データ初期化
 		this->residentResource.push_back(EnemySkeleton::Resource::Create());
+		this->residentResource.push_back(EnemySkyEye::Resource::Create());
 		//★タスクの生成
 		//SpawnEnemy("Skeleton",ML::Vec2(1000, 600));
 		SpawnEnemy("SkyEye", ML::Vec2(1300, 500));
@@ -108,31 +112,32 @@ namespace  EnemyManager
 		ge->qa_Enemys = ge->GetTasks<BEnemy>("Enemy");
  
 		//TODO:デバッグ機能、マスターまでに消去すること
+		ML::Vec2 spos;
+		spos.x = ms.pos.x + ge->camera2D.x;
+		spos.y = ms.pos.y + ge->camera2D.y;
 		if (ms.LB.down) {
-			ML::Vec2 spos;
-			spos.x = ms.pos.x + ge->camera2D.x;
-			spos.y = ms.pos.y + ge->camera2D.y;
-
-#if false
-			auto sk = EnemySkeleton::Object::Create(true);
-			sk->pos = spos;
-#else
-			this->SpawnEnemy("Skeleton", spos);
-#endif
+			for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
+				if ((*it)->CallHitBox().Hit(spos)) {
+					BChara::AttackInfo at = { INT_MAX,0,0 };
+					(*it)->Received(nullptr, at);
+				}
+			}
+		}
+		if (ms.CB.down) {
+			for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
+				BChara::AttackInfo at = { INT_MAX,0,0 };
+				(*it)->Received(nullptr, at);
+			}
 		}
 		if (ms.RB.down) {
-			ML::Vec2 spos;
-			spos.x = ms.pos.x + ge->camera2D.x;
-			spos.y = ms.pos.y + ge->camera2D.y;
-
-			this->SpawnEnemy("SkyEye", spos);
+			this->SpawnEnemy(this->res->enemyNames[rand() % 2], spos);
 		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ge->debugRectDraw();
+		//ge->debugRectDraw();
 	}
 
 	//-------------------------------------------------------------------
