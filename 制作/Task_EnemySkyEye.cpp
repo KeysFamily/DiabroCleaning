@@ -252,8 +252,8 @@ namespace  EnemySkyEye
 			ML::Vec2 diff = this->targetPos - this->pos;
 
 			float angRad = atan2(diff.y, diff.x);
-			this->moveVec.x = 7.5f * cos(angRad);
-			this->moveVec.y = 7.5f * sin(angRad);
+			this->moveVec.x = this->maxSpeed * 1.5f * cos(angRad);
+			this->moveVec.y = this->maxSpeed * 1.5f * sin(angRad);
 		}	break;
 		case Motion::Fall://—Ž‰º’†
 			if (this->angle_LR == Angle_LR::Left) {
