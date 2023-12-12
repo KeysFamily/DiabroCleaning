@@ -205,6 +205,7 @@
     </ClCompile>
     <ClCompile Include="Task_FireBall.cpp">
       <Filter>MyPG\Task\Game\Majic</Filter>
+	</ClCompile>
     <ClCompile Include="Task_EnemySkeleton.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
