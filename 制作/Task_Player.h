@@ -97,7 +97,7 @@ namespace  Player
 			Thunder,
 			Beam,
 		};
-		Magic magicSelect;
+		int magicSelect;
 
 		//思考＆状況判断(ステータス決定）
 		void  Think();
