@@ -111,5 +111,6 @@ namespace  Map
 		//”wŒi‚Ì•`‰æ
 		void DrawBackMap();
 
+
 	};
 }
