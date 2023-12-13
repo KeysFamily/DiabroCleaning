@@ -88,13 +88,9 @@ namespace  MapManager
 
 		map[0][0] = new MapObject("map_start");
 
-		//デバッグ用に処理をなくしている
 		map[0][1] = new Object::Connect(Map::MapDir::Left, Map::MapDir::Right);
 
-		map[0][2] = new Object::Area(Map::MapDir::Left, Map::MapDir::Down, 3);
-#if false
 		this->GenerateMap(2, 0, 2, 6, Map::MapDir::Left);
-#endif
 		//生成
 		for (int y = 0; y < 30; ++y)
 		{
