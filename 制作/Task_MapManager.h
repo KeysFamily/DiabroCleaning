@@ -108,7 +108,7 @@ namespace MapManager
 					genMapName += mapDirStr[(int)exit];
 				}
 
-				genMapName += "_1";
+				genMapName += "_" + to_string(3);
 
 				this->mapName = genMapName;
 			}
