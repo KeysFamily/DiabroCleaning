@@ -238,8 +238,8 @@ namespace  Player
 			if (this->CheckFoot() == false) { nm = Motion::Fall; }
 			break;
 		case Motion::Bound:
-			if (this->moveCnt >= 12 &&
-				this->CheckFoot() == true) {
+			if (this->moveCnt >= 30/* &&
+				this->CheckFoot() == true*/) {
 				nm = Motion::Stand;
 			}
 			break;
@@ -510,6 +510,9 @@ namespace  Player
 					break;
 				case Magic::Thunder:
 					mj->magicSelect = mj->Magic::Thunder;
+					break;
+				case Magic::Beam:
+					mj->magicSelect = mj->Magic::Beam;
 					break;
 				}
 				if (this->angle_LR == Angle_LR::Left) { mj->LR = false; }

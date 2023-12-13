@@ -305,6 +305,9 @@
     <ClCompile Include="Task_Thunder.cpp">
       <Filter>MyPG\Task\Game\Magic</Filter>
     </ClCompile>
+    <ClCompile Include="Task_Beam.cpp">
+      <Filter>MyPG\Task\Game\Magic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -439,6 +442,9 @@
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
     <ClInclude Include="Task_Thunder.h">
+      <Filter>MyPG\Task\Game\Magic</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Beam.h">
       <Filter>MyPG\Task\Game\Magic</Filter>
     </ClInclude>
   </ItemGroup>
