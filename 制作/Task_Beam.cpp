@@ -80,6 +80,7 @@ namespace  Beam
 		this->hitBase.w += this->length;
 		this->pos.y = pl->pos.y;
 		if (true == this->CheckFront_LR()) { this->length = 0; }
+		else { this->length = 100; }
 		this->Think();
 		this->Move();
 	}
