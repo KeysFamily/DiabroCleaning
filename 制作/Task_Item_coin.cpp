@@ -225,10 +225,18 @@ namespace  Item_coin
 		return rtv;
 	}
 	//-----------------------------------------------------------------------------
+	// 
 	//接触時の応答処理（これ自体はダミーのようなモノ）
 	void Object::Received(BChara* from_, AttackInfo at_)
 	{
-		from_->balanceMoney += 1;
+
+		//this->UpdateMotion(Motion::Bound);
+		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う
+	}
+
+	void Object::GiftPlayer(BChara* pl_)
+	{
+		pl_->balanceMoney += 1;
 		this->Kill();
 		se::Play("se_get_coin");
 		//this->UpdateMotion(Motion::Bound);

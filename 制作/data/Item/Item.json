@@ -1,0 +1,36 @@
+{
+	"item": [
+		{
+			"itemName": "Attack",
+			"ATK": 5,
+			"DEF": 0,
+			"INT": 0,
+			"SPD": 0,
+			"TIME": 120
+		},
+		{
+			"itemName": "Defense",
+			"ATK": 0,
+			"DEF": 5,
+			"INT": 0,
+			"SPD": 0,
+			"TIME": 120
+		},
+		{
+			"itemName": "Magic",
+			"ATK": 0,
+			"DEF": 0,
+			"INT": 5,
+			"SPD": 0,
+			"TIME": 120
+		},
+		{
+			"itemName": "Speed",
+			"ATK": 0,
+			"DEF": 0,
+			"INT": 0,
+			"SPD": 5,
+			"TIME": 120
+		}
+	]
+}

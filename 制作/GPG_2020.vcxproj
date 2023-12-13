@@ -123,6 +123,7 @@
   <ItemGroup>
     <ClCompile Include="BChara.cpp" />
     <ClCompile Include="BEnemy.cpp" />
+    <ClCompile Include="BItem.cpp" />
     <ClCompile Include="DG2014\DG2014_DGObject.cpp" />
     <ClCompile Include="DG2014\DG2014_Effect.cpp" />
     <ClCompile Include="DG2014\DG2014_Font.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="Task_Game.cpp" />
     <ClCompile Include="Task_GameUI.cpp" />
     <ClCompile Include="Task_GameUI_MiniMap.cpp" />
+    <ClCompile Include="Task_Item.cpp" />
     <ClCompile Include="Task_Item_coin.cpp" />
     <ClCompile Include="Task_Item_coin_maneger.cpp" />
     <ClCompile Include="Task_Load.cpp" />
@@ -171,6 +173,7 @@
   <ItemGroup>
     <ClInclude Include="BChara.h" />
     <ClInclude Include="BEnemy.h" />
+    <ClInclude Include="BItem.h" />
     <ClInclude Include="DG2014\DG2014_DGObject.h" />
     <ClInclude Include="DG2014\DG2014_Effect.h" />
     <ClInclude Include="DG2014\DG2014_Font.h" />
@@ -202,6 +205,7 @@
     <ClInclude Include="Task_Game.h" />
     <ClInclude Include="Task_GameUI.h" />
     <ClInclude Include="Task_GameUI_MiniMap.h" />
+    <ClInclude Include="Task_Item.h" />
     <ClInclude Include="Task_Item_coin.h" />
     <ClInclude Include="Task_Item_coin_maneger.h" />
     <ClInclude Include="Task_Load.h" />

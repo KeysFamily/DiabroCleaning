@@ -8,7 +8,7 @@
 //作成年月日:
 //概　　　要:
 //?------------------------------------------------------
-#include "BChara.h"
+#include "BItem.h"
 
 namespace  Item_coin
 {
@@ -33,7 +33,7 @@ namespace  Item_coin
 
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BChara
+	class  Object : public  BItem
 	{
 	public:
 		virtual  ~Object();
@@ -76,7 +76,8 @@ namespace  Item_coin
 		BChara::DrawInfo  Anim();
 		//接触時の応答処理(必ず受け身の処理として実装する)
 		void Received(BChara* from_, AttackInfo at_) override;
-
+		//プレイヤーのステータスを変える
+		void GiftPlayer(BChara* pl_) override;
 		//デバック用
 		XI::GamePad::SP controller;
 

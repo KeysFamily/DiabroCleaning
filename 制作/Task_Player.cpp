@@ -63,7 +63,7 @@ namespace  Player
 		this->canDash = true;
 		this->balanceMoney = 100;  //所持金
 		this->hp.SetValues(100, 0, 100);
-		this->power = 1;
+		this->power = 1;     
 		this->powerScale = 1.0f;
 		this->balanceMoney = 100;
 		this->magicSelect = Magic::Thunder; //仮
@@ -112,7 +112,7 @@ namespace  Player
 		//あたり判定
 		{
 			ML::Box2D me = this->hitBase.OffsetCopy(this->pos);
-			auto targets = ge->GetTasks<BChara>("item");
+			auto targets = ge->GetTasks <BItem> ("item");
 			for (auto it = targets->begin();
 				it != targets->end();
 				++it) {
@@ -120,7 +120,8 @@ namespace  Player
 				if ((*it)->CheckHit(me)) {
 					//相手にダメージの処理を行わせる
 					BChara::AttackInfo at = { 0, 0, 0 };
-					(*it)->Received(this, at);
+					(*it)->GiftPlayer(this);
+
 				}
 			}
 		}

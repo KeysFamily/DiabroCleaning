@@ -42,6 +42,9 @@
     <Filter Include="MyPG\Task\Game\Magic">
       <UniqueIdentifier>{b4b8e054-d770-4f47-bbc0-a199dd969647}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyPG\Task\Game\Item">
+      <UniqueIdentifier>{b9684222-4995-4441-b241-338418806d92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine_Ver3_83.cpp">
@@ -305,6 +308,12 @@
     <ClCompile Include="Task_Thunder.cpp">
       <Filter>MyPG\Task\Game\Magic</Filter>
     </ClCompile>
+    <ClCompile Include="Task_Item.cpp">
+      <Filter>MyPG\Task\Game\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="BItem.cpp">
+      <Filter>MyPG\Task\Game\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -441,6 +450,10 @@
     <ClInclude Include="Task_Thunder.h">
       <Filter>MyPG\Task\Game\Magic</Filter>
     </ClInclude>
+    <ClInclude Include="Task_Item.h">
+      <Filter>MyPG\Task\Game\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="BItem.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\Gp3.ico">

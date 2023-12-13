@@ -50,6 +50,7 @@ public:
 	int				unHitTime;		//　無敵時間
 	int             balanceMoney;   //  所持金
 
+
 	//メンバ変数に最低限の初期化を行う
 	//★★メンバ変数を追加したら必ず初期化も追加する事★★
 	BChara()

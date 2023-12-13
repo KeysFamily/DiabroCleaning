@@ -9,6 +9,9 @@
 #include  "MyPG.h"
 #include  "Task_Item.h"
 
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
+
 namespace  Item
 {
 	Resource::WP  Resource::instance;
@@ -32,9 +35,9 @@ namespace  Item
 		__super::Initialize(defGroupName, defName, true);
 		//リソースクラス生成orリソース共有
 		this->res = Resource::Create();
-
+		Object::InputJsonFile("Attack");
 		//★データ初期化
-		
+		this->hitBase = ML::Box2D(-16, -16, 32, 32);
 		//★タスクの生成
 
 		return  true;
@@ -61,6 +64,147 @@ namespace  Item
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		int x = rand() % this->itemb.Power_step;
+		int y = this->itemb.Item_pos;
+		auto draw = this->hitBase.OffsetCopy(this->pos);
+		ML::Box2D src(32 * x, 32 * y, 32, 32);
+	    //スクロール対応
+		//di.draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+		this->res->img->Draw(draw, src);
+		ge->debugRect(this->CallHitBox(), 4, -ge->camera2D.x, -ge->camera2D.y);
+	}
+
+	//-----------------------------------------------------------------
+	void Object::Think()
+	{
+		auto inp = ge->in1->GetState();
+		int nm = this->motion;
+		switch (nm)
+		{
+		case Motion::Stand:
+			if (inp.B2.down)
+			{
+				//nm = Motion::Suction;
+			}
+			break;
+		case Motion::Fall:
+			if (this->CheckFoot() == true)
+			{
+				{ nm = Motion::Stand; }
+			}
+			break;
+		}
+		//モーション更新
+		this->UpdateMotion(nm);
+
+	}
+	//------------------------------------------------------------------
+	void Object::Move()
+	{
+		switch (this->motion) {
+		default:
+			//重力加速
+			switch (this->motion) {
+			default:
+				//上昇中もしくは足元に地面が無い
+				if (this->moveVec.y < 0 ||
+					this->CheckFoot() == false) {
+					this->fallSpeed = min(this->moveVec.y + this->gravity, this->maxFallSpeed);
+					this->moveVec.y = this->fallSpeed;
+				}
+				//地面に接触している
+				else {
+					this->fallSpeed = min(this->moveVec.y - this->gravity, this->maxFallSpeed);
+					this->moveVec.y -= this->fallSpeed * 1.7;
+				}
+
+
+				break;
+				//重力加速を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
+			case Motion::Unnon:	break;
+			}
+			//移動速度減衰
+			switch (this->motion) {
+			default:
+				if (this->CheckFoot() == true) {
+					if (this->moveVec.x < 0) {
+						this->moveVec.x = min(this->moveVec.x + this->decSpeed, 0);
+					}
+					else {
+						this->moveVec.x = max(this->moveVec.x - this->decSpeed, 0);
+					}
+				}
+				break;
+
+				//移動速度減衰を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
+			case Motion::Bound:
+			case Motion::Unnon:	break;
+			}
+
+			//switch (this->motion)
+			//{
+			//case Motion::Suction:
+			//	//auto pl = ge->GetTask<Player::Object>("Player");
+			//	this->target = ge->qa_Player;
+			//	if (auto  tg = this->target.lock()) {
+			//		//ターゲットへの相対座標を求める
+			//		ML::Vec2  toVec = tg->pos - this->pos;
+
+			//		float speed = 20;
+			//		auto vec = toVec.Normalize();
+			//		vec *= speed;
+			//		//ターゲットに５％近づく
+			//		//this->pos += toVec * 0.05f;
+
+			//		this->pos += vec;
+			//	}
+			//	break;
+			//}
+		}
+	}
+
+	//-----------------------------------------------------------------------------
+	//接触時の応答処理（これ自体はダミーのようなモノ）
+	void Object::Received(BChara* from_, AttackInfo at_)
+	{
+		
+		//this->UpdateMotion(Motion::Bound);
+		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う
+	}
+
+	void Object::GiftPlayer(BChara* pl_)
+	{
+		Player::Object* pl = dynamic_cast<Player::Object*>(pl_);
+		pl->power += itemb.Attack;
+		this->Kill();
+	}
+
+	//-----------------------------------------------------------------------------
+//ファイル読み込み
+	void Object::InputJsonFile(string itemName_) {
+		//****************************************
+		//ファイルから受け付けるもの
+		//・攻撃力
+		//・防御力
+		//・魔法力
+		// ・スピード
+		// ・持続時間
+		// ・描画位置
+		//****************************************
+		ifstream f("./data/enemy/json/Item.json");
+		if (!f.is_open()) return;//ファイルオープンに失敗
+		json data = json::parse(f);
+		auto& i = data[itemName_];
+
+		this->itemb.Attack= i["ATK"];
+		this->itemb.Defense = i["DEF"];
+		this->itemb.Magic = i["INT"];
+		this->itemb.Speed = i["SPD"];
+		this->itemb.Time = i["TIME"];
+		this->itemb.Item_pos= i["ITEM_POS"];
+		this->itemb.Power_step = i["POWER_STEP"];
+		f.close();
+
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
