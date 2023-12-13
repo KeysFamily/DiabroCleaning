@@ -11,6 +11,7 @@
 #include  "Task_FireBall.h"
 #include  "Task_WaterBlast.h"
 #include  "Task_Thunder.h"
+#include  "Task_Beam.h"
 #include  "Task_Player.h"
 
 namespace  MagicManager
@@ -96,12 +97,12 @@ namespace  MagicManager
 				auto wb = WaterBlast::Object::Create(true);
 				if (pl->balanceMoney > wb->cost) {
 					if (this->LR) {
-						wb->pos.x = this->pos.x + 100;
-						wb->pos.y = this->pos.y;
+						wb->pos.x = pl->pos.x + 100;
+						wb->pos.y = pl->pos.y;
 					}
 					if (!this->LR) {
-						wb->pos.x = this->pos.x - 100;
-						wb->pos.y = this->pos.y;
+						wb->pos.x = pl->pos.x - 100;
+						wb->pos.y = pl->pos.y;
 					}
 					pl->balanceMoney -= wb->cost;
 				}
@@ -127,6 +128,20 @@ namespace  MagicManager
 				}
 				else {
 					th->Kill();
+				}
+			}
+			break;
+		case Magic::Beam:
+			if (this->moveCnt == 1) {
+				auto bm = Beam::Object::Create(true);
+				if (pl->balanceMoney > bm->cost) {
+					if (this->LR) {
+						bm->angle_LR = BChara::Angle_LR::Right;
+					}
+					if (!this->LR) {
+						bm->angle_LR = BChara::Angle_LR::Left;
+					}
+					pl->balanceMoney -= bm->cost;
 				}
 			}
 			break;

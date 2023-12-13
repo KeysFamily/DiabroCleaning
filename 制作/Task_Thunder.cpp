@@ -8,7 +8,6 @@
 //?------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_Thunder.h"
-#include  "Task_Player.h"
 #include  "BEnemy.h"
 
 namespace  Thunder
@@ -121,7 +120,6 @@ namespace  Thunder
 	void  Object::Move()
 	{
 		auto enemys = ge->GetTasks<BChara>("Enemy");
-		auto pl = ge->GetTask<BChara>("Player");
 		this->pos += this->moveVec;
 		switch (this->motion) {
 		case Motion::Start:

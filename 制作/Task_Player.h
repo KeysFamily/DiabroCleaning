@@ -95,6 +95,7 @@ namespace  Player
 			FireBall,
 			WaterBlast,
 			Thunder,
+			Beam,
 		};
 		Magic magicSelect;
 
