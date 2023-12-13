@@ -87,16 +87,14 @@ namespace  MapManager
 		}
 
 		map[0][0] = new MapObject("map_start");
-		map[0][1] = new MapObject("pass_LeftRight");
-
 
 		//デバッグ用に処理をなくしている
-#if false
 		map[0][1] = new Object::Connect(Map::MapDir::Left, Map::MapDir::Right);
 
-
+		map[0][2] = new Object::Area(Map::MapDir::Left, Map::MapDir::Down, 3);
+#if false
 		this->GenerateMap(2, 0, 2, 6, Map::MapDir::Left);
-
+#endif
 		//生成
 		for (int y = 0; y < 30; ++y)
 		{
@@ -108,7 +106,6 @@ namespace  MapManager
 				}
 			}
 		}
-#endif
 	}
 	//-------------------------------------------------------------------
 	//1マップ生成処理
