@@ -335,6 +335,19 @@ namespace  Player
 	void  Object::Move()
 	{
 		auto  inp = this->controller->GetState();
+		//魔法変更
+		if (inp.L1.down) {
+			this->magicSelect--; 
+			if (this->magicSelect < -1) {
+				this->magicSelect = 3;
+			}
+		}
+		if (inp.R1.down) {
+			this->magicSelect++;
+			if (this->magicSelect > 3) {
+				this->magicSelect = -1;
+			}
+		}
 		//重力加速
 		switch (this->motion) {
 		default:
