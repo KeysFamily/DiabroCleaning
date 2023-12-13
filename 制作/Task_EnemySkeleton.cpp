@@ -14,6 +14,7 @@
 #include  "Task_Map.h"
 
 #include  "randomLib.h"
+#include  "Task_Item_coin_maneger.h"
 
 namespace  EnemySkeleton
 {
@@ -54,6 +55,8 @@ namespace  EnemySkeleton
 		this->gravity = ML::Gravity(32.0f) * 5.0f;
 		const int HP = 10;
 		this->hp.SetValues(HP, 0, HP);
+		this->attackPow = 10;
+		this->dropMoney = 10;
 		//šƒ^ƒXƒN‚Ì¶¬
 
 		return  true;
@@ -63,7 +66,6 @@ namespace  EnemySkeleton
 	bool  Object::Finalize()
 	{
 		//šƒf[ƒ^•ƒ^ƒXƒN‰ð•ú
-
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//šˆø‚«Œp‚¬ƒ^ƒXƒN‚Ì¶¬
@@ -76,6 +78,8 @@ namespace  EnemySkeleton
 	void  Object::UpDate()
 	{
 		this->UpDate_Std();
+		BChara::AttackInfo ai = { 5,0,0 };
+		this->Attack_Std(Player::defGroupName, ai, this->CallHitBox());
 	}
 	//-------------------------------------------------------------------
 	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
@@ -109,7 +113,7 @@ namespace  EnemySkeleton
 			if (this->moveCnt > 60 * 5) { nm = Motion::Stand; }
 			//ˆÈ~@ƒvƒŒƒCƒ„õ“G
 
-			if (this->searchCnt > 60 && this->SearchPlayer(1000)) {
+			if (this->searchCnt > 60 && this->SearchPlayer(800,192)) {
 				nm = Motion::Tracking;
 			}
 		}
@@ -123,7 +127,7 @@ namespace  EnemySkeleton
 
 			if (this->searchCnt > 30) {
 				this->searchCnt = 0;
-				if (!this->SearchPlayer(1000)) {
+				if (!this->SearchPlayer(1000,256)) {
 					//3‰ñŒ©‚Â‚©‚ç‚È‚¯‚ê‚Î’Êíˆ—‚É–ß‚·
 					if (++this->notFoundPlayerCnt > 3) {
 						this->notFoundPlayerCnt = 0;
@@ -134,7 +138,8 @@ namespace  EnemySkeleton
 					}
 				}
 				else {
-					if (this->SearchPlayer(75)) {
+					if (this->SearchPlayer(100, this->hitBase.h) && 
+						!this->SearchPlayer(ge->qa_Player->hitBase.w, this->hitBase.h)) {
 						//UŒ‚‚³‚¹‚é
 						nm = Motion::Attack;
 					}
@@ -173,11 +178,15 @@ namespace  EnemySkeleton
 			break;
 		case Motion::Bound:
 			if (this->moveCnt >= 16 && this->CheckFoot()) {
-				nm = Motion::Stand;
+				if (this->preMotion == Motion::Walk) {
+					nm = Motion::Tracking;
+				}
+				else {
+					nm = Motion::Stand;
+				}
 			}
 			break;
 		case Motion::Lose:
-
 			break;
 		default:
 			break;
@@ -226,12 +235,19 @@ namespace  EnemySkeleton
 		case Motion::Stand://—§‚Á‚Ä‚¢‚é
 			break;
 		case Motion::Walk://•à‚¢‚Ä‚¢‚é
-		case Motion::Tracking://•à‚¢‚Ä‚¢‚é
 			if (this->angle_LR == Angle_LR::Left) {
 				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
 			}
 			else {
 				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
+			}
+			break;
+		case Motion::Tracking://•à‚¢‚Ä‚¢‚é
+			if (this->angle_LR == Angle_LR::Left) {
+				this->moveVec.x = max(-this->maxSpeed * 1.5f, this->moveVec.x - this->addSpeed);
+			}
+			else {
+				this->moveVec.x = min(+this->maxSpeed * 1.5f, this->moveVec.x + this->addSpeed);
 			}
 			break;
 		case Motion::Fall://—Ž‰º’†
@@ -245,10 +261,10 @@ namespace  EnemySkeleton
 		case Motion::Attack://UŒ‚’†
 			if (this->moveCnt == 16) {
 				ML::Box2D hit(
-					this->hitBase.x, 
-					this->hitBase.y + this->hitBase.h / 2,
+					-this->hitBase.w / 2, 
+					this->hitBase.y,
 					this->hitBase.w,
-					this->hitBase.h / 2
+					this->hitBase.h
 				);
 				if (this->angle_LR == Angle_LR::Left) {
 					hit.Offset(-100, 0);
@@ -259,7 +275,8 @@ namespace  EnemySkeleton
 				hit.Offset(this->pos);
 
 				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
-				BChara::AttackInfo ai = { 10,0,0 };
+				
+				BChara::AttackInfo ai = { this->attackPow,0,0 };
 				this->Attack_Std(Player::defGroupName, ai, hit);
 			}
 			break;
@@ -274,6 +291,7 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Lose:
+			if (this->moveCnt == 5) { this->DropCoins(this->dropMoney); }
 			if (this->moveCnt >= 30) {
 				this->Kill();
 			}
@@ -383,8 +401,13 @@ namespace  EnemySkeleton
 			break;
 		case Motion::Bound:
 			work = this->animCnt / 2;
-			work %= 8;
-			rtv = imageTable[work + 42];
+			if (work < 8) {
+				work %= 8;
+				rtv = imageTable[work + 42];
+			}
+			else {
+				rtv = imageTable[49];
+			}
 			break;
 		case Motion::Lose:
 			work = this->animCnt / 2;
@@ -403,55 +426,59 @@ namespace  EnemySkeleton
 		if (this->unHitTime > 0) { 
 			return; //–³“GŽžŠÔ’†‚Íˆ—‚ðŽó‚¯‚È‚¢
 		}
-		this->unHitTime = 30;
+		//this->unHitTime = 20;
 		this->hp.Addval(-at_.power);
 		if (this->hp.vnow <= 0) {
 			this->UpdateMotion(Motion::Lose);
 			return;
 		}
 		//‚«”ò‚Î‚³‚ê‚é
-		if (this->pos.x > from_->pos.x) {
-			this->moveVec = ML::Vec2(+3, -8);
+		if (from_->angle_LR == Angle_LR::Right) {
+			this->moveVec = ML::Vec2(2, -3) * 3;
 		}
 		else {
-			this->moveVec = ML::Vec2(-3, -8);
+			this->moveVec = ML::Vec2(-2, -3) * 3;
 		}
 		this->UpdateMotion(Motion::Bound);
 	}
 
 	//-------------------------------------------------------------------
 	// Player‚ðõ“G‚·‚é
-	bool Object::SearchPlayer(int dist) {
+	bool Object::SearchPlayer(int distX_, int distY_) {
 		this->searchCnt = 0;
-		auto map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+		//auto map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 
-		if (ge->qa_Player == nullptr || map == nullptr) { return false; }
+		if (ge->qa_Player == nullptr || ge->qa_Map == nullptr) { return false; }
 		ML::Box2D eye(
 			this->hitBase.x,
-			this->hitBase.y,
+			this->hitBase.y + this->hitBase.h,
 			10,
-			this->hitBase.h
+			10
 		);
 		if (this->angle_LR == Angle_LR::Left) {
-			eye.Offset(-eye.w, 0);
+			eye.Offset(-eye.w, -eye.h);
 		}
 		else {
-			eye.Offset(this->hitBase.w, 0);
+			eye.Offset(this->hitBase.w, -eye.h);
 		}
 		eye.Offset(this->pos);
 
-
-		for (int i = 0; i < dist; ++i) {
-			ge->debugRect(eye, 7, -ge->camera2D.x, -ge->camera2D.y);
-
-			if (map->CheckHit(eye))break;
-			if (ge->qa_Player != nullptr && ge->qa_Player->CallHitBox().Hit(eye)) { return true; }
-
+		int eyeW = eye.w;
+		int eyeH = eye.h;
+		for (int x = 0; x < distX_; x += eyeW) {
+			if (ge->qa_Map->CheckHit(eye))break;
+			for (int y = 0; y < distY_; y += eyeH) {
+				ML::Box2D eb = eye.OffsetCopy(0, -y);
+				if (ge->qa_Map->CheckHit(eb))break;
+				if (ge->qa_Player != nullptr && ge->qa_Player->CallHitBox().Hit(eb)) { return true; }
+				ge->debugRect(eb, 4, -ge->camera2D.x, -ge->camera2D.y);
+				
+			}
 			if (this->angle_LR == Angle_LR::Left) {
-				eye.Offset(-1, 0);
+				eye.Offset(-eyeW, 0);
 			}
 			else {
-				eye.Offset(1, 0);
+				eye.Offset(eyeW, 0);
 			}
 		}
 

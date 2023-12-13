@@ -146,16 +146,25 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="Task_Effect00.cpp" />
     <ClCompile Include="Task_Ending.cpp" />
+    <ClCompile Include="Task_EnemyManager.cpp" />
     <ClCompile Include="Task_EnemySkeleton.cpp" />
+    <ClCompile Include="Task_EnemySkyEye.cpp" />
+    <ClCompile Include="Task_FireBall.cpp" />
     <ClCompile Include="Task_Game.cpp" />
-    <ClCompile Include="Task_Item.cpp" />
+    <ClCompile Include="Task_GameUI.cpp" />
+    <ClCompile Include="Task_GameUI_MiniMap.cpp" />
     <ClCompile Include="Task_Item_coin.cpp" />
     <ClCompile Include="Task_Item_coin_maneger.cpp" />
     <ClCompile Include="Task_Load.cpp" />
+    <ClCompile Include="Task_MagicManager.cpp" />
     <ClCompile Include="Task_Map.cpp" />
+    <ClCompile Include="Task_MapManager.cpp" />
+    <ClCompile Include="Task_MapTransition.cpp" />
     <ClCompile Include="Task_Player.cpp" />
     <ClCompile Include="Task_Sprite.cpp" />
+    <ClCompile Include="Task_Thunder.cpp" />
     <ClCompile Include="Task_Title.cpp" />
+    <ClCompile Include="Task_WaterBlast.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="XI2018_Ver1_0.cpp" />
   </ItemGroup>
@@ -177,6 +186,7 @@
     <ClInclude Include="easing.h" />
     <ClInclude Include="fpscounter.h" />
     <ClInclude Include="GameEngine_Ver3_83.h" />
+    <ClInclude Include="MapStruct.h" />
     <ClInclude Include="myLib.h" />
     <ClInclude Include="MyPG.h" />
     <ClInclude Include="OriginalLibrary.h" />
@@ -185,16 +195,25 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="Task_Effect00.h" />
     <ClInclude Include="Task_Ending.h" />
+    <ClInclude Include="Task_EnemyManager.h" />
     <ClInclude Include="Task_EnemySkeleton.h" />
+    <ClInclude Include="Task_EnemySkyEye.h" />
+    <ClInclude Include="Task_FireBall.h" />
     <ClInclude Include="Task_Game.h" />
-    <ClInclude Include="Task_Item.h" />
+    <ClInclude Include="Task_GameUI.h" />
+    <ClInclude Include="Task_GameUI_MiniMap.h" />
     <ClInclude Include="Task_Item_coin.h" />
     <ClInclude Include="Task_Item_coin_maneger.h" />
     <ClInclude Include="Task_Load.h" />
+    <ClInclude Include="Task_MagicManager.h" />
     <ClInclude Include="Task_Map.h" />
+    <ClInclude Include="Task_MapManager.h" />
+    <ClInclude Include="Task_MapTransition.h" />
     <ClInclude Include="Task_Player.h" />
     <ClInclude Include="Task_Sprite.h" />
+    <ClInclude Include="Task_Thunder.h" />
     <ClInclude Include="Task_Title.h" />
+    <ClInclude Include="Task_WaterBlast.h" />
     <ClInclude Include="XI2018_Ver1_0.h" />
   </ItemGroup>
   <ItemGroup>

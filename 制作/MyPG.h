@@ -14,6 +14,8 @@
 
 #include "BEnemy.h"
 #include "Task_Player.h"
+#include "Task_Map.h"
+#include "MapStruct.h"
 
 #include "easing.h"
 
@@ -103,15 +105,22 @@ namespace  MyPG
 		bool			TransparentFlag; //透明フラグ
 		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0333記述
-
+		Map::Object::SP qa_Map;
 		Player::Object::SP qa_Player;
 		shared_ptr<vector<BEnemy::SP>> qa_Enemys;
 		//◆◆◆◆◆◆◆◆◆◆
 		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0329記述
+		int debugPrintTimeCnt;
+
 		ML::Box2D GetScreenBox() const;
 		ML::Vec2  GetScreenCenter() const;
-		void printToDebugFile(std::string debugstr_);
+
+		//デバッグ関数
+		//param1:出力する文字列
+		//param2:何フレームごとに出力するか
+
+		void printToDebugFile(std::string debugstr_, int distance_);
 		//◆◆◆◆◆◆◆◆◆◆
 
 

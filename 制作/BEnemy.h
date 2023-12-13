@@ -19,8 +19,6 @@ public:
 	typedef shared_ptr<BEnemy>		SP;
 	typedef weak_ptr<BEnemy>		WP;
 public:
-	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
-	//キャラクタ共通メンバ変数
 
 	//キャラクタの行動状態フラグ
 	enum Motion
@@ -39,22 +37,32 @@ public:
 		Lose,		// 消滅中
 	};
 	int searchCnt;			//索敵カウント
-	int notFoundPlayerCnt;	//プレイヤが探せなかったとき	
+	int notFoundPlayerCnt;	//プレイヤが探せなかったとき
+
+	int dropMoney;			//ドロップするお金の量
+	int attackPow;			//攻撃力
 
 	//メンバ変数に最低限の初期化を行う
 	//★★メンバ変数を追加したら必ず初期化も追加する事★★
 	BEnemy()
 		: searchCnt(0)
 		, notFoundPlayerCnt(0)
+		, dropMoney(0)
+		, attackPow(0)
 	{
 	}
 	virtual  ~BEnemy() {}
 
 
 protected:
+	void InputJsonFile(string fileName_);
+
 	virtual DrawInfo Anim();	//アニメーション制御
+	virtual bool SearchPlayer(int distX_ = 0, int distY_ = 0);//Player索敵
 
 	bool Attack_Std(string gn_, BChara::AttackInfo at_, ML::Box2D AttackHit_);				//攻撃共通処理
 	void UpDate_Std();													//更新共通処理
 	void Render_Std(const DG::Image::SP& img_);							//描画共通処理
+
+	void DropCoins(unsigned int dropNum_);
 };

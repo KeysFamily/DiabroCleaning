@@ -1,0 +1,26 @@
+{
+	"enemies": [
+		{
+			"name": "Skeleton",
+			"hp": 10.0,
+			"jumpPow": -6.0,
+			"maxSpeed": 2.0,
+			"addSpeed": 0.7,
+			"decSpeed": 0.5,
+			"unHitTime": 30,
+			"dropMoney": 10,
+			"attack": 10
+		},
+		{
+			"name": "SkyEye",
+			"hp": 10.0,
+			"jumpPow": -6.0,
+			"maxSpeed": 5.0,
+			"addSpeed": 0.7,
+			"decSpeed": 0.5,
+			"unHitTime": 10,
+			"dropMoney": 10,
+			"attack": 10
+		}
+	]
+}

@@ -9,6 +9,7 @@
 #include "BChara.h"
 #include  "MyPG.h"
 #include  "Task_Map.h"
+#include  "Task_Item_coin.h"
 
 ML::Vec2 BChara::MoveSet(int key)
 {
@@ -44,6 +45,7 @@ bool  BChara::UpdateMotion(int  nm_)
 		this->motion = nm_;		//モーション変更
 		this->moveCnt = 0;		//行動カウンタクリア
 		this->animCnt = 0;		//アニメーションカウンタのクリア
+		this->tempCnt = 0;		//一時カウンタのクリア
 		return  true;
 	}
 }
@@ -59,17 +61,18 @@ bool  BChara::CheckHead()
 	head.Offset((int)this->pos.x, (int)this->pos.y);
 
 
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-	if (nullptr == map) { return false; }//マップが無ければ判定しない(出来ない）
-	return map->CheckHit(head);
+	
+	if (nullptr == ge->qa_Map) { return false; }//マップが無ければ判定しない(出来ない）
+	return ge->qa_Map->CheckHit(head)
+		|| ge->qa_Map->CheckSlope(head) != ML::Vec2(0,0);
 }
 //-----------------------------------------------------------------------------
 //めり込まない移動処理
 void BChara::CheckMove(ML::Vec2& e_)
 {
 	//マップが存在するか調べてからアクセス
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-	if (nullptr == map) { return; }//マップが無ければ判定しない(出来ない）
+	
+	if (nullptr == ge->qa_Map) { return; }//マップが無ければ判定しない(出来ない）
 
 	//横軸に対する移動
 	while (e_.x != 0) {
@@ -78,7 +81,11 @@ void BChara::CheckMove(ML::Vec2& e_)
 		else if (e_.x <= -1) { this->pos.x -= 1;		e_.x += 1; }
 		else { this->pos.x += e_.x;		e_.x = 0; }
 		ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
-		if (true == map->CheckHit(hit)) {
+
+		//坂道判定
+		this->pos += ge->qa_Map->CheckSlope(hit);
+
+		if (true == ge->qa_Map->CheckHit(hit)) {
 			this->pos.x = preX;		//移動をキャンセル
 			break;
 		}
@@ -90,7 +97,11 @@ void BChara::CheckMove(ML::Vec2& e_)
 		else if (e_.y <= -1) { this->pos.y -= 1;		e_.y += 1; }
 		else { this->pos.y += e_.y;		e_.y = 0; }
 		ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
-		if (true == map->CheckHit(hit)) {
+
+		//坂道判定
+		this->pos += ge->qa_Map->CheckSlope(hit);
+
+		if (true == ge->qa_Map->CheckHit(hit)) {
 			this->pos.y = preY;		//移動をキャンセル
 			break;
 		}
@@ -107,10 +118,11 @@ bool  BChara::CheckFoot()
 		1);
 	foot.Offset(this->pos);
 
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-	if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
+	
+	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
 	//マップと接触判定
-	return map->CheckHit(foot);
+	return ge->qa_Map->CheckHit(foot)
+		|| ge->qa_Map->CheckSlope(foot) != ML::Vec2(0, 0);
 }
 //-----------------------------------------------------------------------------
 //正面接触判定（サイドビューゲーム専用）
@@ -130,10 +142,10 @@ bool  BChara::CheckFront_LR()
 	}
 	//現在の位置に合わせる
 	front.Offset((int)this->pos.x, (int)this->pos.y);
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-	if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
+	
+	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
 	//マップと接触判定
-	return map->CheckHit(front);
+	return ge->qa_Map->CheckHit(front);
 }
 //-----------------------------------------------------------------------------
 //正面足元チェック（サイドビューゲーム専用）
@@ -153,10 +165,10 @@ bool  BChara::CheckFrontFoot_LR()
 	}
 	//現在の位置に合わせる
 	frontFoot.Offset((int)this->pos.x, (int)this->pos.y);
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-	if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
+
+	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
 	//マップと接触判定
-	return map->CheckHit(frontFoot);
+	return ge->qa_Map->CheckHit(frontFoot);
 }
 //-----------------------------------------------------------------------------
 //接触判定
@@ -170,6 +182,17 @@ bool BChara::CheckHit(const ML::Box2D& hit_)
 void BChara::Received(BChara* from_, AttackInfo at_)
 {
 	ML::MsgBox("Received 実装されていません");
+}
+//-----------------------------------------------------------------------------
+//コイン生成
+void BChara::Create_coin(int x_, int y_, int rand_)
+{
+	int coin_num = rand() % rand_;
+	for (int i = 0; i < coin_num; i++) {
+		auto coin = Item_coin::Object::Create(true);
+		coin->pos.x = x_;
+		coin->pos.y = y_;
+	}
 }
 
 ML::Box2D BChara::CallHitBox() const

@@ -23,6 +23,7 @@ namespace  Game
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//‹¤—L‚·‚é•Ï”‚Í‚±‚±‚É’Ç‰Á‚·‚é
+		DG::Image::SP	haikei;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
