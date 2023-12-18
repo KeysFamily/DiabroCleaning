@@ -42,6 +42,12 @@
     <Filter Include="MyPG\Task\Game\Magic">
       <UniqueIdentifier>{b4b8e054-d770-4f47-bbc0-a199dd969647}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyPG\Task\SystemMenu">
+      <UniqueIdentifier>{9d38ab56-21d8-4d2d-ac4e-3c7a8d87c2a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Interface">
+      <UniqueIdentifier>{aff7968c-87f8-4bd7-9109-dd91bf8c3e32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine_Ver3_83.cpp">
@@ -305,6 +311,12 @@
     <ClCompile Include="Task_Thunder.cpp">
       <Filter>MyPG\Task\Game\Magic</Filter>
     </ClCompile>
+    <ClCompile Include="Task_SystemMenu.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_PlayerStatus.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -440,6 +452,15 @@
     </ClInclude>
     <ClInclude Include="Task_Thunder.h">
       <Filter>MyPG\Task\Game\Magic</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SystemMenu.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_PlayerStatus.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectableObject.h">
+      <Filter>MyPG\Interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

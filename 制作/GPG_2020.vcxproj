@@ -162,6 +162,8 @@
     <ClCompile Include="Task_MapTransition.cpp" />
     <ClCompile Include="Task_Player.cpp" />
     <ClCompile Include="Task_Sprite.cpp" />
+    <ClCompile Include="Task_PlayerStatus.cpp" />
+    <ClCompile Include="Task_SystemMenu.cpp" />
     <ClCompile Include="Task_Thunder.cpp" />
     <ClCompile Include="Task_Title.cpp" />
     <ClCompile Include="Task_WaterBlast.cpp" />
@@ -192,6 +194,7 @@
     <ClInclude Include="OriginalLibrary.h" />
     <ClInclude Include="randomLib.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SelectableObject.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="Task_Effect00.h" />
     <ClInclude Include="Task_Ending.h" />
@@ -211,6 +214,8 @@
     <ClInclude Include="Task_MapTransition.h" />
     <ClInclude Include="Task_Player.h" />
     <ClInclude Include="Task_Sprite.h" />
+    <ClInclude Include="Task_PlayerStatus.h" />
+    <ClInclude Include="Task_SystemMenu.h" />
     <ClInclude Include="Task_Thunder.h" />
     <ClInclude Include="Task_Title.h" />
     <ClInclude Include="Task_WaterBlast.h" />
