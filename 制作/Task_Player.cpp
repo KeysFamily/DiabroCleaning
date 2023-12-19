@@ -67,7 +67,6 @@ namespace  Player
 		this->powerScale = 1.0f;
 		this->balanceMoney = 100;
 		this->magicSelect = Magic::Thunder; //仮
-		ge->debugRectLoad();
 
 
 		//--------------------------------------
@@ -145,9 +144,7 @@ namespace  Player
 
 
 		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
-		ge->debugRectDraw();
 		ge->debugRect(this->attackBase.OffsetCopy(this->pos), 5, -ge->camera2D.x, -ge->camera2D.y);
-		ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
 	//思考＆状況判断　モーション決定
