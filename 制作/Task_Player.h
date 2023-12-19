@@ -121,12 +121,18 @@ namespace  Player
 		bool canDash;
 
 		//UŒ‚—Í
-		int power;
+		float power;
 		//UŒ‚—Í”{—¦
 		float powerScale;
+		//status
+		int DEF;
+		float INT;
 
 		//UŒ‚”­“®
 		void MakeAttack();
+
+		//ŠÔŠÇ—
+		int surviveFrame, surviveTime;
 
 		//--------------------------------------
 		//0329

@@ -63,10 +63,14 @@ namespace  Player
 		this->canDash = true;
 		this->balanceMoney = 100;  //所持金
 		this->hp.SetValues(100, 0, 100);
-		this->power = 1;
+		this->power = 1.0f;
 		this->powerScale = 1.0f;
 		this->balanceMoney = 100;
 		this->magicSelect = Magic::Thunder; //仮
+		this->surviveFrame = 0;
+		this->surviveTime = 0;
+		this->DEF = 1;
+		this->INT = 1.0f;
 
 
 		//--------------------------------------
@@ -95,6 +99,8 @@ namespace  Player
 	{
 		this->moveCnt++;
 		this->animCnt++;
+		this->surviveFrame++;
+		this->surviveTime = this->surviveFrame / 60;
 		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 		if (this->unHitTime > 0) { this->unHitTime--; }
 		//思考・状況判断
@@ -782,7 +788,7 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= at_.power;
+		this->balanceMoney -= (at_.power - this->DEF);
 		if (this->balanceMoney <= 0)this->balanceMoney = 0; //仮処理
 		if (this->hp.IsMin()) {
 			//this->Kill();
