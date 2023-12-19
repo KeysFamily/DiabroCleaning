@@ -128,10 +128,11 @@ namespace  EnemyManager
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		auto ms = ge->mouse->GetState();
 		ge->qa_Enemys = ge->GetTasks<BEnemy>("Enemy");
  
+#ifdef DEBUG_ENEMY
 		//TODO:デバッグ機能、マスターまでに消去すること
+		auto ms = ge->mouse->GetState();
 		ML::Vec2 spos;
 		spos.x = ms.pos.x + ge->camera2D.x;
 		spos.y = ms.pos.y + ge->camera2D.y;
@@ -153,6 +154,7 @@ namespace  EnemyManager
 		if (ms.RB.down) {
 			this->SpawnEnemyNum(rand() % 2, spos);
 		}
+#endif // DEBUG_ENEMY
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
