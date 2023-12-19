@@ -112,5 +112,6 @@ namespace  Map
 		void DrawBackMap();
 		void SetEnemyOnMap();
 
+
 	};
 }
