@@ -89,7 +89,6 @@ namespace  WaterBlast
 		}
 
 		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
-		ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
 	//思考＆状況判断　モーション決定

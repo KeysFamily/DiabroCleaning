@@ -106,7 +106,6 @@ namespace  EnemyManager
 		SpawnEnemyName("Skeleton",ML::Vec2(1000, 600));
 		SpawnEnemyName("SkyEye", ML::Vec2(1300, 500));
 		ge->debugRectLoad();
-
 		return  true;
 	}
 	//-------------------------------------------------------------------
@@ -115,8 +114,8 @@ namespace  EnemyManager
 	{
 		//★データ＆タスク解放
 		this->residentResource.clear();
-		ge->KillAll_G("Enemy");
 		ge->debugRectReset();
+		ge->KillAll_G("Enemy");
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -158,7 +157,7 @@ namespace  EnemyManager
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		//ge->debugRectDraw();
+		ge->debugRectDraw();
 	}
 
 	//-------------------------------------------------------------------
