@@ -97,11 +97,11 @@ namespace  MagicManager
 				auto wb = WaterBlast::Object::Create(true);
 				if (pl->balanceMoney > wb->cost) {
 					if (this->LR) {
-						wb->pos.x = pl->pos.x + 100;
+						wb->pos.x = pl->pos.x + 150;
 						wb->pos.y = pl->pos.y;
 					}
 					if (!this->LR) {
-						wb->pos.x = pl->pos.x - 100;
+						wb->pos.x = pl->pos.x - 150;
 						wb->pos.y = pl->pos.y;
 					}
 					pl->balanceMoney -= wb->cost;
