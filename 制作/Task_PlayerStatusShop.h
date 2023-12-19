@@ -9,6 +9,7 @@
 //概　　　要:
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "SelectableObject.h"
 
 namespace  PlayerStatusShop
 {
@@ -34,7 +35,7 @@ namespace  PlayerStatusShop
 		OL::Size2D fontDisplaySize;	//ステータス名表示用フォントのサイズ
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BTask
+	class  Object : public  BTask, public MyUI::SelectableObject
 	{
 	//変更不可◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	public:
@@ -65,9 +66,15 @@ namespace  PlayerStatusShop
 		ML::Vec2 progressBeginPos;	//購入用の画像の位置
 		float progressDistance;		//購入用の画像の間隔
 
+
 		//次の購入に必要な金額を返す
 		int GetPrice() const;
 		//購入する
 		bool Buy(int& money_);
+
+		//サイズと位置を伝える
+		virtual ML::Box2D GetObjectSize() const override;
+		//選択中か
+		virtual void IsSelecting() override;
 	};
 }

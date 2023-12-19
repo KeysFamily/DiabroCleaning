@@ -40,7 +40,7 @@ namespace  PlayerStatusShop
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->displayStr = "ATK";
+		this->displayStr = "";
 		this->currentStatus.SetValues(0, 0, 10);
 		for (int i = 0; i < 10; ++i)
 		{
@@ -125,6 +125,26 @@ namespace  PlayerStatusShop
 			money_ -= price[currentStatus.vnow + 1];
 			currentStatus.Addval(1);
 		}
+	}
+
+	//サイズと位置を伝える
+	ML::Box2D Object::GetObjectSize() const
+	{
+		ML::Box2D result;
+		result.x = this->pos.x + this->progressBeginPos.x + 
+			((this->res->imgProgressSize.w + this->progressDistance) * this->currentStatus.vnow);
+		result.y = this->pos.y + this->progressBeginPos.y;
+
+		result.w = this->res->imgProgressSize.w;
+		result.h = this->res->imgProgressSize.h;
+		
+		return result;
+	}
+
+	//選択中か
+	void Object::IsSelecting()
+	{
+		this->Buy(ge->qa_Player->balanceMoney);
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド

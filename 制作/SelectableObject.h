@@ -15,19 +15,19 @@ namespace MyUI
 		}
 
 		//ƒQƒbƒ^
-		SelectableObject* GetNext_Up() const
+		virtual SelectableObject* GetNext_Up() const
 		{
 			return nextObj[0];
 		}
-		SelectableObject* GetNext_Down() const
+		virtual SelectableObject* GetNext_Down() const
 		{
 			return nextObj[1];
 		}
-		SelectableObject* GetNext_Left() const
+		virtual SelectableObject* GetNext_Left() const
 		{
 			return nextObj[2];
 		}
-		SelectableObject* GetNext_Right() const
+		virtual SelectableObject* GetNext_Right() const
 		{
 			return nextObj[3];
 		}

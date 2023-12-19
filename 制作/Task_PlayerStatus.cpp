@@ -45,9 +45,13 @@ namespace  PlayerStatus
 
 		//šƒf[ƒ^‰Šú‰»
 		this->shops[0] = PlayerStatusShop::Object::Create(true);
+		this->shops[0]->displayStr = "ATK";
 		this->shops[1] = PlayerStatusShop::Object::Create(true);
+		this->shops[1]->displayStr = "DEF";
 		this->shops[2] = PlayerStatusShop::Object::Create(true);
+		this->shops[2]->displayStr = "INT";
 		this->shops[3] = PlayerStatusShop::Object::Create(true);
+		this->shops[3]->displayStr = "SPD";
 
 
 		this->currentStatus = 0;
