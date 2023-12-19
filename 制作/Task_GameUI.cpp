@@ -19,6 +19,7 @@ namespace  GameUI
 	{
 		this->coinImg = DG::Image::Create("./data/image/coin.png");
 		this->num = DG::Image::Create("./data/image/font_number.png");
+		this->magic = DG::Image::Create("./data/effect/magicSelect.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -27,6 +28,7 @@ namespace  GameUI
 	{
 		this->coinImg.reset();
 		this->num.reset();
+		this->magic.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -41,6 +43,7 @@ namespace  GameUI
 		//★データ初期化
 		this->coinPos = ML::Vec2(0, 0);
 		this->numPos = ML::Vec2(0, 0);
+		this->magicPos = ML::Vec2(0, 0);
 		this->num = 0;
 		//★タスクの生成
 
@@ -67,6 +70,10 @@ namespace  GameUI
 		this->num = player->balanceMoney;
 		this->coinPos = ML::Vec2(32, 35);
 		this->numPos = ML::Vec2(50,20);
+		this->magicPos = ML::Vec2(224, 40);
+
+		auto pl = ge->GetTask<Player::Object>("Player");
+		this->magicSelect = pl->magicSelect + 1;
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -83,6 +90,11 @@ namespace  GameUI
 		ML::Box2D coin_draw(-20, -20, 40, 40);
 		ML::Box2D coin_src(0, 0, 32, 32);
 		this->res->coinImg->Draw(coin_draw.OffsetCopy(coinPos), coin_src);
+
+		
+		ML::Box2D magic_draw(-32, -32, 64, 64);
+		ML::Box2D magic_src(0, this->magicSelect * 64, 64, 64);
+		this->res->magic->Draw(magic_draw.OffsetCopy(magicPos), magic_src);
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

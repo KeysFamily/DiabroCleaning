@@ -76,6 +76,8 @@ namespace  EnemySkyEye
 		this->hp.SetValues(HP, 0, HP);
 		this->targetPos = ML::Vec2();
 		this->altitude = -1000.0f;
+		this->attackPow = 10;
+		this->dropMoney = 10;
 		//šƒ^ƒXƒN‚Ì¶¬
 
 		return  true;
@@ -252,8 +254,8 @@ namespace  EnemySkyEye
 			ML::Vec2 diff = this->targetPos - this->pos;
 
 			float angRad = atan2(diff.y, diff.x);
-			this->moveVec.x = 7.5f * cos(angRad);
-			this->moveVec.y = 7.5f * sin(angRad);
+			this->moveVec.x = this->maxSpeed * 1.5f * cos(angRad);
+			this->moveVec.y = this->maxSpeed * 1.5f * sin(angRad);
 		}	break;
 		case Motion::Fall://—Ž‰º’†
 			if (this->angle_LR == Angle_LR::Left) {
@@ -270,7 +272,7 @@ namespace  EnemySkyEye
 
 				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
 				
-				BChara::AttackInfo ai = { 10,0,0 };
+				BChara::AttackInfo ai = { this->attackPow,0,0 };
 				this->Attack_Std(Player::defGroupName, ai, hit);
 			}
 			break;
@@ -285,7 +287,7 @@ namespace  EnemySkyEye
 			}
 			break;
 		case Motion::Lose:
-			if (this->moveCnt == 7) { this->DropCoins(10); }
+			if (this->moveCnt == 7) { this->DropCoins(this->dropMoney); }
 			if (this->moveCnt >= 8) {
 				this->Kill();
 			}

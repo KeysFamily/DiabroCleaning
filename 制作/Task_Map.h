@@ -110,6 +110,7 @@ namespace  Map
 		bool  CheckHitTo(const  ML::Box2D& hit_, int chipNum_);//‚ ‚½‚è”»’è
 		//”wŒi‚Ì•`‰æ
 		void DrawBackMap();
+		void SetEnemyOnMap();
 
 
 	};

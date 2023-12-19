@@ -7,27 +7,25 @@
 //概　　　要:
 //?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_WaterBlast.h"
-#include  "Task_Player.h"
+#include  "Task_Beam.h"
 #include  "BEnemy.h"
+#include  "Task_Player.h"
 
-namespace  WaterBlast
+namespace  Beam
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img1 = DG::Image::Create("./data/effect/WaterBlast.png");
-		this->img2 = DG::Image::Create("./data/effect/WaterBlastEnd.png");
+		this->img = DG::Image::Create("./data/effect/beam.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->img1.reset();
-		this->img2.reset();
+		this->img.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -40,12 +38,12 @@ namespace  WaterBlast
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->hitBase = ML::Box2D(-60, -140, 120, 200);
+		this->hitBase = ML::Box2D(0, -16, 0, 32);
 		this->pos = ML::Vec2(0, 0);
-		/*this->speed = 10.0f;*/
 		this->power = 1.0f;
-		this->cost = 0;//仮
+		this->cost = 0;
 		this->motion = Motion::Start;
+		this->length = 100;
 		//★タスクの生成
 
 		return  true;
@@ -69,6 +67,20 @@ namespace  WaterBlast
 	{
 		this->moveCnt++;
 		this->animCnt++;
+		auto pl = ge->GetTask<BChara>("Player");
+		if (this->angle_LR == Angle_LR::Right)
+		{
+			this->pos.x = pl->pos.x + 60;
+		}
+		else 
+		{
+			this->pos.x = pl->pos.x - 60;
+			this->hitBase.x -= this->length;
+		}
+		this->hitBase.w += this->length;
+		this->pos.y = pl->pos.y;
+		if (true == this->CheckFront_LR()) { this->length = 0; }
+		else { this->length = 100; }
 		this->Think();
 		this->Move();
 	}
@@ -81,12 +93,7 @@ namespace  WaterBlast
 		//スクロール対応
 		di.draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
 
-		if (this->motion == Motion::Start || this->motion == Motion::Infinite) {
-			this->res->img1->Draw(di.draw, di.src);
-		}
-		if(this->motion == Motion::End){
-			this->res->img2->Draw(di.draw, di.src);
-		}
+		this->res->img->Draw(di.draw, di.src);
 
 		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
 	}
@@ -103,14 +110,14 @@ namespace  WaterBlast
 			}
 			break;
 		case Motion::Infinite:
-			if (this->moveCnt > 24 && pl->motion != Player::Object::Motion::MagicAttack) { nm = Motion::End; }
+			if (this->moveCnt > 3 && pl->motion != Player::Object::Motion::MagicAttack) { nm = Motion::End; }
 			if (pl->balanceMoney <= this->cost) { nm = Motion::End; }
 			break;
 		case Motion::End:
-			if (this->moveCnt > 24) { this->Kill(); }
+			if (this->moveCnt > 9) { this->Kill(); }
 			break;
 		}
-		if (pl->motion != Player::Object::Motion::MagicAttack) { nm = Motion::End; }
+		if(pl->motion != Player::Object::Motion::MagicAttack) { nm = Motion::End; }
 		//モーション更新
 		this->UpdateMotion(nm);
 	}
@@ -145,20 +152,14 @@ namespace  WaterBlast
 		ML::Color  defColor(1, 1, 1, 1);
 		BChara::DrawInfo imageTable[] = {
 			//draw							src
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(0, 0, 128, 128), defColor },					//0
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128, 0, 128, 128), defColor },					//1
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 2, 0, 128, 128), defColor },				//2
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 3, 0, 128, 128), defColor },				//3
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(0, 128, 128, 128), defColor },					//4
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128, 128, 128, 128), defColor },				//5
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 2, 128, 128, 128), defColor },			//6
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 3, 128, 128, 128), defColor },			//7
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(0, 128 * 2, 128, 128), defColor },				//8
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128, 128 * 2, 128, 128), defColor },			//9
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 2, 128 * 2, 128, 128), defColor },		//10
-			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 3, 128 * 2, 128, 128), defColor },		//11
+			{ ML::Box2D(0, -3, 224, 6), ML::Box2D(30, 30, 224, 6), defColor },					//0
+			{ ML::Box2D(0, -6, 224, 12), ML::Box2D(31, 90, 224, 12), defColor },				//1
+			{ ML::Box2D(0, -11, 224, 22), ML::Box2D(32, 148, 224, 22), defColor },				//2
+			{ ML::Box2D(0, -5, 224, 10), ML::Box2D(36, 220, 224, 10), defColor },				//3
+			{ ML::Box2D(0, -4, 224, 8), ML::Box2D(44, 285, 224, 8), defColor },					//4
+			{ ML::Box2D(0, -1, 224, 2), ML::Box2D(98, 352, 224, 2), defColor },					//5
+			{ ML::Box2D(0, -1, 224, 2), ML::Box2D(0, 64*6, 224, 2), defColor },				//6
 		};
-		BChara::DrawInfo  rtv;
 		int  work;
 		switch (this->motion) {
 		default:		rtv = imageTable[0];	break;
@@ -170,21 +171,20 @@ namespace  WaterBlast
 			rtv = imageTable[work];
 			break;
 		case Motion::Infinite:
-			work = this->animCnt / 3;
-			work %= 8;
-			rtv = imageTable[work + 4];
+			rtv = imageTable[3];
 			break;
 		case Motion::End:
 			if (this->animCnt <= 3)work = 0;
 			if (this->animCnt > 3 && this->animCnt <= 6)work = 1;
-			if (this->animCnt > 6 && this->animCnt <= 9)work = 2;
-			if (this->animCnt > 9 && this->animCnt <= 12)work = 4;
-			if (this->animCnt > 12 && this->animCnt <= 15)work = 5;
-			if (this->animCnt > 15 && this->animCnt <= 18)work = 6;
-			if (this->animCnt > 18 && this->animCnt <= 21)work = 8;
-			if (this->animCnt > 21)work = 9;
-			rtv = imageTable[work];
+			if (this->animCnt > 6)work = 2;
+			rtv = imageTable[work + 4];
 			break;
+		}
+		rtv.draw.w = this->hitBase.w;
+		//	向きに応じて画像を左右反転する
+		if (Angle_LR::Left == this->angle_LR) {
+			rtv.draw.x = -rtv.draw.x;
+			rtv.draw.w = -rtv.draw.w;
 		}
 		return rtv;
 	}

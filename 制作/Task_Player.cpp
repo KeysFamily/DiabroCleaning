@@ -63,11 +63,14 @@ namespace  Player
 		this->canDash = true;
 		this->balanceMoney = 100;  //所持金
 		this->hp.SetValues(100, 0, 100);
-		this->power = 1;
+		this->power = 1.0f;
 		this->powerScale = 1.0f;
 		this->balanceMoney = 100;
 		this->magicSelect = Magic::Thunder; //仮
-		ge->debugRectLoad();
+		this->surviveFrame = 0;
+		this->surviveTime = 0;
+		this->DEF = 1;
+		this->INT = 1.0f;
 
 
 		//--------------------------------------
@@ -96,6 +99,8 @@ namespace  Player
 	{
 		this->moveCnt++;
 		this->animCnt++;
+		this->surviveFrame++;
+		this->surviveTime = this->surviveFrame / 60;
 		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 		if (this->unHitTime > 0) { this->unHitTime--; }
 		//思考・状況判断
@@ -145,9 +150,7 @@ namespace  Player
 
 
 		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
-		ge->debugRectDraw();
 		ge->debugRect(this->attackBase.OffsetCopy(this->pos), 5, -ge->camera2D.x, -ge->camera2D.y);
-		ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
 	//思考＆状況判断　モーション決定
@@ -240,8 +243,8 @@ namespace  Player
 			if (this->CheckFoot() == false) { nm = Motion::Fall; }
 			break;
 		case Motion::Bound:
-			if (this->moveCnt >= 12 &&
-				this->CheckFoot() == true) {
+			if (this->moveCnt >= 30/* &&
+				this->CheckFoot() == true*/) {
 				nm = Motion::Stand;
 			}
 			break;
@@ -335,6 +338,19 @@ namespace  Player
 	void  Object::Move()
 	{
 		auto  inp = this->controller->GetState();
+		//魔法変更
+		if (inp.L1.down) {
+			this->magicSelect--; 
+			if (this->magicSelect < -1) {
+				this->magicSelect = 3;
+			}
+		}
+		if (inp.R1.down) {
+			this->magicSelect++;
+			if (this->magicSelect > 3) {
+				this->magicSelect = -1;
+			}
+		}
 		//重力加速
 		switch (this->motion) {
 		default:
@@ -512,6 +528,9 @@ namespace  Player
 					break;
 				case Magic::Thunder:
 					mj->magicSelect = mj->Magic::Thunder;
+					break;
+				case Magic::Beam:
+					mj->magicSelect = mj->Magic::Beam;
 					break;
 				}
 				if (this->angle_LR == Angle_LR::Left) { mj->LR = false; }
@@ -769,7 +788,7 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= at_.power;
+		this->balanceMoney -= (at_.power - this->DEF);
 		if (this->balanceMoney <= 0)this->balanceMoney = 0; //仮処理
 		if (this->hp.IsMin()) {
 			//this->Kill();
@@ -831,97 +850,6 @@ namespace  Player
 		}
 	}
 	//-------------------------------------------------------------------
-	//めり込まない移動処理
-	void Object::CheckMove(ML::Vec2& e_)
-	{
-		//マップが存在するか調べてからアクセス
-		auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-		if (nullptr == map) { return; }//マップが無ければ判定しない(出来ない）
-
-		//横軸に対する移動
-		while (e_.x != 0) {
-			float  preX = this->pos.x;
-			if (e_.x >= 1) { this->pos.x += 1;		e_.x -= 1; }
-			else if (e_.x <= -1) { this->pos.x -= 1;		e_.x += 1; }
-			else { this->pos.x += e_.x;		e_.x = 0; }
-			ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
-
-			//坂道判定
-			this->pos += map->CheckSlope(hit);
-
-			if (true == map->CheckHit(hit)) {
-				this->pos.x = preX;		//移動をキャンセル
-				break;
-			}
-		}
-		//縦軸に対する移動
-		while (e_.y != 0) {
-			float  preY = this->pos.y;
-			if (e_.y >= 1) { this->pos.y += 1;		e_.y -= 1; }
-			else if (e_.y <= -1) { this->pos.y -= 1;		e_.y += 1; }
-			else { this->pos.y += e_.y;		e_.y = 0; }
-			ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
-
-			//坂道判定
-			this->pos += map->CheckSlope(hit);
-
-			if (true == map->CheckHit(hit)) {
-				this->pos.y = preY;		//移動をキャンセル
-				break;
-			}
-			if (true == CheckFallGround(preY, e_.y))
-			{
-				this->pos.y = preY;
-				break;
-			}
-		}
-	}
-	//-------------------------------------------------------------------
-	//足元判定
-	bool Object::CheckFoot()
-	{
-		//あたり判定を基にして足元矩形を生成
-		ML::Box2D  foot(this->hitBase.x,
-			this->hitBase.y + this->hitBase.h,
-			this->hitBase.w,
-			1);
-		foot.Offset(this->pos);
-
-		auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-		if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
-		if (map->CheckHit(foot))
-		{
-			return true;
-		}
-		if (map->CheckSlope(foot) != ML::Vec2(0, 0))
-		{
-			return true;
-		}
-		if (map->CheckFallGround(foot))
-		{
-			//すり抜ける床は落下中ではない時だけ判定する
-			ML::Box2D upPix = foot.OffsetCopy(0, -1);
-			return map->CheckFallGround(upPix) == false;
-		}
-
-		return false;
-	}
-	//-------------------------------------------------------------------
-	//すり抜ける床判定
-	bool Object::CheckFallGround(float preY_, float estY_)
-	{
-		if (estY_ < 0)
-		{
-			return false;
-		}
-
-		if (ge->qa_Map->CheckFallGround(this->hitBase.OffsetCopy(this->pos.x, preY_)) == true)
-		{
-			return false;
-		}
-
-		return ge->qa_Map->CheckFallGround(this->CallHitBox());
-	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

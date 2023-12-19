@@ -317,6 +317,12 @@
     <ClCompile Include="Task_PlayerStatus.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
+    <ClCompile Include="Task_Beam.cpp">
+      <Filter>MyPG\Task\Game\Magic</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_PlayerStatusShop.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -461,6 +467,12 @@
     </ClInclude>
     <ClInclude Include="SelectableObject.h">
       <Filter>MyPG\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Beam.h">
+      <Filter>MyPG\Task\Game\Magic</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_PlayerStatusShop.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
