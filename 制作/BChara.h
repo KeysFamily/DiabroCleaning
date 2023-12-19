@@ -85,6 +85,8 @@ public:
 	virtual void Damaged(int damage_) {};
 
 	//キャラクタ共通メソッド
+	//すり抜ける床判定
+	virtual bool CheckFallGround(float preY_, float estY_);
 	//めり込まない移動処理
 	virtual  void  CheckMove(ML::Vec2& est_);
 	//足元接触判定
