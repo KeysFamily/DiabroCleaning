@@ -88,6 +88,7 @@ namespace  EnemyManager
 		this->enemyDatas.clear();
 		this->enemyNames.clear();
 		this->enemyInits.clear();
+		this->stateRates.clear();
 		return true;
 	}
 	//-------------------------------------------------------------------
