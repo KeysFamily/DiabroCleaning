@@ -1,21 +1,20 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//タスク名:
-//作　成　者:
+//タスク名:メニュー画面管理
+//作　成　者:土田誠也
 //TODO:もしいれば下記へ記述
 //編　集　者:
 //作成年月日:
 //概　　　要:
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
-#include "SelectableObject.h"
 
-namespace  「ネームスペース名」
+namespace  SystemMenu
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName(		「グループ名」);	//グループ名
-	const  string  defName(				「タスク名」);	//タスク名
+	const  string  defGroupName("SystemMenu");	//グループ名
+	const  string  defName("System");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -29,7 +28,7 @@ namespace  「ネームスペース名」
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		「変数宣言を書く」
+		
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -53,6 +52,5 @@ namespace  「ネームスペース名」
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		MyUI::SelectableObject 
 	};
 }

@@ -1,26 +1,20 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//タスク名:プレイヤーステータス画面
-//作　成　者:土田誠也
+//タスク名:
+//作　成　者:
 //TODO:もしいれば下記へ記述
 //編　集　者:
 //作成年月日:
 //概　　　要:
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
-#include "SelectableObject.h"
 
-namespace PlayerStatusShop
-{
-	class Object;
-}
-
-namespace  PlayerStatus
+namespace  PlayerStatusShop
 {
 	//タスクに割り当てるグループ名と固有名
 	const  string  defGroupName("SystemMenu");	//グループ名
-	const  string  defName("PlayerStatus");	//タスク名
+	const  string  defName("PlayerStatusShop");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -34,11 +28,10 @@ namespace  PlayerStatus
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP imgBg;
-		OL::Size2D imgBgSize;
-		DG::Image::SP imgProgress; 
-		OL::Size2D imgProgressSize;
-		DG::Font::SP systemFont;
+		DG::Image::SP imgProgress;	//購入用の画像
+		OL::Size2D imgProgressSize;	//購入用の画像のサイズ
+		DG::Font::SP fontDisplay;	//ステータス名表示用フォント
+		OL::Size2D fontDisplaySize;	//ステータス名表示用フォントのサイズ
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -62,19 +55,19 @@ namespace  PlayerStatus
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		enum PStatus
-		{
-			ATK = 0,
-			DEF,
-			INT,
-			SPD,
-		};
-		
-		shared_ptr<PlayerStatusShop::Object> shops[4];
-		int currentStatus;
+		string displayStr;		//ステータス名
+		vector<int> price;		//各金額
+		vector<int> addStatus;	//各追加量
+		OL::Limit<int> currentStatus;	//どこまで購入されているか
 
-		ML::Vec2 statusBeginPos;
-		float statusDistance;
+		ML::Vec2 pos;				//全体の位置
+		ML::Vec2 displayPos;		//ステータス名の位置
+		ML::Vec2 progressBeginPos;	//購入用の画像の位置
+		float progressDistance;		//購入用の画像の間隔
 
+		//次の購入に必要な金額を返す
+		int GetPrice() const;
+		//購入する
+		bool Buy(int& money_);
 	};
 }

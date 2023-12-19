@@ -161,6 +161,7 @@
     <ClCompile Include="Task_MapManager.cpp" />
     <ClCompile Include="Task_MapTransition.cpp" />
     <ClCompile Include="Task_Player.cpp" />
+    <ClCompile Include="Task_PlayerStatusShop.cpp" />
     <ClCompile Include="Task_Sprite.cpp" />
     <ClCompile Include="Task_PlayerStatus.cpp" />
     <ClCompile Include="Task_SystemMenu.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="Task_MapManager.h" />
     <ClInclude Include="Task_MapTransition.h" />
     <ClInclude Include="Task_Player.h" />
+    <ClInclude Include="Task_PlayerStatusShop.h" />
     <ClInclude Include="Task_Sprite.h" />
     <ClInclude Include="Task_PlayerStatus.h" />
     <ClInclude Include="Task_SystemMenu.h" />
