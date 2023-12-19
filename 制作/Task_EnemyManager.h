@@ -75,7 +75,10 @@ namespace  EnemyManager
 
 
 		
-		void SpawnEnemy(ML::Vec2 pos_);
-		void SpawnEnemy(string name_, ML::Vec2 pos_);
+		void SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_);
+		void SpawnEnemyName(string name_, ML::Vec2 pos_);
+
+		void KillAllEnemys();
+
 	};
 }

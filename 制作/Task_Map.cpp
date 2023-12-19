@@ -3,7 +3,9 @@
 //-------------------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_Map.h"
+
 #include  "Task_Player.h"
+#include  "Task_EnemyManager.h"
 
 namespace  Map
 {
@@ -178,7 +180,9 @@ namespace  Map
 			== false)
 		{
 			return false;
-		}		
+		}	
+		this->SetEnemyOnMap();
+		
 
 
 		//当たり判定矩形設定
@@ -491,6 +495,29 @@ namespace  Map
 		}
 
 		return true;
+	}
+
+	void Object::SetEnemyOnMap() {
+		auto em = ge->GetTask<EnemyManager::Object>(EnemyManager::defGroupName, EnemyManager::defName);
+		if (em == nullptr)return;
+		em->KillAllEnemys();
+		//チップを探す
+		for (int y = 0; y < this->GenerateMap.height; ++y)
+		{
+			for (int x = 0; x < this->GenerateMap.width; ++x)
+			{
+				int en = this->GenerateMap.chipdata[y][x];
+				//enの範囲は0～6の範囲とする。
+				if (en >= 0 && en <= 6) {
+					ML::Vec2 epos(
+						x * this->res->drawSize,
+						y * this->res->drawSize
+					);
+					
+					em->SpawnEnemyNum(en, epos);
+				}
+			}
+		}
 	}
 
 

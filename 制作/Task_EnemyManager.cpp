@@ -83,8 +83,8 @@ namespace  EnemyManager
 		this->residentResource.push_back(EnemySkeleton::Resource::Create());
 		this->residentResource.push_back(EnemySkyEye::Resource::Create());
 		//★タスクの生成
-		//SpawnEnemy("Skeleton",ML::Vec2(1000, 600));
-		SpawnEnemy("SkyEye", ML::Vec2(1300, 500));
+		SpawnEnemyName("Skeleton",ML::Vec2(1000, 600));
+		SpawnEnemyName("SkyEye", ML::Vec2(1300, 500));
 		ge->debugRectLoad();
 
 		return  true;
@@ -124,13 +124,14 @@ namespace  EnemyManager
 			}
 		}
 		if (ms.CB.down) {
-			for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
-				BChara::AttackInfo at = { INT_MAX,0,0 };
-				(*it)->Received(nullptr, at);
-			}
+			//for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
+			//	BChara::AttackInfo at = { INT_MAX,0,0 };
+			//	(*it)->Received(nullptr, at);
+			//}
+			this->KillAllEnemys();
 		}
 		if (ms.RB.down) {
-			this->SpawnEnemy(this->res->enemyNames[rand() % 2], spos);
+			this->SpawnEnemyNum(rand() % 2, spos);
 		}
 	}
 	//-------------------------------------------------------------------
@@ -142,17 +143,21 @@ namespace  EnemyManager
 
 	//-------------------------------------------------------------------
 	// 敵スポーン
-	void Object::SpawnEnemy(ML::Vec2 pos_) {
+	
 
-		auto e = EnemySkeleton::Object::Create(true);
-		e->pos = pos_;
+	void Object::SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_) {
+		int size = this->res->enemyNames.size();
+		if (enemyNum_ < 0 || enemyNum_ >= size)return;
+
+		string name = this->res->enemyNames[enemyNum_];
+
+		this->SpawnEnemyName(name, pos_);
 	}
 
-	void Object::SpawnEnemy(string name_, ML::Vec2 pos_) {
-
+	void Object::SpawnEnemyName(string name_, ML::Vec2 pos_) {
 		if (this->res->enemyDatas.count(name_) > 0 &&
 			this->res->enemyInits.count(name_) > 0) {
-			//auto e = EnemySkeleton::Object::Create(true);
+			
 			auto e       = this->res->enemyInits[name_](true);
 			e->pos       = pos_;
 			float HP       = this->res->enemyDatas[name_].hp;
@@ -164,6 +169,14 @@ namespace  EnemyManager
 			e->unHitTime = this->res->enemyDatas[name_].unHitTime;
 			e->dropMoney = this->res->enemyDatas[name_].dropMoney;
 			e->attackPow = this->res->enemyDatas[name_].attackPow;
+		}
+	}
+
+	void Object::KillAllEnemys() {
+		if (ge->qa_Enemys == nullptr)return;
+		for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
+			BChara::AttackInfo at = { INT_MAX,0,0 };
+			(*it)->Kill();
 		}
 	}
 
