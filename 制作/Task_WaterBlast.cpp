@@ -40,7 +40,7 @@ namespace  WaterBlast
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
-		this->hitBase = ML::Box2D(-26, -40, 52, 100);
+		this->hitBase = ML::Box2D(-60, -140, 120, 200);
 		this->pos = ML::Vec2(0, 0);
 		/*this->speed = 10.0f;*/
 		this->power = 1.0f;
@@ -146,18 +146,18 @@ namespace  WaterBlast
 		ML::Color  defColor(1, 1, 1, 1);
 		BChara::DrawInfo imageTable[] = {
 			//draw							src
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(0, 0, 128, 128), defColor },					//0
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128, 0, 128, 128), defColor },					//1
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 2, 0, 128, 128), defColor },				//2
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 3, 0, 128, 128), defColor },				//3
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(0, 128, 128, 128), defColor },					//4
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128, 128, 128, 128), defColor },				//5
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 2, 128, 128, 128), defColor },			//6
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 3, 128, 128, 128), defColor },			//7
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(0, 128 * 2, 128, 128), defColor },				//8
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128, 128 * 2, 128, 128), defColor },			//9
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 2, 128 * 2, 128, 128), defColor },		//10
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 3, 128 * 2, 128, 128), defColor },		//11
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(0, 0, 128, 128), defColor },					//0
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128, 0, 128, 128), defColor },					//1
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 2, 0, 128, 128), defColor },				//2
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 3, 0, 128, 128), defColor },				//3
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(0, 128, 128, 128), defColor },					//4
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128, 128, 128, 128), defColor },				//5
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 2, 128, 128, 128), defColor },			//6
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 3, 128, 128, 128), defColor },			//7
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(0, 128 * 2, 128, 128), defColor },				//8
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128, 128 * 2, 128, 128), defColor },			//9
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 2, 128 * 2, 128, 128), defColor },		//10
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 3, 128 * 2, 128, 128), defColor },		//11
 		};
 		BChara::DrawInfo  rtv;
 		int  work;
