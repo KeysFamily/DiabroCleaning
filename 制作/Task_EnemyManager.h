@@ -29,6 +29,19 @@ namespace  EnemyManager
 		int attackPow;
 	};
 
+	struct EnemyStatusRate {//敵ステータス倍率
+		float hpRate;		//体力倍率
+		float speedRate;	//速度倍率
+		float moneyRate;	//報酬倍率
+		float attackRate;	//攻撃力倍率
+	};
+	//---------------------------------------------------------
+	// 敵ステータス倍率について
+	// Rateを管理する配列の中に敵ごとに管理する。
+	// 
+	//---------------------------------------------------------
+
+
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -46,6 +59,9 @@ namespace  EnemyManager
 		
 		std::map<string, EnemyData> enemyDatas;
 		std::vector<string> enemyNames;
+
+		std::map<int, std::map<string, EnemyStatusRate>> stateRates;
+
 
 		std::map<string, function<BEnemy::SP(bool)>> enemyInits;
 	};
@@ -73,10 +89,8 @@ namespace  EnemyManager
 		//追加したい変数・メソッドはここに追加する
 		std::vector<BResource::SP> residentResource;
 
-
-		
-		void SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_);
-		void SpawnEnemyName(string name_, ML::Vec2 pos_);
+		void SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_, int depth_ = 1);
+		void SpawnEnemyName(string name_, ML::Vec2 pos_, int depth_ = 1);
 
 		void KillAllEnemys();
 
