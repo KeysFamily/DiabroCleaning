@@ -23,6 +23,8 @@ namespace  Title
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
+		DG::Image::SP img;
+		DG::Image::SP Logo;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -46,5 +48,6 @@ namespace  Title
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
+		int cnt;
 	};
 }
