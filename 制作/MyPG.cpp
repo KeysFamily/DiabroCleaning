@@ -1,5 +1,6 @@
-﻿	#include "MyPG.h"
+﻿#include "MyPG.h"
 
+#include "easing.h"
 #include "randomLib.h"
 #include "sound.h"
 

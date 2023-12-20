@@ -329,6 +329,9 @@
     <ClCompile Include="Task_GameUI_MiniMap.cpp">
       <Filter>MyPG\Task\Game\GameUI</Filter>
     </ClCompile>
+    <ClCompile Include="Task_SystemMenuSelectObject.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -479,6 +482,9 @@
     </ClInclude>
     <ClInclude Include="Task_GameUI_MiniMap.h">
       <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SystemMenuSelectObject.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

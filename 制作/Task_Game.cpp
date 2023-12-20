@@ -80,7 +80,7 @@ namespace  Game
 		UI->numPos = ML::Vec2(50, 50);
 
 		EnemyManager::Object::Create(true);
-		
+
 		this->cnt = 0;
 
 		return  true;
