@@ -24,6 +24,7 @@ namespace  Title
 	bool  Resource::Finalize()
 	{
 		this->img.reset();
+		this->img.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
