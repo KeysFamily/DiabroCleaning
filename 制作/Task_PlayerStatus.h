@@ -36,9 +36,8 @@ namespace  PlayerStatus
 		//ã§óLÇ∑ÇÈïœêîÇÕÇ±Ç±Ç…í«â¡Ç∑ÇÈ
 		DG::Image::SP imgBg;
 		OL::Size2D imgBgSize;
-		DG::Image::SP imgProgress; 
-		OL::Size2D imgProgressSize;
 		DG::Font::SP systemFont;
+		OL::Size2D systemFontSize;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -72,6 +71,10 @@ namespace  PlayerStatus
 		
 		shared_ptr<PlayerStatusShop::Object> shops[4];
 		int currentStatus;
+
+		ML::Vec2 pos;
+		ML::Vec2 shopOffset;
+		float shopDistance;
 
 		ML::Vec2 statusBeginPos;
 		float statusDistance;

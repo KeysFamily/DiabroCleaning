@@ -18,10 +18,10 @@ namespace  PlayerStatus
 	bool  Resource::Initialize()
 	{
 		this->imgBg = DG::Image::Create("./data/image/menu/status/BackGround.png");
-		this->imgProgress = DG::Image::Create("./data/image/menu/status/Progress.png");
 		this->imgBgSize.Set(960, 674);
-		this->imgProgressSize.Set(14, 42);
-		this->systemFont = DG::Font::Create("non", 12, 24);
+
+		this->systemFontSize.Set(40, 80);
+		this->systemFont = DG::Font::Create("non", systemFontSize.w, systemFontSize.h);
 
 		return true;
 	}
@@ -30,7 +30,6 @@ namespace  PlayerStatus
 	bool  Resource::Finalize()
 	{
 		this->imgBg.reset();
-		this->imgProgress.reset();
 		this->systemFont.reset();
 		return true;
 	}
@@ -44,19 +43,38 @@ namespace  PlayerStatus
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->shops[0] = PlayerStatusShop::Object::Create(true);
-		this->shops[0]->displayStr = "ATK";
-		this->shops[1] = PlayerStatusShop::Object::Create(true);
-		this->shops[1]->displayStr = "DEF";
-		this->shops[2] = PlayerStatusShop::Object::Create(true);
-		this->shops[2]->displayStr = "INT";
-		this->shops[3] = PlayerStatusShop::Object::Create(true);
-		this->shops[3]->displayStr = "SPD";
+		this->render2D_Priority[1] = 1.0f;
+		this->pos = ML::Vec2(500, 600);
+		this->shopDistance = 120;
+		this->shopOffset = ML::Vec2(190, 30);
 
+		for (int i = 0; i < 4; ++i)
+		{
+			this->shops[i] = PlayerStatusShop::Object::Create(true);
+			this->shops[i]->pos = this->pos + ML::Vec2(0, -(shopDistance + shopDistance / 2));
+			this->shops[i]->pos += shopOffset;
+			this->shops[i]->pos.y += shopDistance * i;
+			this->shops[i]->statusType = i;
+		}
+
+		//繋がりの設定
+		this->shops[0]->SetNext_Down(this->shops[1].get());
+		this->shops[1]->SetNext_Up(this->shops[0].get());
+		this->shops[1]->SetNext_Down(this->shops[2].get());
+		this->shops[2]->SetNext_Up(this->shops[1].get());
+		this->shops[2]->SetNext_Down(this->shops[3].get());
+		this->shops[3]->SetNext_Up(this->shops[2].get());
+
+
+		this->shops[0]->displayStr = "ATK";
+		this->shops[1]->displayStr = "DEF";
+		this->shops[2]->displayStr = "INT";
+		this->shops[3]->displayStr = "SPD";
 
 		this->currentStatus = 0;
 
-		this->statusBeginPos = ML::Vec2(100, 100);
+		this->statusBeginPos = ML::Vec2(-250, -10);
+		this->statusDistance = -5;
 
 		//★タスクの生成
 
@@ -80,12 +98,39 @@ namespace  PlayerStatus
 	void  Object::UpDate()
 	{
 
+		if (ge->qa_Player == nullptr)
+		{
+			return;
+		}
+
+
+		ge->qa_Player->power = this->shops[ATK]->GetStatusAdd();
+		ge->qa_Player->DEF = this->shops[DEF]->GetStatusAdd();
+		ge->qa_Player->INT = this->shops[INT]->GetStatusAdd();
+		ge->qa_Player->speed = this->shops[SPD]->GetStatusAdd();
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		
+		ML::Box2D draw = OL::setBoxCenter(this->res->imgBgSize);
+		ML::Box2D src(0, 0, this->res->imgBgSize.w, this->res->imgBgSize.h);
+		draw.Offset(this->pos);
+
+		this->res->imgBg->Draw(draw, src);
+
+		if (ge->qa_Player == nullptr)
+		{
+			return;
+		}
+
+		draw = ML::Box2D(0, 0, 500, 500);
+		draw.Offset(this->pos + this->statusBeginPos);
+
+		this->res->systemFont->Draw(draw, to_string(ge->qa_Player->power));
+		this->res->systemFont->Draw(draw, to_string(ge->qa_Player->DEF));
+		this->res->systemFont->Draw(draw, to_string(ge->qa_Player->INT));
+		this->res->systemFont->Draw(draw, to_string(ge->qa_Player->speed));
 	}
 	//-------------------------------------------------------------------
 	//その他メソッド

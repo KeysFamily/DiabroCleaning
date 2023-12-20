@@ -8,6 +8,7 @@
 //?------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_PlayerStatusShop.h"
+#include  "Task_PlayerStatus.h"
 
 namespace  PlayerStatusShop
 {
@@ -40,18 +41,22 @@ namespace  PlayerStatusShop
 		this->res = Resource::Create();
 
 		//★データ初期化
+		this->render2D_Priority[1] = 0.5f;
+
 		this->displayStr = "";
-		this->currentStatus.SetValues(0, 0, 10);
-		for (int i = 0; i < 10; ++i)
+		this->progressDistance = 10;
+		this->currentStatus.SetValues(1, 0, 20);
+
+		for (int i = 0; i < currentStatus.vmax; ++i)
 		{
 			price.push_back(i + 1);
 			addStatus.push_back(1 + i);
 		}
 
-		this->pos = ML::Vec2(200, 200);
-		this->displayPos = ML::Vec2(0, -50);
-		this->progressBeginPos = ML::Vec2(-100, 50);
-		this->progressDistance = 10;
+		this->displayPos = ML::Vec2(10, -40);
+		this->progressBeginPos.x = this->res->imgProgressSize.w * (currentStatus.vmax - 2) / -2.0f;
+		this->progressBeginPos.x += this->progressDistance * (currentStatus.vmax - 1) / -2.0f;
+		this->progressBeginPos.y = 30;
 		//★タスクの生成
 
 		return  true;
@@ -92,10 +97,19 @@ namespace  PlayerStatusShop
 		draw.Offset(this->pos + this->progressBeginPos);
 		ML::Box2D src(0, 0, this->res->imgProgressSize.w, this->res->imgProgressSize.h);
 
-		for (int i = 0; i < currentStatus.vmax; ++i)
+		for (int i = 1; i <= currentStatus.vmax; ++i)
 		{
+			if (i <= currentStatus.vnow)
+			{
+				src.x = this->res->imgProgressSize.w * (2 + this->statusType);
+			}
+			else if (i == currentStatus.vnow + 1)
+			{
+				src.x = this->res->imgProgressSize.w;
+			}
 			this->res->imgProgress->Draw(draw, src);
 			draw.x += this->res->imgProgressSize.w + this->progressDistance;
+			src.x = 0;
 		}
 	}
 	//-------------------------------------------------------------------
@@ -111,6 +125,12 @@ namespace  PlayerStatusShop
 		{
 			return price[currentStatus.vnow + 1];
 		}
+	}
+
+	//現在の追加ステータスを取得する
+	int Object::GetStatusAdd() const
+	{
+		return addStatus[currentStatus.vnow];
 	}
 
 	//購入する

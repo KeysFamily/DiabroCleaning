@@ -37,15 +37,15 @@ namespace MyUI
 		{
 			nextObj[0] = nextObjU;
 		}
-		void GetNext_Down(SelectableObject* nextObjD)
+		void SetNext_Down(SelectableObject* nextObjD)
 		{
 			nextObj[1] = nextObjD;
 		}
-		void GetNext_Left(SelectableObject* nextObjL)
+		void SetNext_Left(SelectableObject* nextObjL)
 		{
 			nextObj[2] = nextObjL;
 		}
-		void GetNext_Right(SelectableObject* nextObjR)
+		void SetNext_Right(SelectableObject* nextObjR)
 		{
 			nextObj[3] = nextObjR;
 		}

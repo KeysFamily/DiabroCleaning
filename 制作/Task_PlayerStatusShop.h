@@ -66,9 +66,12 @@ namespace  PlayerStatusShop
 		ML::Vec2 progressBeginPos;	//購入用の画像の位置
 		float progressDistance;		//購入用の画像の間隔
 
+		int statusType;				//ステータスの種類
 
 		//次の購入に必要な金額を返す
 		int GetPrice() const;
+		//現在の追加ステータスを取得する
+		int GetStatusAdd() const;
 		//購入する
 		bool Buy(int& money_);
 
