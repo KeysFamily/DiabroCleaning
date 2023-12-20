@@ -434,10 +434,10 @@ namespace  EnemySkeleton
 		}
 		//‚«”ò‚Î‚³‚ê‚é
 		if (from_->angle_LR == Angle_LR::Right) {
-			this->moveVec = ML::Vec2(2, -3) * 3;
+			this->moveVec = ML::Vec2(1, -3) * 1;
 		}
 		else {
-			this->moveVec = ML::Vec2(-2, -3) * 3;
+			this->moveVec = ML::Vec2(-1, -3) * 1;
 		}
 		this->UpdateMotion(Motion::Bound);
 	}
