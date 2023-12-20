@@ -266,21 +266,6 @@
     <ClCompile Include="Task_Game.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
-    <ClCompile Include="Task_GameUI_MiniMap.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_Item_coin_maneger.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_Item_coin.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_Map.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_MapManager.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Task_Player.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
@@ -318,6 +303,21 @@
       <Filter>MyPG\Task\Game\Map</Filter>
     </ClCompile>
     <ClCompile Include="Task_MapTransition.cpp">
+      <Filter>MyPG\Task\Game\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Item_coin.cpp">
+      <Filter>MyPG\Task\Game\Item_coin</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Item_coin_maneger.cpp">
+      <Filter>MyPG\Task\Game\Item_coin</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_GameUI_MiniMap.cpp">
+      <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_MapManager.cpp">
+      <Filter>MyPG\Task\Game\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Map.cpp">
       <Filter>MyPG\Task\Game\Map</Filter>
     </ClCompile>
     <ClCompile Include="Task_Item_coin.cpp">
