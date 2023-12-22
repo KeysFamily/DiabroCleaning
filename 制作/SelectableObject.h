@@ -8,6 +8,7 @@ namespace MyUI
 	public:
 		virtual ML::Box2D GetObjectSize() const = 0;
 		virtual void IsSelecting() = 0;
+		virtual void IsDown() = 0;
 
 		SelectableObject()
 			:nextObj{ this,this,this,this }

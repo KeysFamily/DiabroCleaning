@@ -66,6 +66,8 @@ namespace  PlayerStatusShop
 		ML::Vec2 progressBeginPos;	//購入用の画像の位置
 		float progressDistance;		//購入用の画像の間隔
 
+		float selectScale;		//選択時のサイズを画像より大きくしたいときに使う
+
 		int statusType;				//ステータスの種類
 
 		//次の購入に必要な金額を返す
@@ -77,7 +79,9 @@ namespace  PlayerStatusShop
 
 		//サイズと位置を伝える
 		virtual ML::Box2D GetObjectSize() const override;
-		//選択中か
+		//ターゲット中か
 		virtual void IsSelecting() override;
+		//ボタンが押されたか
+		virtual void IsDown() override;
 	};
 }

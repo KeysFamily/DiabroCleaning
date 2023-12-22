@@ -9,6 +9,7 @@
 #include "MyPG.h"
 #include "Task_PlayerStatus.h"
 #include "Task_PlayerStatusShop.h"
+#include "Task_SystemMenuSelectObject.h"
 
 namespace  PlayerStatus
 {
@@ -77,6 +78,8 @@ namespace  PlayerStatus
 		this->statusDistance = -5;
 
 		//šƒ^ƒXƒN‚Ì¶¬
+		auto sobj = SystemMenuSelectObject::Object::Create(true);
+		sobj->sto = this->shops[0].get();
 
 		return  true;
 	}

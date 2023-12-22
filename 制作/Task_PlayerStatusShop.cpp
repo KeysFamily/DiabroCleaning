@@ -45,13 +45,15 @@ namespace  PlayerStatusShop
 
 		this->displayStr = "";
 		this->progressDistance = 10;
-		this->currentStatus.SetValues(1, 0, 20);
+		this->currentStatus.SetValues(1, 0, 5);
 
 		for (int i = 0; i < currentStatus.vmax; ++i)
 		{
 			price.push_back(i + 1);
 			addStatus.push_back(1 + i);
 		}
+
+		this->selectScale = 1.5f;
 
 		this->displayPos = ML::Vec2(10, -40);
 		this->progressBeginPos.x = this->res->imgProgressSize.w * (currentStatus.vmax - 2) / -2.0f;
@@ -136,35 +138,51 @@ namespace  PlayerStatusShop
 	//購入する
 	bool Object::Buy(int& money_)
 	{
-		if (this->currentStatus.IsMax())
+		if (this->currentStatus.vnow > this->currentStatus.vmax - 1)
 		{
-			return 0;
+			return false;
 		}
-		if (money_ >= price[currentStatus.vnow + 1])
+		else if (this->currentStatus.vnow == this->currentStatus.vmax - 1)
 		{
-			money_ -= price[currentStatus.vnow + 1];
+			money_ -= price[currentStatus.vnow];
 			currentStatus.Addval(1);
+			return true;
 		}
+		if (money_ >= price[currentStatus.vnow])
+		{
+			money_ -= price[currentStatus.vnow];
+			currentStatus.Addval(1);
+			return true;
+		}
+		return false;
 	}
 
 	//サイズと位置を伝える
 	ML::Box2D Object::GetObjectSize() const
 	{
-		ML::Box2D result;
-		result.x = this->pos.x + this->progressBeginPos.x + 
-			((this->res->imgProgressSize.w + this->progressDistance) * this->currentStatus.vnow);
-		result.y = this->pos.y + this->progressBeginPos.y;
+		ML::Box2D result = OL::setBoxCenter(this->res->imgProgressSize);
+		result.Offset(this->pos + this->progressBeginPos);
+		result.x += (this->res->imgProgressSize.w + this->progressDistance) * this->currentStatus.vnow;
 
-		result.w = this->res->imgProgressSize.w;
-		result.h = this->res->imgProgressSize.h;
-		
+		result.w *= this->selectScale;
+		result.h *= this->selectScale;
+		result.x -= (result.w - this->res->imgProgressSize.w) / 2;
+		result.y -= (result.h - this->res->imgProgressSize.h) / 2;
+
 		return result;
 	}
 
-	//選択中か
+	//ターゲット中か
 	void Object::IsSelecting()
 	{
-		this->Buy(ge->qa_Player->balanceMoney);
+
+	}
+
+	//ボタンが押されたか
+	void Object::IsDown()
+	{
+		int money = 1000;
+		this->Buy(money);
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
