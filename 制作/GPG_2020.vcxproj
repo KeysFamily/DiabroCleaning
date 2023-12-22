@@ -166,6 +166,7 @@
     <ClCompile Include="Task_Sprite.cpp" />
     <ClCompile Include="Task_PlayerStatus.cpp" />
     <ClCompile Include="Task_SystemMenu.cpp" />
+    <ClCompile Include="Task_SystemMenuSelectObject.cpp" />
     <ClCompile Include="Task_Thunder.cpp" />
     <ClCompile Include="Task_Title.cpp" />
     <ClCompile Include="Task_WaterBlast.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Task_Sprite.h" />
     <ClInclude Include="Task_PlayerStatus.h" />
     <ClInclude Include="Task_SystemMenu.h" />
+    <ClInclude Include="Task_SystemMenuSelectObject.h" />
     <ClInclude Include="Task_Thunder.h" />
     <ClInclude Include="Task_Title.h" />
     <ClInclude Include="Task_WaterBlast.h" />

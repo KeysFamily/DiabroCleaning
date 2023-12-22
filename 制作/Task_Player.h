@@ -140,5 +140,6 @@ namespace  Player
 		OL::Limit<int> moveMapCoolTime;		//マップ移動のクールタイム
 		void CheckMoveMap();				//マップ移動判定
 		//--------------------------------------
+		void CheckMove_();					//マップ外に出ないように
 	};
 }

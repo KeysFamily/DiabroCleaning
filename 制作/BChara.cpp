@@ -84,7 +84,7 @@ void BChara::CheckMove(ML::Vec2& e_)
 
 		//â“¹”»’è
 		this->pos += map->CheckSlope(hit);
-
+		
 		if (true == map->CheckHit(hit)) {
 			this->pos.x = preX;		//ˆÚ“®‚ğƒLƒƒƒ“ƒZƒ‹
 			break;

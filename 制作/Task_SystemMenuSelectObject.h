@@ -1,15 +1,21 @@
 #pragma warning(disable:4996)
 #pragma once
-//-------------------------------------------------------------------
-//タイトル画面
-//-------------------------------------------------------------------
+//?------------------------------------------------------
+//タスク名:システムメニュー セレクトクラス
+//作　成　者:22CI0333 長谷川勇一朗
+//TODO:もしいれば下記へ記述
+//編　集　者:
+//作成年月日:2023/12/20
+//概　　　要:システムの選択のオブジェクト
+//?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "SelectableObject.h"
 
-namespace  Title
+namespace  SystemMenuSelectObject
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("title");	//グループ名
-	const  string  defName("NoName");			//タスク名
+	const  string  defGroupName("SystemMenu");	//グループ名
+	const  string  defName("SelectObject");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -24,7 +30,6 @@ namespace  Title
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
 		DG::Image::SP img;
-		DG::Image::SP Logo;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -42,12 +47,21 @@ namespace  Title
 		bool  B_Initialize();
 		bool  B_Finalize();
 		bool  Initialize();	//「初期化」タスク生成時に１回だけ行う処理
-		void  UpDate()			override;	//「実行」１フレーム毎に行う処理
-		void  Render2D_AF()		override;	//「2D描画」１フレーム毎に行う処理
-		bool  Finalize();	//「終了」タスク消滅時に１回だけ行う処理
+		void  UpDate()			override;//「実行」１フレーム毎に行う処理
+		void  Render2D_AF()		override;//「2D描画」１フレーム毎に行う処理
+		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
-		//追加したい変数・メソッドはここに追加する
-		int cnt;
+		MyUI::SelectableObject* sto;
+		ML::Box2D selectBox;
+		float viewRate;	//表示レート 単位は[倍]
+	private:
+		int animCnt;
+
+		//イージング関連
+		bool isEasing;
+		unsigned long easingCnt;
+		void easingSet(ML::Box2D beforeBox_, ML::Box2D afterBox_, float beforeRate_ = 1.0f, float AfterRate_ = 1.0f, int easingFrame_ = 60);
+		string enx, eny, enw, enh, enr;
 	};
 }

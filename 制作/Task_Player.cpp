@@ -110,6 +110,7 @@ namespace  Player
 		//めり込まない移動
 		ML::Vec2  est = this->moveVec;
 		this->CheckMove(est);
+		this->CheckMove_();
 		//hitbase更新
 		BChara::DrawInfo  di = this->Anim();
 
@@ -281,7 +282,7 @@ namespace  Player
 				{
 					nm = Motion::Attack2;
 				}
-				else nm = Motion::Stand;
+				else nm = Motion::Landing;
 			}
 			break;
 		case Motion::Attack2:
@@ -291,11 +292,11 @@ namespace  Player
 				{
 					nm = Motion::Attack3;
 				}
-				else nm = Motion::Stand;
+				else nm = Motion::Landing;
 			}
 			break;
 		case Motion::Attack3:
-			if (this->moveCnt == 24) { nm = Motion::Stand; }
+			if (this->moveCnt == 24) { nm = Motion::Landing; }
 			break;
 		case Motion::AirAttack:
 			if (this->moveCnt == 20)
@@ -770,7 +771,7 @@ namespace  Player
 			this->hitBase.h = 116;
 			this->hitBase.y = -58;
 		}
-
+		
 		rtv.draw = this->DrawScale(rtv.draw, this->drawScale);
 		rtv.src = this->DrawScale(rtv.src, this->drawScale);
 
@@ -782,6 +783,10 @@ namespace  Player
 	{
 		if (this->unHitTime > 0) {
 			return;//無敵時間中はダメージを受けない
+		}
+		if (this->motion == Motion::AirAttack || this->motion == Motion::AirAttack2 || this->motion == Motion::AirAttack3 || this->motion == Motion::AirAttack4
+			/*|| this->motion == Motion::Attack || this->motion == Motion::Attack2 || this->motion == Motion::Attack3*/) {
+			return;//攻撃中はダメージを受けない
 		}
 		if (this->motion == Motion::Dash) {
 			return;
@@ -847,6 +852,23 @@ namespace  Player
 			manager->MoveMap(mapmove);
 
 			this->moveMapCoolTime.Setval(this->moveMapCoolTime.vmin);
+		}
+	}
+	//-------------------------------------------------------------------
+	//めり込まない移動処理
+	void Object::CheckMove_()
+	{
+		//マップが存在するか調べてからアクセス
+		auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+		if (nullptr == map) { return; }//マップが無ければ判定しない(出来ない）
+
+		ML::Box2D checkBase = this->hitBase.OffsetCopy(this->pos);
+
+		if (checkBase.x <= 0) { //左
+			this->pos.x = 1 + this->hitBase.w / 2;
+		}
+		if (checkBase.x + checkBase.w >= map->hitBase.w) { //右
+			this->pos.x = map->hitBase.w - (this->hitBase.w / 2);
 		}
 	}
 	//-------------------------------------------------------------------
