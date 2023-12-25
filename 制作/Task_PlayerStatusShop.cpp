@@ -46,9 +46,10 @@ namespace  PlayerStatusShop
 
 		this->displayStr = "";
 		this->progressDistance = 10;
-		this->currentStatus.SetValues(1, 0, 10);
+		this->statusLvMax = 5;
+		this->currentStatus.SetValues(0, 0, statusLvMax - 1);
 
-		for (int i = 0; i < currentStatus.vmax; ++i)
+		for (int i = 0; i <= currentStatus.vmax; ++i)
 		{
 			price.push_back(i + 1000 + i * 1658);
 			addStatus.push_back(1 + i);
@@ -57,8 +58,8 @@ namespace  PlayerStatusShop
 		this->selectScale = 1.5f;
 
 		this->displayPos = ML::Vec2(10, -40);
-		this->progressBeginPos.x = this->res->imgProgressSize.w * (currentStatus.vmax - 2) / -2.0f;
-		this->progressBeginPos.x += this->progressDistance * (currentStatus.vmax - 1) / -2.0f;
+		this->progressBeginPos.x = this->res->imgProgressSize.w * (currentStatus.vmax - 1) / -2.0f;
+		this->progressBeginPos.x += this->progressDistance * currentStatus.vmax / -2.0f;
 		this->progressBeginPos.y = 30;
 		
 		this->priceDpPos = ML::Vec2(15, -10);
@@ -85,9 +86,9 @@ namespace  PlayerStatusShop
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		if (this->currentStatus.vnow < this->currentStatus.vmax - 1)
+		if (this->currentStatus.vnow + 1 <= this->currentStatus.vmax)
 		{
-			this->priceDp->price = this->price[this->currentStatus.vnow];
+			this->priceDp->price = this->price[this->currentStatus.vnow + 1];
 			this->priceDp->pos = this->priceDpPos + this->pos;
 		}
 	}
@@ -109,7 +110,7 @@ namespace  PlayerStatusShop
 		draw.Offset(this->pos + this->progressBeginPos);
 		ML::Box2D src(0, 0, this->res->imgProgressSize.w, this->res->imgProgressSize.h);
 
-		for (int i = 1; i <= currentStatus.vmax; ++i)
+		for (int i = 0; i <= currentStatus.vmax; ++i)
 		{
 			if (i <= currentStatus.vnow)
 			{
@@ -135,7 +136,7 @@ namespace  PlayerStatusShop
 		}
 		else
 		{
-			return price[currentStatus.vnow + 1];
+			return price[currentStatus.vnow];
 		}
 	}
 
@@ -148,21 +149,18 @@ namespace  PlayerStatusShop
 	//購入する
 	bool Object::Buy(int& money_)
 	{
-		if (this->currentStatus.vnow > this->currentStatus.vmax - 1)
+		if (this->currentStatus.IsMax())
 		{
 			return false;
 		}
-		else if (this->currentStatus.vnow == this->currentStatus.vmax - 1)
+		else if (money_ >= price[currentStatus.vnow + 1])
 		{
-			money_ -= price[currentStatus.vnow];
+			money_ -= price[currentStatus.vnow + 1];
 			currentStatus.Addval(1);
-			this->priceDp->active = false;
-			return true;
-		}
-		if (money_ >= price[currentStatus.vnow])
-		{
-			money_ -= price[currentStatus.vnow];
-			currentStatus.Addval(1);
+			if (currentStatus.IsMax())
+			{
+				this->priceDp->active = false;
+			}
 			return true;
 		}
 		return false;
@@ -175,11 +173,11 @@ namespace  PlayerStatusShop
 		result.Offset(this->pos + this->progressBeginPos);
 		if (this->currentStatus.IsMax())
 		{
-			result.x += (this->res->imgProgressSize.w + this->progressDistance) * (this->currentStatus.vnow - 1);
+			result.x += (this->res->imgProgressSize.w + this->progressDistance) * (this->currentStatus.vnow);
 		}
 		else
 		{
-			result.x += (this->res->imgProgressSize.w + this->progressDistance) * this->currentStatus.vnow;
+			result.x += (this->res->imgProgressSize.w + this->progressDistance) * (this->currentStatus.vnow + 1);
 		}
 		result.w *= this->selectScale;
 		result.h *= this->selectScale;
