@@ -1,26 +1,20 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//タスク名:
-//作　成　者:
+//タスク名:値段表示タスク
+//作　成　者:土田誠也
 //TODO:もしいれば下記へ記述
 //編　集　者:
 //作成年月日:
 //概　　　要:
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
-#include "SelectableObject.h"
 
-namespace Price
-{
-	class Object;
-}
-
-namespace  PlayerStatusShop
+namespace  Price
 {
 	//タスクに割り当てるグループ名と固有名
 	const  string  defGroupName("SystemMenu");	//グループ名
-	const  string  defName("PlayerStatusShop");	//タスク名
+	const  string  defName("Price");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -34,13 +28,14 @@ namespace  PlayerStatusShop
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP imgProgress;	//購入用の画像
-		OL::Size2D imgProgressSize;	//購入用の画像のサイズ
-		DG::Font::SP fontDisplay;	//ステータス名表示用フォント
-		OL::Size2D fontDisplaySize;	//ステータス名表示用フォントのサイズ
+		DG::Image::SP imgCoin;
+		OL::Size2D imgCoinSize;
+		DG::Image::SP imgNum;
+		OL::Size2D imgNumSize;
+		ML::Vec2 srcNumBeginPos;
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BTask, public MyUI::SelectableObject
+	class  Object : public  BTask
 	{
 	//変更不可◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	public:
@@ -61,31 +56,14 @@ namespace  PlayerStatusShop
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		string displayStr;		//ステータス名
-		vector<int> price;		//各金額
-		vector<int> addStatus;	//各追加量
-		OL::Limit<int> currentStatus;	//どこまで購入されているか
+		int price;
+		int distance;
+		ML::Vec2 pos;
 
-		ML::Vec2 pos;						//全体の位置
-		ML::Vec2 displayPos;				//ステータス名の位置
-		ML::Vec2 priceDpPos;				//価格表示の位置
-		ML::Vec2 progressBeginPos;			//購入用の画像の位置
-		float progressDistance;				//購入用の画像の間隔
-		float selectScale;					//選択時のサイズを画像より大きくしたいときに使う
-		int statusType;						//ステータスの種類
-		shared_ptr<Price::Object> priceDp;	//価格表示タスク
-		//次の購入に必要な金額を返す
-		int GetPrice() const;
-		//現在の追加ステータスを取得する
-		int GetStatusAdd() const;
-		//購入する
-		bool Buy(int& money_);
+		ML::Color denyColor;	//購入不可の時の色
 
-		//サイズと位置を伝える
-		virtual ML::Box2D GetObjectSize() const override;
-		//ターゲット中か
-		virtual void IsSelecting() override;
-		//ボタンが押されたか
-		virtual void IsDown() override;
+		bool active;			//表示するか
+
+		void SetPrice(int price_);
 	};
 }

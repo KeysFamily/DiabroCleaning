@@ -9,6 +9,7 @@
 #include  "MyPG.h"
 #include  "Task_PlayerStatusShop.h"
 #include  "Task_PlayerStatus.h"
+#include  "Task_Price.h"
 
 namespace  PlayerStatusShop
 {
@@ -45,11 +46,11 @@ namespace  PlayerStatusShop
 
 		this->displayStr = "";
 		this->progressDistance = 10;
-		this->currentStatus.SetValues(1, 0, 5);
+		this->currentStatus.SetValues(1, 0, 10);
 
 		for (int i = 0; i < currentStatus.vmax; ++i)
 		{
-			price.push_back(i + 1);
+			price.push_back(i + 1000 + i * 1658);
 			addStatus.push_back(1 + i);
 		}
 
@@ -59,6 +60,10 @@ namespace  PlayerStatusShop
 		this->progressBeginPos.x = this->res->imgProgressSize.w * (currentStatus.vmax - 2) / -2.0f;
 		this->progressBeginPos.x += this->progressDistance * (currentStatus.vmax - 1) / -2.0f;
 		this->progressBeginPos.y = 30;
+		
+		this->priceDpPos = ML::Vec2(15, -10);
+		this->priceDp = Price::Object::Create(true);
+
 		//★タスクの生成
 
 		return  true;
@@ -80,6 +85,11 @@ namespace  PlayerStatusShop
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		if (this->currentStatus.vnow < this->currentStatus.vmax - 1)
+		{
+			this->priceDp->price = this->price[this->currentStatus.vnow];
+			this->priceDp->pos = this->priceDpPos + this->pos;
+		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -146,6 +156,7 @@ namespace  PlayerStatusShop
 		{
 			money_ -= price[currentStatus.vnow];
 			currentStatus.Addval(1);
+			this->priceDp->active = false;
 			return true;
 		}
 		if (money_ >= price[currentStatus.vnow])
@@ -162,8 +173,14 @@ namespace  PlayerStatusShop
 	{
 		ML::Box2D result = OL::setBoxCenter(this->res->imgProgressSize);
 		result.Offset(this->pos + this->progressBeginPos);
-		result.x += (this->res->imgProgressSize.w + this->progressDistance) * this->currentStatus.vnow;
-
+		if (this->currentStatus.IsMax())
+		{
+			result.x += (this->res->imgProgressSize.w + this->progressDistance) * (this->currentStatus.vnow - 1);
+		}
+		else
+		{
+			result.x += (this->res->imgProgressSize.w + this->progressDistance) * this->currentStatus.vnow;
+		}
 		result.w *= this->selectScale;
 		result.h *= this->selectScale;
 		result.x -= (result.w - this->res->imgProgressSize.w) / 2;
@@ -181,7 +198,7 @@ namespace  PlayerStatusShop
 	//ボタンが押されたか
 	void Object::IsDown()
 	{
-		int money = 1000;
+		int money = 9999999;
 		this->Buy(money);
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

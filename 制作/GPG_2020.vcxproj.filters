@@ -332,6 +332,9 @@
     <ClCompile Include="Task_SystemMenuSelectObject.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
+    <ClCompile Include="Task_Price.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -484,6 +487,9 @@
       <Filter>MyPG\Task\Game\GameUI</Filter>
     </ClInclude>
     <ClInclude Include="Task_SystemMenuSelectObject.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Price.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
   </ItemGroup>
