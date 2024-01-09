@@ -565,14 +565,14 @@ namespace MyPG
 			if (auto e = Effect00::Object::Create(true)) {
 				e->filename = "data/effect/yellowImpact.png";
 				e->resSizeX = e->resSizeY = 32;
-				e->drawSizeX = 32;
-				e->drawSizeY = 32;
+				e->drawSizeX = 64;
+				e->drawSizeY = 64;
 				e->pos.x = pos.x;
 				e->pos.y = pos.y;
 				e->fade = false;
 				e->animResNum = 4;
 				e->animMax = 4;
-				e->addAnim = 0.1f;
+				e->addAnim = 0.2f;
 				e->animStart = 48;
 				resultEffect = e;
 			}
@@ -595,16 +595,16 @@ namespace MyPG
 			break;
 		case 91://黄色いエフェクト15
 			if (auto e = Effect00::Object::Create(true)) {
-				e->filename = "data/effect/yellowImpact.png";
-				e->resSizeX = e->resSizeY = 32;
-				e->drawSizeX = 32;
-				e->drawSizeY = 32;
+				e->filename = "data/effect/yellowImpact_x4.png";
+				e->resSizeX = e->resSizeY = 128;
+				e->drawSizeX = 128;
+				e->drawSizeY = 128;
 				e->pos.x = pos.x;
 				e->pos.y = pos.y;
 				e->fade = false;
 				e->animResNum = 4;
 				e->animMax = 4;
-				e->addAnim = 0.1f;
+				e->addAnim = 0.2f;
 				e->animStart = 56;
 				resultEffect = e;
 			}

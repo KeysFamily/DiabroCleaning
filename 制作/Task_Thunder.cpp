@@ -137,6 +137,7 @@ namespace  Thunder
 				}
 
 				if ((*it)->CheckHit(this->hitBase.OffsetCopy(this->pos))) {
+					ge->CreateEffect(91, (*it)->pos);
 					BChara::AttackInfo at = { this->power, 0, 0 };
 					(*it)->Received(this, at);
 					this->motion = Motion::End;

@@ -12,7 +12,7 @@
 #include "GameEngine_Ver3_83.h"
 #include "BChara.h"
 
-#define DEBUG_ENEMY	//TODO: 敵デバッグ用(最後に消せ)
+//#define DEBUG_ENEMY	//TODO: 敵デバッグ用(最後に消せ)
 
 class BEnemy : public BChara
 {

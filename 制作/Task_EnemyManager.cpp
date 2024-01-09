@@ -165,7 +165,9 @@ namespace  EnemyManager
 	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
 	void  Object::Render2D_AF()
 	{
+#ifdef DEBUG_ENEMY
 		ge->debugRectDraw();
+#endif
 	}
 
 	//-------------------------------------------------------------------
