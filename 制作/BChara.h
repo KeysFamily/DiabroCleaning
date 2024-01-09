@@ -95,6 +95,8 @@ public:
 	virtual  bool  CheckHead();
 	//正面接触判定（サイドビューゲーム専用）
 	virtual  bool  CheckFront_LR();
+	//後面接触判定
+	virtual  bool  CheckBack_LR();
 	//正面足元チェック（サイドビューゲーム専用）
 	virtual  bool  CheckFrontFoot_LR();
 	//モーションを更新（変更なしの場合	false)

@@ -9,8 +9,11 @@
 #include  "MyPG.h"
 #include  "Task_EnemyManager.h"
 
+#include  "Task_EnemyBoss.h"
 #include  "Task_EnemySkeleton.h"
 #include  "Task_EnemySkyEye.h"
+
+#include  "randomLib.h"
 
 namespace  EnemyManager
 {
@@ -76,8 +79,9 @@ namespace  EnemyManager
 		//TODO: 新たに敵を追加をする際にここに追加。
 		// 必ず敵の名前は大文字で始めること
 		//記入例）this->enemyInits["Name"] = EnemyName::Object::Create;
+		this->enemyInits["Boss"]     = EnemyBoss::Object::Create;
 		this->enemyInits["Skeleton"] = EnemySkeleton::Object::Create;
-		this->enemyInits["SkyEye"] = EnemySkyEye::Object::Create;
+		this->enemyInits["SkyEye"]   = EnemySkyEye::Object::Create;
 		
 		return true;
 	}
@@ -101,6 +105,7 @@ namespace  EnemyManager
 		this->res = Resource::Create();
 
 		//★データ初期化
+		this->residentResource.push_back(EnemyBoss::Resource::Create());
 		this->residentResource.push_back(EnemySkeleton::Resource::Create());
 		this->residentResource.push_back(EnemySkyEye::Resource::Create());
 		//★タスクの生成
@@ -205,13 +210,19 @@ namespace  EnemyManager
 			e->dropMoney *= this->res->stateRates[1][name_].moneyRate;
 			e->attackPow *= this->res->stateRates[1][name_].attackRate;
 
+			BChara::Angle_LR angleSheet[] = {
+				BChara::Angle_LR::Left,
+				BChara::Angle_LR::Right
+			};
+
+			e->angle_LR = angleSheet[GetRandom<int>(0, 1)];
+			
 		}
 	}
 
 	void Object::KillAllEnemys() {
 		if (ge->qa_Enemys == nullptr)return;
 		for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
-			BChara::AttackInfo at = { INT_MAX,0,0 };
 			(*it)->Kill();
 		}
 	}

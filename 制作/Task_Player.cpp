@@ -175,6 +175,7 @@ namespace  Player
 			if (inp.LStick.BD.on && inp.LStick.BL.on) { nm = Motion::CrouchWalk; }
 			if (inp.LStick.BD.on && inp.LStick.BR.on) { nm = Motion::CrouchWalk; }
 			if (inp.B1.down) { nm = Motion::TakeOff; }
+			if (inp.B2.down) { nm = Motion::Back; }
 			if (inp.B4.down) { nm = Motion::Attack; }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			if (this->CheckFoot() == false) {
@@ -333,6 +334,9 @@ namespace  Player
 			break;
 		case Motion::MagicAttack:
 			if (this->moveCnt >= 15 && inp.B3.off) { nm = Motion::Stand; }
+			break;
+		case Motion::Back:
+			if (this->moveCnt > 10 || true == this->CheckBack_LR()) { this->moveVec.x = 0; nm = Motion::Landing; }
 			break;
 		}
 		//モーション更新
@@ -610,6 +614,9 @@ namespace  Player
 		case Motion::Bound:
 			this->attackBase = ML::Box2D(0, 0, 0, 0);
 			break;
+		case Motion::Back:
+			if (this->angle_LR == Angle_LR::Left) { this->moveVec.x += 2; }
+			else { this->moveVec.x -= 2; }
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -809,6 +816,9 @@ namespace  Player
 			else work = (this->animCnt / 8) % 4 + 2;
 			rtv = imageTable[work + 52];
 			break;
+		case Motion::Back:
+			rtv = imageTable[53];
+			break;
 		}
 
 		//this->hitBase = rtv.draw;
@@ -844,7 +854,7 @@ namespace  Player
 			/*|| this->motion == Motion::Attack || this->motion == Motion::Attack2 || this->motion == Motion::Attack3*/) {
 			return;//攻撃中はダメージを受けない
 		}
-		if (this->motion == Motion::Dash) {
+		if (this->motion == Motion::Dash || this->motion == Motion::Back) {
 			return;
 		}
 		this->unHitTime = 90;
@@ -877,7 +887,7 @@ namespace  Player
 				ge->CreateEffect(59, (*it)->pos);
 				BChara::AttackInfo at = { this->power * this->powerScale, 0, 0 };
 				(*it)->Received(this, at);
-				break;
+				
 			}
 		}
 	}
