@@ -57,7 +57,6 @@ namespace  Item_coin
 		this->pos.x = 1300;
 		this->pos.y = 500;
 
-		se::LoadFile("se_get_coin", "./data/sound/se/se_select2.wav");
 		//★タスクの生成
 
 		return  true;
@@ -67,6 +66,7 @@ namespace  Item_coin
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
+		ge->CreateEffect(58, this->pos);
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成

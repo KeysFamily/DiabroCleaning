@@ -247,11 +247,11 @@ namespace MyPG
 
 		case 11://爆発　アニメーション
 			if (auto e = Effect00::Object::Create(true)) {
-				e->filename = "data/effect/spritesheet.png";
-				e->resSizeX = 100;
-				e->resSizeY = 100;
-				e->drawSizeX = 100;
-				e->drawSizeY = 100;
+				e->filename = "data/effect/spritesheet_x4.png";
+				e->resSizeX = 400;
+				e->resSizeY = 400;
+				e->drawSizeX = 400;
+				e->drawSizeY = 400;
 				e->pos.x = pos.x;
 				e->pos.y = pos.y;
 
@@ -270,14 +270,14 @@ namespace MyPG
 				e->filename = "data/effect/smoke.png";
 				e->render2D_Priority[1] = 0.6f;
 				e->resSizeX = e->resSizeY = 32;
-				e->drawSizeX = 32;
-				e->drawSizeY = 32;
+				e->drawSizeX = 64;
+				e->drawSizeY = 64;
 				e->pos.x = pos.x;
-				e->pos.y = pos.y + 16;
+				e->pos.y = pos.y;
 				e->fade = false;
 				e->animResNum = 3;
 				e->animMax = 3;
-				e->addAnim = 0.1f;
+				e->addAnim = 0.12f;
 				resultEffect = e;
 			}
 			break;
@@ -301,6 +301,74 @@ namespace MyPG
 			}
 			break;
 
+
+
+			//◆Diabro
+		case 58://コイン回収エフェクト
+			if (auto e = Effect00::Object::Create(true)) {
+				e->filename = "data/effect/star.png";
+				e->resSizeX = e->resSizeY = 32;
+				e->drawSizeX = 64;
+				e->drawSizeY = 64;
+				e->pos.x = pos.x;
+				e->pos.y = pos.y;
+				e->fade = false;
+				e->animResNum = 4;
+				e->animMax = 4;
+				e->addAnim = 0.3f;
+				e->AddRender = true;
+				resultEffect = e;
+			}
+			break;
+		case 59://氷破壊エフェクト
+			if (auto e = Effect00::Object::Create(true)) {
+				e->filename = "data/effect/burstIce.png";
+				e->resSizeX = e->resSizeY = 128;
+				e->drawSizeX = 256;
+				e->drawSizeY = 256;
+				e->pos.x = pos.x;
+				e->pos.y = pos.y;
+				e->fade = false;
+				e->animResNum = 1;
+				e->animMax = 7;
+				e->addAnim = 0.4f;
+				e->alpha = 0.8f;
+				e->AddRender = true;
+				resultEffect = e;
+			}
+			break;
+		case 60://煙エフェクト1
+			if (auto e = Effect00::Object::Create(true)) {
+				e->filename = "data/effect/smoke5.png";
+				e->resSizeX = e->resSizeY = 128;
+				e->drawSizeX = 256;
+				e->drawSizeY = 256;
+				e->pos.x = pos.x;
+				e->pos.y = pos.y;
+				e->fade = false;
+				e->animResNum = 10;
+				e->animMax = 10;
+				e->animStart = 140;
+				e->addAnim = 0.4f;
+				resultEffect = e;
+			}
+			break;
+		case 61://煙エフェクト2
+			if (auto e = Effect00::Object::Create(true)) {
+				e->filename = "data/effect/smoke5.png";
+				e->resSizeX = e->resSizeY = 128;
+				e->drawSizeX = 128;
+				e->drawSizeY = 128;
+				e->pos.x = pos.x;
+				e->pos.y = pos.y;
+				e->fade = false;
+				e->animResNum = 10;
+				e->animMax = 10;
+				e->animStart = 110;
+				e->addAnim = 0.4f;
+				resultEffect = e;
+			}
+			break;
 			//◆◆◆
 		case 77://黄色いエフェクト1
 			if (auto e = Effect00::Object::Create(true)) {

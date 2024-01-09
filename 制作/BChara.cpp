@@ -71,7 +71,7 @@ bool  BChara::CheckHead()
 void BChara::CheckMove(ML::Vec2& e_)
 {
 	//マップが存在するか調べてからアクセス
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+	auto   map = ge->qa_Map;
 	if (nullptr == map) { return; }//マップが無ければ判定しない(出来ない）
 
 	//横軸に対する移動
@@ -139,7 +139,7 @@ bool BChara::CheckFoot()
 		1);
 	foot.Offset(this->pos);
 
-	auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
+	auto   map = ge->qa_Map;
 	if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
 	if (map->CheckHit(foot))
 	{
