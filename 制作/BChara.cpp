@@ -181,6 +181,28 @@ bool  BChara::CheckFront_LR()
 	//マップと接触判定
 	return ge->qa_Map->CheckHit(front);
 }
+//後面接触判定
+bool  BChara::CheckBack_LR()
+{
+	//あたり判定を基にして矩形を生成(とりあえず、横幅だけ１になった矩形を用意する）
+	ML::Box2D  back(this->hitBase.x,
+		this->hitBase.y,
+		1,
+		this->hitBase.h);
+	//キャラクタの方向により矩形の位置を調整
+	if (this->angle_LR == Angle_LR::Right) {
+		back.Offset(-1, 0);//左側に移動
+	}
+	else {
+		back.Offset(this->hitBase.w, 0);//右側に移動
+	}
+	//現在の位置に合わせる
+	back.Offset((int)this->pos.x, (int)this->pos.y);
+
+	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
+	//マップと接触判定
+	return ge->qa_Map->CheckHit(back);
+}
 //-----------------------------------------------------------------------------
 //正面足元チェック（サイドビューゲーム専用）
 bool  BChara::CheckFrontFoot_LR()
