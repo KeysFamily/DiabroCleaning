@@ -72,5 +72,6 @@ namespace  Beam
 		void  Move();
 
 		int length;
+		int coolTime;
 	};
 }
