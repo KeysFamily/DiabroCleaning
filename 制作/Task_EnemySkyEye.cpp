@@ -381,6 +381,11 @@ namespace  EnemySkyEye
 	}
 
 	void Object::Received(BChara* from_, AttackInfo at_) {
+		if(this->motion == Motion::Fall
+			|| this->motion == Motion::Lose) {
+			return;
+		}
+		
 		if (this->unHitTime > 0) { 
 			return; //–³“GŠÔ’†‚Íˆ—‚ğó‚¯‚È‚¢
 		}
