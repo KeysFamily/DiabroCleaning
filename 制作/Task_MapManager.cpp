@@ -268,6 +268,9 @@ namespace  MapManager
 			return;
 		}
 
+		//敵の消滅処理（仮）
+		ge->KillAll_G("enemy");
+
 		switch (this->moveMapDir)
 		{
 		case Map::MapDir::Up:
@@ -288,17 +291,7 @@ namespace  MapManager
 		ge->qa_Player->pos = ge->qa_Map->GetPlayerEnterPos(Map::MapFunc::ReverseMapDir(moveMapDir));
 		auto camera = ge->GetTask<Sprite::Object>("Sprite");
 		camera->MoveImmediately();
-
 		this->mapTransition->Disappear();
-		auto mapObj = ge->GetTask<Map::Object>("Map");
-		
-		mapObj->LoadMap(map[currentPos.y][currentPos.x]->mapName);
-		//敵の消滅処理（仮）
-		ge->KillAll_G("enemy");
-
-		//プレイヤーの移動（仮）
-		ge->qa_Player->pos = ML::Vec2(100, 100);
-		//プレイヤーのモーション変更
 
 		this->moveMapDir = Map::MapDir::Non;
 		this->mapTransition = nullptr;
