@@ -829,7 +829,7 @@ namespace  Player
 			if ((*it)->CheckHit(this->attackBase.OffsetCopy(this->pos))) {
 				BChara::AttackInfo at = { this->power * this->powerScale, 0, 0 };
 				(*it)->Received(this, at);
-				break;
+				
 			}
 		}
 	}

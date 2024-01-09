@@ -44,6 +44,7 @@ namespace  Beam
 		this->cost = 0;
 		this->motion = Motion::Start;
 		this->length = 100;
+		this->coolTime = 0;
 		//šƒ^ƒXƒN‚Ì¶¬
 
 		return  true;
@@ -67,6 +68,7 @@ namespace  Beam
 	{
 		this->moveCnt++;
 		this->animCnt++;
+		this->coolTime++;
 		auto pl = ge->GetTask<BChara>("Player");
 		if (this->angle_LR == Angle_LR::Right)
 		{
@@ -136,7 +138,9 @@ namespace  Beam
 				++it) {
 				if ((*it)->CheckHit(this->hitBase.OffsetCopy(this->pos))) {
 					BChara::AttackInfo at = { this->power, 0, 0 };
+					if(this->coolTime %20 == 0){
 					(*it)->Received(this, at);
+					}
 				}
 			}
 			if (this->moveCnt % 60 == 1) { pl->balanceMoney -= this->cost; }
