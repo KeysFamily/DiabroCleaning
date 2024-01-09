@@ -59,6 +59,7 @@ namespace  Effect00
 
 		float		angle;		//Œü‚«
 		float		addAngle;	//Šp“x‰ÁZ—Ê
+		bool		flipX;		//”½“]
 
 		bool		AddRender;	//‰ÁZ‡¬ƒtƒ‰ƒO
 		float		alpha;		//”¼“§–¾

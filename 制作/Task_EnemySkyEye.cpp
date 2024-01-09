@@ -15,6 +15,7 @@
 
 #include  "randomLib.h"
 #include  "Task_Item_coin_maneger.h"
+#include  "sound.h"
 //-----------------------------------------------------------------------
 // SkyEye
 // ‹ó’†ŽG‹›“G
@@ -43,6 +44,7 @@ namespace  EnemySkyEye
 	bool  Resource::Initialize()
 	{
 		this->img = DG::Image::Create("./data/enemy/image/SkyEye.png");
+		se::LoadFile("skyEyeVoice", "./data/sound/se/se_skyeye3.wav");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -258,6 +260,11 @@ namespace  EnemySkyEye
 			this->moveVec.y = this->maxSpeed * 1.5f * sin(angRad);
 		}	break;
 		case Motion::Fall://—Ž‰º’†
+			if (moveCnt == 1)
+			{
+				ge->CreateEffect(11, this->pos);
+				se::Play("enemyDead");
+			}
 			if (this->angle_LR == Angle_LR::Left) {
 				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
 			}
@@ -397,6 +404,7 @@ namespace  EnemySkyEye
 		else {
 			this->moveVec = ML::Vec2(-2, -3) * 3;
 		}
+		se::Play("skyEyeVoice");
 		this->UpdateMotion(Motion::Bound);
 	}
 

@@ -12,6 +12,7 @@
 #include  "Task_Player.h"
 
 #include  "Task_Map.h"
+#include  "sound.h"
 
 #include  "randomLib.h"
 #include  "Task_Item_coin_maneger.h"
@@ -291,6 +292,11 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Lose:
+			if (this->moveCnt == 1)
+			{
+				ge->CreateEffect(11, this->pos);
+				se::Play("enemyDead");
+			}
 			if (this->moveCnt == 5) { this->DropCoins(this->dropMoney); }
 			if (this->moveCnt >= 30) {
 				this->Kill();
