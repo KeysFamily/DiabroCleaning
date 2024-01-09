@@ -276,7 +276,7 @@ namespace  EnemySkeleton
 
 				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
 				
-				BChara::AttackInfo ai = { this->attackPow,0,0 };
+				BChara::AttackInfo ai = { static_cast<float>(this->attackPow),0,0 };
 				this->Attack_Std(Player::defGroupName, ai, hit);
 			}
 			break;

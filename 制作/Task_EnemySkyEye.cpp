@@ -242,7 +242,6 @@ namespace  EnemySkyEye
 				smPos.y += diffY * 0.05f;
 				if (!ge->qa_Map->CheckHit(this->hitBase.OffsetCopy(smPos))) {
 					//移動先で衝突しなければ、オブジェクトを移動させる
-					ge->Dbg_ToDisplay(smPos.x, smPos.y - 50, "衝突なし、移動続行");
 					this->pos = smPos;
 				}
 
@@ -272,7 +271,7 @@ namespace  EnemySkyEye
 
 				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
 				
-				BChara::AttackInfo ai = { this->attackPow,0,0 };
+				BChara::AttackInfo ai = { static_cast<float>(this->attackPow),0,0 };
 				this->Attack_Std(Player::defGroupName, ai, hit);
 			}
 			break;
@@ -433,8 +432,8 @@ namespace  EnemySkyEye
 				if (ge->qa_Map->CheckHit(eb))break;
 				if (ge->qa_Player->CallHitBox().Hit(eb)) {
 					this->targetPos = ML::Vec2(
-						GetRandom<float>(eb.x, eb.x + eb.w),
-						GetRandom<float>(eb.y, eb.y + eb.h)
+						static_cast<float>(GetRandom<int>(eb.x, eb.x + eb.w)),
+						static_cast<float>(GetRandom<int>(eb.y, eb.y + eb.h))
 					);
 					isFoundPlayer = true;
 					goto Check;
@@ -447,8 +446,8 @@ namespace  EnemySkyEye
 				if (ge->qa_Map->CheckHit(eb))break;
 				if (ge->qa_Player->CallHitBox().Hit(eb)) { 
 					this->targetPos = ML::Vec2(
-						GetRandom<float>(eb.x, eb.x + eb.w),
-						GetRandom<float>(eb.y, eb.y + eb.h)
+						static_cast<float>(GetRandom<int>(eb.x, eb.x + eb.w)),
+						static_cast<float>(GetRandom<int>(eb.y, eb.y + eb.h))
 					);
 					isFoundPlayer = true;
 					goto Check;
