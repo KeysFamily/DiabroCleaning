@@ -13,6 +13,8 @@
 #include  "Task_EnemySkeleton.h"
 #include  "Task_EnemySkyEye.h"
 
+#include  "randomLib.h"
+
 namespace  EnemyManager
 {
 	Resource::WP  Resource::instance;
@@ -208,6 +210,13 @@ namespace  EnemyManager
 			e->dropMoney *= this->res->stateRates[1][name_].moneyRate;
 			e->attackPow *= this->res->stateRates[1][name_].attackRate;
 
+			BChara::Angle_LR angleSheet[] = {
+				BChara::Angle_LR::Left,
+				BChara::Angle_LR::Right
+			};
+
+			e->angle_LR = angleSheet[GetRandom<int>(0, 1)];
+			
 		}
 	}
 
