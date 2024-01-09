@@ -171,7 +171,10 @@ namespace  Beam
 			rtv = imageTable[work];
 			break;
 		case Motion::Infinite:
-			rtv = imageTable[3];
+			//rtv = imageTable[3];
+			work = this->animCnt / 3;
+			work %= 4;
+			rtv = imageTable[work + 1];
 			break;
 		case Motion::End:
 			if (this->animCnt <= 3)work = 0;
