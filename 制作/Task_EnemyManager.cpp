@@ -211,7 +211,6 @@ namespace  EnemyManager
 	void Object::KillAllEnemys() {
 		if (ge->qa_Enemys == nullptr)return;
 		for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
-			BChara::AttackInfo at = { INT_MAX,0,0 };
 			(*it)->Kill();
 		}
 	}
