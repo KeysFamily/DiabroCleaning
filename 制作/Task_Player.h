@@ -87,7 +87,7 @@ namespace  Player
 			Lose,		//  消滅中
 			Dash,		//  ダッシュ
 			MagicAttack,//	魔法
-			Back,		//  
+			Back,		//  避ける
 		};
 
 		enum Magic
