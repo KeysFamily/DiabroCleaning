@@ -9,6 +9,7 @@
 #include  "MyPG.h"
 #include  "Task_EnemyManager.h"
 
+#include  "Task_EnemyBoss.h"
 #include  "Task_EnemySkeleton.h"
 #include  "Task_EnemySkyEye.h"
 
@@ -76,8 +77,9 @@ namespace  EnemyManager
 		//TODO: 新たに敵を追加をする際にここに追加。
 		// 必ず敵の名前は大文字で始めること
 		//記入例）this->enemyInits["Name"] = EnemyName::Object::Create;
+		this->enemyInits["Boss"]     = EnemyBoss::Object::Create;
 		this->enemyInits["Skeleton"] = EnemySkeleton::Object::Create;
-		this->enemyInits["SkyEye"] = EnemySkyEye::Object::Create;
+		this->enemyInits["SkyEye"]   = EnemySkyEye::Object::Create;
 		
 		return true;
 	}
@@ -101,6 +103,7 @@ namespace  EnemyManager
 		this->res = Resource::Create();
 
 		//★データ初期化
+		this->residentResource.push_back(EnemyBoss::Resource::Create());
 		this->residentResource.push_back(EnemySkeleton::Resource::Create());
 		this->residentResource.push_back(EnemySkyEye::Resource::Create());
 		//★タスクの生成
