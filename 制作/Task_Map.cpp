@@ -224,6 +224,7 @@ namespace  Map
 	{
 		ML::Vec2 result(0, 0);
 
+		//プレイヤーの当たり判定
 		ML::Rect  r = { hit_.x, hit_.y, hit_.x + hit_.w, hit_.y + hit_.h };
 		//矩形がマップ外に出ていたらサイズを変更する
 		ML::Rect  m = {
@@ -255,8 +256,18 @@ namespace  Map
 						ML::Vec2 chipPos(x * this->res->drawSize, y * this->res->drawSize);
 						//さらにチップの坂の部分と当たっているか判定
 						if (slope.second.slopeVec.y < 0) {
+							//坂に乗っていなかったら判定しない
+							if (r.bottom > y * this->res->drawSize + this->res->drawSize)
+							{
+								continue;
+							}
 							//右上
 							if (slope.second.slopeVec.x > 0) {
+								//坂に乗っていなかったら判定しない
+								if (r.right > x * this->res->drawSize + this->res->drawSize)
+								{
+									continue;
+								}
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x, chipPos.y + this->res->drawSize - 1 - slope.second.slopeHeight);
 								//プレイヤーの当たり判定右端のx座標の、坂の高さ（ゲーム座標）
@@ -271,6 +282,11 @@ namespace  Map
 							}
 							//左上
 							if (slope.second.slopeVec.x < 0) {
+								//坂に乗っていなかったら判定しない
+								if (r.left < x * this->res->drawSize)
+								{
+									continue;
+								}
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x + this->res->drawSize - 1, chipPos.y + this->res->drawSize - 1 - slope.second.slopeHeight);
 								//プレイヤーの当たり判定左端のx座標の、坂の高さ（ゲーム座標）
@@ -285,8 +301,18 @@ namespace  Map
 							}
 						}
 						else if (slope.second.slopeVec.y > 0) {
+							//坂に乗っていなかったら判定しない
+							if (r.top < y * this->res->drawSize)
+							{
+								continue;
+							}
 							//右下
 							if (slope.second.slopeVec.x > 0) {
+								//坂に乗っていなかったら判定しない
+								if (r.right > x * this->res->drawSize + this->res->drawSize)
+								{
+									continue;
+								}
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x, chipPos.y + slope.second.slopeHeight);
 								//プレイヤーの当たり判定右端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
@@ -304,6 +330,11 @@ namespace  Map
 							}
 							//左下
 							if (slope.second.slopeVec.x < 0) {
+								//坂に乗っていなかったら判定しない
+								if (r.left < x * this->res->drawSize)
+								{
+									continue;
+								}
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x + this->res->drawSize - 1, chipPos.y - slope.second.slopeHeight);
 								//プレイヤーの当たり判定左端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
