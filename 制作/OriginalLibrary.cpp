@@ -39,6 +39,39 @@ namespace OL
 		, imgPos()
 		, animDistance(animDistance_)
 	{}
+	//コンストラクタ(ファイルからの読み込み)
+	Animation::Animation(const std::string& filePath_)
+	{
+		ifstream ifs(filePath_);
+
+		if (!ifs) 
+		{
+			return;
+		}
+		ifs >> this->imgSize.w;
+		if (!ifs)
+		{
+			return;
+		}
+		ifs >> this->imgSize.h;
+
+		while (ifs)
+		{
+			ML::Point pos;
+			ifs >> pos.x;
+
+			//読み込めなくなったら終了
+			if (!ifs)
+			{
+				return;
+			}
+			ifs >> pos.y;
+
+			this->imgPos.push_back(pos);
+		}
+
+		ifs.close();
+	}
 	//生成
 	Animation::SP Animation::Create(const Size2D& size_, int animDistance_)
 	{
@@ -65,6 +98,7 @@ namespace OL
 		pos.y = y_;
 		this->imgPos.push_back(pos);
 	}
+
 	//画像サイズ設定
 	void Animation::SetSize(const Size2D& size_)
 	{

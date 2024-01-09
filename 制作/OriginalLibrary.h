@@ -96,6 +96,7 @@ namespace OL
 	//アニメーション構造体
 	struct Animation {
 		Animation(const Size2D& size_, int animDistance_);
+		Animation(const std::string& filePath_);
 		using SP = std::shared_ptr<Animation>;
 		using WP = std::weak_ptr<Animation>;
 		/// <summary>
@@ -105,6 +106,12 @@ namespace OL
 		/// <param name="animDistance_">アニメーションの速さ（値が小さいほど早い）</param>
 		/// <returns></returns>
 		static Animation::SP Create(const Size2D& size_, int animDistance_);
+		
+		/// <summary>
+		/// アニメーションの生成
+		/// </summary>
+		/// <param name="filePath_">ファイルパス</param>
+		static Animation::SP Create(const std::string& filePath_);
 
 		Size2D  imgSize;			//画像サイズ
 		vector<ML::Point>	imgPos;	//画像の位置
@@ -121,6 +128,7 @@ namespace OL
 		/// <param name="x_">左から数えた画像番号X</param>
 		/// <param name="y_">上から数えた画像番号Y</param>
 		void AddPos(int x_, int y_);
+
 
 		/// <summary>
 		/// 引数で受け取ったフレーム数に対応したアニメーション画像を返す

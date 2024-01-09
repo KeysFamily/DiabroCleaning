@@ -16,17 +16,16 @@ namespace  ShopStaff
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->imgBg = DG::Image::Create("./data/image/Menu/ShopStaff/BackGround.png");
-		this->imgBgSize.Set(1248, 160);
 		this->imgStaff = DG::Image::Create("./data/image/ShopStaff.png");
 		this->imgStaffSize.Set(128, 128);
+
+		this->animStaff.push_back()
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->imgBg.reset();
 		this->imgStaff.reset();
 		return true;
 	}
@@ -68,7 +67,13 @@ namespace  ShopStaff
 	void  Object::Render2D_AF()
 	{
 	}
-
+	//-------------------------------------------------------------------
+	// その他の関数
+	//アニメーションの更新
+	void Object::UpDateAnim()
+	{
+		
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

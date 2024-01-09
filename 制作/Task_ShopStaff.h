@@ -28,13 +28,17 @@ namespace  ShopStaff
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP imgBg;
-		OL::Size2D imgBgSize;
 		DG::Image::SP imgStaff;
+		vector<OL::Animation::SP> animStaff;
+		enum StaffAnimType
+		{
+			IDLE,
+			IDLE2
+		};
 		OL::Size2D imgStaffSize;
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BTask
+	class  Object : public  BChara
 	{
 	//変更不可◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	public:
@@ -53,8 +57,11 @@ namespace  ShopStaff
 		void  Render2D_AF()		override;//「2D描画」１フレーム毎に行う処理
 		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+	private:
+		void UpDateAnim();
 	public:
 		//追加したい変数・メソッドはここに追加する
-			
+		ML::Vec2 pos;
+		int animCnt;
 	};
 }
