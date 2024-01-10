@@ -230,6 +230,7 @@ namespace  Item_coin
 	{
 		from_->balanceMoney += 1;
 		this->Kill();
+		se::Stop("se_get_coin");
 		se::Play("se_get_coin");
 		//this->UpdateMotion(Motion::Bound);
 		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う
