@@ -72,5 +72,7 @@ namespace  WaterBlast
 		void  Think();
 		//ƒ‚[ƒVƒ‡ƒ“‚É‘Î‰‚µ‚½ˆ—
 		void  Move();
+
+		int coolTime;
 	};
 }
