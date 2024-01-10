@@ -1,5 +1,5 @@
 //?------------------------------------------------------
-//タスク名:メニュー画面管理
+//タスク名:スキル選択
 //作　成　者:土田誠也
 //TODO:もしいれば下記へ記述
 //編　集　者:
@@ -7,27 +7,24 @@
 //概　　　要:
 //?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_SystemMenu.h"
-#include  "Task_PlayerStatus.h"
-#include  "Task_SystemMenuMessageWindow.h"
-#include  "Task_SystemMenuSelectObject.h"
-#include  "Task_PlayerStatusShop.h"
-#include  "Task_ShopStaff.h"
 #include  "Task_SkillSelect.h"
 
-namespace  SystemMenu
+namespace  SkillSelect
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
+		this->imgBg = DG::Image::Create("./data/image/Menu/Skill/BackGround.png");
+		this->imgBgSize.Set(768, 864);
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
+		this->imgBg.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -40,14 +37,8 @@ namespace  SystemMenu
 		this->res = Resource::Create();
 
 		//★データ初期化
-
+		this->pos = ML::Vec2(1400, 465);
 		//★タスクの生成
-		auto status = PlayerStatus::Object::Create(true);
-		auto message = SystemMenuMessageWindow::Object::Create(true);
-		SkillSelect::Object::Create(true);
-		auto sobj = SystemMenuSelectObject::Object::Create(true);
-		sobj->sto = status->shops[0].get();
-
 
 		return  true;
 	}
@@ -68,11 +59,16 @@ namespace  SystemMenu
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		ML::Box2D draw = OL::setBoxCenter(this->res->imgBgSize);
+		ML::Box2D src(0, 0, this->res->imgBgSize.w, this->res->imgBgSize.h);
+		draw.Offset(this->pos);
+		this->res->imgBg->Draw(draw, src);
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

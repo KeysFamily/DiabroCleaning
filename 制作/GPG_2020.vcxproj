@@ -166,6 +166,8 @@
     <ClCompile Include="Task_PlayerStatusShop.cpp" />
     <ClCompile Include="Task_Price.cpp" />
     <ClCompile Include="Task_ShopStaff.cpp" />
+    <ClCompile Include="Task_SkillSelect.cpp" />
+    <ClCompile Include="Task_SkillShop.cpp" />
     <ClCompile Include="Task_Sprite.cpp" />
     <ClCompile Include="Task_PlayerStatus.cpp" />
     <ClCompile Include="Task_SystemMenu.cpp" />
@@ -225,6 +227,8 @@
     <ClInclude Include="Task_PlayerStatusShop.h" />
     <ClInclude Include="Task_Price.h" />
     <ClInclude Include="Task_ShopStaff.h" />
+    <ClInclude Include="Task_SkillSelect.h" />
+    <ClInclude Include="Task_SkillShop.h" />
     <ClInclude Include="Task_Sprite.h" />
     <ClInclude Include="Task_PlayerStatus.h" />
     <ClInclude Include="Task_SystemMenu.h" />
