@@ -338,6 +338,10 @@
     <ClCompile Include="Task_ShopStaff.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
+    <ClCompile Include="Task_EnemyBoss.cpp" />
+    <ClCompile Include="Task_SystemMenuMessageWindow.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -496,6 +500,10 @@
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
     <ClInclude Include="Task_ShopStaff.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemyBoss.h" />
+    <ClInclude Include="Task_SystemMenuMessageWindow.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
   </ItemGroup>

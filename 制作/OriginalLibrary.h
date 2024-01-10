@@ -5,7 +5,7 @@
 // 作成年月日:2023/07/05
 // 概　　　要:処理を効率化させるための処理を組み込んだライブラリ
 //------------------------------------------------------------------
-#include "GameEngine_Ver3_83.h"
+#include "MyLib.h"
 namespace OL
 {
 	//上限下限クラス
@@ -136,6 +136,20 @@ namespace OL
 		/// <param name="frames_">経過フレーム数</param>
 		/// <returns>フレーム数に対応したアニメーション画像</returns>
 		ML::Vec2 GetPos(int frames_) const;	
+
+		/// <summary>
+		/// 引数で受け取ったフレーム数に対応したアニメーション画像矩形を返す
+		/// </summary>
+		/// <param name="frames_">経過フレーム数</param>
+		/// <returns>フレーム数に対応したアニメーション画像矩形</returns>
+		ML::Box2D GetSrcBox(int frames_) const;
+
+
+		/// <summary>
+		/// 描画用矩形をもらう
+		/// </summary>
+		/// <returns>描画用矩形（原点調整済み）</returns>
+		ML::Box2D GetDrawBox() const;
 
 		/// <summary>
 		/// サイズの設定

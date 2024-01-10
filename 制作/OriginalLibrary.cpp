@@ -41,9 +41,13 @@ namespace OL
 	{}
 	//コンストラクタ(ファイルからの読み込み)
 	Animation::Animation(const std::string& filePath_)
+		:imgSize()
+		,imgPos()
+		,animDistance(0)
 	{
 		ifstream ifs(filePath_);
 
+		//サイズ
 		if (!ifs) 
 		{
 			return;
@@ -54,7 +58,14 @@ namespace OL
 			return;
 		}
 		ifs >> this->imgSize.h;
+		//アニメーションの間隔
+		if (!ifs)
+		{
+			return;
+		}
+		ifs >> this->animDistance;
 
+		//アニメーションで使用する位置の追加
 		while (ifs)
 		{
 			ML::Point pos;
@@ -77,7 +88,10 @@ namespace OL
 	{
 		return shared_ptr<Animation>(new Animation(size_, animDistance_));
 	}
-
+	Animation::SP Animation::Create(const string& filePath_)
+	{
+		return shared_ptr<Animation>(new Animation(filePath_));
+	}
 	//引数で受け取ったフレーム数に対応したアニメーション画像を返す
 	ML::Vec2 Animation::GetPos(int frames_) const
 	{
@@ -86,6 +100,19 @@ namespace OL
 		ML::Vec2 srcPos(imgSize.w * imgPosNow.x, imgSize.h * imgPosNow.y);
 		return srcPos;
 	}
+	//引数で受け取ったフレーム数に対応したアニメーション画像を返す
+	ML::Box2D Animation::GetSrcBox(int frames_) const
+	{
+		int animCnt = frames_ % (this->animDistance * this->imgPos.size());
+		ML::Point imgPosNow = this->imgPos.at(animCnt / this->animDistance);
+		return ML::Box2D(imgSize.w * imgPosNow.x, imgSize.h * imgPosNow.y, imgSize.w, imgSize.h);
+	}
+	//描画用矩形をもらう
+	ML::Box2D Animation::GetDrawBox() const
+	{
+		return setBoxCenter(this->imgSize);
+	}
+
 	//位置追加
 	void Animation::AddPos(const ML::Point& pos_)
 	{

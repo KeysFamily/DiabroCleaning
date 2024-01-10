@@ -45,7 +45,7 @@ namespace  PlayerStatus
 
 		//★データ初期化
 		this->render2D_Priority[1] = 1.0f;
-		this->pos = ML::Vec2(500, 600);
+		this->pos = ML::Vec2(500, 560);
 		this->shopDistance = 120;
 		this->shopOffset = ML::Vec2(190, 30);
 
@@ -78,8 +78,6 @@ namespace  PlayerStatus
 		this->statusDistance = -5;
 
 		//★タスクの生成
-		auto sobj = SystemMenuSelectObject::Object::Create(true);
-		sobj->sto = this->shops[0].get();
 
 		return  true;
 	}

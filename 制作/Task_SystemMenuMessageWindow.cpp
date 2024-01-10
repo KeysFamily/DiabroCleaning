@@ -1,5 +1,5 @@
 //?------------------------------------------------------
-//タスク名:ショップ店員
+//タスク名:メッセージ欄
 //作　成　者:土田誠也
 //TODO:もしいれば下記へ記述
 //編　集　者:
@@ -7,33 +7,27 @@
 //概　　　要:
 //?------------------------------------------------------
 #include  "MyPG.h"
+#include  "Task_SystemMenuMessageWindow.h"
 #include  "Task_ShopStaff.h"
 
-namespace  ShopStaff
+namespace  SystemMenuMessageWindow
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->imgStaff = DG::Image::Create("./data/image/Menu/ShopStaff/ShopStaff.png");
-		this->imgStaffSize.Set(128, 128);
-		this->animStaff.push_back(OL::Animation::Create("./data/animation/ShopStaff/Idle.txt"));
-		this->animStaff.push_back(OL::Animation::Create("./data/animation/ShopStaff/walk.txt"));
-		this->animStaff.push_back(OL::Animation::Create("./data/animation/ShopStaff/run.txt"));
-		this->animStaff.push_back(OL::Animation::Create("./data/animation/ShopStaff/jump.txt"));
-		this->animStaff.push_back(OL::Animation::Create("./data/animation/ShopStaff/squat.txt"));
-		this->animStaff.push_back(OL::Animation::Create("./data/animation/ShopStaff/magic.txt"));
-		this->animStaff.push_back(OL::Animation::Create("./data/animation/ShopStaff/surprised.txt"));
-		this->animStaff.push_back(OL::Animation::Create("./data/animation/ShopStaff/die.txt"));
-		this->animStaff.push_back(OL::Animation::Create("./data/animation/ShopStaff/die2.txt"));
+		this->imgBg = DG::Image::Create("./data/image/Menu/ShopStaff/BackGround.png");
+		this->imgBgSize.Set(1248, 160);
+		this->fontMsg = DG::Font::Create("non", 20, 44);
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->imgStaff.reset();
+		this->imgBg.reset();
+		this->fontMsg.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -46,10 +40,21 @@ namespace  ShopStaff
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->pos = ML::Vec2(0, 0);
-		this->animCnt = 0;
-		this->currentAnim = Motion::IDLE;
-		this->loopAnim = true;
+		this->pos = ML::Vec2(750, 950);
+		this->staffPos = ML::Vec2(-510, -10);
+		this->shopStaff = ShopStaff::Object::Create(true);
+		this->shopStaff->pos = this->pos + this->staffPos;
+
+		this->appearMessageCount = 0;
+		this->messageStartPos = ML::Vec2(-360, -30);
+		this->displayStr = "";
+		this->SetMessage("enter");
+
+		this->messageColor = ML::Color(1, 0.2f, 0.2f, 0.2f);
+		this->outlineColor = ML::Color(1, 1, 1, 1);
+
+		//this->outlineColor = ML::Color(1, 1, 1, 1);
+		//this->messageColor = ML::Color(1, 1.0f, 0.2f, 0.3f);
 		//★タスクの生成
 
 		return  true;
@@ -71,28 +76,62 @@ namespace  ShopStaff
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		++this->animCnt;
+		this->shopStaff->pos = this->pos + this->staffPos;
+
+		this->currentMessagePos.Setval(this->appearMessageCount / appearMessageDistance);
+		this->displayStr = this->messageStr.substr(0, this->currentMessagePos.vnow);
+
+		++this->appearMessageCount;
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		if (this->loopAnim == true && this->animCnt > this->res->animStaff[this->currentAnim]->GetAnimCountMax())
-		{
-			this->animCnt = 0;
-		}
-		ML::Box2D draw = this->res->animStaff[this->currentAnim]->GetDrawBox();
-		ML::Box2D src = this->res->animStaff[this->currentAnim]->GetSrcBox(this->animCnt);
+		ML::Box2D draw = OL::setBoxCenter(this->res->imgBgSize);
+		ML::Box2D src(0, 0, this->res->imgBgSize.w, this->res->imgBgSize.h);
 		draw.Offset(this->pos);
-		this->res->imgStaff->Draw(draw, src);
+		this->res->imgBg->Draw(draw, src);
+
+		draw = ML::Box2D(0, 0, 1000, 1000);
+		draw.Offset(this->pos + this->messageStartPos);
+		this->res->fontMsg->DrawF(draw, this->displayStr, DG::Font::x4, this->messageColor, this->outlineColor);
 	}
 	//-------------------------------------------------------------------
 	// その他の関数
-	//アニメーション開始
-	void Object::SetAnimation(Motion motion_, bool loop_)
+	//メッセージの設定
+	void Object::SetMessage(const string& fileName_)
 	{
-		this->currentAnim = motion_;
-		this->animCnt = 0;
+		ifstream ifs(string("./data/staff_message/") + fileName_ + ".txt");
+
+		if (!ifs)
+		{
+			return;
+		}
+
+		int distance = 0;
+		ifs >> distance;
+
+		if (!ifs)
+		{
+			return;
+		}
+
+		int motion = 0;
+		ifs >> motion;
+
+		if (!ifs)
+		{
+			return;
+		}
+
+		ifs >> this->messageStr;
+		this->appearMessageDistance = distance;
+
+		this->currentMessagePos.SetValues(0, 0, this->messageStr.size());
+
+		this->shopStaff->SetAnimation((ShopStaff::Motion)motion);
+
+		ifs.close();
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド

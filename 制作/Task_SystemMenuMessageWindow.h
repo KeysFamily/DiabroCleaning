@@ -1,7 +1,7 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//タスク名:ショップ店員
+//タスク名:メッセージ欄
 //作　成　者:土田誠也
 //TODO:もしいれば下記へ記述
 //編　集　者:
@@ -10,23 +10,16 @@
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
 
-namespace  ShopStaff
+namespace ShopStaff
+{
+	class Object;
+}
+
+namespace  SystemMenuMessageWindow
 {
 	//タスクに割り当てるグループ名と固有名
 	const  string  defGroupName("SystemMenu");	//グループ名
-	const  string  defName("ShopStaff");	//タスク名
-	enum Motion
-	{
-		IDLE,
-		WALK,
-		RUN,
-		JUMP,
-		SQUAT,
-		MAGIC,
-		SURPRISED,
-		DIE,
-		DIE2,
-	};
+	const  string  defName("MessageWindow");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -40,10 +33,9 @@ namespace  ShopStaff
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP imgStaff;
-		vector<OL::Animation::SP> animStaff;
-		
-		OL::Size2D imgStaffSize;
+		DG::Image::SP imgBg;
+		OL::Size2D imgBgSize;
+		DG::Font::SP fontMsg;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -67,12 +59,22 @@ namespace  ShopStaff
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		ML::Vec2 pos;		//座標
-		int animCnt;		//アニメーション用カウント
-		int currentAnim;	//現在のアニメーション
-		bool loopAnim;		//ループするか
+		ML::Vec2 pos;
+		ML::Vec2 staffPos;
+		shared_ptr<ShopStaff::Object> shopStaff;
 
-		//アニメーションの設定
-		void SetAnimation(Motion motion_, bool Loop_ = true);
+		ML::Vec2 messageStartPos;			//メッセージ開始位置
+		OL::Limit<int> currentMessagePos;	//現在表示している文字
+		int appearMessageDistance;			//メッセージ表示の間隔フレーム数
+		string displayStr;					//
+		string messageStr;					//表示するメッセージ
+		int appearMessageCount;				//メッセージ表示用カウント
+
+		ML::Color messageColor;
+		ML::Color outlineColor;
+		//メッセージの設定
+		void SetMessage(const string& fileName_);
+		//void SetMessage(const string& msg_, int distance_ = 10);
+		
 	};
 }

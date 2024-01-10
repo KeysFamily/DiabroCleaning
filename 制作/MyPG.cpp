@@ -5,6 +5,7 @@
 #include "sound.h"
 
 #include "Task_Title.h"
+#include "Task_SystemMenu.h"
 #include "Task_PlayerStatusShop.h"
 #include "Task_PlayerStatus.h"
 #define MYDEBUG
@@ -969,7 +970,7 @@ ge->debugRect(me, DEBUGRECTMODE::RED ,- ge->camera2D.x, -ge->camera2D.y);
 
 		//TODO: 初期タスクを変更したい場合はここをいじること(from.22ci0333)
 		//初期実行タスク生成＆ゲームエンジンに登録
-		auto  ft = PlayerStatus::Object::Create(true);
+		auto  ft = SystemMenu::Object::Create(true);
 
 		//------------------------------------------------------------------------------------
 		//レイヤー毎の描画のON/OFF

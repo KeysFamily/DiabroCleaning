@@ -8,6 +8,11 @@
 //?------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_SystemMenu.h"
+#include  "Task_PlayerStatus.h"
+#include  "Task_SystemMenuMessageWindow.h"
+#include  "Task_SystemMenuSelectObject.h"
+#include  "Task_PlayerStatusShop.h"
+#include  "Task_ShopStaff.h"
 
 namespace  SystemMenu
 {
@@ -34,8 +39,14 @@ namespace  SystemMenu
 		this->res = Resource::Create();
 
 		//★データ初期化
-		
+
 		//★タスクの生成
+		auto status = PlayerStatus::Object::Create(true);
+		auto message = SystemMenuMessageWindow::Object::Create(true);
+		message->shopStaff->SetAnimation(ShopStaff::IDLE);
+		auto sobj = SystemMenuSelectObject::Object::Create(true);
+		sobj->sto = status->shops[0].get();
+
 
 		return  true;
 	}
