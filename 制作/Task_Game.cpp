@@ -25,6 +25,7 @@ namespace  Game
 	bool  Resource::Initialize()
 	{
 		this->haikei = DG::Image::Create("./data/image/haikei.jpg");
+		se::LoadFile("enemyDead", "./data/sound/se/se_enemyDead.wav");
 		return true;
 	}
 	//-------------------------------------------------------------------

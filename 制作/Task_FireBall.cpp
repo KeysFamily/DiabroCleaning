@@ -72,6 +72,7 @@ namespace  FireBall
 			it != enemys->end();
 			++it) {
 			if ((*it)->CheckHit(this->hitBase.OffsetCopy(this->pos))) {
+				ge->CreateEffect(89, (*it)->pos);
 				BChara::AttackInfo at = { this->power, 0, 0 };
 				(*it)->Received(this, at);
 				this->Kill();

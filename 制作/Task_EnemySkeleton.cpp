@@ -12,6 +12,7 @@
 #include  "Task_Player.h"
 
 #include  "Task_Map.h"
+#include  "sound.h"
 
 #include  "randomLib.h"
 #include  "Task_Item_coin_maneger.h"
@@ -276,7 +277,7 @@ namespace  EnemySkeleton
 
 				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
 				
-				BChara::AttackInfo ai = { this->attackPow,0,0 };
+				BChara::AttackInfo ai = { static_cast<float>(this->attackPow),0,0 };
 				this->Attack_Std(Player::defGroupName, ai, hit);
 			}
 			break;
@@ -291,6 +292,11 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Lose:
+			if (this->moveCnt == 1)
+			{
+				ge->CreateEffect(11, this->pos);
+				se::Play("enemyDead");
+			}
 			if (this->moveCnt == 5) { this->DropCoins(this->dropMoney); }
 			if (this->moveCnt >= 30) {
 				this->Kill();

@@ -268,6 +268,9 @@ namespace  MapManager
 			return;
 		}
 
+		//“G‚ÌÁ–Åˆ—i‰¼j
+		ge->KillAll_G("enemy");
+
 		switch (this->moveMapDir)
 		{
 		case Map::MapDir::Up:
@@ -288,7 +291,6 @@ namespace  MapManager
 		ge->qa_Player->pos = ge->qa_Map->GetPlayerEnterPos(Map::MapFunc::ReverseMapDir(moveMapDir));
 		auto camera = ge->GetTask<Sprite::Object>("Sprite");
 		camera->MoveImmediately();
-
 		this->mapTransition->Disappear();
 
 		this->moveMapDir = Map::MapDir::Non;

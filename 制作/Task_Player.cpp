@@ -10,7 +10,7 @@
 #include  "Task_EnemySkeleton.h"
 #include "Task_MapManager.h"
 #include  "Task_MagicManager.h"
-
+#include "sound.h"
 
 
 namespace  Player
@@ -21,6 +21,10 @@ namespace  Player
 	bool  Resource::Initialize()
 	{
 		this->img = DG::Image::Create("./data/image/adventure4x.png");
+		se::LoadFile("swordHit", "./data/sound/se/se_hit3.wav");
+		se::LoadFile("airdash", "./data/sound/se/se_airdash.wav");
+		se::LoadFile("swordSlash", "./data/sound/se/se_swordSlash.wav");
+		se::LoadFile("swordHitGround", "./data/sound/se/se_swordHitGround2.wav");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -76,6 +80,7 @@ namespace  Player
 		//--------------------------------------
 		//0329
 		this->moveMapCoolTime.SetValues(0, 0, 60);
+		this->moveEffectDistance = 16;
 		//--------------------------------------
 		//★タスクの生成
 
@@ -170,6 +175,7 @@ namespace  Player
 			if (inp.LStick.BD.on && inp.LStick.BL.on) { nm = Motion::CrouchWalk; }
 			if (inp.LStick.BD.on && inp.LStick.BR.on) { nm = Motion::CrouchWalk; }
 			if (inp.B1.down) { nm = Motion::TakeOff; }
+			if (inp.B2.down) { nm = Motion::Back; }
 			if (inp.B4.down) { nm = Motion::Attack; }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			if (this->CheckFoot() == false) {
@@ -329,6 +335,9 @@ namespace  Player
 		case Motion::MagicAttack:
 			if (this->moveCnt >= 15 && inp.B3.off) { nm = Motion::Stand; }
 			break;
+		case Motion::Back:
+			if (this->moveCnt > 10 || true == this->CheckBack_LR()) { this->moveVec.x = 0; nm = Motion::Landing; }
+			break;
 		}
 		//モーション更新
 		this->UpdateMotion(nm);
@@ -406,6 +415,14 @@ namespace  Player
 				this->angle_LR = Angle_LR::Right;
 				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
 			}
+			//エフェクト
+			if(this->moveCnt % this->moveEffectDistance == 0)
+			{
+				ML::Vec2 footPos = this->pos;
+				footPos.y += this->hitBase.h / 2;
+				ge->CreateEffect(12, footPos);
+			}
+
 			break;
 		case  Motion::Fall:		//落下中
 			if (inp.LStick.BL.on) {
@@ -444,6 +461,10 @@ namespace  Player
 		case Motion::Jump2:
 			if (this->CheckHead() == true) { this->moveVec.y = 0; }
 			if (this->moveCnt == 0) {
+				ML::Vec2 footPos = this->pos;
+				footPos.y += this->hitBase.h / 2;
+				ge->CreateEffect(61, footPos);
+
 				this->moveVec.y = this->jumpPow * 0.9f;
 			}
 			if (inp.LStick.BL.on) {
@@ -457,6 +478,17 @@ namespace  Player
 			this->canJump = false;
 			break;
 		case Motion::Dash:
+			if (moveCnt == 0)
+			{
+				auto effect = ge->CreateEffect(60, this->pos);
+				if (this->angle_LR == Angle_LR::Right)
+				{
+					effect.lock()->flipX = true;
+				}
+				se::Play("airdash");
+				se::Play("airdash");
+				se::Play("airdash");
+			}
 			this->moveVec.y = 0;
 			if (this->angle_LR == Angle_LR::Right) { this->moveVec.x = 30; }
 			if (this->angle_LR == Angle_LR::Left) { this->moveVec.x = -30; }
@@ -468,7 +500,11 @@ namespace  Player
 			break;
 		case  Motion::Attack:	//�U����
 			this->powerScale = 1.0f;
-			if (this->moveCnt == 5)this->MakeAttack();
+			if (this->moveCnt == 5)
+			{
+				se::Play("swordSlash");
+				this->MakeAttack();
+			}
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack2 = true; }
 			}
@@ -476,7 +512,11 @@ namespace  Player
 		case  Motion::Attack2:	//�U����
 			this->powerScale = 1.5f;
 			this->attack2 = false;
-			if (this->moveCnt == 9)this->MakeAttack();
+			if (this->moveCnt == 9)
+			{
+				se::Play("swordSlash");
+				this->MakeAttack();
+			}
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack3 = true; }
 			}
@@ -484,13 +524,21 @@ namespace  Player
 		case  Motion::Attack3:	//�U����
 			this->powerScale = 2.0f;
 			this->attack3 = false;
-			if (this->moveCnt == 9)this->MakeAttack();
+			if (this->moveCnt == 9)
+			{
+				se::Play("swordSlash");
+				this->MakeAttack();
+			}
 			break;
 		case Motion::AirAttack:
 			this->airattack = false;
 			this->moveVec.y = 0.0f;
 			this->powerScale = 1.0f;
-			if (this->moveCnt == 6)this->MakeAttack();
+			if (this->moveCnt == 6)
+			{
+				se::Play("swordSlash");
+				this->MakeAttack();
+			}
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack2 = true; }
 			}
@@ -499,7 +547,11 @@ namespace  Player
 			this->moveVec.y = 0.0f;
 			this->attack2 = false;
 			this->powerScale = 1.5f;
-			if (this->moveCnt == 1)this->MakeAttack();
+			if (this->moveCnt == 1) 
+			{
+				se::Play("swordSlash");
+				this->MakeAttack();
+			}
 			if (moveCnt > 0) {
 				if (inp.B4.down) { this->attack3 = true; }
 			}
@@ -508,11 +560,19 @@ namespace  Player
 			this->moveVec.y = 20.0f;
 			this->attack3 = false;
 			this->powerScale = 2.0f;
-			if (this->moveCnt == 1)this->MakeAttack();
+			if (this->moveCnt == 1)
+			{
+				se::Play("swordSlash");
+				this->MakeAttack();
+			}
 			break;
 		case Motion::AirAttack4:
 			this->powerScale = 2.5f;
-			if (this->moveCnt == 1)this->MakeAttack();
+			if (this->moveCnt == 1)
+			{
+				se::Play("swordHitGround");
+				this->MakeAttack();
+			}
 			break;
 		case Motion::MagicAttack:
 			if (this->moveCnt == 11) {
@@ -554,6 +614,9 @@ namespace  Player
 		case Motion::Bound:
 			this->attackBase = ML::Box2D(0, 0, 0, 0);
 			break;
+		case Motion::Back:
+			if (this->angle_LR == Angle_LR::Left) { this->moveVec.x += 2; }
+			else { this->moveVec.x -= 2; }
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -753,6 +816,9 @@ namespace  Player
 			else work = (this->animCnt / 8) % 4 + 2;
 			rtv = imageTable[work + 52];
 			break;
+		case Motion::Back:
+			rtv = imageTable[53];
+			break;
 		}
 
 		//this->hitBase = rtv.draw;
@@ -788,7 +854,7 @@ namespace  Player
 			/*|| this->motion == Motion::Attack || this->motion == Motion::Attack2 || this->motion == Motion::Attack3*/) {
 			return;//攻撃中はダメージを受けない
 		}
-		if (this->motion == Motion::Dash) {
+		if (this->motion == Motion::Dash || this->motion == Motion::Back) {
 			return;
 		}
 		this->unHitTime = 90;
@@ -817,9 +883,11 @@ namespace  Player
 			it != enemys->end();
 			++it) {
 			if ((*it)->CheckHit(this->attackBase.OffsetCopy(this->pos))) {
+				se::Play("swordHit");
+				ge->CreateEffect(59, (*it)->pos);
 				BChara::AttackInfo at = { this->power * this->powerScale, 0, 0 };
 				(*it)->Received(this, at);
-				break;
+				
 			}
 		}
 	}

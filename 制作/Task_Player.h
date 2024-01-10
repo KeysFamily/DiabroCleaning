@@ -87,6 +87,7 @@ namespace  Player
 			Lose,		//  消滅中
 			Dash,		//  ダッシュ
 			MagicAttack,//	魔法
+			Back,		//  避ける
 		};
 
 		enum Magic
@@ -139,6 +140,7 @@ namespace  Player
 		//マップ移動処理
 		OL::Limit<int> moveMapCoolTime;		//マップ移動のクールタイム
 		void CheckMoveMap();				//マップ移動判定
+		int moveEffectDistance;				//移動エフェクトの間隔
 		//--------------------------------------
 		void CheckMove_();					//マップ外に出ないように
 	};
