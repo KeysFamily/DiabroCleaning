@@ -9,9 +9,22 @@
 //概　　　要:
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "SelectableObject.h"
+
+namespace Price
+{
+	class Object;
+}
 
 namespace  SkillShop
 {
+	struct ShopData
+	{
+		int skillSrcOfs;		//使用するスキル画像の番号
+		string skillName;		//スキル名
+		string staffTalkFile;	//店員のセリフファイル
+		int price;				//価格
+	};
 	//タスクに割り当てるグループ名と固有名
 	const  string  defGroupName("SystemMenu");	//グループ名
 	const  string  defName("SkillShop");	//タスク名
@@ -28,12 +41,17 @@ namespace  SkillShop
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP imgSkill;
-		OL::Size2D imgSkillSize;
+		DG::Image::SP imgSkill;		//スキル画像
+		OL::Size2D imgSkillSize;	//スキル画像サイズ
+		DG::Image::SP imgPriceBG;	//価格背景
+		OL::Size2D imgPriceBGSize;	//価格背景サイズ
+
+		DG::Font::SP fontSkill;		//スキル名フォント
+
 		
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BTask
+	class  Object : public  BTask, public MyUI::SelectableObject
 	{
 	//変更不可◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	public:
@@ -54,7 +72,34 @@ namespace  SkillShop
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		「変数宣言を書く」
-		「追加メソッドを書く」
+		ML::Vec2 pos;			//座標
+		ML::Vec2 skillImgPos;	//スキル画像の位置の位置
+		ML::Vec2 skillNamePos;	//スキル名の位置
+		ML::Vec2 pricePos;		//価格の位置
+
+		shared_ptr<Price::Object> objPrice;	//価格オブジェクト
+
+		ShopData shopData;
+
+		//状態
+		enum State
+		{
+			NON = -1,			//無効
+			SALE,				//販売中
+			BOUGHT,				//購入済み
+			SELECTING			//選択中
+		};
+
+		int currentState;		//現在の状態
+
+		void SetShopData(const ShopData& shopData_);
+
+		int selectCount;		//選択されているときのカウント
+
+		//SelectableObjectのメソッド
+		virtual ML::Box2D GetObjectSize() const;
+		virtual void IsSelecting();
+		virtual void FinishSelect();
+		virtual void IsDown();
 	};
 }

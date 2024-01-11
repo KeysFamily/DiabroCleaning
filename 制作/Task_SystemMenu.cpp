@@ -44,7 +44,11 @@ namespace  SystemMenu
 		//šƒ^ƒXƒN‚Ì¶¬
 		auto status = PlayerStatus::Object::Create(true);
 		auto message = SystemMenuMessageWindow::Object::Create(true);
-		SkillSelect::Object::Create(true);
+		auto skill = SkillSelect::Object::Create(true);
+
+		skill->SetLeftObj(status->currentShop);
+		status->SetRightObj(skill->currentShop);
+
 		auto sobj = SystemMenuSelectObject::Object::Create(true);
 		sobj->sto = status->shops[0].get();
 

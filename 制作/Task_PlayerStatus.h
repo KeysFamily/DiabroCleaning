@@ -16,6 +16,11 @@ namespace PlayerStatusShop
 	class Object;
 }
 
+namespace MyUI
+{
+	class SelectableObject;
+}
+
 namespace  PlayerStatus
 {
 	//タスクに割り当てるグループ名と固有名
@@ -79,5 +84,9 @@ namespace  PlayerStatus
 		ML::Vec2 statusBeginPos;
 		float statusDistance;
 
+		MyUI::SelectableObject* currentShop;		//選択中のショップ
+		
+		void SetDownObj(MyUI::SelectableObject* nextObj_);
+		void SetRightObj(MyUI::SelectableObject* nextObj_);
 	};
 }

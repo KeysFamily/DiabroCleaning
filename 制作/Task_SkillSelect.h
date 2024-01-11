@@ -10,6 +10,16 @@
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
 
+namespace SkillShop
+{
+	class Object;
+}
+
+namespace MyUI
+{
+	class SelectableObject;
+}
+
 namespace  SkillSelect
 {
 	//タスクに割り当てるグループ名と固有名
@@ -30,6 +40,7 @@ namespace  SkillSelect
 		//共有する変数はここに追加する
 		DG::Image::SP imgBg;
 		OL::Size2D imgBgSize;
+		
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -54,5 +65,13 @@ namespace  SkillSelect
 	public:
 		//追加したい変数・メソッドはここに追加する
 		ML::Vec2 pos;
+		ML::Vec2 shopBeginPos;
+		float shopDistance;
+		MyUI::SelectableObject* currentShop;
+		vector<shared_ptr<SkillShop::Object>> shops;
+
+		void SetDownObj(MyUI::SelectableObject* nextObj_);
+		void SetLeftObj(MyUI::SelectableObject* nextObj_);
+		bool LoadShopData(const string& filePath_);
 	};
 }

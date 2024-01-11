@@ -8,6 +8,7 @@
 //?------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_SkillSelect.h"
+#include  "Task_SkillShop.h"
 
 namespace  SkillSelect
 {
@@ -38,6 +39,11 @@ namespace  SkillSelect
 
 		//★データ初期化
 		this->pos = ML::Vec2(1400, 465);
+		this->shopBeginPos = ML::Vec2(0, -220);
+		this->shopDistance = 96;
+		this->currentShop = nullptr;
+
+		this->LoadShopData("./data/SystemMenu/shopData.json");
 		//★タスクの生成
 
 		return  true;
@@ -59,7 +65,20 @@ namespace  SkillSelect
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		
+		int idxShop = 0;
+		for (auto& shop : shops)
+		{
+			//ショップ座標設定
+			shop->pos = this->pos + this->shopBeginPos;
+			shop->pos.y += this->shopDistance * idxShop;
+			++idxShop;
+
+			//現在のショップを取得
+			if (shop->selectCount > 0)
+			{
+				this->currentShop = shop.get();
+			}
+		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -70,7 +89,74 @@ namespace  SkillSelect
 		draw.Offset(this->pos);
 		this->res->imgBg->Draw(draw, src);
 	}
+	//-------------------------------------------------------------------
+	//その他の関数
+	bool Object::LoadShopData(const string& filePath_)
+	{
+		json js;
+		std::ifstream fin(filePath_);
+		if (!fin) 
+		{
+			return false; 
+		}
+		//JSONファイル読み込み
+		fin >> js;
+		//ファイル読み込み終了
+		fin.close();
 
+		int idxShop = 0;	//要素番号
+		//ショップ初期化
+		shops.clear();
+
+		for (auto& ji : js["skillShopMenu"])
+		{
+			//ショップ追加
+			shops.push_back(SkillShop::Object::Create(true));
+
+			//データ読み込み
+			SkillShop::ShopData shopdata;
+			shopdata.skillName = ji["name"];
+			shopdata.staffTalkFile = ji["talkFileName"];
+			shopdata.skillSrcOfs = ji["srcPosY"];
+			shopdata.price = ji["price"];
+
+			//読み込んだデータをショップに反映
+			shops[idxShop]->SetShopData(shopdata);
+
+			//ショップ座標設定
+			shops[idxShop]->pos = this->pos + this->shopBeginPos;
+			shops[idxShop]->pos.y += this->shopDistance + idxShop;
+
+			//移動先設定
+			if (idxShop != 0)
+			{
+				shops[idxShop - 1]->SetNext_Down(shops[idxShop].get());
+				shops[idxShop]->SetNext_Up(shops[idxShop - 1].get());
+			}
+
+			++idxShop;
+		}
+
+		this->currentShop = shops[0].get();
+
+		return true;
+
+	}
+
+	void Object::SetDownObj(MyUI::SelectableObject* nextObj_)
+	{
+		if (!this->shops.empty())
+		{
+			(*(shops.end() - 1))->SetNext_Down(nextObj_);
+		}
+	}
+	void Object::SetLeftObj(MyUI::SelectableObject* nextObj_)
+	{
+		for (auto& shop : shops)
+		{
+			shop->SetNext_Left(nextObj_);
+		}
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

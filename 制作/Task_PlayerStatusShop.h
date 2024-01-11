@@ -75,7 +75,7 @@ namespace  PlayerStatusShop
 		float selectScale;					//選択時のサイズを画像より大きくしたいときに使う
 		int statusType;						//ステータスの種類
 		shared_ptr<Price::Object> priceDp;	//価格表示タスク
-
+		int selectCount;					//選択中のカウント
 
 		//次の購入に必要な金額を返す
 		int GetPrice() const;
@@ -88,6 +88,8 @@ namespace  PlayerStatusShop
 		virtual ML::Box2D GetObjectSize() const override;
 		//ターゲット中か
 		virtual void IsSelecting() override;
+		//ターゲット終了時の処理
+		virtual void FinishSelect() override;
 		//ボタンが押されたか
 		virtual void IsDown() override;
 	};

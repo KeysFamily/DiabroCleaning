@@ -65,6 +65,7 @@ namespace  PlayerStatusShop
 		this->priceDpPos = ML::Vec2(15, -10);
 		this->priceDp = Price::Object::Create(true);
 
+		this->selectCount = 0;
 		//★タスクの生成
 
 		return  true;
@@ -190,7 +191,13 @@ namespace  PlayerStatusShop
 	//ターゲット中か
 	void Object::IsSelecting()
 	{
+		++this->selectCount;
+	}
 
+	//ターゲット終了時の処理
+	void Object::FinishSelect()
+	{
+		this->selectCount = 0;
 	}
 
 	//ボタンが押されたか

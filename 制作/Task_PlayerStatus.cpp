@@ -77,6 +77,8 @@ namespace  PlayerStatus
 		this->statusBeginPos = ML::Vec2(-250, -10);
 		this->statusDistance = -5;
 
+		this->currentShop = shops[0].get();
+
 		//★タスクの生成
 
 		return  true;
@@ -98,17 +100,24 @@ namespace  PlayerStatus
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-
-		if (ge->qa_Player == nullptr)
+		int idxShop = 0;
+		for (auto& shop : shops)
 		{
-			return;
+			//現在のショップを取得
+			if (shop->selectCount > 0)
+			{
+				this->currentShop = shop.get();
+			}
 		}
 
+		if (ge->qa_Player != nullptr)
+		{
+			ge->qa_Player->power = this->shops[ATK]->GetStatusAdd();
+			ge->qa_Player->DEF = this->shops[DEF]->GetStatusAdd();
+			ge->qa_Player->INT = this->shops[INT]->GetStatusAdd();
+			ge->qa_Player->speed = this->shops[SPD]->GetStatusAdd();
+		}
 
-		ge->qa_Player->power = this->shops[ATK]->GetStatusAdd();
-		ge->qa_Player->DEF = this->shops[DEF]->GetStatusAdd();
-		ge->qa_Player->INT = this->shops[INT]->GetStatusAdd();
-		ge->qa_Player->speed = this->shops[SPD]->GetStatusAdd();
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -135,7 +144,19 @@ namespace  PlayerStatus
 	}
 	//-------------------------------------------------------------------
 	//その他メソッド
-	
+	void Object::SetDownObj(MyUI::SelectableObject* nextObj_)
+	{
+		{
+			this->shops[3]->SetNext_Down(nextObj_);
+		}
+	}
+	void Object::SetRightObj(MyUI::SelectableObject* nextObj_)
+	{
+		for (auto& shop : shops)
+		{
+			shop->SetNext_Right(nextObj_);
+		}
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

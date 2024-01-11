@@ -1,0 +1,32 @@
+{
+	"skillShopMenu": [
+		{
+			"id": 0,
+			"name": "Thunder",
+			"talkFileName": "sk_thunder",
+			"srcPosY": 3,
+			"price": 300
+		},
+		{
+			"id": 1,
+			"name": "WaterBlast",
+			"talkFileName": "sk_waterBlast",
+			"srcPosY": 2,
+			"price": 400
+		},
+		{
+			"id": 2,
+			"name": "FireBall",
+			"talkFileName": "sk_fireBall",
+			"srcPosY": 1,
+			"price": 200
+		},
+		{
+			"id": 3,
+			"name": "Beam",
+			"talkFileName": "sk_beam",
+			"srcPosY": 4,
+			"price": 1000
+		}
+	]
+}

@@ -80,18 +80,22 @@ namespace  SystemMenuSelectObject
 			isAct = true;
 		}
 		if (inp.LStick.BU.down) {
+			this->sto->FinishSelect();
 			this->sto = sto->GetNext_Up();
 			isAct = true;
 		}
 		if (inp.LStick.BD.down) {
+			this->sto->FinishSelect();
 			this->sto = sto->GetNext_Down();
 			isAct = true;
 		}
 		if (inp.LStick.BL.down) {
+			this->sto->FinishSelect();
 			this->sto = sto->GetNext_Left();
 			isAct = true;
 		}
 		if (inp.LStick.BR.down) {
+			this->sto->FinishSelect();
 			this->sto = sto->GetNext_Right();
 			isAct = true;
 		}

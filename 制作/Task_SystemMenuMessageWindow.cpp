@@ -19,7 +19,7 @@ namespace  SystemMenuMessageWindow
 	{
 		this->imgBg = DG::Image::Create("./data/image/Menu/ShopStaff/BackGround.png");
 		this->imgBgSize.Set(1248, 160);
-		this->fontMsg = DG::Font::Create("non", 20, 44);
+		this->fontMsg = DG::Font::Create("‚l‚r ƒSƒVƒbƒN", 24, 48);
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -125,11 +125,11 @@ namespace  SystemMenuMessageWindow
 		}
 
 		ifs >> this->messageStr;
+
 		this->appearMessageDistance = distance;
-
 		this->currentMessagePos.SetValues(0, 0, this->messageStr.size());
-
 		this->shopStaff->SetAnimation((ShopStaff::Motion)motion);
+		this->appearMessageCount = 0;
 
 		ifs.close();
 	}
