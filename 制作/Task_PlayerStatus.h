@@ -86,6 +86,9 @@ namespace  PlayerStatus
 
 		MyUI::SelectableObject* currentShop;		//選択中のショップ
 		
+		//ショップデータを読み込む
+		bool LoadShopFile(const string& filePath_);
+
 		void SetDownObj(MyUI::SelectableObject* nextObj_);
 		void SetRightObj(MyUI::SelectableObject* nextObj_);
 	};

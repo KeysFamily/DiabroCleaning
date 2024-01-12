@@ -76,6 +76,12 @@ namespace  PlayerStatusShop
 		int statusType;						//ステータスの種類
 		shared_ptr<Price::Object> priceDp;	//価格表示タスク
 		int selectCount;					//選択中のカウント
+		string staffTalkFileName;			//店員の会話ファイル
+
+		//金額や上昇値を読み込む
+		bool LoadShopData(const string& fileName_);
+		//店員の会話ファイルを設定する
+		void SetStaffTalkFile(const string& fileName);
 
 		//次の購入に必要な金額を返す
 		int GetPrice() const;

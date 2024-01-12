@@ -66,11 +66,8 @@ namespace  PlayerStatus
 		this->shops[2]->SetNext_Down(this->shops[3].get());
 		this->shops[3]->SetNext_Up(this->shops[2].get());
 
-
-		this->shops[0]->displayStr = "ATK";
-		this->shops[1]->displayStr = "DEF";
-		this->shops[2]->displayStr = "INT";
-		this->shops[3]->displayStr = "SPD";
+		//値の設定
+		this->LoadShopFile("./data/SystemMenu/Status/shopData.json");
 
 		this->currentStatus = 0;
 
@@ -144,6 +141,27 @@ namespace  PlayerStatus
 	}
 	//-------------------------------------------------------------------
 	//その他メソッド
+	//ショップデータを読み込む
+	bool Object::LoadShopFile(const string& filePath_)
+	{
+		ifstream ifs(filePath_);
+		if (!ifs)
+		{
+			return false;
+		}
+		
+		json js;
+		ifs >> js;
+		ifs.close();
+
+		for (auto& ji : js["statusShop"])
+		{
+			shops[ji["id"]]->displayStr = ji["name"];
+			shops[ji["id"]]->LoadShopData(ji["paramFile"]);
+			shops[ji["id"]]->SetStaffTalkFile(ji["talkFile"]);
+		}
+	}
+
 	void Object::SetDownObj(MyUI::SelectableObject* nextObj_)
 	{
 		{

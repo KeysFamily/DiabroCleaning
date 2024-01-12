@@ -10,6 +10,7 @@
 #include  "Task_PlayerStatusShop.h"
 #include  "Task_PlayerStatus.h"
 #include  "Task_Price.h"
+#include  "Task_SystemMenuMessageWindow.h"
 
 namespace  PlayerStatusShop
 {
@@ -66,6 +67,8 @@ namespace  PlayerStatusShop
 		this->priceDp = Price::Object::Create(true);
 
 		this->selectCount = 0;
+
+		this->staffTalkFileName = "";
 		//★タスクの生成
 
 		return  true;
@@ -129,6 +132,46 @@ namespace  PlayerStatusShop
 	//-------------------------------------------------------------------
 	//その他の関数
 	//次の購入に必要な金額を返す
+	bool Object::LoadShopData(const string& fileName_)
+	{
+		ifstream ifs("./data/SystemMenu/Status/" + fileName_);
+		if (!ifs)
+		{
+			return false;
+		}
+
+		price.clear();
+		addStatus.clear();
+		statusLvMax = 0;
+
+		while (ifs)
+		{
+			int readPrice;
+			int readAddStatus;
+			ifs >> readPrice;
+
+			if (!ifs)
+			{
+				break;
+			}
+
+			ifs >> readAddStatus;
+
+			price.push_back(readPrice);
+			addStatus.push_back(readAddStatus);
+			++statusLvMax;
+		}
+
+		return true;
+	}
+
+	//店員の会話ファイルを設定する
+	void Object::SetStaffTalkFile(const string& fileName_)
+	{
+		this->staffTalkFileName = fileName_;
+	}
+
+	//次の購入に必要な金額を返す
 	int Object::GetPrice() const
 	{
 		if (this->currentStatus.IsMax())
@@ -191,6 +234,11 @@ namespace  PlayerStatusShop
 	//ターゲット中か
 	void Object::IsSelecting()
 	{
+		if (this->selectCount == 0)
+		{
+			auto msg = ge->GetTask<SystemMenuMessageWindow::Object>("SystemMenu", "MessageWindow");
+			msg->SetMessage(this->staffTalkFileName);
+		}
 		++this->selectCount;
 	}
 
@@ -205,6 +253,7 @@ namespace  PlayerStatusShop
 	{
 		int money = 9999999;
 		this->Buy(money);
+
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
