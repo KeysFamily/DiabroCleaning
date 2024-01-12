@@ -1,0 +1,28 @@
+{
+	"statusShop": [
+		{
+			"id": 0,
+			"name": "ATK",
+			"paramFile": "param_ATK",
+			"talkFile": "st_ATK"
+		},
+		{
+			"id": 1,
+			"name": "DEF",
+			"paramFile": "param_DEF",
+			"talkFile": "st_DEF"
+		},
+		{
+			"id": 2,
+			"name": "INT",
+			"paramFile": "param_INT",
+			"talkFile": "st_INT"
+		},
+		{
+			"id": 3,
+			"name": "SPD",
+			"paramFile": "param_SPD",
+			"talkFile": "st_SPD"
+		}
+	]
+}
