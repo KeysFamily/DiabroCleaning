@@ -1,22 +1,15 @@
 //?------------------------------------------------------
-//タスク名:メニュー画面管理
-//作　成　者:土田誠也
+//タスク名:
+//作　成　者:
 //TODO:もしいれば下記へ記述
 //編　集　者:
 //作成年月日:
 //概　　　要:
 //?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_SystemMenu.h"
-#include  "Task_PlayerStatus.h"
-#include  "Task_SystemMenuMessageWindow.h"
-#include  "Task_SystemMenuSelectObject.h"
-#include  "Task_PlayerStatusShop.h"
-#include  "Task_ShopStaff.h"
-#include  "Task_SkillSelect.h"
-#include  "Task_SystemMenuPriceDisplay.h"
+#include  "該当する.h"
 
-namespace  SystemMenu
+namespace  「ネームスペース名」
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
@@ -41,19 +34,8 @@ namespace  SystemMenu
 		this->res = Resource::Create();
 
 		//★データ初期化
-
+		
 		//★タスクの生成
-		auto status = PlayerStatus::Object::Create(true);
-		auto message = SystemMenuMessageWindow::Object::Create(true);
-		auto skill = SkillSelect::Object::Create(true);
-		auto priceDp = SystemMenuPriceDisplay::Object::Create(true);
-
-		skill->SetLeftObj(status->currentShop);
-		status->SetRightObj(skill->currentShop);
-
-		auto sobj = SystemMenuSelectObject::Object::Create(true);
-		sobj->sto = status->shops[0].get();
-
 
 		return  true;
 	}

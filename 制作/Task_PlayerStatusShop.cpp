@@ -134,7 +134,7 @@ namespace  PlayerStatusShop
 	//Ÿ‚Ìw“ü‚É•K—v‚È‹àŠz‚ğ•Ô‚·
 	bool Object::LoadShopData(const string& fileName_)
 	{
-		ifstream ifs("./data/SystemMenu/Status/" + fileName_);
+		ifstream ifs(("./data/SystemMenu/Status/") + fileName_ + ".txt");
 		if (!ifs)
 		{
 			return false;

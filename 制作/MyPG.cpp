@@ -849,7 +849,7 @@ ge->debugRect(me, DEBUGRECTMODE::RED ,- ge->camera2D.x, -ge->camera2D.y);
 			1080,//360,							//	画面サイズY
 			1,								//	表示倍率
 			1,								//	マルチサンプル(1or2or4)
-			true,							//	フルスクリーンモード
+			false,							//	フルスクリーンモード
 			480,							//	2D描画用解像度X(現在非対応）
 			270,							//	2D描画用解像度Y(現在非対応）
 			"2023年度 制作実習 チーム制作 「ぼっちちゃん」",	//	ウインドウタイトル
@@ -1044,6 +1044,16 @@ ge->debugRect(me, DEBUGRECTMODE::RED ,- ge->camera2D.x, -ge->camera2D.y);
 	{
 		return ML::Vec2(screenWidth / 2.0f, screenHeight / 2.0f);
 	}
+	//標準の描画処理
+	void MyGameEngine::DrawStd(const DG::Image::SP& img_, OL::Size2D size_, ML::Vec2 pos_)
+	{
+		ML::Box2D draw = OL::setBoxCenter(size_);
+		ML::Box2D src(0, 0, size_.w, size_.h);
+		draw.Offset(pos_);
+		img_->Draw(draw, src);
+	}
+
+
 	//デバッグ関数
 	//param1:出力する文字列
 	//param2:何フレームごとに出力するか

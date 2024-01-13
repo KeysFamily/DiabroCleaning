@@ -6,7 +6,7 @@ namespace MyUI
 	{
 		SelectableObject* nextObj[4];
 	public:
-		//以下3つの関数をオーバーライドする
+		//以下4つの関数をオーバーライドする
 		virtual ML::Box2D GetObjectSize() const = 0;
 		virtual void IsSelecting() = 0;
 		virtual void FinishSelect() = 0;

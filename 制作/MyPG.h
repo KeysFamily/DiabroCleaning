@@ -115,7 +115,8 @@ namespace  MyPG
 
 		ML::Box2D GetScreenBox() const;
 		ML::Vec2  GetScreenCenter() const;
-
+		//標準の描画処理
+		static void DrawStd(const DG::Image::SP& img_, OL::Size2D size_, ML::Vec2 pos_);
 		//デバッグ関数
 		//param1:出力する文字列
 		//param2:何フレームごとに出力するか
@@ -189,8 +190,6 @@ namespace  MyPG
 	{
 		return std::dynamic_pointer_cast<Type>(btask_);
 	}
-
-
 	//◆◆◆◆◆◆◆◆◆◆
 
 }

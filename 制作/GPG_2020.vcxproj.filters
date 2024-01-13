@@ -348,6 +348,12 @@
     <ClCompile Include="Task_SkillShop.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
+    <ClCompile Include="Task_SystemMenuPriceDisplay.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_SystemMenuBackButton.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -516,6 +522,12 @@
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
     <ClInclude Include="Task_SkillShop.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SystemMenuPriceDisplay.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SystemMenuBackButton.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
   </ItemGroup>
