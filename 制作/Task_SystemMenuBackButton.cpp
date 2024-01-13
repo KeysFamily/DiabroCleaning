@@ -1,27 +1,32 @@
 //?------------------------------------------------------
-//タスク名:
-//作　成　者:
+//タスク名:メニュー終了ボタン
+//作　成　者:土田誠也
 //TODO:もしいれば下記へ記述
 //編　集　者:
 //作成年月日:
 //概　　　要:
 //?------------------------------------------------------
 #include  "MyPG.h"
-#include  "該当する.h"
+#include  "Task_SystemMenuBackButton.h"
+#include  "Task_SystemMenuMessageWindow.h"
+#include  "Task_SystemMenu.h"
 
-namespace  「ネームスペース名」
+namespace  SystemMenuBackButton
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
+		this->img = DG::Image::Create("./data/image/Menu/backButton.png");
+		this->imgSize.Set(480, 96);
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
+		this->img.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -34,7 +39,9 @@ namespace  「ネームスペース名」
 		this->res = Resource::Create();
 
 		//★データ初期化
-		
+		this->render2D_Priority[1] = 0.6f;
+		this->pos = ML::Vec2(1650, 1000);
+		this->staffTalkFile = "targetBack";
 		//★タスクの生成
 
 		return  true;
@@ -56,13 +63,42 @@ namespace  「ネームスペース名」
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		ge->DrawStd(this->res->img, this->res->imgSize, this->pos);
 	}
+	//-------------------------------------------------------------------
+	//その他のメソッド
 
+	//SelectableObjectのメソッド
+	ML::Box2D Object::GetObjectSize() const
+	{
+		ML::Box2D box = OL::setBoxCenter(this->res->imgSize);
+		box.Offset(this->pos);
+		return box;
+	}
+	void Object::IsSelecting()
+	{
+		if (this->selectCount == 0)
+		{
+			auto msg = ge->GetTask<SystemMenuMessageWindow::Object>("SystemMenu", "MessageWindow");
+			msg->SetMessage(this->staffTalkFile);
+		}
+		++this->selectCount;
+	}
+	void Object::FinishSelect()
+	{
+		this->selectCount = 0;
+	}
+	void Object::IsDown()
+	{
+		auto menu = ge->GetTask<SystemMenu::Object>("SystemMenu", "System");
+		menu->FinishMenu();
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

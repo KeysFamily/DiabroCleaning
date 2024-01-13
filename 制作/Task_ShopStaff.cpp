@@ -46,6 +46,7 @@ namespace  ShopStaff
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.4f;
 		this->pos = ML::Vec2(0, 0);
 		this->animCnt = 0;
 		this->currentAnim = Motion::IDLE;

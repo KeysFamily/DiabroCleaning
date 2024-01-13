@@ -50,6 +50,16 @@ namespace  Game
 		int cnt;
 
 		//◇◇◇◇◇◇◇◇◇◇
+		//以下22CI0329記述
+		bool openingMenu;	//メニューを開いているか
+
+		void StopGameObj();
+		void ResumeGameObj();
+		bool CheckFinishedMenu();
+		shared_ptr<vector<BTask::SP>> GetGameObj();
+		// ◆◆◆◆◆◆◆◆◆◆
+
+		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0333記述
 		OL::Limit<int> volume;
 		// ◆◆◆◆◆◆◆◆◆◆

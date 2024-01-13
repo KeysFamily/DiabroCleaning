@@ -70,6 +70,9 @@ namespace  SkillSelect
 		MyUI::SelectableObject* currentShop;
 		vector<shared_ptr<SkillShop::Object>> shops;
 
+		//ショップの座標等の更新
+		void ShopUpDate();
+
 		void SetDownObj(MyUI::SelectableObject* nextObj_);
 		void SetLeftObj(MyUI::SelectableObject* nextObj_);
 		bool LoadShopData(const string& filePath_);

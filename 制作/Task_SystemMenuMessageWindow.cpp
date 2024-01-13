@@ -40,6 +40,7 @@ namespace  SystemMenuMessageWindow
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.6f;
 		this->pos = ML::Vec2(750, 1000);
 		this->staffPos = ML::Vec2(-510, -10);
 		this->shopStaff = ShopStaff::Object::Create(true);

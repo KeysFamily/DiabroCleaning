@@ -42,6 +42,7 @@ namespace  Price
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.3f;
 		this->price = 0;
 		this->distance = 10;
 		this->pos = ML::Vec2(0, 0);

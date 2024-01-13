@@ -64,7 +64,7 @@ namespace  EnemySkyEye
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
-		this->render2D_Priority[1] = 0.6f;
+		this->render2D_Priority[1] = 0.5f;
 		this->hitBase = OL::setBoxCenter(50, 50);
 		this->angle_LR = Angle_LR::Left;
 		this->motion = Motion::Stand;

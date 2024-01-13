@@ -40,6 +40,7 @@ namespace  Map
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.9f;
 		auto result = this->LoadMap("map_start");
 		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
 

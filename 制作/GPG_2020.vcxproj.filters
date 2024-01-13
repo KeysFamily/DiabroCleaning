@@ -348,7 +348,7 @@
     <ClCompile Include="Task_SkillShop.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
-    <ClCompile Include="Task_SystemMenuPriceDisplay.cpp">
+    <ClCompile Include="Task_SystemMenuMoneyDisplay.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
     <ClCompile Include="Task_SystemMenuBackButton.cpp">
@@ -524,7 +524,7 @@
     <ClInclude Include="Task_SkillShop.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
-    <ClInclude Include="Task_SystemMenuPriceDisplay.h">
+    <ClInclude Include="Task_SystemMenuMoneyDisplay.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
     <ClInclude Include="Task_SystemMenuBackButton.h">

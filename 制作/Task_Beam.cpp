@@ -38,6 +38,7 @@ namespace  Beam
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.5f;
 		this->hitBase = ML::Box2D(0, -16, 0, 32);
 		this->pos = ML::Vec2(0, 0);
 		this->power = 1.0f;

@@ -56,11 +56,12 @@ namespace  SystemMenuBackButton
 		//追加したい変数・メソッドはここに追加する
 		ML::Vec2 pos;
 		string staffTalkFile;
+		int selectCount;
 
 		//SelectableObjectメソッド
-		virtual ML::Box2D GetObjectSize() const = 0;
-		virtual void IsSelecting() = 0;
-		virtual void FinishSelect() = 0;
-		virtual void IsDown() = 0;
+		virtual ML::Box2D GetObjectSize() const override;
+		virtual void IsSelecting() override;
+		virtual void FinishSelect() override;
+		virtual void IsDown() override;
 	};
 }

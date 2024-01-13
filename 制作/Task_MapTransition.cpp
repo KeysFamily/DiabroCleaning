@@ -40,6 +40,7 @@ namespace  MapTransition
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.1f;
 		this->pos = ge->GetScreenCenter();
 		this->moveVec = ML::Vec2(0, 0);
 		this->moveSpeed = 300;

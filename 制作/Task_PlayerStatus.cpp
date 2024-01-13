@@ -21,8 +21,8 @@ namespace  PlayerStatus
 		this->imgBg = DG::Image::Create("./data/image/menu/status/BackGround.png");
 		this->imgBgSize.Set(960, 674);
 
-		this->systemFontSize.Set(40, 80);
-		this->systemFont = DG::Font::Create("non", systemFontSize.w, systemFontSize.h);
+		this->systemFontSize.Set(32, 64);
+		this->systemFont = DG::Font::Create("ＭＳ ゴシック", systemFontSize.w, systemFontSize.h);
 
 		return true;
 	}
@@ -44,7 +44,7 @@ namespace  PlayerStatus
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->render2D_Priority[1] = 1.0f;
+		this->render2D_Priority[1] = 0.6f;
 		this->pos = ML::Vec2(500, 560);
 		this->shopDistance = 120;
 		this->shopOffset = ML::Vec2(190, 30);
@@ -71,8 +71,8 @@ namespace  PlayerStatus
 
 		this->currentStatus = 0;
 
-		this->statusBeginPos = ML::Vec2(-250, -10);
-		this->statusDistance = -5;
+		this->statusBeginPos = ML::Vec2(-300, 6);
+		this->statusDistance = 74;
 
 		this->currentShop = shops[0].get();
 
@@ -97,15 +97,7 @@ namespace  PlayerStatus
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		int idxShop = 0;
-		for (auto& shop : shops)
-		{
-			//現在のショップを取得
-			if (shop->selectCount > 0)
-			{
-				this->currentShop = shop.get();
-			}
-		}
+		this->ShopUpdate();
 
 		if (ge->qa_Player != nullptr)
 		{
@@ -134,10 +126,13 @@ namespace  PlayerStatus
 		draw = ML::Box2D(0, 0, 500, 500);
 		draw.Offset(this->pos + this->statusBeginPos);
 
-		this->res->systemFont->Draw(draw, to_string(ge->qa_Player->power));
-		this->res->systemFont->Draw(draw, to_string(ge->qa_Player->DEF));
-		this->res->systemFont->Draw(draw, to_string(ge->qa_Player->INT));
-		this->res->systemFont->Draw(draw, to_string(ge->qa_Player->speed));
+		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->power));
+		draw.y += this->statusDistance;
+		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->DEF));
+		draw.y += this->statusDistance;
+		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->INT));
+		draw.y += this->statusDistance;
+		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->speed));
 	}
 	//-------------------------------------------------------------------
 	//その他メソッド
@@ -161,6 +156,26 @@ namespace  PlayerStatus
 			shops[ji["id"]]->SetStaffTalkFile(ji["talkFile"]);
 		}
 	}
+	//ショップの座標等の更新
+	void Object::ShopUpdate()
+	{
+		int idxShop = 0;
+		for (auto& shop : shops)
+		{
+			//位置設定
+			shop->pos = this->pos + ML::Vec2(0, -(shopDistance + shopDistance / 2));
+			shop->pos += shopOffset;
+			shop->pos.y += shopDistance * idxShop;
+
+			//現在のショップを取得
+			if (shop->selectCount > 0)
+			{
+				this->currentShop = shop.get();
+			}
+			++idxShop;
+		}
+	}
+
 
 	void Object::SetDownObj(MyUI::SelectableObject* nextObj_)
 	{

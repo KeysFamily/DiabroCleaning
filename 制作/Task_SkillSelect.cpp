@@ -38,6 +38,7 @@ namespace  SkillSelect
 		this->res = Resource::Create();
 
 		//★データ初期化
+		this->render2D_Priority[1] = 0.6f;
 		this->pos = ML::Vec2(1400, 465);
 		this->shopBeginPos = ML::Vec2(0, -220);
 		this->shopDistance = 96;
@@ -65,6 +66,22 @@ namespace  SkillSelect
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		this->ShopUpDate();
+	}
+	//-------------------------------------------------------------------
+	//「２Ｄ描画」１フレーム毎に行う処理
+	void  Object::Render2D_AF()
+	{
+		ML::Box2D draw = OL::setBoxCenter(this->res->imgBgSize);
+		ML::Box2D src(0, 0, this->res->imgBgSize.w, this->res->imgBgSize.h);
+		draw.Offset(this->pos);
+		this->res->imgBg->Draw(draw, src);
+	}
+	//-------------------------------------------------------------------
+	//その他の関数
+	//ショップの座標等の更新
+	void Object::ShopUpDate()
+	{
 		int idxShop = 0;
 		for (auto& shop : shops)
 		{
@@ -80,17 +97,7 @@ namespace  SkillSelect
 			}
 		}
 	}
-	//-------------------------------------------------------------------
-	//「２Ｄ描画」１フレーム毎に行う処理
-	void  Object::Render2D_AF()
-	{
-		ML::Box2D draw = OL::setBoxCenter(this->res->imgBgSize);
-		ML::Box2D src(0, 0, this->res->imgBgSize.w, this->res->imgBgSize.h);
-		draw.Offset(this->pos);
-		this->res->imgBg->Draw(draw, src);
-	}
-	//-------------------------------------------------------------------
-	//その他の関数
+
 	bool Object::LoadShopData(const string& filePath_)
 	{
 		json js;

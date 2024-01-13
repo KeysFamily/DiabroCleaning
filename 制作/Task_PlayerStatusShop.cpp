@@ -207,6 +207,9 @@ namespace  PlayerStatusShop
 			}
 			return true;
 		}
+
+		auto msg = ge->GetTask<SystemMenuMessageWindow::Object>("SystemMenu", "MessageWindow");
+		msg->SetMessage("cantBuy");
 		return false;
 	}
 
@@ -251,8 +254,10 @@ namespace  PlayerStatusShop
 	//ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚©
 	void Object::IsDown()
 	{
-		int money = 9999999;
-		this->Buy(money);
+		if (ge->qa_Player != nullptr)
+		{
+			this->Buy(ge->qa_Player->balanceMoney);
+		}
 
 	}
 	//šššššššššššššššššššššššššššššššššššššššššš

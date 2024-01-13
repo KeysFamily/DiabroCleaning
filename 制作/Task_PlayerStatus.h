@@ -89,6 +89,9 @@ namespace  PlayerStatus
 		//ショップデータを読み込む
 		bool LoadShopFile(const string& filePath_);
 
+		//ショップの座標等の更新
+		void ShopUpdate();
+
 		void SetDownObj(MyUI::SelectableObject* nextObj_);
 		void SetRightObj(MyUI::SelectableObject* nextObj_);
 	};

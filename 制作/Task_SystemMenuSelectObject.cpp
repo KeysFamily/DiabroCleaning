@@ -39,6 +39,7 @@ namespace  SystemMenuSelectObject
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.2f;
 		this->animCnt = 0;
 		this->viewRate = 1.0f;
 		this->sto = nullptr;

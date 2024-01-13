@@ -849,7 +849,7 @@ ge->debugRect(me, DEBUGRECTMODE::RED ,- ge->camera2D.x, -ge->camera2D.y);
 			1080,//360,							//	画面サイズY
 			1,								//	表示倍率
 			1,								//	マルチサンプル(1or2or4)
-			false,							//	フルスクリーンモード
+			true,							//	フルスクリーンモード
 			480,							//	2D描画用解像度X(現在非対応）
 			270,							//	2D描画用解像度Y(現在非対応）
 			"2023年度 制作実習 チーム制作 「ぼっちちゃん」",	//	ウインドウタイトル
@@ -970,7 +970,7 @@ ge->debugRect(me, DEBUGRECTMODE::RED ,- ge->camera2D.x, -ge->camera2D.y);
 
 		//TODO: 初期タスクを変更したい場合はここをいじること(from.22ci0333)
 		//初期実行タスク生成＆ゲームエンジンに登録
-		auto  ft = SystemMenu::Object::Create(true);
+		auto  ft = Title::Object::Create(true);
 
 		//------------------------------------------------------------------------------------
 		//レイヤー毎の描画のON/OFF
