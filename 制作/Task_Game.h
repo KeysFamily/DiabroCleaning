@@ -5,6 +5,11 @@
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
 
+namespace SystemMenu
+{
+	class Object;
+}
+
 namespace  Game
 {
 	//タスクに割り当てるグループ名と固有名
@@ -51,6 +56,7 @@ namespace  Game
 
 		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0329記述
+		shared_ptr<SystemMenu::Object> menu;
 		bool openingMenu;	//メニューを開いているか
 
 		void StopGameObj();

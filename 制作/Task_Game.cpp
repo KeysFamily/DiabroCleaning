@@ -83,6 +83,8 @@ namespace  Game
 
 		EnemyManager::Object::Create(true);
 
+		this->menu = SystemMenu::Object::Create(true);
+
 		this->cnt = 0;
 
 		return  true;
@@ -107,6 +109,7 @@ namespace  Game
 		ge->KillAll_G("Sprite");
 		ge->KillAll_G("MagicManager");
 		ge->KillAll_G("Magic");
+		ge->KillAll_G("SystemMenu");
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
 			auto next = Ending::Object::Create(true);
@@ -151,7 +154,8 @@ namespace  Game
 		if (inp.ST.down) {
 			//◇◇◇◇◇◇◇◇◇◇
 			//以下22CI0329記述
-			SystemMenu::Object::Create(true);
+			this->menu->Suspend(false);
+			this->menu->StartMenu();
 			bgm::Pause("bgm3");
 			auto gameObjs = this->GetGameObj();
 			for (auto& gameObj : *gameObjs)
@@ -216,8 +220,11 @@ namespace  Game
 
 	bool Object::CheckFinishedMenu()
 	{
-		auto menu = ge->GetTask<SystemMenu::Object>("SystemMenu", "System");
-		if (menu == nullptr)
+		if (this->menu == nullptr)
+		{
+			return true;
+		}
+		else if (this->menu->TaskStateCnt_Suspend() > 0)
 		{
 			return true;
 		}

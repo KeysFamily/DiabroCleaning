@@ -75,6 +75,7 @@ namespace  SystemMenu
 		void SetPos();
 		void AppearUpDate();
 		void DisappearUpdate();
+		void SuspendMenu(bool f_);
 
 	public:
 		//追加したい変数・メソッドはここに追加する
@@ -91,9 +92,13 @@ namespace  SystemMenu
 		shared_ptr<SystemMenuMoneyDisplay::Object> moneyDp;
 		shared_ptr<SystemMenuBackButton::Object> back;
 
+		shared_ptr<vector<BTask::SP>> menuObj;
+
 		bool finishedAppear;	//出現が終了したか
 		bool finishFlag;		//終了するか
 
+		//開始処理
+		void StartMenu();
 		//終了判定
 		void FinishMenu();
 	};

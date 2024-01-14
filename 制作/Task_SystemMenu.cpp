@@ -55,15 +55,7 @@ namespace  SystemMenu
 		this->moneyPos = ML::Vec2(420, 130);
 		//終了判定
 		this->finishedAppear = false;
-		this->finishFlag = false;
-		//イージング設定
-		easing::Create("menuAp", easing::EASINGTYPE::BOUNCEOUT, this->pos.y, 0, 30);
-		easing::Start("menuAp");
-		//サウンド設定
-		bgm::LoadFile("bgmMenu", "./data/sound/bgm/shop.mp3");
-		bgm::Play("bgmMenu");
-		se::LoadFile("shopin", "./data/sound/se/shopin.wav");
-		se::Play("shopin");
+		this->finishFlag = true;
 
 
 		//★タスクの生成
@@ -84,6 +76,8 @@ namespace  SystemMenu
 		status->SetDownObj(back.get());
 		back->SetNext_Up((skill->shops.end() - 1)->get());
 
+		//最初は無効にしておく
+		this->SuspendMenu(true);
 
 
 		return  true;
@@ -105,13 +99,16 @@ namespace  SystemMenu
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		this->SetPos();
 		if (finishFlag == true)
 		{
 			this->DisappearUpdate();
+			return;
 		}
 		if (finishedAppear == false)
 		{
 			this->AppearUpDate();
+			return;
 		}
 
 		//終了処理
@@ -124,7 +121,6 @@ namespace  SystemMenu
 
 		this->skill->SetLeftObj(this->status->currentShop);
 		this->status->SetRightObj(this->skill->currentShop);
-		this->SetPos();
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -147,6 +143,19 @@ namespace  SystemMenu
 		this->back->pos = this->pos + this->backPos;
 	}
 
+	//メニューオブジェクト無効化
+	void Object::SuspendMenu(bool f_)
+	{
+		if (true)
+		{
+			this->menuObj = ge->GetTasks<BTask>("SystemMenu");
+		}
+		for (auto& obj : *(this->menuObj))
+		{
+			obj->Suspend(f_);
+		}
+	}
+
 	//出現処理
 	void Object::AppearUpDate()
 	{
@@ -166,15 +175,41 @@ namespace  SystemMenu
 		this->pos.y = easing::GetPos("menuDisap");
 		if (easing::GetState("menuDisap") == easing::EQ_STATE::EQ_END)
 		{
-			ge->KillAll_G("SystemMenu");
+			this->Suspend(true);
 		}
 	}
 
+	//メニュー画面開始
+	void Object::StartMenu()
+	{
+		//位置設定
+		this->pos = ML::Vec2(0, -1080);
+		this->skillPos = ML::Vec2(1400, 465);
+		this->statusPos = ML::Vec2(500, 560);
+		this->backPos = ML::Vec2(1650, 1000);
+		this->msgPos = ML::Vec2(750, 1000);
+		this->moneyPos = ML::Vec2(420, 130);
+		//終了判定
+		this->finishedAppear = false;
+		this->finishFlag = false;
+		//イージング設定
+		easing::Create("menuAp", easing::EASINGTYPE::BOUNCEOUT, this->pos.y, 0, 30);
+		easing::Start("menuAp");
+		//サウンド設定
+		bgm::LoadFile("bgmMenu", "./data/sound/bgm/shop.mp3");
+		bgm::Play("bgmMenu");
+		se::LoadFile("shopin", "./data/sound/se/shopin.wav");
+		se::Play("shopin");
+		//関連タスク有効化
+		this->SuspendMenu(false);
+		this->SetPos();
+		this->message->SetMessage("enter");
+	}
 
 	//メニュー画面終了
 	void Object::FinishMenu()
 	{
-		ge->KillAll_GN("SysmtemMenu", "SelectObject");
+		ge->KillAll_GN("SystemMenu", "SelectObject");
 		easing::Create("menuDisap", easing::EASINGTYPE::CUBICOUT, this->pos.y, -1080, 30);
 		easing::Start("menuDisap");
 		bgm::Stop("bgmMenu");

@@ -1,0 +1,24 @@
+{
+	"pData_status": [
+		{
+			"id": 0,
+			"name": "ATK",
+			"level": 1
+		},
+		{
+			"id": 1,
+			"name": "DEF",
+			"level": 1
+		},
+		{
+			"id": 2,
+			"name": "INT",
+			"level": 1
+		},
+		{
+			"id": 3,
+			"name": "SPD",
+			"level": 1
+		}
+	]
+}

@@ -1,0 +1,24 @@
+{
+	"pData_skill": [
+		{
+			"id": 0,
+			"name": "Thunder",
+			"isBought": false
+		},
+		{
+			"id": 1,
+			"name": "WaterBlast",
+			"isBought": false
+		},
+		{
+			"id": 2,
+			"name": "FireBall",
+			"isBought": false
+		},
+		{
+			"id": 3,
+			"name": "Beam",
+			"isBought": false
+		}
+	]
+}
