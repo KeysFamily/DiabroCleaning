@@ -113,6 +113,23 @@ namespace  SkillShop
 		this->shopData = shopData_;
 		this->objPrice->SetPrice(this->shopData.price);
 	}
+
+	//w“ü‚·‚é
+	bool Object::Buy(int& money_)
+	{
+		if (this->currentState != State::SALE)
+		{
+			return false;
+		}
+		else if (money_ >= this->shopData.price)
+		{
+			money_ -= this->shopData.price;
+			this->currentState = State::BOUGHT;
+			this->objPrice->active = false;
+			return true;
+		}
+	}
+
 	//SelectableObject‚Ìƒƒ\ƒbƒh
 	ML::Box2D Object::GetObjectSize() const
 	{
@@ -135,7 +152,10 @@ namespace  SkillShop
 	}
 	void Object::IsDown()
 	{
-
+		if (ge->qa_Player != nullptr)
+		{
+			this->Buy(ge->qa_Player->balanceMoney);
+		}
 	}
 
 	//šššššššššššššššššššššššššššššššššššššššššš

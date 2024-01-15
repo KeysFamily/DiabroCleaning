@@ -1,4 +1,6 @@
 #include "OriginalLibrary.h"
+
+using json = nlohmann::json;
 //-------------------------------------------------------------------
 // 0329土田オリジナルライブラリ
 // 作　成　者:22CI0329　土田誠也
@@ -218,4 +220,20 @@ namespace OL
 		return result;
 	}
 
+	//jsonファイルを読み込む
+	json LoadJsonFile(const string& filePath_)
+	{
+		json js;
+		std::ifstream fin(filePath_);
+		if (!fin)
+		{
+			return js;
+		}
+		//JSONファイル読み込み
+		fin >> js;
+		//ファイル読み込み終了
+		fin.close();
+
+		return js;
+	}
 }

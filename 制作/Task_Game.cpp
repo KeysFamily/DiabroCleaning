@@ -126,6 +126,8 @@ namespace  Game
 		{
 			if (this->CheckFinishedMenu())
 			{
+				//メニュー画面を閉じたときの処理
+				ge->qa_Player->LoadFile();
 				this->ResumeGameObj();
 				bgm::Play("bgm3");
 				this->openingMenu = false;

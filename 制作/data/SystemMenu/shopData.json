@@ -1,7 +1,7 @@
 {
 	"skillShopMenu": [
 		{
-			"id": 0,
+			"id": 2,
 			"name": "Thunder",
 			"talkFileName": "sk_thunder",
 			"srcPosY": 3,
@@ -15,7 +15,7 @@
 			"price": 400
 		},
 		{
-			"id": 2,
+			"id": 0,
 			"name": "FireBall",
 			"talkFileName": "sk_fireBall",
 			"srcPosY": 1,

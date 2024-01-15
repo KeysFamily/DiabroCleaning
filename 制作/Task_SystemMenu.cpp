@@ -19,6 +19,7 @@
 #include  "Task_SystemMenuMoneyDisplay.h"
 #include  "Task_SystemMenuBackButton.h"
 
+
 namespace  SystemMenu
 {
 	Resource::WP  Resource::instance;
@@ -56,7 +57,8 @@ namespace  SystemMenu
 		//終了判定
 		this->finishedAppear = false;
 		this->finishFlag = true;
-
+		//ゲーム用ファイルを生成しておく
+		this->CreateNewFile();
 
 		//★タスクの生成
 		this->status = PlayerStatus::Object::Create(true);
@@ -210,11 +212,53 @@ namespace  SystemMenu
 	void Object::FinishMenu()
 	{
 		ge->KillAll_GN("SystemMenu", "SelectObject");
+		this->SaveToFile();
 		easing::Create("menuDisap", easing::EASINGTYPE::CUBICOUT, this->pos.y, -1080, 30);
 		easing::Start("menuDisap");
 		bgm::Stop("bgmMenu");
 		se::Play("shopin");
 		this->finishFlag = true;
+	}
+
+	//新規ファイル作成
+	void Object::CreateNewFile()
+	{
+		CopyFile("./data/inGame/template/pData_skill.json", "./data/inGame/run/pData_skill.json", false);
+		CopyFile("./data/inGame/template/pData_status.json", "./data/inGame/run/pData_status.json", false);
+	}
+
+	//ファイルにセーブ
+	void Object::SaveToFile()
+	{
+		json js;
+		std::ifstream fin("./data/inGame/run/pData_skill.json");
+		if (!fin)
+		{
+			return;
+		}
+		//JSONファイル読み込み
+		fin >> js;
+		//ファイル読み込み終了
+		fin.close();
+
+
+		for (auto& ji : js["pData_skill"])
+		{
+			for (auto& sk : this->skill->shops)
+			{
+				if (ji["name"] == sk->shopData.skillName)
+				{
+					ji["isBought"] = sk->currentState == SkillShop::Object::State::BOUGHT;
+				}
+			}
+		}
+
+		ofstream fout("./data/inGame/run/pData_skill.json");
+		fout << js.dump(4);
+
+		fout.close();
+
+		return;
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド

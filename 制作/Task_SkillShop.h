@@ -70,6 +70,7 @@ namespace  SkillShop
 		void  Render2D_AF()		override;//「2D描画」１フレーム毎に行う処理
 		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+		bool Buy(int& money_);
 	public:
 		//追加したい変数・メソッドはここに追加する
 		ML::Vec2 pos;			//座標

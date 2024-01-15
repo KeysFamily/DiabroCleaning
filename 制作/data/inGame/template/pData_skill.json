@@ -1,7 +1,7 @@
 {
 	"pData_skill": [
 		{
-			"id": 0,
+			"id": 2,
 			"name": "Thunder",
 			"isBought": false
 		},
@@ -11,7 +11,7 @@
 			"isBought": false
 		},
 		{
-			"id": 2,
+			"id": 0,
 			"name": "FireBall",
 			"isBought": false
 		},

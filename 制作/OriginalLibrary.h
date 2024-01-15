@@ -6,6 +6,8 @@
 // 概　　　要:処理を効率化させるための処理を組み込んだライブラリ
 //------------------------------------------------------------------
 #include "MyLib.h"
+#include "nlohmann/json.hpp"
+
 namespace OL
 {
 	//上限下限クラス
@@ -225,5 +227,8 @@ namespace OL
 
 	//ベクトルを回転させる
 	ML::Vec2 RotateVec(const ML::Vec2& vec_, float angleRad_);
+
+	//JSONファイルを読み込む
+	nlohmann::json LoadJsonFile(const string& filePath_);
 
 }
