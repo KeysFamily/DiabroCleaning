@@ -47,6 +47,7 @@ namespace  WaterBlast
 		this->power = 1.0f;
 		this->cost = 0;//‰¼
 		this->motion = Motion::Start;
+		this->coolTime = 0;
 		//šƒ^ƒXƒN‚Ì¶¬
 
 		return  true;
@@ -70,6 +71,7 @@ namespace  WaterBlast
 	{
 		this->moveCnt++;
 		this->animCnt++;
+		this->coolTime++;
 		this->Think();
 		this->Move();
 	}
@@ -130,7 +132,9 @@ namespace  WaterBlast
 				++it) {
 				if ((*it)->CheckHit(this->hitBase.OffsetCopy(this->pos))) {
 					BChara::AttackInfo at = { this->power, 0, 0 };
-					(*it)->Received(this, at);
+					if (this->coolTime % 20 == 0) {
+						(*it)->Received(this, at);
+					}
 				}
 			}
 			if (this->moveCnt % 60 == 1) { pl->balanceMoney -= this->cost; }

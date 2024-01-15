@@ -9,6 +9,7 @@
 #include  "MyPG.h"
 #include  "Task_FireBall.h"
 #include  "BEnemy.h"
+#include  "Task_Effect00.h"
 
 namespace  FireBall
 {
@@ -66,7 +67,7 @@ namespace  FireBall
 	{
 		this->moveCnt++;
 		this->animCnt++;
-		if (true == this->CheckFront_LR()) { this->Kill(); }
+		if (true == this->CheckFront_LR()) { ge->CreateEffect(8, this->pos);  this->Kill(); }
 		this->pos += this->moveVec;
 		auto enemys = ge->GetTasks<BChara>("Enemy");
 		for (auto it = enemys->begin();
@@ -76,6 +77,7 @@ namespace  FireBall
 				ge->CreateEffect(89, (*it)->pos);
 				BChara::AttackInfo at = { this->power, 0, 0 };
 				(*it)->Received(this, at);
+				ge->CreateEffect(8, this->pos);
 				this->Kill();
 				break;
 			}

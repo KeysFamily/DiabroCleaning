@@ -197,8 +197,8 @@ namespace MyPG
 				e->filename = "data/effect/effect3_bomb1.png";
 				e->resSizeX = 256;
 				e->resSizeY = 256;
-				e->drawSizeX = 512;
-				e->drawSizeY = 512;
+				e->drawSizeX = 256;
+				e->drawSizeY = 256;
 				e->pos.x = pos.x;
 				e->pos.y = pos.y;
 
