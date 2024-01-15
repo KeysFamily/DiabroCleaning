@@ -6,8 +6,11 @@ namespace MyUI
 	{
 		SelectableObject* nextObj[4];
 	public:
+		//以下4つの関数をオーバーライドする
 		virtual ML::Box2D GetObjectSize() const = 0;
 		virtual void IsSelecting() = 0;
+		virtual void FinishSelect() = 0;
+		virtual void IsDown() = 0;
 
 		SelectableObject()
 			:nextObj{ this,this,this,this }
@@ -15,19 +18,19 @@ namespace MyUI
 		}
 
 		//ゲッタ
-		SelectableObject* GetNext_Up() const
+		virtual SelectableObject* GetNext_Up() const
 		{
 			return nextObj[0];
 		}
-		SelectableObject* GetNext_Down() const
+		virtual SelectableObject* GetNext_Down() const
 		{
 			return nextObj[1];
 		}
-		SelectableObject* GetNext_Left() const
+		virtual SelectableObject* GetNext_Left() const
 		{
 			return nextObj[2];
 		}
-		SelectableObject* GetNext_Right() const
+		virtual SelectableObject* GetNext_Right() const
 		{
 			return nextObj[3];
 		}
@@ -37,15 +40,15 @@ namespace MyUI
 		{
 			nextObj[0] = nextObjU;
 		}
-		void GetNext_Down(SelectableObject* nextObjD)
+		void SetNext_Down(SelectableObject* nextObjD)
 		{
 			nextObj[1] = nextObjD;
 		}
-		void GetNext_Left(SelectableObject* nextObjL)
+		void SetNext_Left(SelectableObject* nextObjL)
 		{
 			nextObj[2] = nextObjL;
 		}
-		void GetNext_Right(SelectableObject* nextObjR)
+		void SetNext_Right(SelectableObject* nextObjR)
 		{
 			nextObj[3] = nextObjR;
 		}

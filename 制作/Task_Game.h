@@ -5,6 +5,11 @@
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
 
+namespace SystemMenu
+{
+	class Object;
+}
+
 namespace  Game
 {
 	//タスクに割り当てるグループ名と固有名
@@ -48,6 +53,17 @@ namespace  Game
 	public:
 		//追加したい変数・メソッドはここに追加する
 		int cnt;
+
+		//◇◇◇◇◇◇◇◇◇◇
+		//以下22CI0329記述
+		shared_ptr<SystemMenu::Object> menu;
+		bool openingMenu;	//メニューを開いているか
+
+		void StopGameObj();
+		void ResumeGameObj();
+		bool CheckFinishedMenu();
+		shared_ptr<vector<BTask::SP>> GetGameObj();
+		// ◆◆◆◆◆◆◆◆◆◆
 
 		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0333記述

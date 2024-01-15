@@ -39,6 +39,7 @@ namespace  MagicManager
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.5f;
 		this->moveCnt = 0;
 		this->LR = true;
 		this->pos = ML::Vec2(0, 0);

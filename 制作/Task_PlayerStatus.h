@@ -16,6 +16,11 @@ namespace PlayerStatusShop
 	class Object;
 }
 
+namespace MyUI
+{
+	class SelectableObject;
+}
+
 namespace  PlayerStatus
 {
 	//タスクに割り当てるグループ名と固有名
@@ -36,9 +41,8 @@ namespace  PlayerStatus
 		//共有する変数はここに追加する
 		DG::Image::SP imgBg;
 		OL::Size2D imgBgSize;
-		DG::Image::SP imgProgress; 
-		OL::Size2D imgProgressSize;
 		DG::Font::SP systemFont;
+		OL::Size2D systemFontSize;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -73,8 +77,22 @@ namespace  PlayerStatus
 		shared_ptr<PlayerStatusShop::Object> shops[4];
 		int currentStatus;
 
+		ML::Vec2 pos;
+		ML::Vec2 shopOffset;
+		float shopDistance;
+
 		ML::Vec2 statusBeginPos;
 		float statusDistance;
 
+		MyUI::SelectableObject* currentShop;		//選択中のショップ
+		
+		//ショップデータを読み込む
+		bool LoadShopFile(const string& filePath_);
+
+		//ショップの座標等の更新
+		void ShopUpdate();
+
+		void SetDownObj(MyUI::SelectableObject* nextObj_);
+		void SetRightObj(MyUI::SelectableObject* nextObj_);
 	};
 }

@@ -9,6 +9,7 @@
 #include "MyPG.h"
 #include "Task_PlayerStatus.h"
 #include "Task_PlayerStatusShop.h"
+#include "Task_SystemMenuSelectObject.h"
 
 namespace  PlayerStatus
 {
@@ -18,10 +19,10 @@ namespace  PlayerStatus
 	bool  Resource::Initialize()
 	{
 		this->imgBg = DG::Image::Create("./data/image/menu/status/BackGround.png");
-		this->imgProgress = DG::Image::Create("./data/image/menu/status/Progress.png");
 		this->imgBgSize.Set(960, 674);
-		this->imgProgressSize.Set(14, 42);
-		this->systemFont = DG::Font::Create("non", 12, 24);
+
+		this->systemFontSize.Set(32, 64);
+		this->systemFont = DG::Font::Create("ＭＳ ゴシック", systemFontSize.w, systemFontSize.h);
 
 		return true;
 	}
@@ -30,7 +31,6 @@ namespace  PlayerStatus
 	bool  Resource::Finalize()
 	{
 		this->imgBg.reset();
-		this->imgProgress.reset();
 		this->systemFont.reset();
 		return true;
 	}
@@ -44,15 +44,37 @@ namespace  PlayerStatus
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->shops[0] = PlayerStatusShop::Object::Create(true);
-		this->shops[1] = PlayerStatusShop::Object::Create(true);
-		this->shops[2] = PlayerStatusShop::Object::Create(true);
-		this->shops[3] = PlayerStatusShop::Object::Create(true);
+		this->render2D_Priority[1] = 0.6f;
+		this->pos = ML::Vec2(500, 560);
+		this->shopDistance = 120;
+		this->shopOffset = ML::Vec2(190, 30);
 
+		for (int i = 0; i < 4; ++i)
+		{
+			this->shops[i] = PlayerStatusShop::Object::Create(true);
+			this->shops[i]->pos = this->pos + ML::Vec2(0, -(shopDistance + shopDistance / 2));
+			this->shops[i]->pos += shopOffset;
+			this->shops[i]->pos.y += shopDistance * i;
+			this->shops[i]->statusType = i;
+		}
+
+		//繋がりの設定
+		this->shops[0]->SetNext_Down(this->shops[1].get());
+		this->shops[1]->SetNext_Up(this->shops[0].get());
+		this->shops[1]->SetNext_Down(this->shops[2].get());
+		this->shops[2]->SetNext_Up(this->shops[1].get());
+		this->shops[2]->SetNext_Down(this->shops[3].get());
+		this->shops[3]->SetNext_Up(this->shops[2].get());
+
+		//値の設定
+		this->LoadShopFile("./data/SystemMenu/Status/shopData.json");
 
 		this->currentStatus = 0;
 
-		this->statusBeginPos = ML::Vec2(100, 100);
+		this->statusBeginPos = ML::Vec2(-300, 6);
+		this->statusDistance = 74;
+
+		this->currentShop = shops[0].get();
 
 		//★タスクの生成
 
@@ -75,17 +97,99 @@ namespace  PlayerStatus
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		this->ShopUpdate();
+
+		if (ge->qa_Player != nullptr)
+		{
+			ge->qa_Player->power = this->shops[ATK]->GetStatusAdd();
+			ge->qa_Player->DEF = this->shops[DEF]->GetStatusAdd();
+			ge->qa_Player->INT = this->shops[INT]->GetStatusAdd();
+			ge->qa_Player->speed = this->shops[SPD]->GetStatusAdd();
+		}
 
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		
+		ML::Box2D draw = OL::setBoxCenter(this->res->imgBgSize);
+		ML::Box2D src(0, 0, this->res->imgBgSize.w, this->res->imgBgSize.h);
+		draw.Offset(this->pos);
+
+		this->res->imgBg->Draw(draw, src);
+
+		if (ge->qa_Player == nullptr)
+		{
+			return;
+		}
+
+		draw = ML::Box2D(0, 0, 500, 500);
+		draw.Offset(this->pos + this->statusBeginPos);
+
+		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->power));
+		draw.y += this->statusDistance;
+		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->DEF));
+		draw.y += this->statusDistance;
+		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->INT));
+		draw.y += this->statusDistance;
+		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->speed));
 	}
 	//-------------------------------------------------------------------
 	//その他メソッド
-	
+	//ショップデータを読み込む
+	bool Object::LoadShopFile(const string& filePath_)
+	{
+		ifstream ifs(filePath_);
+		if (!ifs)
+		{
+			return false;
+		}
+		
+		json js;
+		ifs >> js;
+		ifs.close();
+
+		for (auto& ji : js["statusShop"])
+		{
+			shops[ji["id"]]->displayStr = ji["name"];
+			shops[ji["id"]]->LoadShopData(ji["paramFile"]);
+			shops[ji["id"]]->SetStaffTalkFile(ji["talkFile"]);
+		}
+	}
+	//ショップの座標等の更新
+	void Object::ShopUpdate()
+	{
+		int idxShop = 0;
+		for (auto& shop : shops)
+		{
+			//位置設定
+			shop->pos = this->pos + ML::Vec2(0, -(shopDistance + shopDistance / 2));
+			shop->pos += shopOffset;
+			shop->pos.y += shopDistance * idxShop;
+
+			//現在のショップを取得
+			if (shop->selectCount > 0)
+			{
+				this->currentShop = shop.get();
+			}
+			++idxShop;
+		}
+	}
+
+
+	void Object::SetDownObj(MyUI::SelectableObject* nextObj_)
+	{
+		{
+			this->shops[3]->SetNext_Down(nextObj_);
+		}
+	}
+	void Object::SetRightObj(MyUI::SelectableObject* nextObj_)
+	{
+		for (auto& shop : shops)
+		{
+			shop->SetNext_Right(nextObj_);
+		}
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

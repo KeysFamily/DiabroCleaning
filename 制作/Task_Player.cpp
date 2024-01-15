@@ -70,7 +70,7 @@ namespace  Player
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
 		this->balanceMoney = 100;
-		this->magicSelect = Magic::Thunder; //仮
+		this->magicSelect = Magic::NoMagic; //仮
 		this->surviveFrame = 0;
 		this->surviveTime = 0;
 		this->DEF = 1;
@@ -81,6 +81,9 @@ namespace  Player
 		//0329
 		this->moveMapCoolTime.SetValues(0, 0, 60);
 		this->moveEffectDistance = 16;
+		this->unlockedMagic.clear();
+		this->unlockedMagic.push_back(Magic::NoMagic);
+		this->magicIndex = 0;
 		//--------------------------------------
 		//★タスクの生成
 
@@ -350,16 +353,18 @@ namespace  Player
 		auto  inp = this->controller->GetState();
 		//魔法変更
 		if (inp.L1.down) {
-			this->magicSelect--; 
-			if (this->magicSelect < -1) {
-				this->magicSelect = 3;
+			this->magicIndex--; 
+			if (this->magicIndex < 0) {
+				this->magicIndex = this->unlockedMagic.size() - 1;
 			}
+			this->magicSelect = this->unlockedMagic[this->magicIndex];
 		}
 		if (inp.R1.down) {
-			this->magicSelect++;
-			if (this->magicSelect > 3) {
-				this->magicSelect = -1;
+			this->magicIndex++;
+			if (this->magicIndex >= this->unlockedMagic.size()) {
+				this->magicIndex = 0;
 			}
+			this->magicSelect = this->unlockedMagic[this->magicIndex];
 		}
 		//重力加速
 		switch (this->motion) {
@@ -920,6 +925,61 @@ namespace  Player
 			manager->MoveMap(mapmove);
 
 			this->moveMapCoolTime.Setval(this->moveMapCoolTime.vmin);
+		}
+	}
+	//ファイル読み込み処理
+	void Object::LoadFile()
+	{
+		//スキル読み込み
+		json js = OL::LoadJsonFile("./data/inGame/run/pData_skill.json");
+		
+		for (auto& ji : js["pData_skill"])
+		{
+			if (ji["isBought"] == true)
+			{
+				//新しく解禁されたスキルがないか確認
+				std::vector<int>::iterator itr;
+				itr = std::find(this->unlockedMagic.begin(), this->unlockedMagic.end(), ji["id"]);
+				if (itr == this->unlockedMagic.end())
+				{
+					this->unlockedMagic.push_back(ji["id"]);
+				}
+			}
+		}
+
+		js.clear();
+
+		//ステータス読み込み
+		js = OL::LoadJsonFile("./data/inGame/run/pData_status.json");
+		
+		for (auto& ji : js["pData_status"])
+		{
+			ifstream ifs(string("./data/SystemMenu/Status/") + string(ji["paramFile"]) + ".txt");
+			if (!ifs)
+			{
+				continue;
+			}
+
+			int param;
+			for (int i = 0; i < ji["level"]; ++i)
+			{
+				ifs >> param;
+			}
+
+			switch ((int)ji["id"])
+			{
+			case StatusID::ST_ATK:
+				this->power = param;
+				break;
+			case StatusID::ST_DEF:
+				this->DEF = param;
+				break;
+			case StatusID::ST_INT:
+				this->INT = param;
+				break;
+			case StatusID::ST_SPD:
+				this->speed = param;
+			}
 		}
 	}
 	//-------------------------------------------------------------------

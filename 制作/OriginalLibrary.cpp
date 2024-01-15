@@ -1,4 +1,6 @@
 #include "OriginalLibrary.h"
+
+using json = nlohmann::json;
 //-------------------------------------------------------------------
 // 0329土田オリジナルライブラリ
 // 作　成　者:22CI0329　土田誠也
@@ -39,12 +41,59 @@ namespace OL
 		, imgPos()
 		, animDistance(animDistance_)
 	{}
+	//コンストラクタ(ファイルからの読み込み)
+	Animation::Animation(const std::string& filePath_)
+		:imgSize()
+		,imgPos()
+		,animDistance(0)
+	{
+		ifstream ifs(filePath_);
+
+		//サイズ
+		if (!ifs) 
+		{
+			return;
+		}
+		ifs >> this->imgSize.w;
+		if (!ifs)
+		{
+			return;
+		}
+		ifs >> this->imgSize.h;
+		//アニメーションの間隔
+		if (!ifs)
+		{
+			return;
+		}
+		ifs >> this->animDistance;
+
+		//アニメーションで使用する位置の追加
+		while (ifs)
+		{
+			ML::Point pos;
+			ifs >> pos.x;
+
+			//読み込めなくなったら終了
+			if (!ifs)
+			{
+				return;
+			}
+			ifs >> pos.y;
+
+			this->imgPos.push_back(pos);
+		}
+
+		ifs.close();
+	}
 	//生成
 	Animation::SP Animation::Create(const Size2D& size_, int animDistance_)
 	{
 		return shared_ptr<Animation>(new Animation(size_, animDistance_));
 	}
-
+	Animation::SP Animation::Create(const string& filePath_)
+	{
+		return shared_ptr<Animation>(new Animation(filePath_));
+	}
 	//引数で受け取ったフレーム数に対応したアニメーション画像を返す
 	ML::Vec2 Animation::GetPos(int frames_) const
 	{
@@ -53,6 +102,19 @@ namespace OL
 		ML::Vec2 srcPos(imgSize.w * imgPosNow.x, imgSize.h * imgPosNow.y);
 		return srcPos;
 	}
+	//引数で受け取ったフレーム数に対応したアニメーション画像を返す
+	ML::Box2D Animation::GetSrcBox(int frames_) const
+	{
+		int animCnt = frames_ % (this->animDistance * this->imgPos.size());
+		ML::Point imgPosNow = this->imgPos.at(animCnt / this->animDistance);
+		return ML::Box2D(imgSize.w * imgPosNow.x, imgSize.h * imgPosNow.y, imgSize.w, imgSize.h);
+	}
+	//描画用矩形をもらう
+	ML::Box2D Animation::GetDrawBox() const
+	{
+		return setBoxCenter(this->imgSize);
+	}
+
 	//位置追加
 	void Animation::AddPos(const ML::Point& pos_)
 	{
@@ -65,6 +127,7 @@ namespace OL
 		pos.y = y_;
 		this->imgPos.push_back(pos);
 	}
+
 	//画像サイズ設定
 	void Animation::SetSize(const Size2D& size_)
 	{
@@ -157,4 +220,20 @@ namespace OL
 		return result;
 	}
 
+	//jsonファイルを読み込む
+	json LoadJsonFile(const string& filePath_)
+	{
+		json js;
+		std::ifstream fin(filePath_);
+		if (!fin)
+		{
+			return js;
+		}
+		//JSONファイル読み込み
+		fin >> js;
+		//ファイル読み込み終了
+		fin.close();
+
+		return js;
+	}
 }

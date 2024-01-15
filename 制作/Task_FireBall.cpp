@@ -38,6 +38,7 @@ namespace  FireBall
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.5f;
 		this->hitBase = ML::Box2D(-26, -26, 52, 52);
 		this->pos = ML::Vec2(0, 0);
 		this->speed = 10.0f;

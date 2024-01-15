@@ -137,10 +137,19 @@ namespace  Player
 
 		//--------------------------------------
 		//0329
-		//マップ移動処理
+		enum StatusID
+		{
+			ST_ATK = 0,
+			ST_DEF,
+			ST_INT,
+			ST_SPD,
+		};
 		OL::Limit<int> moveMapCoolTime;		//マップ移動のクールタイム
 		void CheckMoveMap();				//マップ移動判定
 		int moveEffectDistance;				//移動エフェクトの間隔
+		void LoadFile();	//スキル等ファイルのロード
+		int magicIndex;						//使っている魔法の要素番号
+		vector<int> unlockedMagic;			//解放済みのスキル
 		//--------------------------------------
 		void CheckMove_();					//マップ外に出ないように
 	};

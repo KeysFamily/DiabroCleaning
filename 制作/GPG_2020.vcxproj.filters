@@ -332,6 +332,28 @@
     <ClCompile Include="Task_SystemMenuSelectObject.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
+    <ClCompile Include="Task_Price.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_ShopStaff.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemyBoss.cpp" />
+    <ClCompile Include="Task_SystemMenuMessageWindow.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_SkillSelect.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_SkillShop.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_SystemMenuMoneyDisplay.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_SystemMenuBackButton.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -484,6 +506,28 @@
       <Filter>MyPG\Task\Game\GameUI</Filter>
     </ClInclude>
     <ClInclude Include="Task_SystemMenuSelectObject.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Price.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_ShopStaff.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemyBoss.h" />
+    <ClInclude Include="Task_SystemMenuMessageWindow.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SkillSelect.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SkillShop.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SystemMenuMoneyDisplay.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SystemMenuBackButton.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
   </ItemGroup>

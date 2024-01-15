@@ -8,6 +8,9 @@
 //?------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_PlayerStatusShop.h"
+#include  "Task_PlayerStatus.h"
+#include  "Task_Price.h"
+#include  "Task_SystemMenuMessageWindow.h"
 
 namespace  PlayerStatusShop
 {
@@ -40,18 +43,32 @@ namespace  PlayerStatusShop
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->displayStr = "ATK";
-		this->currentStatus.SetValues(0, 0, 10);
-		for (int i = 0; i < 10; ++i)
+		this->render2D_Priority[1] = 0.5f;
+
+		this->displayStr = "";
+		this->progressDistance = 10;
+		this->statusLvMax = 5;
+		this->currentStatus.SetValues(0, 0, statusLvMax - 1);
+
+		for (int i = 0; i <= currentStatus.vmax; ++i)
 		{
-			price.push_back(i + 1);
+			price.push_back(i + 1000 + i * 1658);
 			addStatus.push_back(1 + i);
 		}
 
-		this->pos = ML::Vec2(200, 200);
-		this->displayPos = ML::Vec2(0, -50);
-		this->progressBeginPos = ML::Vec2(-100, 50);
-		this->progressDistance = 10;
+		this->selectScale = 1.5f;
+
+		this->displayPos = ML::Vec2(10, -40);
+		this->progressBeginPos.x = this->res->imgProgressSize.w * (currentStatus.vmax - 1) / -2.0f;
+		this->progressBeginPos.x += this->progressDistance * currentStatus.vmax / -2.0f;
+		this->progressBeginPos.y = 30;
+		
+		this->priceDpPos = ML::Vec2(15, -10);
+		this->priceDp = Price::Object::Create(true);
+
+		this->selectCount = 0;
+
+		this->staffTalkFileName = "";
 		//★タスクの生成
 
 		return  true;
@@ -73,6 +90,11 @@ namespace  PlayerStatusShop
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		if (this->currentStatus.vnow + 1 <= this->currentStatus.vmax)
+		{
+			this->priceDp->price = this->price[this->currentStatus.vnow + 1];
+			this->priceDp->pos = this->priceDpPos + this->pos;
+		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -92,14 +114,63 @@ namespace  PlayerStatusShop
 		draw.Offset(this->pos + this->progressBeginPos);
 		ML::Box2D src(0, 0, this->res->imgProgressSize.w, this->res->imgProgressSize.h);
 
-		for (int i = 0; i < currentStatus.vmax; ++i)
+		for (int i = 0; i <= currentStatus.vmax; ++i)
 		{
+			if (i <= currentStatus.vnow)
+			{
+				src.x = this->res->imgProgressSize.w * (2 + this->statusType);
+			}
+			else if (i == currentStatus.vnow + 1)
+			{
+				src.x = this->res->imgProgressSize.w;
+			}
 			this->res->imgProgress->Draw(draw, src);
 			draw.x += this->res->imgProgressSize.w + this->progressDistance;
+			src.x = 0;
 		}
 	}
 	//-------------------------------------------------------------------
 	//その他の関数
+	//次の購入に必要な金額を返す
+	bool Object::LoadShopData(const string& fileName_)
+	{
+		ifstream ifs(("./data/SystemMenu/Status/") + fileName_ + ".txt");
+		if (!ifs)
+		{
+			return false;
+		}
+
+		price.clear();
+		addStatus.clear();
+		statusLvMax = 0;
+
+		while (ifs)
+		{
+			int readPrice;
+			int readAddStatus;
+			ifs >> readPrice;
+
+			if (!ifs)
+			{
+				break;
+			}
+
+			ifs >> readAddStatus;
+
+			price.push_back(readPrice);
+			addStatus.push_back(readAddStatus);
+			++statusLvMax;
+		}
+
+		return true;
+	}
+
+	//店員の会話ファイルを設定する
+	void Object::SetStaffTalkFile(const string& fileName_)
+	{
+		this->staffTalkFileName = fileName_;
+	}
+
 	//次の購入に必要な金額を返す
 	int Object::GetPrice() const
 	{
@@ -109,8 +180,14 @@ namespace  PlayerStatusShop
 		}
 		else
 		{
-			return price[currentStatus.vnow + 1];
+			return price[currentStatus.vnow];
 		}
+	}
+
+	//現在の追加ステータスを取得する
+	int Object::GetStatusAdd() const
+	{
+		return addStatus[currentStatus.vnow];
 	}
 
 	//購入する
@@ -118,13 +195,70 @@ namespace  PlayerStatusShop
 	{
 		if (this->currentStatus.IsMax())
 		{
-			return 0;
+			return false;
 		}
-		if (money_ >= price[currentStatus.vnow + 1])
+		else if (money_ >= price[currentStatus.vnow + 1])
 		{
 			money_ -= price[currentStatus.vnow + 1];
 			currentStatus.Addval(1);
+			if (currentStatus.IsMax())
+			{
+				this->priceDp->active = false;
+			}
+			return true;
 		}
+
+		auto msg = ge->GetTask<SystemMenuMessageWindow::Object>("SystemMenu", "MessageWindow");
+		msg->SetMessage("cantBuy");
+		return false;
+	}
+
+	//サイズと位置を伝える
+	ML::Box2D Object::GetObjectSize() const
+	{
+		ML::Box2D result = OL::setBoxCenter(this->res->imgProgressSize);
+		result.Offset(this->pos + this->progressBeginPos);
+		if (this->currentStatus.IsMax())
+		{
+			result.x += (this->res->imgProgressSize.w + this->progressDistance) * (this->currentStatus.vnow);
+		}
+		else
+		{
+			result.x += (this->res->imgProgressSize.w + this->progressDistance) * (this->currentStatus.vnow + 1);
+		}
+		result.w *= this->selectScale;
+		result.h *= this->selectScale;
+		result.x -= (result.w - this->res->imgProgressSize.w) / 2;
+		result.y -= (result.h - this->res->imgProgressSize.h) / 2;
+
+		return result;
+	}
+
+	//ターゲット中か
+	void Object::IsSelecting()
+	{
+		if (this->selectCount == 0)
+		{
+			auto msg = ge->GetTask<SystemMenuMessageWindow::Object>("SystemMenu", "MessageWindow");
+			msg->SetMessage(this->staffTalkFileName);
+		}
+		++this->selectCount;
+	}
+
+	//ターゲット終了時の処理
+	void Object::FinishSelect()
+	{
+		this->selectCount = 0;
+	}
+
+	//ボタンが押されたか
+	void Object::IsDown()
+	{
+		if (ge->qa_Player != nullptr)
+		{
+			this->Buy(ge->qa_Player->balanceMoney);
+		}
+
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド

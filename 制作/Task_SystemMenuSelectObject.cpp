@@ -39,6 +39,7 @@ namespace  SystemMenuSelectObject
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.2f;
 		this->animCnt = 0;
 		this->viewRate = 1.0f;
 		this->sto = nullptr;
@@ -72,23 +73,30 @@ namespace  SystemMenuSelectObject
 		auto inp = ge->in1->GetState();
 		bool isAct = false;
 
+		this->sto->IsSelecting();
+
 		//if (this->sto == nullptr) goto debug;
-		if (inp.B2.down) {
-			this->sto->IsSelecting();
+		if (inp.B2.down && !this->isEasing) {
+			this->sto->IsDown();
+			isAct = true;
 		}
 		if (inp.LStick.BU.down) {
+			this->sto->FinishSelect();
 			this->sto = sto->GetNext_Up();
 			isAct = true;
 		}
 		if (inp.LStick.BD.down) {
+			this->sto->FinishSelect();
 			this->sto = sto->GetNext_Down();
 			isAct = true;
 		}
 		if (inp.LStick.BL.down) {
+			this->sto->FinishSelect();
 			this->sto = sto->GetNext_Left();
 			isAct = true;
 		}
 		if (inp.LStick.BR.down) {
+			this->sto->FinishSelect();
 			this->sto = sto->GetNext_Right();
 			isAct = true;
 		}
@@ -111,7 +119,7 @@ namespace  SystemMenuSelectObject
 			//	GetRandom<int>(100, 500),
 			//	GetRandom<int>(100, 500));
 			//easingSet(this->selectBox, rndBox, 1.0f, 1.0f, 10);
-			easingSet(this->selectBox, sto->GetObjectSize());
+			easingSet(this->selectBox, sto->GetObjectSize(), 1.0f,1.0f,10);
 
 
 		}
@@ -172,7 +180,7 @@ namespace  SystemMenuSelectObject
 		enr = "eas_r" + to_string(easingCnt);
 		easingCnt++;
 
-		easing::EASINGTYPE et = easing::EASINGTYPE::LINEAR;
+		easing::EASINGTYPE et = easing::EASINGTYPE::CUBICOUT;
 		easing::Create(enx, et, beforeBox_.x, afterBox_.x, easingFrame_);
 		easing::Start(enx);
 		easing::Create(eny, et, beforeBox_.y, afterBox_.y, easingFrame_);

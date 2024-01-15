@@ -41,6 +41,7 @@ namespace  GameUI
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.2f;
 		this->coinPos = ML::Vec2(0, 0);
 		this->numPos = ML::Vec2(0, 0);
 		this->magicPos = ML::Vec2(0, 0);

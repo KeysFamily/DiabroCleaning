@@ -45,7 +45,7 @@ namespace  Item_coin
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->render2D_Priority[1] = 0.7f;
+		this->render2D_Priority[1] = 0.4f;
 		this->hitBase = OL::setBoxCenter(32, 32);
 		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
 		this->decSpeed = 0.05f;		//接地状態の時の速度減衰量（摩擦

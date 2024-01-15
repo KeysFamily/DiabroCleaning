@@ -9,6 +9,12 @@
 //概　　　要:
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "SelectableObject.h"
+
+namespace Price
+{
+	class Object;
+}
 
 namespace  PlayerStatusShop
 {
@@ -34,7 +40,7 @@ namespace  PlayerStatusShop
 		OL::Size2D fontDisplaySize;	//ステータス名表示用フォントのサイズ
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BTask
+	class  Object : public  BTask, public MyUI::SelectableObject
 	{
 	//変更不可◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	public:
@@ -56,18 +62,41 @@ namespace  PlayerStatusShop
 	public:
 		//追加したい変数・メソッドはここに追加する
 		string displayStr;		//ステータス名
+		int		statusLvMax;	//最大レベル
 		vector<int> price;		//各金額
 		vector<int> addStatus;	//各追加量
 		OL::Limit<int> currentStatus;	//どこまで購入されているか
 
-		ML::Vec2 pos;				//全体の位置
-		ML::Vec2 displayPos;		//ステータス名の位置
-		ML::Vec2 progressBeginPos;	//購入用の画像の位置
-		float progressDistance;		//購入用の画像の間隔
+		ML::Vec2 pos;						//全体の位置
+		ML::Vec2 displayPos;				//ステータス名の位置
+		ML::Vec2 priceDpPos;				//価格表示の位置
+		ML::Vec2 progressBeginPos;			//購入用の画像の位置
+		float progressDistance;				//購入用の画像の間隔
+		float selectScale;					//選択時のサイズを画像より大きくしたいときに使う
+		int statusType;						//ステータスの種類
+		shared_ptr<Price::Object> priceDp;	//価格表示タスク
+		int selectCount;					//選択中のカウント
+		string staffTalkFileName;			//店員の会話ファイル
+
+		//金額や上昇値を読み込む
+		bool LoadShopData(const string& fileName_);
+		//店員の会話ファイルを設定する
+		void SetStaffTalkFile(const string& fileName);
 
 		//次の購入に必要な金額を返す
 		int GetPrice() const;
+		//現在の追加ステータスを取得する
+		int GetStatusAdd() const;
 		//購入する
 		bool Buy(int& money_);
+
+		//サイズと位置を伝える
+		virtual ML::Box2D GetObjectSize() const override;
+		//ターゲット中か
+		virtual void IsSelecting() override;
+		//ターゲット終了時の処理
+		virtual void FinishSelect() override;
+		//ボタンが押されたか
+		virtual void IsDown() override;
 	};
 }
