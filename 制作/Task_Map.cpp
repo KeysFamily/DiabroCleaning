@@ -41,9 +41,11 @@ namespace  Map
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.9f;
+		this->depth = 1;
+		this->visited = true;
+		this->folderPath = "";
 		auto result = this->LoadMap("map_start");
 		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
-
 		//★タスクの生成
 
 		return  true;
@@ -117,8 +119,17 @@ namespace  Map
 	//その他のメソッド
 
 	//マップ読み込み
-	bool Object::LoadMap(const string& mapName_)
+	bool Object::LoadMap(const string& folderPath_)
 	{
+		json js = OL::LoadJsonFile(folderPath_ + "/mapData.json");
+
+		string mapName = js["mapName"];
+
+
+
+
+
+
 
 		//背景マップ読み込み
 		backMap.clear();

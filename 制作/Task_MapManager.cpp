@@ -11,9 +11,10 @@
 #include  "Task_MapTransition.h"
 #include  "Task_Sprite.h"
 
+using namespace Map;
+
 namespace  MapManager
 {
-	int Object::MapObject::mapKeyManager = 0;
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
@@ -87,26 +88,15 @@ namespace  MapManager
 			}
 		}
 
-		map[0][0] = new MapObject("map_start");
+		map[0][0] = new MapObject(1,"map_start");
 
-		map[0][1] = new Object::Connect(Map::MapDir::Left, Map::MapDir::Right);
+		map[0][1] = new MapObject(1, MapType::Connect, MapDir::Left, MapDir::Right);
 
-		this->GenerateMap(2, 0, 2, 6, Map::MapDir::Left);
-		//生成
-		for (int y = 0; y < 30; ++y)
-		{
-			for (int x = 0; x < 30; ++x)
-			{
-				if (map[y][x] != nullptr)
-				{
-					map[y][x]->Generate();
-				}
-			}
-		}
+		this->GenerateMap(2, 0, 2, 6, MapDir::Left);
 	}
 	//-------------------------------------------------------------------
 	//1マップ生成処理
-	void Object::GenerateMap(int x_, int y_, int depth_, int depthRest_, Map::MapDir enter_)
+	void Object::GenerateMap(int x_, int y_, int depth_, int depthRest_, MapDir enter_)
 	{
 		enum GenerateDir
 		{
@@ -118,7 +108,7 @@ namespace  MapManager
 		//最下層なら次の生成処理は行わない
 		if (depthRest_ <= 1)
 		{
-			map[y_][x_] = new Area(enter_, Map::MapDir::Non, depth_);
+			map[y_][x_] = new MapObject(depth_, MapType::Map, enter_, MapDir::Non);
 			return;
 		}
 
@@ -131,20 +121,12 @@ namespace  MapManager
 		//生成可能な場所がなければ次の生成処理は行わない
 		if (cantGeneratesTotal >= 3)
 		{
-			map[y_][x_] = new Area(enter_, Map::MapDir::Non, depth_);
+			map[y_][x_] = new MapObject(depth_, MapType::Map, enter_, MapDir::Non);
 			return;
 		}
 
 		//生成の種類（右・下・斜め）
 		int generateTypes = 3;
-
-		//分岐させるか
-		bool generateSub = rand() % 2 && cantGeneratesTotal < 1 && map[y_ + 1][x_ + 1] == nullptr;
-		//分岐が有効なら、右か下を最初に生成（斜めは確定なので）
-		if (generateSub)
-		{
-			--generateTypes;
-		}
 
 		int genX = 0;
 		int genY = 0;
@@ -215,25 +197,8 @@ namespace  MapManager
 			//次の位置を生成
 			GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
 
-			//分岐が有効なら斜めも生成
-			if (generateSub)
-			{
-				genX = 1;
-				genY = 1;
-				if (enterDir == Map::MapDir::Up)
-				{
-					enterDir = Map::MapDir::Left;
-					connectExitSub = Map::MapDir::Right;
-				}
-				else
-				{
-					enterDir = Map::MapDir::Up;
-					connectExitSub = Map::MapDir::Down;
-				}
-				GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
-			}
-			map[y_][x_] = new Area(enter_, exitDir, depth_);
-			map[y_ + conY][x_ + conX] = new Connect(connectEnter, connectExit, connectExitSub);
+			map[y_][x_] = new MapObject(depth_, MapType::Map, enter_, exitDir);
+			map[y_ + conY][x_ + conX] = new MapObject(depth_, MapType::Connect, connectEnter, connectExit, connectExitSub);
 
 			finishedGenerate = false;
 		}

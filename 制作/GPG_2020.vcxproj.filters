@@ -354,6 +354,7 @@
     <ClCompile Include="Task_SystemMenuBackButton.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
+    <ClCompile Include="MapStruct.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">

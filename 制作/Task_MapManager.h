@@ -11,7 +11,6 @@
 #include "GameEngine_Ver3_83.h"
 #include "MapStruct.h"
 #include "Task_MapTransition.h"
-#include <direct.h>
 
 namespace MapManager
 {
@@ -55,115 +54,6 @@ namespace MapManager
 		//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 
-		class MapObject
-		{
-			static int mapKeyManager;
-		public:
-			const int mapKey;
-			string mapName;
-			Map::MapDir enter;	//入り口
-			Map::MapDir exit;	//出口
-			Map::MapDir exitSub;//2つ目の出口
-			int depth;
-
-			enum class MapType
-			{
-				Empty = 0,
-				Map,
-				Connect,
-			};
-			MapType mapType;
-			bool visited;
-
-
-			MapObject(const string& mapName_ = "")
-				:mapName(mapName_)
-				,mapKey(mapKeyManager)
-				, mapType(MapType::Empty)
-				, visited(false)
-			{
-				++mapKeyManager;
-			}
-			MapObject()
-				:mapName("")
-				,mapKey(mapKeyManager)
-				, mapType(MapType::Empty)
-				, visited(false)
-			{
-				++mapKeyManager;
-			}
-			void Generate()
-			{
-				//フォルダ作成
-				string folderPath = ("./data/inGame/run/mapData/mapId_" + to_string(mapKey));
-				if (mkdir(folderPath.c_str()) != 0)
-				{
-					return;
-				}
-
-
-				//マップの名前を決める
-
-
-				json js = OL::LoadJsonFile("./data/inGame/template/mapData/mapData.json");
-				js["visited"] = false;
-				js["mapType"] = (int)this->mapType;
-				js["depth"] = this->depth;
-				js["mapName"] = this->mapName;
-				OL::SaveJsonFile(js, folderPath + "/mapData.json");
-			}
-			Map::MapDir GetEnter() { return enter; }
-			Map::MapDir GetExit() { return exit; }
-			Map::MapDir GetExitSub() { return exitSub; }
-			int GetDepth() { return depth; }
-
-		private:
-			void SetMapName_Map()
-			{
-				string genMapName = "map_";
-				string mapDirStr[4] = { "Up", "Down", "Right", "Left" };
-
-				genMapName += mapDirStr[(int)enter];
-				if (exit == Map::MapDir::Non)
-				{
-					genMapName += mapDirStr[(int)enter];
-				}
-				else
-				{
-					genMapName += mapDirStr[(int)exit];
-				}
-
-				genMapName += "_" + to_string(rand() % 3 + 1);
-
-				this->mapName = genMapName;
-			}
-
-			void SetMapName_Connect()
-			{
-				string genMapName = "pass_";
-				string mapDirStr[4] = { "Up", "Down", "Right", "Left" };
-
-				genMapName += mapDirStr[(int)enter];
-
-				if (exitSub != Map::MapDir::Non)
-				{
-					if (exit == Map::MapDir::Down)
-					{
-						genMapName += mapDirStr[(int)exitSub] + mapDirStr[(int)exit];
-					}
-					else
-					{
-						genMapName += mapDirStr[(int)exit] + mapDirStr[(int)exitSub];
-					}
-				}
-				else
-				{
-					genMapName += mapDirStr[(int)exit];
-				}
-
-				this->mapName = genMapName;
-			}
-		};
 #if false
 		class Area : public MapObject
 		{
@@ -178,6 +68,7 @@ namespace MapManager
 				:enter(enter_)
 				, exit(exit_)
 				, depth(depth_)
+			{
 			{
 			}
 
@@ -260,7 +151,7 @@ namespace MapManager
 		//追加したい変数・メソッドはここに追加する
 		int bossDepth;
 		unsigned int mapSeed;		//マップ生成のシード値
-		MapObject* map[30][30];
+		Map::MapObject* map[30][30];
 		ML::Point currentPos;		//現在のマップ
 		
 		Map::MapDir moveMapDir;		//マップ移動時の方向
