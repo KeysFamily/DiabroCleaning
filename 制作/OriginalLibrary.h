@@ -230,5 +230,7 @@ namespace OL
 
 	//JSONファイルを読み込む
 	nlohmann::json LoadJsonFile(const string& filePath_);
+	//JSONファイルを保存する
+	void SaveJsonFile(const json& js_, const string& filePath_);
 
 }

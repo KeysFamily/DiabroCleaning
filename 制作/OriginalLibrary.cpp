@@ -236,4 +236,10 @@ namespace OL
 
 		return js;
 	}
+	//jsonƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+	void SaveJsonFile(const json& js_, const string& filePath_)
+	{
+		ofstream ofs("filePath_");
+		ofs << js_.dump(4);
+	}
 }

@@ -13,6 +13,7 @@
 
 namespace  MapManager
 {
+	int Object::MapObject::mapKeyManager = 0;
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//ƒŠƒ\[ƒX‚Ì‰Šú‰»
