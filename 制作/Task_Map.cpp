@@ -41,9 +41,10 @@ namespace  Map
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.9f;
-		auto result = this->LoadMap("map_start");
+		this->depth = 1;
+		this->visited = true;
+		this->folderPath = "";
 		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
-
 		//★タスクの生成
 
 		return  true;
@@ -117,14 +118,20 @@ namespace  Map
 	//その他のメソッド
 
 	//マップ読み込み
-	bool Object::LoadMap(const string& mapName_)
+	bool Object::LoadMap(const string& folderPath_)
 	{
+		json js = OL::LoadJsonFile(folderPath_ + "/mapData.json");
 
+		string mapName = js["mapName"];
+		this->depth = js["depth"];
+		this->visited = js["visited"];
+
+		this->folderPath = folderPath_;
 		//背景マップ読み込み
 		backMap.clear();
 
 		int layerNum = 0;
-		ifstream ifs("./data/map/" + mapName_ + "/" + mapName_ + "_BG.json");
+		ifstream ifs("./data/map/" + mapName + "/" + mapName + "_BG.json");
 		if (ifs.is_open())
 		{
 			json backMapData = json::parse(ifs);
@@ -149,7 +156,7 @@ namespace  Map
 			MapData layer;
 
 			//読み込むマップが無くなったら終了
-			if (layer.Load("./data/map/" + mapName_ + "/" + mapName_ + "_R" + to_string(layerNum) + ".csv")
+			if (layer.Load("./data/map/" + mapName + "/" + mapName + "_R" + to_string(layerNum) + ".csv")
 				 == false)
 			{
 				break;
@@ -168,7 +175,7 @@ namespace  Map
 		//オブジェクトマップ読み込み
 		this->ObjectMap.chipdata.clear();
 
-		if (this->ObjectMap.Load("./data/map/" + mapName_ + "/" + mapName_ + "_H.csv")
+		if (this->ObjectMap.Load("./data/map/" + mapName + "/" + mapName + "_H.csv")
 			 == false)
 		{
 			return false;
@@ -177,7 +184,7 @@ namespace  Map
 		//エンティティマップ読み込み
 		this->GenerateMap.chipdata.clear();
 
-		if (this->GenerateMap.Load("./data/map/" + mapName_ + "/" + mapName_ + "_gens.csv")
+		if (this->GenerateMap.Load("./data/map/" + mapName + "/" + mapName + "_gens.csv")
 			== false)
 		{
 			return false;
@@ -192,6 +199,17 @@ namespace  Map
 		return true;
 	}
 
+
+	//マップ読み込み
+	bool Object::SaveMap()
+	{
+		json js = OL::LoadJsonFile(this->folderPath + "mapData.json");
+
+		js["visited"] = true;
+
+		OL::SaveJsonFile(js, this->folderPath + "mapData.json");
+		return true;
+	}
 	//-------------------------------------------------------------------
 	//坂データの読み込み
 	bool Object::LoadSlope(const string& filepath_)

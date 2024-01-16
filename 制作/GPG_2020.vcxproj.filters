@@ -354,6 +354,7 @@
     <ClCompile Include="Task_SystemMenuBackButton.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
+    <ClCompile Include="MapStruct.cpp" />
     <ClCompile Include="Task_PlayerScore.cpp">
       <Filter>MyPG\Task\Ending</Filter>
     </ClCompile>

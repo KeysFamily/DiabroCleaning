@@ -236,4 +236,18 @@ namespace OL
 
 		return js;
 	}
+	//jsonファイルを読み込む
+	void SaveJsonFile(const json& js_, const string& filePath_)
+	{
+		ofstream ofs(filePath_);
+		ofs << js_.dump(4);
+	}
+
+
+	//rate_の確率でtrueを返す
+	bool RandomBool(float rate_)
+	{
+		int result = 1 / rate_;
+		return(rand() % result);
+	}
 }
