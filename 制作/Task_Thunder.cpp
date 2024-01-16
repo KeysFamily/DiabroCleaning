@@ -8,7 +8,6 @@
 //?------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_Thunder.h"
-#include  "Task_Player.h"
 #include  "BEnemy.h"
 
 namespace  Thunder
@@ -40,6 +39,7 @@ namespace  Thunder
 		this->res = Resource::Create();
 
 		//★データ初期化
+		this->render2D_Priority[1] = 0.5f;
 		this->hitBase = ML::Box2D(-24, -24, 48, 48);
 		this->pos = ML::Vec2(0, 0);
 		this->speed = 10.0f;
@@ -93,7 +93,6 @@ namespace  Thunder
 			this->res->img2->Draw(di.draw, di.src);
 		}
 		//ge->debugRect(this->searchEnemy.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
-		//ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
 	//思考＆状況判断　モーション決定
@@ -121,7 +120,6 @@ namespace  Thunder
 	void  Object::Move()
 	{
 		auto enemys = ge->GetTasks<BChara>("Enemy");
-		auto pl = ge->GetTask<BChara>("Player");
 		this->pos += this->moveVec;
 		switch (this->motion) {
 		case Motion::Start:
@@ -140,6 +138,7 @@ namespace  Thunder
 				}
 
 				if ((*it)->CheckHit(this->hitBase.OffsetCopy(this->pos))) {
+					ge->CreateEffect(91, (*it)->pos);
 					BChara::AttackInfo at = { this->power, 0, 0 };
 					(*it)->Received(this, at);
 					this->motion = Motion::End;

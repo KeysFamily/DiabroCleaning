@@ -87,16 +87,10 @@ namespace  MapManager
 		}
 
 		map[0][0] = new MapObject("map_start");
-		map[0][1] = new MapObject("pass_LeftRight");
 
-
-		//デバッグ用に処理をなくしている
-#if false
 		map[0][1] = new Object::Connect(Map::MapDir::Left, Map::MapDir::Right);
 
-
 		this->GenerateMap(2, 0, 2, 6, Map::MapDir::Left);
-
 		//生成
 		for (int y = 0; y < 30; ++y)
 		{
@@ -108,7 +102,6 @@ namespace  MapManager
 				}
 			}
 		}
-#endif
 	}
 	//-------------------------------------------------------------------
 	//1マップ生成処理
@@ -275,6 +268,9 @@ namespace  MapManager
 			return;
 		}
 
+		//敵の消滅処理（仮）
+		ge->KillAll_G("enemy");
+
 		switch (this->moveMapDir)
 		{
 		case Map::MapDir::Up:
@@ -295,7 +291,6 @@ namespace  MapManager
 		ge->qa_Player->pos = ge->qa_Map->GetPlayerEnterPos(Map::MapFunc::ReverseMapDir(moveMapDir));
 		auto camera = ge->GetTask<Sprite::Object>("Sprite");
 		camera->MoveImmediately();
-
 		this->mapTransition->Disappear();
 
 		this->moveMapDir = Map::MapDir::Non;

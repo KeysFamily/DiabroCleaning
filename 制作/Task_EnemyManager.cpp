@@ -9,8 +9,11 @@
 #include  "MyPG.h"
 #include  "Task_EnemyManager.h"
 
+#include  "Task_EnemyBoss.h"
 #include  "Task_EnemySkeleton.h"
 #include  "Task_EnemySkyEye.h"
+
+#include  "randomLib.h"
 
 namespace  EnemyManager
 {
@@ -33,10 +36,10 @@ namespace  EnemyManager
 		//・攻撃力
 		// 
 		//****************************************
-		ifstream f("./data/enemy/enemy.json");
-		if (!f.is_open()) return false;//ファイルオープンに失敗
-		json data = json::parse(f);
-		for (auto& e : data["enemies"]) {
+		ifstream fenemies("./data/enemy/enemy.json");
+		if (!fenemies.is_open()) return false;//ファイルオープンに失敗
+		json edata = json::parse(fenemies);
+		for (auto& e : edata["enemies"]) {
 			string en = e["name"];
 			EnemyData ed;
 			ed.hp        = e["hp"];
@@ -51,13 +54,34 @@ namespace  EnemyManager
 			this->enemyDatas[en] = ed;
 			this->enemyNames.push_back(en);
 		}
-		f.close();
+		fenemies.close();
+
+		ifstream f("./data/enemy/stateRate.json");
+		if (!f.is_open())return false;
+		json esdata = json::parse(f);
+		for (int i = 1; i <= 3; ++i) {
+			string rate = "Rate" + to_string(i);
+
+			for (auto& e : esdata[rate]) {
+				string en = e["name"];
+				EnemyStatusRate esr;
+				esr.hpRate     = e["hpRate"];
+				esr.speedRate  = e["speedRate"];
+				esr.moneyRate  = e["moneyRate"];
+				esr.attackRate = e["attackRate"];
+				
+				this->stateRates[i][en] = esr;
+			}
+		}
+
+
 
 		//TODO: 新たに敵を追加をする際にここに追加。
 		// 必ず敵の名前は大文字で始めること
 		//記入例）this->enemyInits["Name"] = EnemyName::Object::Create;
+		this->enemyInits["Boss"]     = EnemyBoss::Object::Create;
 		this->enemyInits["Skeleton"] = EnemySkeleton::Object::Create;
-		this->enemyInits["SkyEye"] = EnemySkyEye::Object::Create;
+		this->enemyInits["SkyEye"]   = EnemySkyEye::Object::Create;
 		
 		return true;
 	}
@@ -68,6 +92,7 @@ namespace  EnemyManager
 		this->enemyDatas.clear();
 		this->enemyNames.clear();
 		this->enemyInits.clear();
+		this->stateRates.clear();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -80,13 +105,13 @@ namespace  EnemyManager
 		this->res = Resource::Create();
 
 		//★データ初期化
+		this->residentResource.push_back(EnemyBoss::Resource::Create());
 		this->residentResource.push_back(EnemySkeleton::Resource::Create());
 		this->residentResource.push_back(EnemySkyEye::Resource::Create());
 		//★タスクの生成
-		//SpawnEnemy("Skeleton",ML::Vec2(1000, 600));
-		SpawnEnemy("SkyEye", ML::Vec2(1300, 500));
+		SpawnEnemyName("Skeleton",ML::Vec2(1000, 600));
+		SpawnEnemyName("SkyEye", ML::Vec2(1300, 500));
 		ge->debugRectLoad();
-
 		return  true;
 	}
 	//-------------------------------------------------------------------
@@ -95,8 +120,8 @@ namespace  EnemyManager
 	{
 		//★データ＆タスク解放
 		this->residentResource.clear();
-		ge->KillAll_G("Enemy");
 		ge->debugRectReset();
+		ge->KillAll_G("Enemy");
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -108,10 +133,11 @@ namespace  EnemyManager
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		auto ms = ge->mouse->GetState();
 		ge->qa_Enemys = ge->GetTasks<BEnemy>("Enemy");
  
+#ifdef DEBUG_ENEMY
 		//TODO:デバッグ機能、マスターまでに消去すること
+		auto ms = ge->mouse->GetState();
 		ML::Vec2 spos;
 		spos.x = ms.pos.x + ge->camera2D.x;
 		spos.y = ms.pos.y + ge->camera2D.y;
@@ -124,39 +150,47 @@ namespace  EnemyManager
 			}
 		}
 		if (ms.CB.down) {
-			for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
-				BChara::AttackInfo at = { INT_MAX,0,0 };
-				(*it)->Received(nullptr, at);
-			}
+			//for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
+			//	BChara::AttackInfo at = { INT_MAX,0,0 };
+			//	(*it)->Received(nullptr, at);
+			//}
+			this->KillAllEnemys();
 		}
 		if (ms.RB.down) {
-			this->SpawnEnemy(this->res->enemyNames[rand() % 2], spos);
+			this->SpawnEnemyNum(rand() % 2, spos);
 		}
+#endif // DEBUG_ENEMY
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		//ge->debugRectDraw();
+#ifdef DEBUG_ENEMY
+		ge->debugRectDraw();
+#endif
 	}
 
 	//-------------------------------------------------------------------
 	// 敵スポーン
-	void Object::SpawnEnemy(ML::Vec2 pos_) {
+	
 
-		auto e = EnemySkeleton::Object::Create(true);
-		e->pos = pos_;
+	void Object::SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_, int depth_) {
+		int size = this->res->enemyNames.size();
+		if (enemyNum_ < 0 || enemyNum_ >= size)return;
+
+		string name = this->res->enemyNames[enemyNum_];
+
+		this->SpawnEnemyName(name, pos_, depth_);
 	}
 
-	void Object::SpawnEnemy(string name_, ML::Vec2 pos_) {
-
+	void Object::SpawnEnemyName(string name_, ML::Vec2 pos_, int depth_) {
 		if (this->res->enemyDatas.count(name_) > 0 &&
 			this->res->enemyInits.count(name_) > 0) {
-			//auto e = EnemySkeleton::Object::Create(true);
+			
 			auto e       = this->res->enemyInits[name_](true);
 			e->pos       = pos_;
 			float HP       = this->res->enemyDatas[name_].hp;
-			e->hp.SetValues(HP, 0, HP);
+			
 			e->jumpPow   = this->res->enemyDatas[name_].jumpPow;
 			e->maxSpeed  = this->res->enemyDatas[name_].maxSpeed;
 			e->addSpeed  = this->res->enemyDatas[name_].addSpeed;
@@ -164,6 +198,34 @@ namespace  EnemyManager
 			e->unHitTime = this->res->enemyDatas[name_].unHitTime;
 			e->dropMoney = this->res->enemyDatas[name_].dropMoney;
 			e->attackPow = this->res->enemyDatas[name_].attackPow;
+
+			//倍率設定
+			int Rate = 1;
+
+			HP *= this->res->stateRates[depth_][name_].hpRate;
+
+			e->hp.SetValues(HP, 0, HP);
+			e->maxSpeed *= this->res->stateRates[depth_][name_].speedRate;
+			e->addSpeed *= this->res->stateRates[depth_][name_].speedRate;
+			e->decSpeed *= this->res->stateRates[depth_][name_].speedRate;
+
+			e->dropMoney *= this->res->stateRates[1][name_].moneyRate;
+			e->attackPow *= this->res->stateRates[1][name_].attackRate;
+
+			BChara::Angle_LR angleSheet[] = {
+				BChara::Angle_LR::Left,
+				BChara::Angle_LR::Right
+			};
+
+			e->angle_LR = angleSheet[GetRandom<int>(0, 1)];
+			
+		}
+	}
+
+	void Object::KillAllEnemys() {
+		if (ge->qa_Enemys == nullptr)return;
+		for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
+			(*it)->Kill();
 		}
 	}
 

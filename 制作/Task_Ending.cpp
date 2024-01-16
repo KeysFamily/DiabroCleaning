@@ -5,6 +5,8 @@
 #include  "Task_Ending.h"
 #include  "Task_Title.h"
 
+#include  "Task_PlayerScore.h"
+
 namespace  Ending
 {
 	Resource::WP  Resource::instance;
@@ -12,12 +14,18 @@ namespace  Ending
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
+		this->Ending_clear_img = DG::Image::Create("./data/ending/Diobro_Cleaning_Game_clear.png");
+		this->Ending_over_img = DG::Image::Create("./data/ending/Diobro_Cleaning_Game_over.png");
+		this->Key_img = DG::Image::Create("./data/ending/PleaseKey.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
+		this->Ending_clear_img.reset();
+		this->Ending_over_img.reset();
+		this->Key_img.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -30,9 +38,11 @@ namespace  Ending
 		this->res = Resource::Create();
 
 		//★データ初期化
-
+		this->KeyTime = 0;
 		//★タスクの生成
-
+		
+		PlayerScore::Object::Create(true);
+		
 		return  true;
 	}
 	//-------------------------------------------------------------------
@@ -40,7 +50,7 @@ namespace  Ending
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-
+		ge->KillAll_G("エンディング");
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -53,8 +63,11 @@ namespace  Ending
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		auto inp = ge->in1->GetState();
+		this->KeyTime++;
+		if (KeyTime % 60 < 30) this->KeyOnOff = true; 
+		else this->KeyOnOff = false;
 
+		auto inp = ge->in1->GetState();
 		if (inp.ST.down && ge->getCounterFlag("End") != ge->ACTIVE) {
 			ge->StartCounter("End", 45); //フェードは90フレームなので半分の45で切り替え
 			ge->CreateEffect(98, ML::Vec2(0, 0));
@@ -68,6 +81,16 @@ namespace  Ending
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		ML::Box2D draw(0, 0, 1920, 1080);
+		ML::Box2D src(0, 0, 1920, 1080);
+
+		ML::Box2D KeyDraw((ge->screen2DWidth/2)-250,ge->screen2DHeight*3/4,500,150);
+		ML::Box2D KeySrc(0,0,372,97);
+		if (ge->GameClearFlag == true) 	this->res->Ending_clear_img->Draw(draw, src);	//背景を用意する
+		else this->res->Ending_over_img->Draw(draw, src);   //背景を用意する
+		
+		if(this->KeyOnOff==true)this->res->Key_img->Draw(KeyDraw, KeySrc);
+		
 		ge->Dbg_ToDisplay(100, 100, "Ending");
 	}
 

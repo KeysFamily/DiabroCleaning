@@ -42,6 +42,7 @@ namespace  MiniMap
 		this->res = Resource::Create();
 
 		//★データ初期化
+		this->render2D_Priority[1] = 0.2f;
 		this->pos.x = ge->screenWidth - this->res->imgBGSize.w / 2;
 		this->pos.y = this->res->imgBGSize.h / 2;
 		this->cameraPos = ML::Vec2(0, 0);
@@ -77,24 +78,6 @@ namespace  MiniMap
 			this->cameraPos.x += speed;
 		if (inp.RStick.BL.on)
 			this->cameraPos.x -= speed;
-
-		auto mt = ge->GetTask<MapTransition::Object>("MapTransition");
-		if(!mt)
-		{
-			mt = MapTransition::Object::Create(true);
-			return;
-		}
-		if (inp.RStick.BU.down)
-			mt->Appear(Map::MapDir::Up);
-		if (inp.RStick.BD.down)
-			mt->Appear(Map::MapDir::Down);
-		if (inp.RStick.BR.down)
-			mt->Appear(Map::MapDir::Right);
-		if (inp.RStick.BL.down)
-			mt->Appear(Map::MapDir::Left);
-
-		if (inp.L1.down)
-			mt->Disappear();
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理

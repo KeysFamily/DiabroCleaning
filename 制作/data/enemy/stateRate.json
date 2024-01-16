@@ -1,0 +1,50 @@
+{
+	"Rate1": [
+		{
+			"name": "Skeleton",
+			"hpRate": 1,
+			"speedRate": 1,
+			"moneyRate": 1,
+			"attackRate": 1
+		},
+		{
+			"name": "SkyEye",
+			"hpRate": 1,
+			"speedRate": 1,
+			"moneyRate": 1,
+			"attackRate": 1
+		}
+	],
+	"Rate2": [
+		{
+			"name": "Skeleton",
+			"hpRate": 1,
+			"speedRate": 1,
+			"moneyRate": 1,
+			"attackRate": 1
+		},
+		{
+			"name": "SkyEye",
+			"hpRate": 1,
+			"speedRate": 1,
+			"moneyRate": 1,
+			"attackRate": 1
+		}
+	],
+	"Rate3": [
+		{
+			"name": "Skeleton",
+			"hpRate": 1,
+			"speedRate": 1,
+			"moneyRate": 1,
+			"attackRate": 1
+		},
+		{
+			"name": "SkyEye",
+			"hpRate": 1,
+			"speedRate": 1,
+			"moneyRate": 1,
+			"attackRate": 1
+		}
+	]
+}

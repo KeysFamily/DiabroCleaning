@@ -3,7 +3,9 @@
 //-------------------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_Map.h"
+
 #include  "Task_Player.h"
+#include  "Task_EnemyManager.h"
 
 namespace  Map
 {
@@ -18,7 +20,7 @@ namespace  Map
 		this->turnNum = 64;		//画像の1行に含まれるチップの種類
 
 		this->debugFont = DG::Font::Create("non", 8, 16);	//数字フォント
-		this->drawObject = true;	//オブジェクトチップの数字描画
+		this->drawObject = false;	//オブジェクトチップの数字描画
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -38,6 +40,7 @@ namespace  Map
 		this->res = Resource::Create();
 
 		//★データ初期化
+		this->render2D_Priority[1] = 0.9f;
 		auto result = this->LoadMap("map_start");
 		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
 
@@ -171,12 +174,16 @@ namespace  Map
 			return false;
 		}
 
-		//生成マップ読み込み
-		/*if (this->ObjectMap.Load("./data/map/" + mapName_ + "/" + mapName_ + "_gen.csv")
+		//エンティティマップ読み込み
+		this->GenerateMap.chipdata.clear();
+
+		if (this->GenerateMap.Load("./data/map/" + mapName_ + "/" + mapName_ + "_gens.csv")
 			== false)
 		{
 			return false;
-		}*/		
+		}	
+		this->SetEnemyOnMap();
+		
 
 
 		//当たり判定矩形設定
@@ -218,6 +225,7 @@ namespace  Map
 	{
 		ML::Vec2 result(0, 0);
 
+		//プレイヤーの当たり判定
 		ML::Rect  r = { hit_.x, hit_.y, hit_.x + hit_.w, hit_.y + hit_.h };
 		//矩形がマップ外に出ていたらサイズを変更する
 		ML::Rect  m = {
@@ -249,8 +257,18 @@ namespace  Map
 						ML::Vec2 chipPos(x * this->res->drawSize, y * this->res->drawSize);
 						//さらにチップの坂の部分と当たっているか判定
 						if (slope.second.slopeVec.y < 0) {
+							//坂に乗っていなかったら判定しない
+							if (r.bottom > y * this->res->drawSize + this->res->drawSize)
+							{
+								continue;
+							}
 							//右上
 							if (slope.second.slopeVec.x > 0) {
+								//坂に乗っていなかったら判定しない
+								if (r.right > x * this->res->drawSize + this->res->drawSize)
+								{
+									continue;
+								}
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x, chipPos.y + this->res->drawSize - 1 - slope.second.slopeHeight);
 								//プレイヤーの当たり判定右端のx座標の、坂の高さ（ゲーム座標）
@@ -265,6 +283,11 @@ namespace  Map
 							}
 							//左上
 							if (slope.second.slopeVec.x < 0) {
+								//坂に乗っていなかったら判定しない
+								if (r.left < x * this->res->drawSize)
+								{
+									continue;
+								}
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x + this->res->drawSize - 1, chipPos.y + this->res->drawSize - 1 - slope.second.slopeHeight);
 								//プレイヤーの当たり判定左端のx座標の、坂の高さ（ゲーム座標）
@@ -279,8 +302,18 @@ namespace  Map
 							}
 						}
 						else if (slope.second.slopeVec.y > 0) {
+							//坂に乗っていなかったら判定しない
+							if (r.top < y * this->res->drawSize)
+							{
+								continue;
+							}
 							//右下
 							if (slope.second.slopeVec.x > 0) {
+								//坂に乗っていなかったら判定しない
+								if (r.right > x * this->res->drawSize + this->res->drawSize)
+								{
+									continue;
+								}
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x, chipPos.y + slope.second.slopeHeight);
 								//プレイヤーの当たり判定右端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
@@ -298,6 +331,11 @@ namespace  Map
 							}
 							//左下
 							if (slope.second.slopeVec.x < 0) {
+								//坂に乗っていなかったら判定しない
+								if (r.left < x * this->res->drawSize)
+								{
+									continue;
+								}
 								//坂が開始する地点の座標（ゲーム座標）
 								ML::Vec2 slopeBegin(chipPos.x + this->res->drawSize - 1, chipPos.y - slope.second.slopeHeight);
 								//プレイヤーの当たり判定左端のx座標の、坂の高さ（ゲーム座標ではなく、ローカル座標）
@@ -331,23 +369,18 @@ namespace  Map
 	//マップ移動時のプレイヤーの座標
 	ML::Vec2 Object::GetPlayerEnterPos(const MapDir& mapDirection_)
 	{
-		//番号は13番～上,下,右,左の順で準備されている
-		int enterChip = 13 + (int)mapDirection_;
-		OL::Size2D mapSize(ObjectMap.width, ObjectMap.height);
+		//番号は8番～上,下,右,左の順で準備されている
+		int enterChip = 8 + (int)mapDirection_;
+		OL::Size2D mapSize(GenerateMap.width, GenerateMap.height);
 
 		//チップを探す
 		for (int y = 0; y < mapSize.h; ++y)
 		{
 			for (int x = 0; x < mapSize.w; ++x)
 			{
-				while (ObjectMap.chipdata[y][x] == enterChip)
+				while (GenerateMap.chipdata[y][x] == enterChip)
 				{
-					++y;
-
-					if (ObjectMap.chipdata[y][x] != enterChip)
-					{
-						return ML::Vec2(x, y - 1) * this->res->drawSize;
-					}
+					return ML::Vec2(x, y) * this->res->drawSize;
 				}
 			}
 		}
@@ -494,6 +527,29 @@ namespace  Map
 		}
 
 		return true;
+	}
+
+	void Object::SetEnemyOnMap() {
+		auto em = ge->GetTask<EnemyManager::Object>(EnemyManager::defGroupName, EnemyManager::defName);
+		if (em == nullptr)return;
+		em->KillAllEnemys();
+		//チップを探す
+		for (int y = 0; y < this->GenerateMap.height; ++y)
+		{
+			for (int x = 0; x < this->GenerateMap.width; ++x)
+			{
+				int en = this->GenerateMap.chipdata[y][x];
+				//enの範囲は0～6の範囲とする。
+				if (en >= 0 && en <= 6) {
+					ML::Vec2 epos(
+						x * this->res->drawSize,
+						y * this->res->drawSize
+					);
+					
+					em->SpawnEnemyNum(en, epos);
+				}
+			}
+		}
 	}
 
 

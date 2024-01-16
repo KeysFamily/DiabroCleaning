@@ -12,6 +12,7 @@
 #include  "Task_Player.h"
 
 #include  "Task_Map.h"
+#include  "sound.h"
 
 #include  "randomLib.h"
 #include  "Task_Item_coin_maneger.h"
@@ -43,7 +44,7 @@ namespace  EnemySkeleton
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
-		this->render2D_Priority[1] = 0.6f;
+		this->render2D_Priority[1] = 0.5f;
 		this->hitBase = OL::setBoxCenter(62, 102);
 		this->angle_LR = Angle_LR::Left;
 		this->motion = Motion::Stand;
@@ -276,7 +277,7 @@ namespace  EnemySkeleton
 
 				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
 				
-				BChara::AttackInfo ai = { this->attackPow,0,0 };
+				BChara::AttackInfo ai = { static_cast<float>(this->attackPow),0,0 };
 				this->Attack_Std(Player::defGroupName, ai, hit);
 			}
 			break;
@@ -291,6 +292,11 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Lose:
+			if (this->moveCnt == 1)
+			{
+				ge->CreateEffect(11, this->pos);
+				se::Play("enemyDead");
+			}
 			if (this->moveCnt == 5) { this->DropCoins(this->dropMoney); }
 			if (this->moveCnt >= 30) {
 				this->Kill();
@@ -434,10 +440,10 @@ namespace  EnemySkeleton
 		}
 		//‚«”ò‚Î‚³‚ê‚é
 		if (from_->angle_LR == Angle_LR::Right) {
-			this->moveVec = ML::Vec2(2, -3) * 3;
+			this->moveVec = ML::Vec2(1, -3) * 1;
 		}
 		else {
-			this->moveVec = ML::Vec2(-2, -3) * 3;
+			this->moveVec = ML::Vec2(-1, -3) * 1;
 		}
 		this->UpdateMotion(Motion::Bound);
 	}

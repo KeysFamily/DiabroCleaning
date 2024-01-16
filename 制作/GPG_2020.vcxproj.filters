@@ -42,8 +42,20 @@
     <Filter Include="MyPG\Task\Game\Magic">
       <UniqueIdentifier>{b4b8e054-d770-4f47-bbc0-a199dd969647}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MyPG\Task\Game\Item">
-      <UniqueIdentifier>{b9684222-4995-4441-b241-338418806d92}</UniqueIdentifier>
+	  <Filter Include="MyPG\Task\Game\Item">
+		  <UniqueIdentifier>{b9684222-4995-4441-b241-338418806d92}</UniqueIdentifier>
+	  </Filter>
+    <Filter Include="MyPG\Task\SystemMenu">
+      <UniqueIdentifier>{9d38ab56-21d8-4d2d-ac4e-3c7a8d87c2a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Interface">
+      <UniqueIdentifier>{aff7968c-87f8-4bd7-9109-dd91bf8c3e32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Task\Game\Map">
+      <UniqueIdentifier>{38842a73-185b-4076-a437-9737387bfca3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyPG\Task\Game\Item_coin">
+      <UniqueIdentifier>{28df0327-2d3a-4bcf-b33e-c52c36ef562d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -122,9 +134,6 @@
     <ClCompile Include="OriginalLibrary.cpp">
       <Filter>MyPG</Filter>
     </ClCompile>
-    <ClCompile Include="Task_Map.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Task_Player.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
@@ -146,20 +155,8 @@
     <ClCompile Include="Task_Ending.cpp">
       <Filter>MyPG\Task\Ending</Filter>
     </ClCompile>
-    <ClCompile Include="Task_Item_coin.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_Item_coin_maneger.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_MapManager.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Task_GameUI.cpp">
       <Filter>MyPG\Task\Game\GameUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_GameUI_MiniMap.cpp">
-      <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
     <ClCompile Include="Task_MagicManager.cpp">
       <Filter>MyPG\Task\Game\Magic</Filter>
@@ -272,21 +269,6 @@
     <ClCompile Include="Task_Game.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
-    <ClCompile Include="Task_GameUI_MiniMap.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_Item_coin_maneger.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_Item_coin.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_Map.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_MapManager.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Task_Player.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
@@ -302,17 +284,87 @@
     <ClCompile Include="Task_Load.cpp">
       <Filter>MyPG\Task\Load</Filter>
     </ClCompile>
-    <ClCompile Include="Task_MapTransition.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Task_Thunder.cpp">
       <Filter>MyPG\Task\Game\Magic</Filter>
     </ClCompile>
     <ClCompile Include="Task_Item.cpp">
       <Filter>MyPG\Task\Game\Item</Filter>
     </ClCompile>
-    <ClCompile Include="BItem.cpp">
-      <Filter>MyPG\Task\Game\Item</Filter>
+	  <ClCompile Include="BItem.cpp">
+		  <Filter>MyPG\Task\Game\Item</Filter>
+	  </ClCompile>
+    <ClCompile Include="Task_SystemMenu.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_PlayerStatus.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Beam.cpp">
+      <Filter>MyPG\Task\Game\Magic</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_PlayerStatusShop.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Map.cpp">
+      <Filter>MyPG\Task\Game\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_MapManager.cpp">
+      <Filter>MyPG\Task\Game\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_MapTransition.cpp">
+      <Filter>MyPG\Task\Game\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Item_coin.cpp">
+      <Filter>MyPG\Task\Game\Item_coin</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Item_coin_maneger.cpp">
+      <Filter>MyPG\Task\Game\Item_coin</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_GameUI_MiniMap.cpp">
+      <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_MapManager.cpp">
+      <Filter>MyPG\Task\Game\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Map.cpp">
+      <Filter>MyPG\Task\Game\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Item_coin.cpp">
+      <Filter>MyPG\Task\Game\Item_coin</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Item_coin_maneger.cpp">
+      <Filter>MyPG\Task\Game\Item_coin</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_GameUI_MiniMap.cpp">
+      <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_SystemMenuSelectObject.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Price.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_ShopStaff.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemyBoss.cpp" />
+    <ClCompile Include="Task_SystemMenuMessageWindow.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_SkillSelect.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_SkillShop.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_SystemMenuMoneyDisplay.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_SystemMenuBackButton.cpp">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_PlayerScore.cpp">
+      <Filter>MyPG\Task\Ending</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -386,9 +438,6 @@
     <ClInclude Include="OriginalLibrary.h">
       <Filter>MyPG</Filter>
     </ClInclude>
-    <ClInclude Include="Task_Map.h">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Task_Player.h">
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
@@ -410,20 +459,8 @@
     <ClInclude Include="Task_Ending.h">
       <Filter>MyPG\Task\Ending</Filter>
     </ClInclude>
-    <ClInclude Include="Task_Item_coin.h">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Task_Item_coin_maneger.h">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Task_MapManager.h">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Task_GameUI.h">
       <Filter>MyPG\Task\Game\GameUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Task_GameUI_MiniMap.h">
-      <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
     <ClInclude Include="Task_MagicManager.h">
       <Filter>MyPG\Task\Game\Magic</Filter>
@@ -444,9 +481,6 @@
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="MapStruct.h" />
-    <ClInclude Include="Task_MapTransition.h">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Task_Thunder.h">
       <Filter>MyPG\Task\Game\Magic</Filter>
     </ClInclude>
@@ -454,6 +488,67 @@
       <Filter>MyPG\Task\Game\Item</Filter>
     </ClInclude>
     <ClInclude Include="BItem.h" />
+    <ClInclude Include="Task_SystemMenu.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_PlayerStatus.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectableObject.h">
+      <Filter>MyPG\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Beam.h">
+      <Filter>MyPG\Task\Game\Magic</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_PlayerStatusShop.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Map.h">
+      <Filter>MyPG\Task\Game\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_MapManager.h">
+      <Filter>MyPG\Task\Game\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_MapTransition.h">
+      <Filter>MyPG\Task\Game\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Item_coin.h">
+      <Filter>MyPG\Task\Game\Item_coin</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Item_coin_maneger.h">
+      <Filter>MyPG\Task\Game\Item_coin</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_GameUI_MiniMap.h">
+      <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SystemMenuSelectObject.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Price.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_ShopStaff.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemyBoss.h" />
+    <ClInclude Include="Task_SystemMenuMessageWindow.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SkillSelect.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SkillShop.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SystemMenuMoneyDisplay.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_SystemMenuBackButton.h">
+      <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_PlayerScore.h">
+      <Filter>MyPG\Task\Ending</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\Gp3.ico">

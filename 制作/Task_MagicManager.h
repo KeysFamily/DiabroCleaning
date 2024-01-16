@@ -62,6 +62,7 @@ namespace  MagicManager
 			FireBall,
 			WaterBlast,
 			Thunder,
+			Beam,
 		};
 		Magic magicSelect;
 	};

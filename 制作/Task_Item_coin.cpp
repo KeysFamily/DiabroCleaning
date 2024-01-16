@@ -45,7 +45,7 @@ namespace  Item_coin
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->render2D_Priority[1] = 0.7f;
+		this->render2D_Priority[1] = 0.4f;
 		this->hitBase = OL::setBoxCenter(32, 32);
 		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
 		this->decSpeed = 0.05f;		//接地状態の時の速度減衰量（摩擦
@@ -57,7 +57,6 @@ namespace  Item_coin
 		this->pos.x = 1300;
 		this->pos.y = 500;
 
-		se::LoadFile("se_get_coin", "./data/sound/se/se_select2.wav");
 		//★タスクの生成
 
 		return  true;
@@ -67,6 +66,7 @@ namespace  Item_coin
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
+		ge->CreateEffect(58, this->pos);
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -238,6 +238,7 @@ namespace  Item_coin
 	{
 		pl_->balanceMoney += 1;
 		this->Kill();
+		se::Stop("se_get_coin");
 		se::Play("se_get_coin");
 		//this->UpdateMotion(Motion::Bound);
 		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う

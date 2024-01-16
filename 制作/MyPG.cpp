@@ -1,9 +1,14 @@
-﻿	#include "MyPG.h"
+﻿#include "MyPG.h"
 
+#include "easing.h"
 #include "randomLib.h"
 #include "sound.h"
 
 #include "Task_Title.h"
+
+#include "Task_SystemMenu.h"
+#include "Task_PlayerStatusShop.h"
+#include "Task_PlayerStatus.h"
 #define MYDEBUG
 #define	REFRESHRATE  60
 
@@ -193,8 +198,8 @@ namespace MyPG
 				e->filename = "data/effect/effect3_bomb1.png";
 				e->resSizeX = 256;
 				e->resSizeY = 256;
-				e->drawSizeX = 512;
-				e->drawSizeY = 512;
+				e->drawSizeX = 256;
+				e->drawSizeY = 256;
 				e->pos.x = pos.x;
 				e->pos.y = pos.y;
 
@@ -246,11 +251,11 @@ namespace MyPG
 
 		case 11://爆発　アニメーション
 			if (auto e = Effect00::Object::Create(true)) {
-				e->filename = "data/effect/spritesheet.png";
-				e->resSizeX = 100;
-				e->resSizeY = 100;
-				e->drawSizeX = 100;
-				e->drawSizeY = 100;
+				e->filename = "data/effect/spritesheet_x4.png";
+				e->resSizeX = 400;
+				e->resSizeY = 400;
+				e->drawSizeX = 400;
+				e->drawSizeY = 400;
 				e->pos.x = pos.x;
 				e->pos.y = pos.y;
 
@@ -269,14 +274,14 @@ namespace MyPG
 				e->filename = "data/effect/smoke.png";
 				e->render2D_Priority[1] = 0.6f;
 				e->resSizeX = e->resSizeY = 32;
-				e->drawSizeX = 32;
-				e->drawSizeY = 32;
+				e->drawSizeX = 64;
+				e->drawSizeY = 64;
 				e->pos.x = pos.x;
-				e->pos.y = pos.y + 16;
+				e->pos.y = pos.y;
 				e->fade = false;
 				e->animResNum = 3;
 				e->animMax = 3;
-				e->addAnim = 0.1f;
+				e->addAnim = 0.12f;
 				resultEffect = e;
 			}
 			break;
@@ -300,6 +305,74 @@ namespace MyPG
 			}
 			break;
 
+
+
+			//◆Diabro
+		case 58://コイン回収エフェクト
+			if (auto e = Effect00::Object::Create(true)) {
+				e->filename = "data/effect/star.png";
+				e->resSizeX = e->resSizeY = 32;
+				e->drawSizeX = 64;
+				e->drawSizeY = 64;
+				e->pos.x = pos.x;
+				e->pos.y = pos.y;
+				e->fade = false;
+				e->animResNum = 4;
+				e->animMax = 4;
+				e->addAnim = 0.3f;
+				e->AddRender = true;
+				resultEffect = e;
+			}
+			break;
+		case 59://氷破壊エフェクト
+			if (auto e = Effect00::Object::Create(true)) {
+				e->filename = "data/effect/burstIce.png";
+				e->resSizeX = e->resSizeY = 128;
+				e->drawSizeX = 256;
+				e->drawSizeY = 256;
+				e->pos.x = pos.x;
+				e->pos.y = pos.y;
+				e->fade = false;
+				e->animResNum = 1;
+				e->animMax = 7;
+				e->addAnim = 0.4f;
+				e->alpha = 0.8f;
+				e->AddRender = true;
+				resultEffect = e;
+			}
+			break;
+		case 60://煙エフェクト1
+			if (auto e = Effect00::Object::Create(true)) {
+				e->filename = "data/effect/smoke5.png";
+				e->resSizeX = e->resSizeY = 128;
+				e->drawSizeX = 256;
+				e->drawSizeY = 256;
+				e->pos.x = pos.x;
+				e->pos.y = pos.y;
+				e->fade = false;
+				e->animResNum = 10;
+				e->animMax = 10;
+				e->animStart = 140;
+				e->addAnim = 0.4f;
+				resultEffect = e;
+			}
+			break;
+		case 61://煙エフェクト2
+			if (auto e = Effect00::Object::Create(true)) {
+				e->filename = "data/effect/smoke5.png";
+				e->resSizeX = e->resSizeY = 128;
+				e->drawSizeX = 128;
+				e->drawSizeY = 128;
+				e->pos.x = pos.x;
+				e->pos.y = pos.y;
+				e->fade = false;
+				e->animResNum = 10;
+				e->animMax = 10;
+				e->animStart = 110;
+				e->addAnim = 0.4f;
+				resultEffect = e;
+			}
+			break;
 			//◆◆◆
 		case 77://黄色いエフェクト1
 			if (auto e = Effect00::Object::Create(true)) {
@@ -496,14 +569,14 @@ namespace MyPG
 			if (auto e = Effect00::Object::Create(true)) {
 				e->filename = "data/effect/yellowImpact.png";
 				e->resSizeX = e->resSizeY = 32;
-				e->drawSizeX = 32;
-				e->drawSizeY = 32;
+				e->drawSizeX = 64;
+				e->drawSizeY = 64;
 				e->pos.x = pos.x;
 				e->pos.y = pos.y;
 				e->fade = false;
 				e->animResNum = 4;
 				e->animMax = 4;
-				e->addAnim = 0.1f;
+				e->addAnim = 0.2f;
 				e->animStart = 48;
 				resultEffect = e;
 			}
@@ -526,16 +599,16 @@ namespace MyPG
 			break;
 		case 91://黄色いエフェクト15
 			if (auto e = Effect00::Object::Create(true)) {
-				e->filename = "data/effect/yellowImpact.png";
-				e->resSizeX = e->resSizeY = 32;
-				e->drawSizeX = 32;
-				e->drawSizeY = 32;
+				e->filename = "data/effect/yellowImpact_x4.png";
+				e->resSizeX = e->resSizeY = 128;
+				e->drawSizeX = 128;
+				e->drawSizeY = 128;
 				e->pos.x = pos.x;
 				e->pos.y = pos.y;
 				e->fade = false;
 				e->animResNum = 4;
 				e->animMax = 4;
-				e->addAnim = 0.1f;
+				e->addAnim = 0.2f;
 				e->animStart = 56;
 				resultEffect = e;
 			}
@@ -972,6 +1045,16 @@ ge->debugRect(me, DEBUGRECTMODE::RED ,- ge->camera2D.x, -ge->camera2D.y);
 	{
 		return ML::Vec2(screenWidth / 2.0f, screenHeight / 2.0f);
 	}
+	//標準の描画処理
+	void MyGameEngine::DrawStd(const DG::Image::SP& img_, OL::Size2D size_, ML::Vec2 pos_)
+	{
+		ML::Box2D draw = OL::setBoxCenter(size_);
+		ML::Box2D src(0, 0, size_.w, size_.h);
+		draw.Offset(pos_);
+		img_->Draw(draw, src);
+	}
+
+
 	//デバッグ関数
 	//param1:出力する文字列
 	//param2:何フレームごとに出力するか

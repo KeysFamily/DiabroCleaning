@@ -86,6 +86,8 @@ public:
 	virtual void Damaged(int damage_) {};
 
 	//キャラクタ共通メソッド
+	//すり抜ける床判定
+	virtual bool CheckFallGround(float preY_, float estY_);
 	//めり込まない移動処理
 	virtual  void  CheckMove(ML::Vec2& est_);
 	//足元接触判定
@@ -94,6 +96,8 @@ public:
 	virtual  bool  CheckHead();
 	//正面接触判定（サイドビューゲーム専用）
 	virtual  bool  CheckFront_LR();
+	//後面接触判定
+	virtual  bool  CheckBack_LR();
 	//正面足元チェック（サイドビューゲーム専用）
 	virtual  bool  CheckFrontFoot_LR();
 	//モーションを更新（変更なしの場合	false)

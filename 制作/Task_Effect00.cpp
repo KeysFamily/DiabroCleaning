@@ -42,6 +42,7 @@ namespace  Effect00
 		//Šp“x
 		this->angle = 0.f;//ML::ToRadian((float)(rand() % 360));
 		this->addAngle = 0.f;
+		this->flipX = false;
 
 		//ƒ¿
 		this->alpha = 1.f;
@@ -157,6 +158,12 @@ namespace  Effect00
 		//Box2D’è‹`‚Ìint x,y,w,h‚ðfloat‚É‚·‚é‚±‚Æ
 		ML::Box2D  draw((int)(-drawSizeX / 2 * scale) ,(int)( -drawSizeY / 2 * scale),
 			(int)(drawSizeX * scale),(int)( drawSizeY * scale));
+		//”½“]
+		if (flipX == true)
+		{
+			draw.x = -draw.x;
+			draw.w = -draw.w;
+		}
 		draw.Offset(this->pos);
 		//
 		if (this->animResNum <= 0) this->animResNum = 1;

@@ -40,12 +40,14 @@ namespace  WaterBlast
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->hitBase = ML::Box2D(-26, -40, 52, 100);
+		this->render2D_Priority[1] = 0.5f;
+		this->hitBase = ML::Box2D(-60, -140, 120, 200);
 		this->pos = ML::Vec2(0, 0);
 		/*this->speed = 10.0f;*/
 		this->power = 1.0f;
-		this->cost = 10;
+		this->cost = 0;//仮
 		this->motion = Motion::Start;
+		this->coolTime = 0;
 		//★タスクの生成
 
 		return  true;
@@ -69,6 +71,7 @@ namespace  WaterBlast
 	{
 		this->moveCnt++;
 		this->animCnt++;
+		this->coolTime++;
 		this->Think();
 		this->Move();
 	}
@@ -89,7 +92,6 @@ namespace  WaterBlast
 		}
 
 		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
-		ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
 	//思考＆状況判断　モーション決定
@@ -111,6 +113,7 @@ namespace  WaterBlast
 			if (this->moveCnt > 24) { this->Kill(); }
 			break;
 		}
+		if (pl->motion != Player::Object::Motion::MagicAttack) { nm = Motion::End; }
 		//モーション更新
 		this->UpdateMotion(nm);
 	}
@@ -129,7 +132,9 @@ namespace  WaterBlast
 				++it) {
 				if ((*it)->CheckHit(this->hitBase.OffsetCopy(this->pos))) {
 					BChara::AttackInfo at = { this->power, 0, 0 };
-					(*it)->Received(this, at);
+					if (this->coolTime % 20 == 0) {
+						(*it)->Received(this, at);
+					}
 				}
 			}
 			if (this->moveCnt % 60 == 1) { pl->balanceMoney -= this->cost; }
@@ -145,18 +150,18 @@ namespace  WaterBlast
 		ML::Color  defColor(1, 1, 1, 1);
 		BChara::DrawInfo imageTable[] = {
 			//draw							src
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(0, 0, 128, 128), defColor },					//0
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128, 0, 128, 128), defColor },					//1
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 2, 0, 128, 128), defColor },				//2
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 3, 0, 128, 128), defColor },				//3
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(0, 128, 128, 128), defColor },					//4
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128, 128, 128, 128), defColor },				//5
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 2, 128, 128, 128), defColor },			//6
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 3, 128, 128, 128), defColor },			//7
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(0, 128 * 2, 128, 128), defColor },				//8
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128, 128 * 2, 128, 128), defColor },			//9
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 2, 128 * 2, 128, 128), defColor },		//10
-			{ ML::Box2D(-64,-64,128,128), ML::Box2D(128 * 3, 128 * 2, 128, 128), defColor },		//11
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(0, 0, 128, 128), defColor },					//0
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128, 0, 128, 128), defColor },					//1
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 2, 0, 128, 128), defColor },				//2
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 3, 0, 128, 128), defColor },				//3
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(0, 128, 128, 128), defColor },					//4
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128, 128, 128, 128), defColor },				//5
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 2, 128, 128, 128), defColor },			//6
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 3, 128, 128, 128), defColor },			//7
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(0, 128 * 2, 128, 128), defColor },				//8
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128, 128 * 2, 128, 128), defColor },			//9
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 2, 128 * 2, 128, 128), defColor },		//10
+			{ ML::Box2D(-150,-210,300,300), ML::Box2D(128 * 3, 128 * 2, 128, 128), defColor },		//11
 		};
 		BChara::DrawInfo  rtv;
 		int  work;

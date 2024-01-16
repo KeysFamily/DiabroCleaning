@@ -10,7 +10,7 @@
 #include  "Task_EnemySkeleton.h"
 #include "Task_MapManager.h"
 #include  "Task_MagicManager.h"
-
+#include "sound.h"
 
 
 namespace  Player
@@ -21,6 +21,10 @@ namespace  Player
 	bool  Resource::Initialize()
 	{
 		this->img = DG::Image::Create("./data/image/adventure4x.png");
+		se::LoadFile("swordHit", "./data/sound/se/se_hit3.wav");
+		se::LoadFile("airdash", "./data/sound/se/se_airdash.wav");
+		se::LoadFile("swordSlash", "./data/sound/se/se_swordSlash.wav");
+		se::LoadFile("swordHitGround", "./data/sound/se/se_swordHitGround2.wav");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -52,8 +56,8 @@ namespace  Player
 		this->addSpeed = 1.0f;		//歩行加速度（地面の影響である程度打ち消される
 		this->crouchSpeed = 2.5f;	//しゃがみながら移動最大速度
 		this->decSpeed = 0.5f;		//接地状態の時の速度減衰量（摩擦
-		this->maxFallSpeed = 11.0f;	//最大落下速度
-		this->jumpPow = -12.5f;		//ジャンプ力（初速）
+		this->maxFallSpeed = 15.0f;	//最大落下速度
+		this->jumpPow = -14.5f;		//ジャンプ力（初速）
 		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
 		this->drawScale = 1;
 		this->attack2 = false;
@@ -61,18 +65,26 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 100;  //所持金
+		this->balanceMoney = 1000;  //所持金
 		this->hp.SetValues(100, 0, 100);
-		this->power = 1;     
+		this->power = 1.0f;
 		this->powerScale = 1.0f;
-		this->balanceMoney = 100;
-		this->magicSelect = Magic::Thunder; //仮
-		ge->debugRectLoad();
+		this->magicSelect = Magic::NoMagic; //仮
+		this->surviveFrame = 0;
+		this->surviveTime = 0;
+		this->DEF = 1;
+		this->INT = 1.0f;
+		this->speed = 0.f;
+		this->haveAttacked = false;
 
 
 		//--------------------------------------
 		//0329
 		this->moveMapCoolTime.SetValues(0, 0, 60);
+		this->moveEffectDistance = 16;
+		this->unlockedMagic.clear();
+		this->unlockedMagic.push_back(Magic::NoMagic);
+		this->magicIndex = 0;
 		//--------------------------------------
 		//★タスクの生成
 
@@ -96,6 +108,9 @@ namespace  Player
 	{
 		this->moveCnt++;
 		this->animCnt++;
+		this->surviveFrame++;
+		this->surviveTime = this->surviveFrame / 60;
+		this->maxSpeed = 9.0f + 0.2 * this->speed; //ステータスによる移動速度加算
 		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 		if (this->unHitTime > 0) { this->unHitTime--; }
 		//思考・状況判断
@@ -105,6 +120,7 @@ namespace  Player
 		//めり込まない移動
 		ML::Vec2  est = this->moveVec;
 		this->CheckMove(est);
+		this->CheckMove_();
 		//hitbase更新
 		BChara::DrawInfo  di = this->Anim();
 
@@ -125,6 +141,8 @@ namespace  Player
 				}
 			}
 		}
+
+		this->CheckMoveMap();
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -144,9 +162,7 @@ namespace  Player
 
 
 		ge->debugRect(this->hitBase.OffsetCopy(this->pos), 7, -ge->camera2D.x, -ge->camera2D.y);
-		ge->debugRectDraw();
 		ge->debugRect(this->attackBase.OffsetCopy(this->pos), 5, -ge->camera2D.x, -ge->camera2D.y);
-		ge->debugRectDraw();
 	}
 	//-----------------------------------------------------------------------------
 	//思考＆状況判断　モーション決定
@@ -165,7 +181,8 @@ namespace  Player
 			if (inp.LStick.BD.on && inp.LStick.BL.on) { nm = Motion::CrouchWalk; }
 			if (inp.LStick.BD.on && inp.LStick.BR.on) { nm = Motion::CrouchWalk; }
 			if (inp.B1.down) { nm = Motion::TakeOff; }
-			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.B2.down) { nm = Motion::Back; }
+			if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::Attack; }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			if (this->CheckFoot() == false) {
 				tempCnt++;
@@ -177,7 +194,7 @@ namespace  Player
 			break;
 		case  Motion::Walk:		//歩いている
 			if (inp.B1.down) { nm = Motion::TakeOff; }
-			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::Attack; }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			if (this->CheckFoot() == false) {
 				tempCnt++;
@@ -193,7 +210,7 @@ namespace  Player
 			if (this->moveVec.y >= 0) { nm = Motion::Fall; }
 			if (inp.B1.down) { nm = Motion::Jump2; }
 			if (airattack == true) {
-				if (inp.B4.down) { nm = Motion::AirAttack; }
+				if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
@@ -201,7 +218,7 @@ namespace  Player
 		case Motion::Jump2:
 			if (this->moveVec.y >= 0) { nm = Motion::Fall2; }
 			if (airattack == true) {
-				if (inp.B4.down) { nm = Motion::AirAttack; }
+				if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
@@ -210,7 +227,7 @@ namespace  Player
 			if (this->CheckFoot() == true) { nm = Motion::Landing; }
 			if (inp.B1.down) { nm = Motion::Jump2; }
 			if (airattack == true) {
-				if (inp.B4.down) { nm = Motion::AirAttack; }
+				if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
@@ -218,7 +235,7 @@ namespace  Player
 		case Motion::Fall2:
 			if (this->CheckFoot() == true) { nm = Motion::Landing; }
 			if (airattack == true) {
-				if (inp.B4.down) { nm = Motion::AirAttack; }
+				if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
@@ -239,8 +256,8 @@ namespace  Player
 			if (this->CheckFoot() == false) { nm = Motion::Fall; }
 			break;
 		case Motion::Bound:
-			if (this->moveCnt >= 12 &&
-				this->CheckFoot() == true) {
+			if (this->moveCnt >= 30/* &&
+				this->CheckFoot() == true*/) {
 				nm = Motion::Stand;
 			}
 			break;
@@ -255,7 +272,7 @@ namespace  Player
 				}
 			}//足元 障害　無し
 			if (this->CheckFoot() == true)tempCnt = 0;
-			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::Attack; }
 			break;
 		case Motion::CrouchWalk:	//しゃがみながら移動
 			if (inp.LStick.BD.off) { nm = Motion::Walk; /*this->pos.y -= 5;*/ }
@@ -268,7 +285,7 @@ namespace  Player
 				}
 			}//足元 障害　無し
 			if (this->CheckFoot() == true)tempCnt = 0;
-			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::Attack; }
 			break;
 		case  Motion::Attack:	//攻撃中
 			if (this->moveCnt == 20)
@@ -277,7 +294,7 @@ namespace  Player
 				{
 					nm = Motion::Attack2;
 				}
-				else nm = Motion::Stand;
+				else nm = Motion::Landing;
 			}
 			break;
 		case Motion::Attack2:
@@ -287,11 +304,11 @@ namespace  Player
 				{
 					nm = Motion::Attack3;
 				}
-				else nm = Motion::Stand;
+				else nm = Motion::Landing;
 			}
 			break;
 		case Motion::Attack3:
-			if (this->moveCnt == 24) { nm = Motion::Stand; }
+			if (this->moveCnt == 24) { nm = Motion::Landing; }
 			break;
 		case Motion::AirAttack:
 			if (this->moveCnt == 20)
@@ -324,6 +341,9 @@ namespace  Player
 		case Motion::MagicAttack:
 			if (this->moveCnt >= 15 && inp.B3.off) { nm = Motion::Stand; }
 			break;
+		case Motion::Back:
+			if (this->moveCnt > 10 || true == this->CheckBack_LR()) { this->moveVec.x = 0; nm = Motion::Landing; }
+			break;
 		}
 		//モーション更新
 		this->UpdateMotion(nm);
@@ -334,6 +354,21 @@ namespace  Player
 	void  Object::Move()
 	{
 		auto  inp = this->controller->GetState();
+		//魔法変更
+		if (inp.L1.down) {
+			this->magicIndex--; 
+			if (this->magicIndex < 0) {
+				this->magicIndex = this->unlockedMagic.size() - 1;
+			}
+			this->magicSelect = this->unlockedMagic[this->magicIndex];
+		}
+		if (inp.R1.down) {
+			this->magicIndex++;
+			if (this->magicIndex >= this->unlockedMagic.size()) {
+				this->magicIndex = 0;
+			}
+			this->magicSelect = this->unlockedMagic[this->magicIndex];
+		}
 		//重力加速
 		switch (this->motion) {
 		default:
@@ -377,6 +412,7 @@ namespace  Player
 			this->canDash = true;
 			this->airattack = true;
 			this->attackBase = ML::Box2D(0, 0, 0, 0);
+			this->haveAttacked = false;
 			ge->KillAll_G("MagicManager");
 			break;
 		case  Motion::Walk:		//歩いている
@@ -388,6 +424,14 @@ namespace  Player
 				this->angle_LR = Angle_LR::Right;
 				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
 			}
+			//エフェクト
+			if(this->moveCnt % this->moveEffectDistance == 0)
+			{
+				ML::Vec2 footPos = this->pos;
+				footPos.y += this->hitBase.h / 2;
+				ge->CreateEffect(12, footPos);
+			}
+
 			break;
 		case  Motion::Fall:		//落下中
 			if (inp.LStick.BL.on) {
@@ -426,19 +470,34 @@ namespace  Player
 		case Motion::Jump2:
 			if (this->CheckHead() == true) { this->moveVec.y = 0; }
 			if (this->moveCnt == 0) {
+				ML::Vec2 footPos = this->pos;
+				footPos.y += this->hitBase.h / 2;
+				ge->CreateEffect(61, footPos);
+
 				this->moveVec.y = this->jumpPow * 0.9f;
 			}
 			if (inp.LStick.BL.on) {
 				this->angle_LR = Angle_LR::Left;
-				this->moveVec.x = -this->maxSpeed;
+				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
 			}
 			if (inp.LStick.BR.on) {
 				this->angle_LR = Angle_LR::Right;
-				this->moveVec.x = this->maxSpeed;
+				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
 			}
 			this->canJump = false;
 			break;
 		case Motion::Dash:
+			if (moveCnt == 0)
+			{
+				auto effect = ge->CreateEffect(60, this->pos);
+				if (this->angle_LR == Angle_LR::Right)
+				{
+					effect.lock()->flipX = true;
+				}
+				se::Play("airdash");
+				se::Play("airdash");
+				se::Play("airdash");
+			}
 			this->moveVec.y = 0;
 			if (this->angle_LR == Angle_LR::Right) { this->moveVec.x = 30; }
 			if (this->angle_LR == Angle_LR::Left) { this->moveVec.x = -30; }
@@ -450,51 +509,81 @@ namespace  Player
 			break;
 		case  Motion::Attack:	//�U����
 			this->powerScale = 1.0f;
-			if (this->moveCnt == 5)this->MakeAttack();
+			if (this->moveCnt == 5)
+			{
+				se::Play("swordSlash");
+				this->MakeAttack();
+			}
 			if (moveCnt > 0) {
-				if (inp.B4.down) { this->attack2 = true; }
+				if (inp.Trigger.R2.down || inp.B4.down) { this->attack2 = true; }
 			}
 			break;
 		case  Motion::Attack2:	//�U����
 			this->powerScale = 1.5f;
 			this->attack2 = false;
-			if (this->moveCnt == 9)this->MakeAttack();
+			if (this->moveCnt == 9)
+			{
+				se::Play("swordSlash");
+				this->MakeAttack();
+			}
 			if (moveCnt > 0) {
-				if (inp.B4.down) { this->attack3 = true; }
+				if (inp.Trigger.R2.down || inp.B4.down) { this->attack3 = true; }
 			}
 			break;
 		case  Motion::Attack3:	//�U����
 			this->powerScale = 2.0f;
 			this->attack3 = false;
-			if (this->moveCnt == 9)this->MakeAttack();
+			if (this->moveCnt == 9)
+			{
+				se::Play("swordSlash");
+				this->MakeAttack();
+			}
 			break;
 		case Motion::AirAttack:
 			this->airattack = false;
 			this->moveVec.y = 0.0f;
 			this->powerScale = 1.0f;
-			if (this->moveCnt == 6)this->MakeAttack();
+			if (this->moveCnt == 6)
+			{
+				se::Play("swordSlash");
+				this->MakeAttack();
+			}
 			if (moveCnt > 0) {
-				if (inp.B4.down) { this->attack2 = true; }
+				if (inp.Trigger.R2.down || inp.B4.down) { this->attack2 = true; }
 			}
 			break;
 		case  Motion::AirAttack2:	//攻撃中
 			this->moveVec.y = 0.0f;
 			this->attack2 = false;
 			this->powerScale = 1.5f;
-			if (this->moveCnt == 1)this->MakeAttack();
+			if (this->moveCnt == 1) 
+			{
+				se::Play("swordSlash");
+				this->MakeAttack();
+			}
 			if (moveCnt > 0) {
-				if (inp.B4.down) { this->attack3 = true; }
+				if (inp.Trigger.R2.down || inp.B4.down) { this->attack3 = true; }
 			}
 			break;
 		case Motion::AirAttack3:
 			this->moveVec.y = 20.0f;
 			this->attack3 = false;
 			this->powerScale = 2.0f;
-			if (this->moveCnt == 1)this->MakeAttack();
+			if (this->haveAttacked == false) {
+				this->MakeAttack();
+			}
+			if (this->moveCnt == 1)
+			{
+				se::Play("swordSlash");
+			}
 			break;
 		case Motion::AirAttack4:
 			this->powerScale = 2.5f;
-			if (this->moveCnt == 1)this->MakeAttack();
+			if (this->moveCnt == 1)
+			{
+				se::Play("swordHitGround");
+				this->MakeAttack();
+			}
 			break;
 		case Motion::MagicAttack:
 			if (this->moveCnt == 11) {
@@ -511,6 +600,9 @@ namespace  Player
 					break;
 				case Magic::Thunder:
 					mj->magicSelect = mj->Magic::Thunder;
+					break;
+				case Magic::Beam:
+					mj->magicSelect = mj->Magic::Beam;
 					break;
 				}
 				if (this->angle_LR == Angle_LR::Left) { mj->LR = false; }
@@ -533,6 +625,9 @@ namespace  Player
 		case Motion::Bound:
 			this->attackBase = ML::Box2D(0, 0, 0, 0);
 			break;
+		case Motion::Back:
+			if (this->angle_LR == Angle_LR::Left) { this->moveVec.x += 2; }
+			else { this->moveVec.x -= 2; }
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -732,6 +827,9 @@ namespace  Player
 			else work = (this->animCnt / 8) % 4 + 2;
 			rtv = imageTable[work + 52];
 			break;
+		case Motion::Back:
+			rtv = imageTable[53];
+			break;
 		}
 
 		//this->hitBase = rtv.draw;
@@ -750,7 +848,7 @@ namespace  Player
 			this->hitBase.h = 116;
 			this->hitBase.y = -58;
 		}
-
+		
 		rtv.draw = this->DrawScale(rtv.draw, this->drawScale);
 		rtv.src = this->DrawScale(rtv.src, this->drawScale);
 
@@ -763,12 +861,16 @@ namespace  Player
 		if (this->unHitTime > 0) {
 			return;//無敵時間中はダメージを受けない
 		}
-		if (this->motion == Motion::Dash) {
+		if (this->motion == Motion::AirAttack || this->motion == Motion::AirAttack2 || this->motion == Motion::AirAttack3 || this->motion == Motion::AirAttack4
+			/*|| this->motion == Motion::Attack || this->motion == Motion::Attack2 || this->motion == Motion::Attack3*/) {
+			return;//攻撃中はダメージを受けない
+		}
+		if (this->motion == Motion::Dash || this->motion == Motion::Back) {
 			return;
 		}
 		this->unHitTime = 90;
-		this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= at_.power;
+		//this->hp.Addval(-at_.power);	//仮処理
+		this->balanceMoney -= (at_.power - this->DEF);
 		if (this->balanceMoney <= 0)this->balanceMoney = 0; //仮処理
 		if (this->hp.IsMin()) {
 			//this->Kill();
@@ -792,9 +894,11 @@ namespace  Player
 			it != enemys->end();
 			++it) {
 			if ((*it)->CheckHit(this->attackBase.OffsetCopy(this->pos))) {
+				se::Play("swordHit");
+				ge->CreateEffect(59, (*it)->pos);
 				BChara::AttackInfo at = { this->power * this->powerScale, 0, 0 };
 				(*it)->Received(this, at);
-				break;
+				this->haveAttacked = true;
 			}
 		}
 	}
@@ -829,98 +933,79 @@ namespace  Player
 			this->moveMapCoolTime.Setval(this->moveMapCoolTime.vmin);
 		}
 	}
+	//ファイル読み込み処理
+	void Object::LoadFile()
+	{
+		//スキル読み込み
+		json js = OL::LoadJsonFile("./data/inGame/run/pData_skill.json");
+		
+		for (auto& ji : js["pData_skill"])
+		{
+			if (ji["isBought"] == true)
+			{
+				//新しく解禁されたスキルがないか確認
+				std::vector<int>::iterator itr;
+				itr = std::find(this->unlockedMagic.begin(), this->unlockedMagic.end(), ji["id"]);
+				if (itr == this->unlockedMagic.end())
+				{
+					this->unlockedMagic.push_back(ji["id"]);
+				}
+			}
+		}
+
+		js.clear();
+
+		//ステータス読み込み
+		js = OL::LoadJsonFile("./data/inGame/run/pData_status.json");
+		
+		for (auto& ji : js["pData_status"])
+		{
+			ifstream ifs(string("./data/SystemMenu/Status/") + string(ji["paramFile"]) + ".txt");
+			if (!ifs)
+			{
+				continue;
+			}
+
+			int param;
+			for (int i = 0; i < ji["level"]; ++i)
+			{
+				ifs >> param;
+			}
+
+			switch ((int)ji["id"])
+			{
+			case StatusID::ST_ATK:
+				this->power = param;
+				break;
+			case StatusID::ST_DEF:
+				this->DEF = param;
+				break;
+			case StatusID::ST_INT:
+				this->INT = param;
+				break;
+			case StatusID::ST_SPD:
+				this->speed = param;
+			}
+		}
+	}
 	//-------------------------------------------------------------------
 	//めり込まない移動処理
-	void Object::CheckMove(ML::Vec2& e_)
+	void Object::CheckMove_()
 	{
 		//マップが存在するか調べてからアクセス
 		auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 		if (nullptr == map) { return; }//マップが無ければ判定しない(出来ない）
 
-		//横軸に対する移動
-		while (e_.x != 0) {
-			float  preX = this->pos.x;
-			if (e_.x >= 1) { this->pos.x += 1;		e_.x -= 1; }
-			else if (e_.x <= -1) { this->pos.x -= 1;		e_.x += 1; }
-			else { this->pos.x += e_.x;		e_.x = 0; }
-			ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
+		ML::Box2D checkBase = this->hitBase.OffsetCopy(this->pos);
 
-			//坂道判定
-			this->pos += map->CheckSlope(hit);
-
-			if (true == map->CheckHit(hit)) {
-				this->pos.x = preX;		//移動をキャンセル
-				break;
-			}
+		if (checkBase.x <= 0) { //左
+			this->pos.x = 1 + this->hitBase.w / 2;
 		}
-		//縦軸に対する移動
-		while (e_.y != 0) {
-			float  preY = this->pos.y;
-			if (e_.y >= 1) { this->pos.y += 1;		e_.y -= 1; }
-			else if (e_.y <= -1) { this->pos.y -= 1;		e_.y += 1; }
-			else { this->pos.y += e_.y;		e_.y = 0; }
-			ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
-
-			//坂道判定
-			this->pos += map->CheckSlope(hit);
-
-			if (true == map->CheckHit(hit)) {
-				this->pos.y = preY;		//移動をキャンセル
-				break;
-			}
-			if (true == CheckFallGround(preY, e_.y))
-			{
-				this->pos.y = preY;
-				break;
-			}
+		if (checkBase.x + checkBase.w >= map->hitBase.w) { //右
+			this->pos.x = map->hitBase.w - (this->hitBase.w / 2);
 		}
 	}
 	//-------------------------------------------------------------------
-	//足元判定
-	bool Object::CheckFoot()
-	{
-		//あたり判定を基にして足元矩形を生成
-		ML::Box2D  foot(this->hitBase.x,
-			this->hitBase.y + this->hitBase.h,
-			this->hitBase.w,
-			1);
-		foot.Offset(this->pos);
-
-		auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
-		if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
-		if (map->CheckHit(foot))
-		{
-			return true;
-		}
-		if (map->CheckSlope(foot) != ML::Vec2(0, 0))
-		{
-			return true;
-		}
-		if (map->CheckFallGround(foot))
-		{
-			//すり抜ける床は落下中ではない時だけ判定する
-			ML::Box2D upPix = foot.OffsetCopy(0, -1);
-			return map->CheckFallGround(upPix) == false;
-		}
-
-		return false;
-	}
-	//-------------------------------------------------------------------
-	//すり抜ける床判定
-	bool Object::CheckFallGround(float preY_, float estY_)
-	{
-		if (estY_ < 0)
-		{
-			return false;
-		}
-
-		if (ge->qa_Map->CheckFallGround(this->hitBase.OffsetCopy(this->pos.x, preY_)) == true)
-		{
-			return false;
-		}
-
-		return ge->qa_Map->CheckFallGround(this->CallHitBox());
-	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

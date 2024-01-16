@@ -1,4 +1,5 @@
 #pragma once
+
 namespace Map
 {
 	enum class MapDir
@@ -9,7 +10,6 @@ namespace Map
 		Right,
 		Left
 	};
-
 
 
 	class MapFunc 

@@ -87,6 +87,7 @@ namespace  Player
 			Lose,		//  消滅中
 			Dash,		//  ダッシュ
 			MagicAttack,//	魔法
+			Back,		//  避ける
 		};
 
 		enum Magic
@@ -95,8 +96,9 @@ namespace  Player
 			FireBall,
 			WaterBlast,
 			Thunder,
+			Beam,
 		};
-		Magic magicSelect;
+		int magicSelect;
 
 		//思考＆状況判断(ステータス決定）
 		void  Think();
@@ -120,23 +122,37 @@ namespace  Player
 		bool canDash;
 
 		//攻撃力
-		int power;
+		float power;
 		//攻撃力倍率
 		float powerScale;
+		//status
+		int DEF;
+		float INT;
 
 		//攻撃発動
 		void MakeAttack();
 
-		//--------------------------------------
-		//0329
-		//マップ移動処理
-		OL::Limit<int> moveMapCoolTime;		//マップ移動のクールタイム
-		void CheckMoveMap();				//マップ移動判定
-		bool CheckFallGround(float preY_, float estY_);				//すり抜ける床判定
-		bool CheckFoot() override;
-		//めり込まない移動処理
-		virtual  void  CheckMove(ML::Vec2& e_) override;
+		//時間管理
+		int surviveFrame, surviveTime;
 
 		//--------------------------------------
+		//0329
+		enum StatusID
+		{
+			ST_ATK = 0,
+			ST_DEF,
+			ST_INT,
+			ST_SPD,
+		};
+		OL::Limit<int> moveMapCoolTime;		//マップ移動のクールタイム
+		void CheckMoveMap();				//マップ移動判定
+		int moveEffectDistance;				//移動エフェクトの間隔
+		void LoadFile();	//スキル等ファイルのロード
+		int magicIndex;						//使っている魔法の要素番号
+		vector<int> unlockedMagic;			//解放済みのスキル
+		//--------------------------------------
+		void CheckMove_();					//マップ外に出ないように
+
+		bool haveAttacked;					//攻撃したフラグ
 	};
 }

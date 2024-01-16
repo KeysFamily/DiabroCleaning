@@ -15,6 +15,7 @@
 
 #include  "randomLib.h"
 #include  "Task_Item_coin_maneger.h"
+#include  "sound.h"
 //-----------------------------------------------------------------------
 // SkyEye
 // 空中雑魚敵
@@ -43,6 +44,7 @@ namespace  EnemySkyEye
 	bool  Resource::Initialize()
 	{
 		this->img = DG::Image::Create("./data/enemy/image/SkyEye.png");
+		se::LoadFile("skyEyeVoice", "./data/sound/se/se_skyeye3.wav");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -62,7 +64,7 @@ namespace  EnemySkyEye
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->render2D_Priority[1] = 0.6f;
+		this->render2D_Priority[1] = 0.5f;
 		this->hitBase = OL::setBoxCenter(50, 50);
 		this->angle_LR = Angle_LR::Left;
 		this->motion = Motion::Stand;
@@ -242,7 +244,6 @@ namespace  EnemySkyEye
 				smPos.y += diffY * 0.05f;
 				if (!ge->qa_Map->CheckHit(this->hitBase.OffsetCopy(smPos))) {
 					//移動先で衝突しなければ、オブジェクトを移動させる
-					ge->Dbg_ToDisplay(smPos.x, smPos.y - 50, "衝突なし、移動続行");
 					this->pos = smPos;
 				}
 
@@ -258,6 +259,11 @@ namespace  EnemySkyEye
 			this->moveVec.y = this->maxSpeed * 1.5f * sin(angRad);
 		}	break;
 		case Motion::Fall://落下中
+			if (moveCnt == 1)
+			{
+				ge->CreateEffect(11, this->pos);
+				se::Play("enemyDead");
+			}
 			if (this->angle_LR == Angle_LR::Left) {
 				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
 			}
@@ -272,7 +278,7 @@ namespace  EnemySkyEye
 
 				ge->debugRect(hit, 7, -ge->camera2D.x, -ge->camera2D.y);
 				
-				BChara::AttackInfo ai = { this->attackPow,0,0 };
+				BChara::AttackInfo ai = { static_cast<float>(this->attackPow),0,0 };
 				this->Attack_Std(Player::defGroupName, ai, hit);
 			}
 			break;
@@ -381,6 +387,11 @@ namespace  EnemySkyEye
 	}
 
 	void Object::Received(BChara* from_, AttackInfo at_) {
+		if(this->motion == Motion::Fall
+			|| this->motion == Motion::Lose) {
+			return;
+		}
+		
 		if (this->unHitTime > 0) { 
 			return; //無敵時間中は処理を受けない
 		}
@@ -397,6 +408,7 @@ namespace  EnemySkyEye
 		else {
 			this->moveVec = ML::Vec2(-2, -3) * 3;
 		}
+		se::Play("skyEyeVoice");
 		this->UpdateMotion(Motion::Bound);
 	}
 
@@ -428,8 +440,8 @@ namespace  EnemySkyEye
 				if (ge->qa_Map->CheckHit(eb))break;
 				if (ge->qa_Player->CallHitBox().Hit(eb)) {
 					this->targetPos = ML::Vec2(
-						GetRandom<float>(eb.x, eb.x + eb.w),
-						GetRandom<float>(eb.y, eb.y + eb.h)
+						static_cast<float>(GetRandom<int>(eb.x, eb.x + eb.w)),
+						static_cast<float>(GetRandom<int>(eb.y, eb.y + eb.h))
 					);
 					isFoundPlayer = true;
 					goto Check;
@@ -442,8 +454,8 @@ namespace  EnemySkyEye
 				if (ge->qa_Map->CheckHit(eb))break;
 				if (ge->qa_Player->CallHitBox().Hit(eb)) { 
 					this->targetPos = ML::Vec2(
-						GetRandom<float>(eb.x, eb.x + eb.w),
-						GetRandom<float>(eb.y, eb.y + eb.h)
+						static_cast<float>(GetRandom<int>(eb.x, eb.x + eb.w)),
+						static_cast<float>(GetRandom<int>(eb.y, eb.y + eb.h))
 					);
 					isFoundPlayer = true;
 					goto Check;

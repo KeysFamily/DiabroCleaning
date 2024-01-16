@@ -23,7 +23,9 @@ namespace  Ending
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-
+		DG::Image::SP Ending_clear_img;
+		DG::Image::SP Ending_over_img;
+		DG::Image::SP Key_img;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -47,5 +49,7 @@ namespace  Ending
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
+		int KeyTime;
+		bool KeyOnOff;
 	};
 }

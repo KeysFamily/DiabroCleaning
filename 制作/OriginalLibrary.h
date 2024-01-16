@@ -5,7 +5,9 @@
 // 作成年月日:2023/07/05
 // 概　　　要:処理を効率化させるための処理を組み込んだライブラリ
 //------------------------------------------------------------------
-#include "GameEngine_Ver3_83.h"
+#include "MyLib.h"
+#include "nlohmann/json.hpp"
+
 namespace OL
 {
 	//上限下限クラス
@@ -96,6 +98,7 @@ namespace OL
 	//アニメーション構造体
 	struct Animation {
 		Animation(const Size2D& size_, int animDistance_);
+		Animation(const std::string& filePath_);
 		using SP = std::shared_ptr<Animation>;
 		using WP = std::weak_ptr<Animation>;
 		/// <summary>
@@ -105,6 +108,12 @@ namespace OL
 		/// <param name="animDistance_">アニメーションの速さ（値が小さいほど早い）</param>
 		/// <returns></returns>
 		static Animation::SP Create(const Size2D& size_, int animDistance_);
+		
+		/// <summary>
+		/// アニメーションの生成
+		/// </summary>
+		/// <param name="filePath_">ファイルパス</param>
+		static Animation::SP Create(const std::string& filePath_);
 
 		Size2D  imgSize;			//画像サイズ
 		vector<ML::Point>	imgPos;	//画像の位置
@@ -122,12 +131,27 @@ namespace OL
 		/// <param name="y_">上から数えた画像番号Y</param>
 		void AddPos(int x_, int y_);
 
+
 		/// <summary>
 		/// 引数で受け取ったフレーム数に対応したアニメーション画像を返す
 		/// </summary>
 		/// <param name="frames_">経過フレーム数</param>
 		/// <returns>フレーム数に対応したアニメーション画像</returns>
 		ML::Vec2 GetPos(int frames_) const;	
+
+		/// <summary>
+		/// 引数で受け取ったフレーム数に対応したアニメーション画像矩形を返す
+		/// </summary>
+		/// <param name="frames_">経過フレーム数</param>
+		/// <returns>フレーム数に対応したアニメーション画像矩形</returns>
+		ML::Box2D GetSrcBox(int frames_) const;
+
+
+		/// <summary>
+		/// 描画用矩形をもらう
+		/// </summary>
+		/// <returns>描画用矩形（原点調整済み）</returns>
+		ML::Box2D GetDrawBox() const;
 
 		/// <summary>
 		/// サイズの設定
@@ -203,5 +227,8 @@ namespace OL
 
 	//ベクトルを回転させる
 	ML::Vec2 RotateVec(const ML::Vec2& vec_, float angleRad_);
+
+	//JSONファイルを読み込む
+	nlohmann::json LoadJsonFile(const string& filePath_);
 
 }

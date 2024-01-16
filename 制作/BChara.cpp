@@ -66,13 +66,13 @@ bool  BChara::CheckHead()
 	return ge->qa_Map->CheckHit(head)
 		|| ge->qa_Map->CheckSlope(head) != ML::Vec2(0,0);
 }
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------
 //めり込まない移動処理
 void BChara::CheckMove(ML::Vec2& e_)
 {
 	//マップが存在するか調べてからアクセス
-	
-	if (nullptr == ge->qa_Map) { return; }//マップが無ければ判定しない(出来ない）
+	auto   map = ge->qa_Map;
+	if (nullptr == map) { return; }//マップが無ければ判定しない(出来ない）
 
 	//横軸に対する移動
 	while (e_.x != 0) {
@@ -83,9 +83,9 @@ void BChara::CheckMove(ML::Vec2& e_)
 		ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
 
 		//坂道判定
-		this->pos += ge->qa_Map->CheckSlope(hit);
-
-		if (true == ge->qa_Map->CheckHit(hit)) {
+		this->pos += map->CheckSlope(hit);
+		
+		if (true == map->CheckHit(hit)) {
 			this->pos.x = preX;		//移動をキャンセル
 			break;
 		}
@@ -99,17 +99,38 @@ void BChara::CheckMove(ML::Vec2& e_)
 		ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
 
 		//坂道判定
-		this->pos += ge->qa_Map->CheckSlope(hit);
+		this->pos += map->CheckSlope(hit);
 
-		if (true == ge->qa_Map->CheckHit(hit)) {
+		if (true == map->CheckHit(hit)) {
 			this->pos.y = preY;		//移動をキャンセル
+			break;
+		}
+		if (true == CheckFallGround(preY, e_.y))
+		{
+			this->pos.y = preY;
 			break;
 		}
 	}
 }
+//-------------------------------------------------------------------
+//すり抜ける床判定
+bool BChara::CheckFallGround(float preY_, float estY_)
+{
+	if (estY_ < 0)
+	{
+		return false;
+	}
+
+	if (ge->qa_Map->CheckFallGround(this->hitBase.OffsetCopy(this->pos.x, preY_)) == true)
+	{
+		return false;
+	}
+
+	return ge->qa_Map->CheckFallGround(this->CallHitBox());
+}
 //-----------------------------------------------------------------------------
-//足元接触判定
-bool  BChara::CheckFoot()
+//足元判定
+bool BChara::CheckFoot()
 {
 	//あたり判定を基にして足元矩形を生成
 	ML::Box2D  foot(this->hitBase.x,
@@ -118,11 +139,24 @@ bool  BChara::CheckFoot()
 		1);
 	foot.Offset(this->pos);
 
-	
-	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
-	//マップと接触判定
-	return ge->qa_Map->CheckHit(foot)
-		|| ge->qa_Map->CheckSlope(foot) != ML::Vec2(0, 0);
+	auto   map = ge->qa_Map;
+	if (nullptr == map) { return  false; }//マップが無ければ判定しない(出来ない）
+	if (map->CheckHit(foot))
+	{
+		return true;
+	}
+	if (map->CheckSlope(foot) != ML::Vec2(0, 0))
+	{
+		return true;
+	}
+	if (map->CheckFallGround(foot))
+	{
+		//すり抜ける床は落下中ではない時だけ判定する
+		ML::Box2D upPix = foot.OffsetCopy(0, -1);
+		return map->CheckFallGround(upPix) == false;
+	}
+
+	return false;
 }
 //-----------------------------------------------------------------------------
 //正面接触判定（サイドビューゲーム専用）
@@ -147,6 +181,28 @@ bool  BChara::CheckFront_LR()
 	//マップと接触判定
 	return ge->qa_Map->CheckHit(front);
 }
+//後面接触判定
+bool  BChara::CheckBack_LR()
+{
+	//あたり判定を基にして矩形を生成(とりあえず、横幅だけ１になった矩形を用意する）
+	ML::Box2D  back(this->hitBase.x,
+		this->hitBase.y,
+		1,
+		this->hitBase.h);
+	//キャラクタの方向により矩形の位置を調整
+	if (this->angle_LR == Angle_LR::Right) {
+		back.Offset(-1, 0);//左側に移動
+	}
+	else {
+		back.Offset(this->hitBase.w, 0);//右側に移動
+	}
+	//現在の位置に合わせる
+	back.Offset((int)this->pos.x, (int)this->pos.y);
+
+	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
+	//マップと接触判定
+	return ge->qa_Map->CheckHit(back);
+}
 //-----------------------------------------------------------------------------
 //正面足元チェック（サイドビューゲーム専用）
 bool  BChara::CheckFrontFoot_LR()
@@ -168,7 +224,8 @@ bool  BChara::CheckFrontFoot_LR()
 
 	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
 	//マップと接触判定
-	return ge->qa_Map->CheckHit(frontFoot);
+	return ge->qa_Map->CheckHit(frontFoot)
+		|| ge->qa_Map->CheckFallGround(frontFoot);
 }
 //-----------------------------------------------------------------------------
 //接触判定

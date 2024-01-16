@@ -75,6 +75,7 @@ namespace  Map
 		vector<BackMapData> backMap;	//背景
 		vector<MapData> drawMap;		//描画用チップデータ
 		MapData			ObjectMap;		//当たり判定用チップデータ
+		MapData			GenerateMap;	//エンティティ用チップデータ
 
 		struct SlopeData
 		{
@@ -109,6 +110,8 @@ namespace  Map
 		bool  CheckHitTo(const  ML::Box2D& hit_, int chipNum_);//あたり判定
 		//背景の描画
 		void DrawBackMap();
+		void SetEnemyOnMap();
+
 
 	};
 }

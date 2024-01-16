@@ -95,7 +95,12 @@ namespace  MyPG
 		bool GameOverFlag = false; //ゲームオーバーフラグ
 		bool GameClearFlag = false;//クリアフラグ
 		bool unHitEnemy = false;//敵との当たり判定
-		int GameOverCnt;
+		int GameCnt; //ゲームのプレイ時間
+		int TotalEnemyKill; //プレイヤー敵を倒した総数
+		int TotalDamage; //プレイヤーが敵に与えたダメージの総数
+		int TotalUsedCoinCnt; //消費したコインの総数
+		int TotalGetCoinCnt; //獲得したコインの総数
+
 		int MaxGameOver;
 
 		bool			Jump2Check;		//ジャンプ2判定
@@ -115,7 +120,8 @@ namespace  MyPG
 
 		ML::Box2D GetScreenBox() const;
 		ML::Vec2  GetScreenCenter() const;
-
+		//標準の描画処理
+		static void DrawStd(const DG::Image::SP& img_, OL::Size2D size_, ML::Vec2 pos_);
 		//デバッグ関数
 		//param1:出力する文字列
 		//param2:何フレームごとに出力するか
@@ -189,8 +195,6 @@ namespace  MyPG
 	{
 		return std::dynamic_pointer_cast<Type>(btask_);
 	}
-
-
 	//◆◆◆◆◆◆◆◆◆◆
 
 }

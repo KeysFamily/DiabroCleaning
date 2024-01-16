@@ -30,6 +30,7 @@ namespace  GameUI
 		//共有する変数はここに追加する
 		DG::Image::SP coinImg;
 		DG::Image::SP	num;
+		DG::Image::SP	magic;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -53,7 +54,8 @@ namespace  GameUI
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		ML::Vec2 coinPos,numPos;
+		ML::Vec2 coinPos,numPos,magicPos;
 		int num;
+		int magicSelect;
 	};
 }
