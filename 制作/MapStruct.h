@@ -1,9 +1,11 @@
 #pragma once
 #include <string>
-
-
 namespace Map
 {
+	enum OtherMapData
+	{
+		MAPSIZE_MAX = 30,
+	};
 	enum class MapDir
 	{
 		Non = -1,
