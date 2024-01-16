@@ -5,8 +5,6 @@
 #include "sound.h"
 
 #include "Task_Title.h"
-#include "Task_Game.h"
-#include "Task_Ending.h" //TODO: 左 後で消せ
 
 #include "Task_SystemMenu.h"
 #include "Task_PlayerStatusShop.h"

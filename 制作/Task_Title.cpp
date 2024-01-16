@@ -54,8 +54,7 @@ namespace  Title
 		//★データ＆タスク解放
 		//bgm::Stop("bgm1");
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
-			//Game::Object::Create(true);
-			Ending::Object::Create(true);
+			Game::Object::Create(true);
 		}
 
 		return  true;
