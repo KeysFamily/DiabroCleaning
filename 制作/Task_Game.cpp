@@ -93,7 +93,6 @@ namespace  Game
 	//「終了」タスク消滅時に１回だけ行う処理
 	bool  Object::Finalize()
 	{
-
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
 		ge->KillAll_G("item");
