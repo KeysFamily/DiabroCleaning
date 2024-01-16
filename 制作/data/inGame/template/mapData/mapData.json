@@ -1,5 +1,6 @@
 {
 	"visited": false,
+	"isSub": false,
 	"mapType": -1,
 	"depth": -1,
 	"enterDir": -1,

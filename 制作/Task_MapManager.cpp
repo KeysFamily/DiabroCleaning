@@ -43,6 +43,9 @@ namespace  MapManager
 		this->mapSeed = (unsigned int)time(NULL);
 		srand(mapSeed);
 		ge->printToDebugFile(to_string(mapSeed),1);
+		//分岐確率
+		this->generateSubRate = 0.3f;
+		this->subDepthMax = 2;
 		//セーブ先
 		this->saveFolderPath = "./data/inGame/run/mapData/";
 		//ダンジョンの最大
@@ -107,6 +110,10 @@ namespace  MapManager
 
 		this->GenerateMap(2, 0, 2, 6, MapDir::Left);
 
+		this->GenerateSub();
+
+
+
 		//ダンジョン生成
 		ofstream ofs(this->saveFolderPath + "dungeonData.txt");
 		ofs << this->mapSizeMax << endl;
@@ -142,7 +149,7 @@ namespace  MapManager
 	}
 	//-------------------------------------------------------------------
 	//1マップ生成処理
-	void Object::GenerateMap(int x_, int y_, int depth_, int depthRest_, MapDir enter_)
+	void Object::GenerateMap(int x_, int y_, int depth_, int depthRest_, MapDir enter_, bool setSub_)
 	{
 		enum GenerateDir
 		{
@@ -154,6 +161,11 @@ namespace  MapManager
 		//最下層なら次の生成処理は行わない
 		if (depthRest_ <= 1)
 		{
+			//外れの道でなければゴール
+			if (setSub_ == false)
+			{
+				new MapObject(depth_, "map_goal");
+			}
 			map[y_][x_] = new MapObject(depth_, MapType::Map, enter_, MapDir::Non);
 			return;
 		}
@@ -241,13 +253,79 @@ namespace  MapManager
 
 
 			//次の位置を生成
-			GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
+			GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir, setSub_);
 
 			map[y_][x_] = new MapObject(depth_, MapType::Map, enter_, exitDir);
+			map[y_][x_]->SetSub(setSub_);
 			map[y_ + conY][x_ + conX] = new MapObject(depth_, MapType::Connect, connectEnter, connectExit, connectExitSub);
+			map[y_ + conY][x_ + conX]->SetSub(setSub_);
 
 			finishedGenerate = false;
 		}
+	}
+	//-------------------------------------------------------------------
+	//分岐を生成
+	void Object::GenerateSub()
+	{
+		for (int y = 0; y < mapSizeMax; ++y)
+		{
+			for (int x = 0; x < mapSizeMax; ++x)
+			{
+				if (this->GetSubFlag(x, y) == true)
+				{
+					if (map[y][x]->GetExit() == MapDir::Right)
+					{
+						if (y + 1 < this->mapSizeMax)
+						{
+							if (map[y + 1][x] == nullptr)
+							{
+								map[y][x]->SetExitSub(MapDir::Down);
+								int subDepth = (rand() % this->subDepthMax) + 1;
+								GenerateMap(x, y + 1, map[y][x]->GetDepth() + 1, subDepth, MapDir::Up, true);
+							}
+							else
+							{
+								continue;
+							}
+						}
+					}
+					else if (map[y][x]->GetExit() == MapDir::Down)
+					{
+						if (x + 1 < this->mapSizeMax)
+						{
+							if (map[y][x + 1] == nullptr)
+							{
+								map[y][x]->SetExitSub(MapDir::Right);
+								int subDepth = (rand() % this->subDepthMax) + 1;
+								GenerateMap(x + 1, y, map[y][x]->GetDepth() + 1, subDepth, MapDir::Left, true);
+							}
+							else
+							{
+								continue;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	//分岐を生成するかのフラグを取得する
+	bool Object::GetSubFlag(int connX_, int connY_)
+	{
+		if (map[connY_][connX_] != nullptr)
+		{
+			if (map[connY_][connX_]->GetMapType() == MapType::Connect)
+			{
+				if (map[connY_][connX_]->GetSub() == false)
+				{
+					if (OL::RandomBool(this->generateSubRate) == true)
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 	//-------------------------------------------------------------------
 	//ロード

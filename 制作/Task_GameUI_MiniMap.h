@@ -81,7 +81,6 @@ namespace  MiniMap
 		//マップの向きを画像の位置番号に変更
 		void ResizeMap(int size_);
 		void LoadData(const std::string& folderPath_);
-		int MapDirToImgPosNum(const Map::MapDir& mapDirection_);
 		void SetVisit(int x_, int y_);
 
 		MapChipType ConvertToMCT(int mapDirection_);

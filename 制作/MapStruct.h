@@ -61,6 +61,7 @@ namespace Map
 		Map::MapDir exitSub;		//2つ目の出口
 		MapType mapType;			//マップの種類
 		int		depth;				//深度
+		bool	isSub;				//外れのマップか
 
 	public:
 
@@ -74,6 +75,7 @@ namespace Map
 			, exit(Map::MapDir::Non)
 			, exitSub(Map::MapDir::Non)
 			, depth(depth_)
+			, isSub(false)
 		{
 			++mapIdManager;
 		}
@@ -88,18 +90,26 @@ namespace Map
 			, exit(exit_)
 			, exitSub(exitSub_)
 			, depth(depth_)
+			, isSub(false)
 
 		{
 			++mapIdManager;
 		}
 
-
+		//ゲッタ
 		int GetId() const{ return mapId; }
 		Map::MapDir GetEnter() const { return enter; }
 		Map::MapDir GetExit() const { return exit; }
 		Map::MapDir GetExitSub() const { return exitSub; }
+		int GetDepth() const { return depth; }
+		bool GetSub() { return isSub; }
 		std::string GetFolderPath() const { return folderPath; }
 		Map::MapType GetMapType() const { return mapType; }
+		//セッタ
+		void SetEnter(Map::MapDir enter_)  { this->enter = enter_; }
+		void SetExit(Map::MapDir exit_)  { exit = exit_; }
+		void SetExitSub(Map::MapDir exitSub_)  { exitSub = exitSub_; }
+		void SetSub(bool flag_) { isSub = flag_; }
 
 		//マップ生成
 		void GenerateFile(const std::string& savePath_);

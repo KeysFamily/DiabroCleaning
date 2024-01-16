@@ -233,4 +233,7 @@ namespace OL
 	//JSONファイルを保存する
 	void SaveJsonFile(const nlohmann::json& js_, const string& filePath_);
 
+
+	//rate_の確率でtrueを返す
+	bool RandomBool(float rate_);
 }

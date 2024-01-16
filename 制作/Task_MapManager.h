@@ -62,110 +62,17 @@ namespace MapManager
 		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
 		//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
-
-#if false
-		class Area : public MapObject
-		{
-		private:
-			Map::MapDir enter;	//入口
-			Map::MapDir exit;		//出口
-			int depth;		//マップの深度
-
-		public:
-
-			Area(Map::MapDir enter_, Map::MapDir exit_, int depth_)
-				:enter(enter_)
-				, exit(exit_)
-				, depth(depth_)
-			{
-			{
-			}
-
-			void Generate() override
-			{
-				string genMapName = "map_";
-				string mapDirStr[4] = { "Up", "Down", "Right", "Left" };
-
-				genMapName += mapDirStr[(int)enter];
-				if (exit == Map::MapDir::Non)
-				{
-					genMapName += mapDirStr[(int)enter];
-				}
-				else
-				{
-					genMapName += mapDirStr[(int)exit];
-				}
-
-				genMapName += "_" + to_string(rand() % 3 + 1);
-
-				this->mapName = genMapName;
-			}
-
-			//ゲッタ
-			Map::MapDir GetEnter() { return enter; }
-			Map::MapDir GetExit() { return exit; }
-			int GetDepth() { return depth; }
-		};
-
-		//通路
-		class Connect : public MapObject
-		{
-		private:
-			Map::MapDir enter;
-			Map::MapDir exit;
-			Map::MapDir exitSub;
-		public:
-			Connect(Map::MapDir enter_, Map::MapDir exit_, Map::MapDir exitSub_ = Map::MapDir::Non)
-				:enter(enter_)
-				, exit(exit_)
-				, exitSub(exitSub_)
-			{
-			}
-
-			void Generate() override
-			{
-				string genMapName = "pass_";
-				string mapDirStr[4] = { "Up", "Down", "Right", "Left" };
-
-				genMapName += mapDirStr[(int)enter];
-
-				if (exitSub != Map::MapDir::Non)
-				{
-					if (exit == Map::MapDir::Down)
-					{
-						genMapName += mapDirStr[(int)exitSub] + mapDirStr[(int)exit];
-					}
-					else
-					{
-						genMapName += mapDirStr[(int)exit] + mapDirStr[(int)exitSub];
-					}
-				}
-				else
-				{
-					genMapName += mapDirStr[(int)exit];
-				}
-
-				this->mapName = genMapName;
-			}
-
-			//ゲッタ
-			Map::MapDir GetEnter() { return enter; }
-			Map::MapDir GetExit() { return exit; }
-			Map::MapDir GetExitSub() { return exitSub; }
-
-		};
-#endif
-
-	public:
 		//追加したい変数・メソッドはここに追加する
 		int bossDepth;
 		unsigned int mapSeed;		//マップ生成のシード値
 		int mapSizeMax;				//マップサイズ最大
-		Map::MapObject* map[30][30];
-		int mapid[30][30];
-		ML::Point currentPos;		//現在のマップ
-		string saveFolderPath;		//保存先のパス
-		Map::MapDir moveMapDir;		//マップ移動時の方向
+		float generateSubRate;		//分岐を作る確率
+		int	  subDepthMax;			//外れの道の深度最大
+		Map::MapObject* map[30][30];	//マップデータ
+		int mapid[30][30];				//マップデータ（省データ版）
+		ML::Point currentPos;			//現在のマップ
+		string saveFolderPath;			//保存先のパス
+		Map::MapDir moveMapDir;			//マップ移動時の方向
 		shared_ptr<MapTransition::Object> mapTransition;	//マップトランジションへのポインタ
 		shared_ptr<MiniMap::Object> minimap;		//ミニマップへのポインタ
 
@@ -175,7 +82,9 @@ namespace MapManager
 
 	private:
 		void Generate();
-		void GenerateMap(int x_, int y_, int depth_, int depthRest_, Map::MapDir enter_);
+		void GenerateMap(int x_, int y_, int depth_, int depthRest_, Map::MapDir enter_, bool setSub_ = false);
+		bool GetSubFlag(int connX_, int connY_);
+		void GenerateSub();
 		void Destroy();		//消滅時の処理
 
 		void MoveMapUpDate();

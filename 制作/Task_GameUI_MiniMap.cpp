@@ -199,30 +199,6 @@ namespace  MiniMap
 		}
 	}
 	//-------------------------------------------------------------------
-	//マップの向きを画像の位置番号に変更
-	int Object::MapDirToImgPosNum(const Map::MapDir& mapDirection_)
-	{
-		switch (mapDirection_)
-		{
-		case Map::MapDir::Up:
-			return 0;
-			break;
-		case Map::MapDir::Down:
-			return 2;
-			break;
-		case Map::MapDir::Right:
-			return 1;
-			break;
-		case Map::MapDir::Left:
-			return 1;
-			break;
-		case Map::MapDir::Non:
-			return 0;
-			break;
-		}
-	}
-
-	//-------------------------------------------------------------------
 	//訪れた判定
 	void Object::SetVisit(int x_, int y_)
 	{

@@ -3,8 +3,8 @@
     "enterDir": 3,
     "exitDir": 2,
     "exitSubDir": -1,
-    "isSub": false,
-    "mapName": "map_LeftRight_2",
-    "mapType": 1,
+    "isSub": true,
+    "mapName": "pass_LeftRight",
+    "mapType": 2,
     "visited": false
 }

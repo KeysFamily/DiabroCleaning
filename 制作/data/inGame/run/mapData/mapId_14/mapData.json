@@ -1,10 +1,10 @@
 {
-    "depth": 6,
+    "depth": 2,
     "enterDir": 0,
     "exitDir": 2,
     "exitSubDir": -1,
-    "isSub": false,
-    "mapName": "map_UpRight_2",
+    "isSub": true,
+    "mapName": "map_UpRight_1",
     "mapType": 1,
     "visited": false
 }

@@ -39,6 +39,7 @@ namespace Map
 		js["exitDir"] = (int)this->exit;
 		js["exitSubDir"] = (int)this->exitSub;
 		js["mapName"] = this->mapName;
+		js["isSub"] = this->isSub;
 		OL::SaveJsonFile(js, folderPath + "/mapData.json");
 	}
 

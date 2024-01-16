@@ -242,4 +242,12 @@ namespace OL
 		ofstream ofs(filePath_);
 		ofs << js_.dump(4);
 	}
+
+
+	//rate_‚ÌŠm—¦‚Åtrue‚ð•Ô‚·
+	bool RandomBool(float rate_)
+	{
+		int result = 1 / rate_;
+		return(rand() % result);
+	}
 }
