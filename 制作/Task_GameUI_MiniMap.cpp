@@ -50,7 +50,7 @@ namespace  MiniMap
 		this->screenOfs = ML::Vec2(0, 12);
 
 		//マップチップ配列の初期化
-		this->ResizeMap(30);
+		this->ResizeMap(Map::MAPSIZE_MAX);
 		//★タスクの生成
 
 		return  true;
@@ -220,9 +220,14 @@ namespace  MiniMap
 			return;
 		}
 
-		//マップ
-		int invalidData = NOMAP | ISOTHER;
-		if (mapData[y_][x_] & invalidData)
+		if (mapData[y_][x_] & ISOTHER)
+		{
+			src_.x = this->res->imgChipSize.w * 3;
+			src_.y = this->res->imgChipSize.h * 3;
+			return;
+		}
+
+		if (mapData[y_][x_] & NOMAP)
 		{
 			return;
 		}

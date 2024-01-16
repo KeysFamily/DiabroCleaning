@@ -1,24 +1,24 @@
 {
-    "pData_skill": [
-        {
-            "id": 2,
-            "isBought": true,
-            "name": "Thunder"
-        },
-        {
-            "id": 1,
-            "isBought": false,
-            "name": "WaterBlast"
-        },
-        {
-            "id": 0,
-            "isBought": false,
-            "name": "FireBall"
-        },
-        {
-            "id": 3,
-            "isBought": false,
-            "name": "Beam"
-        }
-    ]
+	"pData_skill": [
+		{
+			"id": 2,
+			"name": "Thunder",
+			"isBought": false
+		},
+		{
+			"id": 1,
+			"name": "WaterBlast",
+			"isBought": false
+		},
+		{
+			"id": 0,
+			"name": "FireBall",
+			"isBought": false
+		},
+		{
+			"id": 3,
+			"name": "Beam",
+			"isBought": false
+		}
+	]
 }

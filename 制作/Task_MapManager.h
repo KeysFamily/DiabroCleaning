@@ -65,11 +65,11 @@ namespace MapManager
 		//追加したい変数・メソッドはここに追加する
 		int bossDepth;
 		unsigned int mapSeed;		//マップ生成のシード値
-		int mapSizeMax;				//マップサイズ最大
 		float generateSubRate;		//分岐を作る確率
 		int	  subDepthMax;			//外れの道の深度最大
-		Map::MapObject* map[30][30];	//マップデータ
-		int mapid[30][30];				//マップデータ（省データ版）
+		int   depthMax;				//最下層
+		Map::MapObject* map[Map::MAPSIZE_MAX][Map::MAPSIZE_MAX];	//マップデータ
+		int mapid[Map::MAPSIZE_MAX][Map::MAPSIZE_MAX];				//マップデータ（省データ版）
 		ML::Point currentPos;			//現在のマップ
 		string saveFolderPath;			//保存先のパス
 		Map::MapDir moveMapDir;			//マップ移動時の方向

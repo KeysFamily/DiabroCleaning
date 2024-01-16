@@ -44,12 +44,11 @@ namespace  MapManager
 		srand(mapSeed);
 		ge->printToDebugFile(to_string(mapSeed),1);
 		//分岐確率
-		this->generateSubRate = 0.3f;
+		this->generateSubRate = 0.5f;
 		this->subDepthMax = 2;
+		this->depthMax = 6;
 		//セーブ先
 		this->saveFolderPath = "./data/inGame/run/mapData/";
-		//ダンジョンの最大
-		this->mapSizeMax = 30;
 
 
 
@@ -96,9 +95,9 @@ namespace  MapManager
 	//生成全般
 	void Object::Generate()
 	{
-		for (int y = 0; y < this->mapSizeMax; ++y)
+		for (int y = 0; y < Map::MAPSIZE_MAX; ++y)
 		{
-			for (int x = 0; x < this->mapSizeMax; ++x)
+			for (int x = 0; x < Map::MAPSIZE_MAX; ++x)
 			{
 				map[y][x] = nullptr;
 			}
@@ -108,7 +107,7 @@ namespace  MapManager
 
 		map[0][1] = new MapObject(1, MapType::Connect, MapDir::Left, MapDir::Right);
 
-		this->GenerateMap(2, 0, 2, 6, MapDir::Left);
+		this->GenerateMap(2, 0, 2, this->depthMax, MapDir::Left);
 
 		this->GenerateSub();
 
@@ -116,10 +115,10 @@ namespace  MapManager
 
 		//ダンジョン生成
 		ofstream ofs(this->saveFolderPath + "dungeonData.txt");
-		ofs << this->mapSizeMax << endl;
-		for (int y = 0; y < this->mapSizeMax; ++y)
+		ofs << Map::MAPSIZE_MAX << endl;
+		for (int y = 0; y < Map::MAPSIZE_MAX; ++y)
 		{
-			for (int x = 0; x < this->mapSizeMax; ++x)
+			for (int x = 0; x < Map::MAPSIZE_MAX; ++x)
 			{
 				if (map[y][x] != nullptr)
 				{
@@ -164,10 +163,15 @@ namespace  MapManager
 			//外れの道でなければゴール
 			if (setSub_ == false)
 			{
-				new MapObject(depth_, "map_goal");
+				map[y_][x_] = new MapObject(depth_, "map_goal");
+				return;
 			}
-			map[y_][x_] = new MapObject(depth_, MapType::Map, enter_, MapDir::Non);
-			return;
+			else
+			{
+				map[y_][x_] = new MapObject(depth_, MapType::Map, enter_, MapDir::Non);
+				map[y_][x_]->SetSub(true);
+				return;
+			}
 		}
 
 		//生成不可な場所を探す（生成する方向にマップ・もしくは通路があるか判定）
@@ -267,15 +271,15 @@ namespace  MapManager
 	//分岐を生成
 	void Object::GenerateSub()
 	{
-		for (int y = 0; y < mapSizeMax; ++y)
+		for (int y = 0; y < Map::MAPSIZE_MAX; ++y)
 		{
-			for (int x = 0; x < mapSizeMax; ++x)
+			for (int x = 0; x < Map::MAPSIZE_MAX; ++x)
 			{
 				if (this->GetSubFlag(x, y) == true)
 				{
 					if (map[y][x]->GetExit() == MapDir::Right)
 					{
-						if (y + 1 < this->mapSizeMax)
+						if (y + 1 < Map::MAPSIZE_MAX)
 						{
 							if (map[y + 1][x] == nullptr)
 							{
@@ -291,7 +295,7 @@ namespace  MapManager
 					}
 					else if (map[y][x]->GetExit() == MapDir::Down)
 					{
-						if (x + 1 < this->mapSizeMax)
+						if (x + 1 < Map::MAPSIZE_MAX)
 						{
 							if (map[y][x + 1] == nullptr)
 							{
@@ -392,9 +396,9 @@ namespace  MapManager
 	//消滅時の処理
 	void Object::Destroy()
 	{
-		for (int y = 0; y < mapSizeMax; ++y)
+		for (int y = 0; y < Map::MAPSIZE_MAX; ++y)
 		{
-			for (int x = 0; x < mapSizeMax; ++x)
+			for (int x = 0; x < Map::MAPSIZE_MAX; ++x)
 			{
 				if (map[y][x] != nullptr)
 				{

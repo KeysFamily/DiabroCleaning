@@ -248,6 +248,6 @@ namespace OL
 	bool RandomBool(float rate_)
 	{
 		int result = 1 / rate_;
-		return(rand() % result);
+		return(rand() % result == 0);
 	}
 }
