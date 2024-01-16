@@ -1,31 +1,26 @@
 //-------------------------------------------------------------------
-//エンディング
+//
 //-------------------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Ending.h"
-#include  "Task_Title.h"
-
 #include  "Task_PlayerScore.h"
 
-namespace  Ending
+namespace  PlayerScore
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->Ending_clear_img = DG::Image::Create("./data/ending/Diobro_Cleaning_Game_clear.png");
-		this->Ending_over_img = DG::Image::Create("./data/ending/Diobro_Cleaning_Game_over.png");
-		this->Key_img = DG::Image::Create("./data/ending/PleaseKey.png");
+		this->imgResultScroll = DG::Image::Create("./data/ending/羊皮紙.png");
+		this->fontData = DG::Font::Create("HGP創英角ﾎﾟｯﾌﾟ体", 15, 30);
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->Ending_clear_img.reset();
-		this->Ending_over_img.reset();
-		this->Key_img.reset();
+		this->imgResultScroll.reset();
+		this->fontData.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -36,13 +31,12 @@ namespace  Ending
 		__super::Initialize(defGroupName, defName, true);
 		//リソースクラス生成orリソース共有
 		this->res = Resource::Create();
-
 		//★データ初期化
-		this->KeyTime = 0;
+		
+		this->DrawCnt = 0;
+
 		//★タスクの生成
-		
-		PlayerScore::Object::Create(true);
-		
+
 		return  true;
 	}
 	//-------------------------------------------------------------------
@@ -50,11 +44,10 @@ namespace  Ending
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-		ge->KillAll_G("エンディング");
+
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
-			auto  nextTask = Title::Object::Create(true);
 		}
 
 		return  true;
@@ -63,35 +56,33 @@ namespace  Ending
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		this->KeyTime++;
-		if (KeyTime % 60 < 30) this->KeyOnOff = true; 
-		else this->KeyOnOff = false;
-
-		auto inp = ge->in1->GetState();
-		if (inp.ST.down && ge->getCounterFlag("End") != ge->ACTIVE) {
-			ge->StartCounter("End", 45); //フェードは90フレームなので半分の45で切り替え
-			ge->CreateEffect(98, ML::Vec2(0, 0));
-
-		}
-		if (ge->getCounterFlag("End") == ge->LIMIT) {
-			this->Kill();
-		}
+		this->DrawCnt++;
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D draw(0, 0, 1920, 1080);
-		ML::Box2D src(0, 0, 1920, 1080);
+		ML::Box2D draw(120,500,600,600);
 
-		ML::Box2D KeyDraw((ge->screen2DWidth/2)-250,ge->screen2DHeight*3/4,500,150);
-		ML::Box2D KeySrc(0,0,372,97);
-		if (ge->GameClearFlag == true) 	this->res->Ending_clear_img->Draw(draw, src);	//背景を用意する
-		else this->res->Ending_over_img->Draw(draw, src);   //背景を用意する
+		ML::Box2D drawScoroll(50, 450, 500, 500);
+		ML::Box2D srcScoroll(0, 0, 1282, 962);
+
+		ostringstream oss;
 		
-		if(this->KeyOnOff==true)this->res->Key_img->Draw(KeyDraw, KeySrc);
-		
-		ge->Dbg_ToDisplay(100, 100, "Ending");
+		oss << "　　　　　　　戦績　　　　　　" << endl << endl;
+		oss << "クリアタイム[s]：" << ge->GameCnt / 60 << endl << endl;
+		oss << "敵を倒した数：" << ge->TotalEnemyKill << endl<<endl;
+		oss << "敵に与えたダメージ：" << ge->TotalDamage << endl << endl;
+		oss << "獲得したコインの枚数：" << ge->TotalGetCoinCnt << endl<<endl;
+		oss << "消費したコインの枚数：" << ge->TotalUsedCoinCnt << endl;
+		//oss << "クリアタイム[s]：" << 111111111 << endl << endl;
+		//oss << "クリアタイム[s]：" << 111111111 << endl << endl;
+		//oss << "クリアタイム[s]：" << 111111111 << endl << endl;
+		//oss << "クリアタイム[s]：" << 111111111 << endl << endl;
+		//oss << "クリアタイム[s]：" << 111111111 << endl;
+		this->res->imgResultScroll->Draw(drawScoroll, srcScoroll);
+		this->res->fontData->Draw(draw, oss.str(),ML::Color(1,0,0,0));		
+
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -106,6 +97,7 @@ namespace  Ending
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
+				
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill

@@ -7,6 +7,7 @@
 #include  "Task_Effect00.h"
 
 #include "Task_Game.h"
+#include "Task_Ending.h"
 
 namespace  Title
 {
@@ -24,7 +25,7 @@ namespace  Title
 	bool  Resource::Finalize()
 	{
 		this->img.reset();
-		this->img.reset();
+		this->Logo.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -37,18 +38,24 @@ namespace  Title
 		this->res = Resource::Create();
 
 		//★データ初期化
+		ge->GameCnt=0; 
+		ge->TotalEnemyKill=0; 
+		ge->TotalDamage = 0;
+		ge->TotalGetCoinCnt = 0;
+		ge->TotalUsedCoinCnt=0;
+		ge->GameClearFlag = true;
 
-		//★タスクの生成
-		return  true;
-	}
-	//-------------------------------------------------------------------
+		return true;
+	}	
+	//--TotalGetCoinCnt; -----------------------------------------------------------------
 	//「終了」タスク消滅時に１回だけ行う処理
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
 		//bgm::Stop("bgm1");
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
-			Game::Object::Create(true);
+			//Game::Object::Create(true);
+			Ending::Object::Create(true);
 		}
 
 		return  true;

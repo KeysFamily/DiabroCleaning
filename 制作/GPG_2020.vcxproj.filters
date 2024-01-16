@@ -354,6 +354,9 @@
     <ClCompile Include="Task_SystemMenuBackButton.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
+    <ClCompile Include="Task_PlayerScore.cpp">
+      <Filter>MyPG\Task\Ending</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -529,6 +532,9 @@
     </ClInclude>
     <ClInclude Include="Task_SystemMenuBackButton.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_PlayerScore.h">
+      <Filter>MyPG\Task\Ending</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
