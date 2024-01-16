@@ -65,16 +65,16 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 100;  //所持金
+		this->balanceMoney = 1000;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
-		this->balanceMoney = 100;
 		this->magicSelect = Magic::NoMagic; //仮
 		this->surviveFrame = 0;
 		this->surviveTime = 0;
 		this->DEF = 1;
 		this->INT = 1.0f;
+		this->speed = 0.f;
 		this->haveAttacked = false;
 
 
@@ -110,6 +110,7 @@ namespace  Player
 		this->animCnt++;
 		this->surviveFrame++;
 		this->surviveTime = this->surviveFrame / 60;
+		this->maxSpeed = 9.0f + 0.2 * this->speed; //ステータスによる移動速度加算
 		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 		if (this->unHitTime > 0) { this->unHitTime--; }
 		//思考・状況判断
@@ -476,11 +477,11 @@ namespace  Player
 			}
 			if (inp.LStick.BL.on) {
 				this->angle_LR = Angle_LR::Left;
-				this->moveVec.x = -this->maxSpeed;
+				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
 			}
 			if (inp.LStick.BR.on) {
 				this->angle_LR = Angle_LR::Right;
-				this->moveVec.x = this->maxSpeed;
+				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
 			}
 			this->canJump = false;
 			break;
