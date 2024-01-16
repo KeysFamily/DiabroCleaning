@@ -8,18 +8,14 @@ using json = nlohmann::json;
 
 namespace Map
 {
-	int MapObject::mapKeyManager = 0;
+	int MapObject::mapIdManager = 0;
 
-	void MapObject::GenerateFile(int depth_, const string& mapName_)
+	void MapObject::GenerateFile(const string& savePath_)
 	{
 		//フォルダ作成
-		this->folderPath = ("./data/inGame/run/mapData/mapId_" + to_string(mapKey));
-		if (mkdir(this->folderPath.c_str()) != 0)
-		{
-			return;
-		}
+		this->folderPath = savePath_ + "mapId_" + to_string(mapId);
+		mkdir(this->folderPath.c_str());
 
-		string mapName = mapName_;
 		//マップの名前を決める
 		if (mapName == "")
 		{
@@ -38,8 +34,11 @@ namespace Map
 		json js = OL::LoadJsonFile("./data/inGame/template/mapData/mapData.json");
 		js["visited"] = false;
 		js["mapType"] = (int)this->mapType;
-		js["depth"] = depth_;
-		js["mapName"] = mapName_;
+		js["depth"] = this->depth;
+		js["enterDir"] = (int)this->enter;
+		js["exitDir"] = (int)this->exit;
+		js["exitSubDir"] = (int)this->exitSub;
+		js["mapName"] = this->mapName;
 		OL::SaveJsonFile(js, folderPath + "/mapData.json");
 	}
 

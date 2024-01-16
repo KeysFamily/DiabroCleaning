@@ -57,14 +57,34 @@ namespace  MiniMap
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
+		enum MapChipType
+		{
+			NON			= 0b00000000,
+			NOMAP		= 0b10000000,
+			VISITED		= 0b01000000,
+			ISCONNECT	= 0b00100000,
+			ISOTHER		= 0b00010000,
+			UP			= 0b00001000,
+			DOWN		= 0b00000100,
+			RIGHT		= 0b00000010,
+			LEFT		= 0b00000001,
+		};
+
 		ML::Vec2 pos;
 		ML::Vec2 cameraPos;
 		OL::Size2D screenSize;
 		ML::Vec2 screenOfs;
+		vector<vector<int>> mapData;
+		int mapSizeMax;
+
 
 		//マップの向きを画像の位置番号に変更
+		void ResizeMap(int size_);
+		void LoadData(const std::string& folderPath_);
 		int MapDirToImgPosNum(const Map::MapDir& mapDirection_);
+		void SetVisit(int x_, int y_);
 
+		MapChipType ConvertToMCT(int mapDirection_);
 		void SetChip(ML::Box2D& src_, int x_, int y_);
 		void SetToScreen(ML::Box2D& drawBox_, ML::Box2D& srcBox_, const ML::Box2D& screen_);
 	};

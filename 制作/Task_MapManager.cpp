@@ -9,6 +9,7 @@
 #include  "MyPG.h"
 #include  "Task_MapManager.h"
 #include  "Task_MapTransition.h"
+#include  "Task_GameUI_MiniMap.h"
 #include  "Task_Sprite.h"
 
 using namespace Map;
@@ -38,10 +39,22 @@ namespace  MapManager
 		this->res = Resource::Create();
 
 		//★データ初期化
+		//シード値設定
 		this->mapSeed = (unsigned int)time(NULL);
 		srand(mapSeed);
 		ge->printToDebugFile(to_string(mapSeed),1);
+		//セーブ先
+		this->saveFolderPath = "./data/inGame/run/mapData/";
+		//ダンジョンの最大
+		this->mapSizeMax = 30;
+
+
+
 		this->Generate();
+
+		auto map = Map::Object::Create(true);
+		map->render2D_Priority[1] = 0.9f;
+		map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
 
 		this->moveMapDir = Map::MapDir::Non;
 
@@ -80,9 +93,9 @@ namespace  MapManager
 	//生成全般
 	void Object::Generate()
 	{
-		for (int y = 0; y < 30; ++y)
+		for (int y = 0; y < this->mapSizeMax; ++y)
 		{
-			for (int x = 0; x < 30; ++x)
+			for (int x = 0; x < this->mapSizeMax; ++x)
 			{
 				map[y][x] = nullptr;
 			}
@@ -93,6 +106,39 @@ namespace  MapManager
 		map[0][1] = new MapObject(1, MapType::Connect, MapDir::Left, MapDir::Right);
 
 		this->GenerateMap(2, 0, 2, 6, MapDir::Left);
+
+		//ダンジョン生成
+		ofstream ofs(this->saveFolderPath + "dungeonData.txt");
+		ofs << this->mapSizeMax << endl;
+		for (int y = 0; y < this->mapSizeMax; ++y)
+		{
+			for (int x = 0; x < this->mapSizeMax; ++x)
+			{
+				if (map[y][x] != nullptr)
+				{
+					map[y][x]->GenerateFile(this->saveFolderPath);
+					mapid[y][x] = map[y][x]->GetId();
+					ofs << map[y][x]->GetId() << ' ';
+
+					
+				}
+				else
+				{
+					ofs << -1 << ' ';
+				}
+			}
+			ofs << endl;
+		}
+
+		ofs.close();
+
+		this->Destroy();
+
+		if (minimap == nullptr) 
+		{
+			this->minimap = MiniMap::Object::Create(true);
+		}
+		this->minimap->LoadData(this->saveFolderPath);
 	}
 	//-------------------------------------------------------------------
 	//1マップ生成処理
@@ -253,11 +299,12 @@ namespace  MapManager
 			break;
 		}
 
-		ge->qa_Map->LoadMap(map[currentPos.y][currentPos.x]->mapName);
+		ge->qa_Map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
 		ge->qa_Player->pos = ge->qa_Map->GetPlayerEnterPos(Map::MapFunc::ReverseMapDir(moveMapDir));
 		auto camera = ge->GetTask<Sprite::Object>("Sprite");
 		camera->MoveImmediately();
 		this->mapTransition->Disappear();
+		this->minimap->SetVisit(this->currentPos.x, this->currentPos.y);
 
 		this->moveMapDir = Map::MapDir::Non;
 		this->mapTransition = nullptr;
@@ -267,11 +314,15 @@ namespace  MapManager
 	//消滅時の処理
 	void Object::Destroy()
 	{
-		for (int y = 0; y < 30; ++y)
+		for (int y = 0; y < mapSizeMax; ++y)
 		{
-			for (int x = 0; x < 30; ++x)
+			for (int x = 0; x < mapSizeMax; ++x)
 			{
-				delete map[y][x];
+				if (map[y][x] != nullptr)
+				{
+					delete map[y][x];
+					map[y][x] = nullptr;
+				}
 			}
 		}
 	}

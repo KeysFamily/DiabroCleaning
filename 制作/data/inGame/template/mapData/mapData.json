@@ -2,6 +2,9 @@
 	"visited": false,
 	"mapType": -1,
 	"depth": -1,
+	"enterDir": -1,
+	"exitDir": -1,
+	"exitSubDir":  -1,
 	"mapName": "none"
 }
 	

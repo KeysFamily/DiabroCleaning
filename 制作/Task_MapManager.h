@@ -10,7 +10,16 @@
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
 #include "MapStruct.h"
-#include "Task_MapTransition.h"
+
+namespace MiniMap
+{
+	class Object;
+}
+
+namespace MapTransition
+{
+	class Object;
+}
 
 namespace MapManager
 {
@@ -151,11 +160,14 @@ namespace MapManager
 		//追加したい変数・メソッドはここに追加する
 		int bossDepth;
 		unsigned int mapSeed;		//マップ生成のシード値
+		int mapSizeMax;				//マップサイズ最大
 		Map::MapObject* map[30][30];
+		int mapid[30][30];
 		ML::Point currentPos;		//現在のマップ
-		
+		string saveFolderPath;		//保存先のパス
 		Map::MapDir moveMapDir;		//マップ移動時の方向
-		MapTransition::Object::SP mapTransition;	//マップトランジションへのポインタ
+		shared_ptr<MapTransition::Object> mapTransition;	//マップトランジションへのポインタ
+		shared_ptr<MiniMap::Object> minimap;		//ミニマップへのポインタ
 
 		//マップのロードに使用する列挙体
 		//ロード

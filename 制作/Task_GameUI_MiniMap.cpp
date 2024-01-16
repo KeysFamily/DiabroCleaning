@@ -48,6 +48,9 @@ namespace  MiniMap
 		this->cameraPos = ML::Vec2(0, 0);
 		this->screenSize.Set(240, 216);
 		this->screenOfs = ML::Vec2(0, 12);
+
+		//マップチップ配列の初期化
+		this->ResizeMap(30);
 		//★タスクの生成
 
 		return  true;
@@ -108,6 +111,93 @@ namespace  MiniMap
 	}
 	//-------------------------------------------------------------------
 	//関数定義
+	//マップサイズ修正
+	void Object::ResizeMap(int size_)
+	{
+		this->mapSizeMax = size_;
+		mapData.resize(mapSizeMax);
+		for (auto& dat : this->mapData)
+		{
+			dat.resize(mapSizeMax);
+			for (auto& d : dat)
+			{
+				d = MapChipType::NOMAP;
+			}
+		}
+	}
+	//データ読み込み
+	void Object::LoadData(const std::string& folderPath_)
+	{
+		ifstream ifs(folderPath_ + "dungeonData.txt");
+		if (!ifs)
+		{
+			return;
+		}
+
+		int mapSize;
+		ifs >> mapSize;
+		ResizeMap(mapSize);
+
+		for (int y = 0; y < this->mapSizeMax; ++y)
+		{
+			for (int x = 0; x < this->mapSizeMax; ++x)
+			{
+				//マップが存在するか
+				int mapId = 0;
+				ifs >> mapId;
+				if (mapId == -1)
+				{
+					continue;
+				}
+				this->mapData[y][x] &= ~MapChipType::NOMAP;
+
+				//マップ読み込み
+				json js = OL::LoadJsonFile(folderPath_ + "mapId_" + to_string(mapId) + "/mapData.json");
+
+				//マップの種類読み込み
+				int maptype = js["mapType"];
+				switch ((Map::MapType)maptype)
+				{
+				case Map::MapType::Empty:
+					return;
+				case Map::MapType::Map:
+					break;
+				case Map::MapType::Connect:
+					this->mapData[y][x] |= MapChipType::ISCONNECT;
+					break;
+				case Map::MapType::Other:
+					this->mapData[y][x] |= MapChipType::ISOTHER;
+					break;
+				}
+
+				//マップの方向読み込み
+				this->mapData[y][x] += this->ConvertToMCT(js["enterDir"]);
+				this->mapData[y][x] += this->ConvertToMCT(js["exitDir"]);
+				this->mapData[y][x] += this->ConvertToMCT(js["exitSubDir"]);
+			}
+		}
+
+
+	}
+	//マップチップデータに変換
+	Object::MapChipType Object::ConvertToMCT(int mapDirection_)
+	{
+		Map::MapDir mapDir = (Map::MapDir)mapDirection_;
+
+		switch (mapDir)
+		{
+		case Map::MapDir::Up:
+			return Object::MapChipType::UP;
+		case Map::MapDir::Down:
+			return Object::MapChipType::DOWN;
+		case Map::MapDir::Left:
+			return Object::MapChipType::LEFT;
+		case Map::MapDir::Right:
+			return Object::MapChipType::RIGHT;
+		default:
+			return Object::MapChipType::NON;
+		}
+	}
 	//-------------------------------------------------------------------
 	//マップの向きを画像の位置番号に変更
 	int Object::MapDirToImgPosNum(const Map::MapDir& mapDirection_)
@@ -133,35 +223,54 @@ namespace  MiniMap
 	}
 
 	//-------------------------------------------------------------------
-	//チップの設定
-	void Object::SetChip(ML::Box2D& src_, int x_, int y_)
+	//訪れた判定
+	void Object::SetVisit(int x_, int y_)
 	{
-		auto mapMng = ge->GetTask<MapManager::Object>("MapManager");
-		if (!mapMng) 
+		if (x_ >= mapSizeMax || y_ >= mapSizeMax)
 		{
 			return;
 		}
+
+		this->mapData[y_][x_] |= VISITED;
+	}
+	//-------------------------------------------------------------------
+	//チップの設定
+	void Object::SetChip(ML::Box2D& src_, int x_, int y_)
+	{
 		if (x_ == 0 && y_ == 0)
 		{
 			src_.x = this->res->imgChipSize.w * 3;
 			src_.y = this->res->imgChipSize.h * 2;
+			return;
 		}
 
 		//マップ
-		MapManager::Object::Area* map = dynamic_cast<MapManager::Object::Area*>(mapMng->map[y_][x_]);
-		if (map)
+		int invalidData = NOMAP | ISOTHER;
+		if (mapData[y_][x_] & invalidData)
 		{
-			src_.x = MapDirToImgPosNum(map->GetExit()) * this->res->imgChipSize.w;
-			src_.y = this->res->imgChipSize.h * 2
-				+ MapDirToImgPosNum(map->GetEnter()) * this->res->imgChipSize.h;
+			return;
+		}
+		
+		if ((mapData[y_][x_] & VISITED) == 0)
+		{
+			return;
 		}
 
-		//通路
-		MapManager::Object::Connect* connect = dynamic_cast<MapManager::Object::Connect*>(mapMng->map[y_][x_]);
-		if (connect)
+		if ((mapData[y_][x_] & ISCONNECT) == 0)
 		{
-			src_.x = (MapDirToImgPosNum(connect->GetExit()) + MapDirToImgPosNum(connect->GetExitSub())) * this->res->imgChipSize.w;
-			src_.y = MapDirToImgPosNum(connect->GetEnter()) * this->res->imgChipSize.h;
+			src_.y += this->res->imgChipSize.h * 2;
+		}
+		if (mapData[y_][x_] & LEFT)
+		{
+			src_.y += this->res->imgChipSize.h;
+		}
+		if (mapData[y_][x_] & RIGHT)
+		{
+			src_.x += this->res->imgChipSize.w;
+		}
+		if (mapData[y_][x_] & DOWN)
+		{
+			src_.x += this->res->imgChipSize.w * 2;
 		}
 	}
 	//-------------------------------------------------------------------

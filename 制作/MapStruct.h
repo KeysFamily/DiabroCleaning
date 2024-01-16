@@ -52,52 +52,57 @@ namespace Map
 
 	class MapObject
 	{
-		static int mapKeyManager;	//ユニークキー生成用
-		const int mapKey;			//ユニークキー
+		static int mapIdManager;	//ユニークキー生成用
+		const int mapId;			//ユニークキー
 		std::string folderPath;		//フォルダへのパス
+		std::string mapName;		//マップ名
 		Map::MapDir enter;			//入り口
 		Map::MapDir exit;			//出口
 		Map::MapDir exitSub;		//2つ目の出口
 		MapType mapType;			//マップの種類
+		int		depth;				//深度
 
-		//マップ生成
-		void GenerateFile(int depth_, const std::string& mapName_ = "");
 	public:
 
 		//通常マップや通路とは違うマップを作るときのコンストラクタ
 		MapObject(int depth_, const std::string& mapName_ = "")
-			: mapKey(mapKeyManager)
+			: mapId(mapIdManager)
 			, folderPath("")
+			, mapName(mapName_)
 			, mapType(MapType::Other)
 			, enter(Map::MapDir::Non)
 			, exit(Map::MapDir::Non)
 			, exitSub(Map::MapDir::Non)
+			, depth(depth_)
 		{
-			this->GenerateFile(depth_, mapName_);
-			++mapKeyManager;
+			++mapIdManager;
 		}
 
 		//通常のコンストラクタ
 		MapObject(int depth_, MapType mapType_, Map::MapDir enter_, Map::MapDir exit_, Map::MapDir exitSub_ = Map::MapDir::Non)
-			: mapKey(mapKeyManager)
+			: mapId(mapIdManager)
 			, folderPath("")
+			,mapName("")
 			, mapType(mapType_)
 			, enter(enter_)
 			, exit(exit_)
 			, exitSub(exitSub_)
+			, depth(depth_)
 
 		{
-			this->GenerateFile(depth_);
-			++mapKeyManager;
+			++mapIdManager;
 		}
 
 
-		Map::MapDir GetEnter() { return enter; }
-		Map::MapDir GetExit() { return exit; }
-		Map::MapDir GetExitSub() { return exitSub; }
-		std::string GetFolderPath() { return folderPath; }
-		Map::MapType GetMapType() { return mapType; }
+		int GetId() const{ return mapId; }
+		Map::MapDir GetEnter() const { return enter; }
+		Map::MapDir GetExit() const { return exit; }
+		Map::MapDir GetExitSub() const { return exitSub; }
+		std::string GetFolderPath() const { return folderPath; }
+		Map::MapType GetMapType() const { return mapType; }
 
+		//マップ生成
+		void GenerateFile(const std::string& savePath_);
 	private:
 
 		//ファイル名設定
