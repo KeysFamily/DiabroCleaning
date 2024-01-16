@@ -110,6 +110,7 @@ namespace  Player
 		this->animCnt++;
 		this->surviveFrame++;
 		this->surviveTime = this->surviveFrame / 60;
+		ge->GameCnt = this->surviveTime;
 		this->maxSpeed = 9.0f + 0.2 * this->speed; //ステータスによる移動速度加算
 		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 		if (this->unHitTime > 0) { this->unHitTime--; }
@@ -400,7 +401,24 @@ namespace  Player
 			}
 			break;
 			//移動速度減衰を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
-		case Motion::Bound: 
+		case Motion::Stand:
+			if (this->moveVec.x < 0) {
+				this->moveVec.x = min(this->moveVec.x + 2.2f * this->decSpeed, 0);
+			}
+			else {
+				this->moveVec.x = max(this->moveVec.x - 2.2f * this->decSpeed, 0);
+			}
+			break;
+		case Motion::Landing:
+			if (this->moveVec.x < 0) {
+				this->moveVec.x = min(this->moveVec.x + 2.2f * this->decSpeed, 0);
+			}
+			else {
+				this->moveVec.x = max(this->moveVec.x - 2.2f * this->decSpeed, 0);
+			}
+			break;
+		case Motion::Bound: break;
+		case Motion::Back: break;
 		case Motion::Unnon:	break;
 		}
 		//-----------------------------------------------------------------

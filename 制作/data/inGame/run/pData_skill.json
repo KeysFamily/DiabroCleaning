@@ -2,7 +2,7 @@
     "pData_skill": [
         {
             "id": 2,
-            "isBought": false,
+            "isBought": true,
             "name": "Thunder"
         },
         {

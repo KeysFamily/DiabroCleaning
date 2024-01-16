@@ -152,6 +152,15 @@ namespace  Game
 
 		this->cnt++;
 
+		if (inp.SE.down && ge->getCounterFlag("Game") != ge->ACTIVE) {
+			ge->StartCounter("Game", 45); //フェードは90フレームなので半分の45で切り替え
+			ge->CreateEffect(98, ML::Vec2(0, 0));
+
+		}
+		if (ge->getCounterFlag("Game") == ge->LIMIT) {
+			this->Kill();
+		}
+
 		if (inp.ST.down) {
 			//◇◇◇◇◇◇◇◇◇◇
 			//以下22CI0329記述
