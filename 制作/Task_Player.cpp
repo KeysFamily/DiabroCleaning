@@ -56,8 +56,8 @@ namespace  Player
 		this->addSpeed = 1.0f;		//歩行加速度（地面の影響である程度打ち消される
 		this->crouchSpeed = 2.5f;	//しゃがみながら移動最大速度
 		this->decSpeed = 0.5f;		//接地状態の時の速度減衰量（摩擦
-		this->maxFallSpeed = 11.0f;	//最大落下速度
-		this->jumpPow = -15.5f;		//ジャンプ力（初速）
+		this->maxFallSpeed = 15.0f;	//最大落下速度
+		this->jumpPow = -14.5f;		//ジャンプ力（初速）
 		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
 		this->drawScale = 1;
 		this->attack2 = false;
@@ -65,16 +65,17 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 100;  //所持金
+		this->balanceMoney = 1000;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
-		this->balanceMoney = 100;
 		this->magicSelect = Magic::NoMagic; //仮
 		this->surviveFrame = 0;
 		this->surviveTime = 0;
 		this->DEF = 1;
 		this->INT = 1.0f;
+		this->speed = 0.f;
+		this->haveAttacked = false;
 
 
 		//--------------------------------------
@@ -109,6 +110,8 @@ namespace  Player
 		this->animCnt++;
 		this->surviveFrame++;
 		this->surviveTime = this->surviveFrame / 60;
+		ge->GameCnt = this->surviveTime;
+		this->maxSpeed = 9.0f + 0.2 * this->speed; //ステータスによる移動速度加算
 		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 		if (this->unHitTime > 0) { this->unHitTime--; }
 		//思考・状況判断
@@ -179,7 +182,7 @@ namespace  Player
 			if (inp.LStick.BD.on && inp.LStick.BR.on) { nm = Motion::CrouchWalk; }
 			if (inp.B1.down) { nm = Motion::TakeOff; }
 			if (inp.B2.down) { nm = Motion::Back; }
-			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::Attack; }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			if (this->CheckFoot() == false) {
 				tempCnt++;
@@ -191,7 +194,7 @@ namespace  Player
 			break;
 		case  Motion::Walk:		//歩いている
 			if (inp.B1.down) { nm = Motion::TakeOff; }
-			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::Attack; }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
 			if (this->CheckFoot() == false) {
 				tempCnt++;
@@ -207,7 +210,7 @@ namespace  Player
 			if (this->moveVec.y >= 0) { nm = Motion::Fall; }
 			if (inp.B1.down) { nm = Motion::Jump2; }
 			if (airattack == true) {
-				if (inp.B4.down) { nm = Motion::AirAttack; }
+				if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
@@ -215,7 +218,7 @@ namespace  Player
 		case Motion::Jump2:
 			if (this->moveVec.y >= 0) { nm = Motion::Fall2; }
 			if (airattack == true) {
-				if (inp.B4.down) { nm = Motion::AirAttack; }
+				if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
@@ -224,7 +227,7 @@ namespace  Player
 			if (this->CheckFoot() == true) { nm = Motion::Landing; }
 			if (inp.B1.down) { nm = Motion::Jump2; }
 			if (airattack == true) {
-				if (inp.B4.down) { nm = Motion::AirAttack; }
+				if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
@@ -232,7 +235,7 @@ namespace  Player
 		case Motion::Fall2:
 			if (this->CheckFoot() == true) { nm = Motion::Landing; }
 			if (airattack == true) {
-				if (inp.B4.down) { nm = Motion::AirAttack; }
+				if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::AirAttack; }
 			}
 			if (canDash == true) { if (inp.B2.down) { nm = Motion::Dash; } }
 			if (inp.B3.on) { nm = Motion::MagicAttack; }
@@ -269,7 +272,7 @@ namespace  Player
 				}
 			}//足元 障害　無し
 			if (this->CheckFoot() == true)tempCnt = 0;
-			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::Attack; }
 			break;
 		case Motion::CrouchWalk:	//しゃがみながら移動
 			if (inp.LStick.BD.off) { nm = Motion::Walk; /*this->pos.y -= 5;*/ }
@@ -282,7 +285,7 @@ namespace  Player
 				}
 			}//足元 障害　無し
 			if (this->CheckFoot() == true)tempCnt = 0;
-			if (inp.B4.down) { nm = Motion::Attack; }
+			if (inp.Trigger.R2.down || inp.B4.down) { nm = Motion::Attack; }
 			break;
 		case  Motion::Attack:	//攻撃中
 			if (this->moveCnt == 20)
@@ -398,7 +401,24 @@ namespace  Player
 			}
 			break;
 			//移動速度減衰を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
-		case Motion::Bound: 
+		case Motion::Stand:
+			if (this->moveVec.x < 0) {
+				this->moveVec.x = min(this->moveVec.x + 2.2f * this->decSpeed, 0);
+			}
+			else {
+				this->moveVec.x = max(this->moveVec.x - 2.2f * this->decSpeed, 0);
+			}
+			break;
+		case Motion::Landing:
+			if (this->moveVec.x < 0) {
+				this->moveVec.x = min(this->moveVec.x + 2.2f * this->decSpeed, 0);
+			}
+			else {
+				this->moveVec.x = max(this->moveVec.x - 2.2f * this->decSpeed, 0);
+			}
+			break;
+		case Motion::Bound: break;
+		case Motion::Back: break;
 		case Motion::Unnon:	break;
 		}
 		//-----------------------------------------------------------------
@@ -409,6 +429,7 @@ namespace  Player
 			this->canDash = true;
 			this->airattack = true;
 			this->attackBase = ML::Box2D(0, 0, 0, 0);
+			this->haveAttacked = false;
 			ge->KillAll_G("MagicManager");
 			break;
 		case  Motion::Walk:		//歩いている
@@ -474,11 +495,11 @@ namespace  Player
 			}
 			if (inp.LStick.BL.on) {
 				this->angle_LR = Angle_LR::Left;
-				this->moveVec.x = -this->maxSpeed;
+				this->moveVec.x = max(-this->maxSpeed, this->moveVec.x - this->addSpeed);
 			}
 			if (inp.LStick.BR.on) {
 				this->angle_LR = Angle_LR::Right;
-				this->moveVec.x = this->maxSpeed;
+				this->moveVec.x = min(+this->maxSpeed, this->moveVec.x + this->addSpeed);
 			}
 			this->canJump = false;
 			break;
@@ -511,7 +532,7 @@ namespace  Player
 				this->MakeAttack();
 			}
 			if (moveCnt > 0) {
-				if (inp.B4.down) { this->attack2 = true; }
+				if (inp.Trigger.R2.down || inp.B4.down) { this->attack2 = true; }
 			}
 			break;
 		case  Motion::Attack2:	//�U����
@@ -523,7 +544,7 @@ namespace  Player
 				this->MakeAttack();
 			}
 			if (moveCnt > 0) {
-				if (inp.B4.down) { this->attack3 = true; }
+				if (inp.Trigger.R2.down || inp.B4.down) { this->attack3 = true; }
 			}
 			break;
 		case  Motion::Attack3:	//�U����
@@ -545,7 +566,7 @@ namespace  Player
 				this->MakeAttack();
 			}
 			if (moveCnt > 0) {
-				if (inp.B4.down) { this->attack2 = true; }
+				if (inp.Trigger.R2.down || inp.B4.down) { this->attack2 = true; }
 			}
 			break;
 		case  Motion::AirAttack2:	//攻撃中
@@ -558,17 +579,19 @@ namespace  Player
 				this->MakeAttack();
 			}
 			if (moveCnt > 0) {
-				if (inp.B4.down) { this->attack3 = true; }
+				if (inp.Trigger.R2.down || inp.B4.down) { this->attack3 = true; }
 			}
 			break;
 		case Motion::AirAttack3:
 			this->moveVec.y = 20.0f;
 			this->attack3 = false;
 			this->powerScale = 2.0f;
+			if (this->haveAttacked == false) {
+				this->MakeAttack();
+			}
 			if (this->moveCnt == 1)
 			{
 				se::Play("swordSlash");
-				this->MakeAttack();
 			}
 			break;
 		case Motion::AirAttack4:
@@ -863,7 +886,7 @@ namespace  Player
 			return;
 		}
 		this->unHitTime = 90;
-		this->hp.Addval(-at_.power);	//仮処理
+		//this->hp.Addval(-at_.power);	//仮処理
 		this->balanceMoney -= (at_.power - this->DEF);
 		if (this->balanceMoney <= 0)this->balanceMoney = 0; //仮処理
 		if (this->hp.IsMin()) {
@@ -892,7 +915,7 @@ namespace  Player
 				ge->CreateEffect(59, (*it)->pos);
 				BChara::AttackInfo at = { this->power * this->powerScale, 0, 0 };
 				(*it)->Received(this, at);
-				
+				this->haveAttacked = true;
 			}
 		}
 	}

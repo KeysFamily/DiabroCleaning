@@ -152,5 +152,7 @@ namespace  Player
 		vector<int> unlockedMagic;			//解放済みのスキル
 		//--------------------------------------
 		void CheckMove_();					//マップ外に出ないように
+
+		bool haveAttacked;					//攻撃したフラグ
 	};
 }

@@ -1,15 +1,15 @@
 #pragma warning(disable:4996)
 #pragma once
 //-------------------------------------------------------------------
-//エンディング
+//
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
 
-namespace  Ending
+namespace  PlayerScore
 {
 	//タスクに割り当てるグループ名と固有名
 	const  string  defGroupName("エンディング");	//グループ名
-	const  string  defName("NoName");	//タスク名
+	const  string  defName("Score");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -23,9 +23,8 @@ namespace  Ending
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP Ending_clear_img;
-		DG::Image::SP Ending_over_img;
-		DG::Image::SP Key_img;
+		DG::Image::SP imgResultScroll;
+		DG::Font::SP fontData;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -49,7 +48,7 @@ namespace  Ending
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		int KeyTime;
-		bool KeyOnOff;
+		ostringstream obs;
+		int DrawCnt ;
 	};
 }

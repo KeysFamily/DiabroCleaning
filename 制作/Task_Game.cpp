@@ -89,7 +89,6 @@ namespace  Game
 	//「終了」タスク消滅時に１回だけ行う処理
 	bool  Object::Finalize()
 	{
-
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
 		ge->KillAll_G("item");
@@ -148,6 +147,15 @@ namespace  Game
 		auto inp = ge->in1->GetState( );
 
 		this->cnt++;
+
+		if (inp.SE.down && ge->getCounterFlag("Game") != ge->ACTIVE) {
+			ge->StartCounter("Game", 45); //フェードは90フレームなので半分の45で切り替え
+			ge->CreateEffect(98, ML::Vec2(0, 0));
+
+		}
+		if (ge->getCounterFlag("Game") == ge->LIMIT) {
+			this->Kill();
+		}
 
 		if (inp.ST.down) {
 			//◇◇◇◇◇◇◇◇◇◇

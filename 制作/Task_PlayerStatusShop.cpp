@@ -205,6 +205,7 @@ namespace  PlayerStatusShop
 			{
 				this->priceDp->active = false;
 			}
+			ge->TotalUsedCoinCnt += price[currentStatus.vnow + 1];
 			return true;
 		}
 

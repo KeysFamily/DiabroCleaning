@@ -95,7 +95,12 @@ namespace  MyPG
 		bool GameOverFlag = false; //ゲームオーバーフラグ
 		bool GameClearFlag = false;//クリアフラグ
 		bool unHitEnemy = false;//敵との当たり判定
-		int GameOverCnt;
+		int GameCnt; //ゲームのプレイ時間
+		int TotalEnemyKill; //プレイヤー敵を倒した総数
+		int TotalDamage; //プレイヤーが敵に与えたダメージの総数
+		int TotalUsedCoinCnt; //消費したコインの総数
+		int TotalGetCoinCnt; //獲得したコインの総数
+
 		int MaxGameOver;
 
 		bool			Jump2Check;		//ジャンプ2判定
