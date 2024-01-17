@@ -229,6 +229,7 @@ namespace  Item_coin
 	void Object::Received(BChara* from_, AttackInfo at_)
 	{
 		from_->balanceMoney += 1;
+		ge->TotalGetCoinCnt += 1;
 		this->Kill();
 		se::Stop("se_get_coin");
 		se::Play("se_get_coin");

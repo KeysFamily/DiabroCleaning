@@ -356,6 +356,10 @@
     <ClCompile Include="Task_EnemyBoss.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="MapStruct.cpp" />
+    <ClCompile Include="Task_PlayerScore.cpp">
+      <Filter>MyPG\Task\Ending</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -533,6 +537,9 @@
     </ClInclude>
     <ClInclude Include="Task_EnemyBoss.h">
       <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_PlayerScore.h">
+      <Filter>MyPG\Task\Ending</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

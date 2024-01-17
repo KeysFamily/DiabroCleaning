@@ -381,6 +381,8 @@ namespace XI
 			if (me.volumeR < linkRtv.volumeR) {
 				me.volumeR = linkRtv.volumeR;
 			}
+			me.L2 = linkRtv.L2;
+			me.R2 = linkRtv.R2;
 		}
 		return me;
 	}

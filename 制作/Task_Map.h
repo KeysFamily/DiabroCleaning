@@ -64,7 +64,6 @@ namespace  Map
 			//読み込み処理
 			bool Load(const string& mapName_);
 		};
-
 		//背景データ
 		struct BackMapData
 		{
@@ -72,39 +71,49 @@ namespace  Map
 			OL::Size2D imgSize;	//画像サイズ
 			float moveScale;	//カメラ移動によって画像が動く量
 		};
-		vector<BackMapData> backMap;	//背景
-		vector<MapData> drawMap;		//描画用チップデータ
-		MapData			ObjectMap;		//当たり判定用チップデータ
-		MapData			GenerateMap;	//エンティティ用チップデータ
-
+		//坂道判定データ
 		struct SlopeData
 		{
 			ML::Vec2 slopeVec;		//坂の方向
 			float    slopeHeight;	//坂開始時の高さ
 		};
+
+		vector<BackMapData> backMap;	//背景
+		vector<MapData> drawMap;		//描画用チップデータ
+		MapData			ObjectMap;		//当たり判定用チップデータ
+		MapData			GenerateMap;	//エンティティ用チップデータ
 		map<int, SlopeData> slopeData;	//坂の情報のマップ配列
+		ML::Box2D			hitBase;	//ピクセル単位のマップサイズを持つ
+		bool				visited;	//一度訪れたか
+		int					depth;		//深度
+		string				folderPath;	//マップデータフォルダへのパス
 
-		int  arr[100][100];
-		ML::Box2D			hitBase;//ピクセル単位のマップサイズを持つ
+		//あたり判定
+		bool  CheckHit(const  ML::Box2D& hit_);
 
-		bool  CheckHit(const  ML::Box2D& hit_);//あたり判定
-		ML::Vec2 CheckSlope(const ML::Box2D& hit_);//坂との当たり判定
-		bool CheckFallGround(const ML::Box2D& hit_);//すり抜ける床判定
+		//坂との当たり判定
+		ML::Vec2 CheckSlope(const ML::Box2D& hit_);
+
+		//すり抜ける床判定
+		bool CheckFallGround(const ML::Box2D& hit_);
 
 		//マップ読み込み
-		//param1:難易度までの名前
-		bool LoadMap(const string& mapName_);
+		bool LoadMap(const string& folderPath_);
+
+		//マップ保存
+		bool SaveMap();
+
+		//坂判定読み込み
 		bool LoadSlope(const string& filepath_);
 
-		MapDir CheckExit(const ML::Box2D& hit_);		//出口判定
+		//出口判定
+		MapDir CheckExit(const ML::Box2D& hit_);
 
 		//マップ移動時のプレイヤーの座標
 		ML::Vec2 GetPlayerEnterPos(const MapDir& mapDirection_);
 
 		//マップ外を見せないようにカメラを位置調整する
 		void  AdjustCameraPos();
-
-
 
 	private:
 		bool  CheckHitTo(const  ML::Box2D& hit_, int chipNum_);//あたり判定

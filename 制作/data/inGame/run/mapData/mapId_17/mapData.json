@@ -1,0 +1,10 @@
+{
+    "depth": 7,
+    "enterDir": 3,
+    "exitDir": 2,
+    "exitSubDir": -1,
+    "isSub": true,
+    "mapName": "map_LeftRight_1",
+    "mapType": 1,
+    "visited": false
+}

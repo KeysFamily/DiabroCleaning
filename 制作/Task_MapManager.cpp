@@ -9,7 +9,10 @@
 #include  "MyPG.h"
 #include  "Task_MapManager.h"
 #include  "Task_MapTransition.h"
+#include  "Task_GameUI_MiniMap.h"
 #include  "Task_Sprite.h"
+
+using namespace Map;
 
 namespace  MapManager
 {
@@ -36,10 +39,24 @@ namespace  MapManager
 		this->res = Resource::Create();
 
 		//★データ初期化
+		//シード値設定
 		this->mapSeed = (unsigned int)time(NULL);
-		srand(mapSeed);
+		srand(1705452343);
 		ge->printToDebugFile(to_string(mapSeed),1);
+		//分岐確率
+		this->generateSubRate = 0.5f;
+		this->subDepthMax = 2;
+		this->depthMax = 6;
+		//セーブ先
+		this->saveFolderPath = "./data/inGame/run/mapData/";
+
+
+
 		this->Generate();
+
+		auto map = Map::Object::Create(true);
+		map->render2D_Priority[1] = 0.9f;
+		map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
 
 		this->moveMapDir = Map::MapDir::Non;
 
@@ -78,34 +95,60 @@ namespace  MapManager
 	//生成全般
 	void Object::Generate()
 	{
-		for (int y = 0; y < 30; ++y)
+		for (int y = 0; y < Map::MAPSIZE_MAX; ++y)
 		{
-			for (int x = 0; x < 30; ++x)
+			for (int x = 0; x < Map::MAPSIZE_MAX; ++x)
 			{
 				map[y][x] = nullptr;
 			}
 		}
 
-		map[0][0] = new MapObject("map_start");
+		map[0][0] = new MapObject(1,"map_start");
 
-		map[0][1] = new Object::Connect(Map::MapDir::Left, Map::MapDir::Right);
+		map[0][1] = new MapObject(1, MapType::Connect, MapDir::Left, MapDir::Right);
 
-		this->GenerateMap(2, 0, 2, 6, Map::MapDir::Left);
-		//生成
-		for (int y = 0; y < 30; ++y)
+		this->GenerateMap(2, 0, 2, this->depthMax, MapDir::Left);
+
+		this->GenerateSub();
+
+
+
+		//ダンジョン生成
+		ofstream ofs(this->saveFolderPath + "dungeonData.txt");
+		ofs << Map::MAPSIZE_MAX << endl;
+		for (int y = 0; y < Map::MAPSIZE_MAX; ++y)
 		{
-			for (int x = 0; x < 30; ++x)
+			for (int x = 0; x < Map::MAPSIZE_MAX; ++x)
 			{
 				if (map[y][x] != nullptr)
 				{
-					map[y][x]->Generate();
+					map[y][x]->GenerateFile(this->saveFolderPath);
+					mapid[y][x] = map[y][x]->GetId();
+					ofs << map[y][x]->GetId() << ' ';
+
+					
+				}
+				else
+				{
+					ofs << -1 << ' ';
 				}
 			}
+			ofs << endl;
 		}
+
+		ofs.close();
+
+		this->Destroy();
+
+		if (minimap == nullptr) 
+		{
+			this->minimap = MiniMap::Object::Create(true);
+		}
+		this->minimap->LoadData(this->saveFolderPath);
 	}
 	//-------------------------------------------------------------------
 	//1マップ生成処理
-	void Object::GenerateMap(int x_, int y_, int depth_, int depthRest_, Map::MapDir enter_)
+	void Object::GenerateMap(int x_, int y_, int depth_, int depthRest_, MapDir enter_, bool setSub_)
 	{
 		enum GenerateDir
 		{
@@ -117,8 +160,18 @@ namespace  MapManager
 		//最下層なら次の生成処理は行わない
 		if (depthRest_ <= 1)
 		{
-			map[y_][x_] = new Area(enter_, Map::MapDir::Non, depth_);
-			return;
+			//外れの道でなければゴール
+			if (setSub_ == false)
+			{
+				map[y_][x_] = new MapObject(depth_, "map_goal");
+				return;
+			}
+			else
+			{
+				map[y_][x_] = new MapObject(depth_, MapType::Map, enter_, MapDir::Non);
+				map[y_][x_]->SetSub(true);
+				return;
+			}
 		}
 
 		//生成不可な場所を探す（生成する方向にマップ・もしくは通路があるか判定）
@@ -130,20 +183,12 @@ namespace  MapManager
 		//生成可能な場所がなければ次の生成処理は行わない
 		if (cantGeneratesTotal >= 3)
 		{
-			map[y_][x_] = new Area(enter_, Map::MapDir::Non, depth_);
+			map[y_][x_] = new MapObject(depth_, MapType::Map, enter_, MapDir::Non);
 			return;
 		}
 
 		//生成の種類（右・下・斜め）
 		int generateTypes = 3;
-
-		//分岐させるか
-		bool generateSub = rand() % 2 && cantGeneratesTotal < 1 && map[y_ + 1][x_ + 1] == nullptr;
-		//分岐が有効なら、右か下を最初に生成（斜めは確定なので）
-		if (generateSub)
-		{
-			--generateTypes;
-		}
 
 		int genX = 0;
 		int genY = 0;
@@ -212,30 +257,79 @@ namespace  MapManager
 
 
 			//次の位置を生成
-			GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
+			GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir, setSub_);
 
-			//分岐が有効なら斜めも生成
-			if (generateSub)
-			{
-				genX = 1;
-				genY = 1;
-				if (enterDir == Map::MapDir::Up)
-				{
-					enterDir = Map::MapDir::Left;
-					connectExitSub = Map::MapDir::Right;
-				}
-				else
-				{
-					enterDir = Map::MapDir::Up;
-					connectExitSub = Map::MapDir::Down;
-				}
-				GenerateMap(x_ + genX, y_ + genY, depth_ + 1, depthRest_ - 1, enterDir);
-			}
-			map[y_][x_] = new Area(enter_, exitDir, depth_);
-			map[y_ + conY][x_ + conX] = new Connect(connectEnter, connectExit, connectExitSub);
+			map[y_][x_] = new MapObject(depth_, MapType::Map, enter_, exitDir);
+			map[y_][x_]->SetSub(setSub_);
+			map[y_ + conY][x_ + conX] = new MapObject(depth_, MapType::Connect, connectEnter, connectExit, connectExitSub);
+			map[y_ + conY][x_ + conX]->SetSub(setSub_);
 
 			finishedGenerate = false;
 		}
+	}
+	//-------------------------------------------------------------------
+	//分岐を生成
+	void Object::GenerateSub()
+	{
+		for (int y = 0; y < Map::MAPSIZE_MAX; ++y)
+		{
+			for (int x = 0; x < Map::MAPSIZE_MAX; ++x)
+			{
+				if (this->GetSubFlag(x, y) == true)
+				{
+					if (map[y][x]->GetExit() == MapDir::Right)
+					{
+						if (y + 1 < Map::MAPSIZE_MAX)
+						{
+							if (map[y + 1][x] == nullptr)
+							{
+								map[y][x]->SetExitSub(MapDir::Down);
+								int subDepth = (rand() % this->subDepthMax) + 1;
+								GenerateMap(x, y + 1, map[y][x]->GetDepth() + 1, subDepth, MapDir::Up, true);
+							}
+							else
+							{
+								continue;
+							}
+						}
+					}
+					else if (map[y][x]->GetExit() == MapDir::Down)
+					{
+						if (x + 1 < Map::MAPSIZE_MAX)
+						{
+							if (map[y][x + 1] == nullptr)
+							{
+								map[y][x]->SetExitSub(MapDir::Right);
+								int subDepth = (rand() % this->subDepthMax) + 1;
+								GenerateMap(x + 1, y, map[y][x]->GetDepth() + 1, subDepth, MapDir::Left, true);
+							}
+							else
+							{
+								continue;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	//分岐を生成するかのフラグを取得する
+	bool Object::GetSubFlag(int connX_, int connY_)
+	{
+		if (map[connY_][connX_] != nullptr)
+		{
+			if (map[connY_][connX_]->GetMapType() == MapType::Connect)
+			{
+				if (map[connY_][connX_]->GetSub() == false)
+				{
+					if (OL::RandomBool(this->generateSubRate) == true)
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 	//-------------------------------------------------------------------
 	//ロード
@@ -287,11 +381,17 @@ namespace  MapManager
 			break;
 		}
 
-		ge->qa_Map->LoadMap(map[currentPos.y][currentPos.x]->mapName);
+		ge->qa_Map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
 		ge->qa_Player->pos = ge->qa_Map->GetPlayerEnterPos(Map::MapFunc::ReverseMapDir(moveMapDir));
+		if (moveMapDir == MapDir::Up)
+		{
+			ge->qa_Player->motion = Player::Object::Motion::Jump;
+			ge->qa_Player->moveCnt = -1;
+		}
 		auto camera = ge->GetTask<Sprite::Object>("Sprite");
 		camera->MoveImmediately();
 		this->mapTransition->Disappear();
+		this->minimap->SetVisit(this->currentPos.x, this->currentPos.y);
 
 		this->moveMapDir = Map::MapDir::Non;
 		this->mapTransition = nullptr;
@@ -301,11 +401,15 @@ namespace  MapManager
 	//消滅時の処理
 	void Object::Destroy()
 	{
-		for (int y = 0; y < 30; ++y)
+		for (int y = 0; y < Map::MAPSIZE_MAX; ++y)
 		{
-			for (int x = 0; x < 30; ++x)
+			for (int x = 0; x < Map::MAPSIZE_MAX; ++x)
 			{
-				delete map[y][x];
+				if (map[y][x] != nullptr)
+				{
+					delete map[y][x];
+					map[y][x] = nullptr;
+				}
 			}
 		}
 	}

@@ -61,11 +61,7 @@ namespace  Game
 		player->render2D_Priority[1] = 0.5f;
 
 		MapManager::Object::Create(true);
-		MiniMap::Object::Create(true);
 		
-		auto map = Map::Object::Create(true);
-		map->render2D_Priority[1] = 0.9f;
-
 		auto spr = Sprite::Object::Create(true);
 		spr->pos = player->pos;
 		spr->target = player;
@@ -93,7 +89,6 @@ namespace  Game
 	//「終了」タスク消滅時に１回だけ行う処理
 	bool  Object::Finalize()
 	{
-
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
 		ge->KillAll_G("item");
@@ -150,8 +145,27 @@ namespace  Game
 		ge->qa_Map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 
 		auto inp = ge->in1->GetState( );
+		
+		//デバッグ機能
+#ifdef DEBUG_GAME
+		auto ms = ge->mouse->GetState();
+		if (ms.LB.down)
+		{
+			ge->qa_Player->pos.x = ms.pos.x + ge->camera2D.x;
+			ge->qa_Player->pos.y = ms.pos.y + ge->camera2D.y;
+		}
+#endif
 
 		this->cnt++;
+
+		if (inp.SE.down && ge->getCounterFlag("Game") != ge->ACTIVE) {
+			ge->StartCounter("Game", 45); //フェードは90フレームなので半分の45で切り替え
+			ge->CreateEffect(98, ML::Vec2(0, 0));
+
+		}
+		if (ge->getCounterFlag("Game") == ge->LIMIT) {
+			this->Kill();
+		}
 
 		if (inp.ST.down) {
 			//◇◇◇◇◇◇◇◇◇◇

@@ -126,6 +126,7 @@ namespace  SkillShop
 			money_ -= this->shopData.price;
 			this->currentState = State::BOUGHT;
 			this->objPrice->active = false;
+			ge->TotalUsedCoinCnt += this->shopData.price;
 			return true;
 		}
 	}
