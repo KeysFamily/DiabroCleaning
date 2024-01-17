@@ -220,13 +220,6 @@ namespace  MiniMap
 			return;
 		}
 
-		if (mapData[y_][x_] & ISOTHER)
-		{
-			src_.x = this->res->imgChipSize.w * 3;
-			src_.y = this->res->imgChipSize.h * 3;
-			return;
-		}
-
 		if (mapData[y_][x_] & NOMAP)
 		{
 			return;
@@ -234,6 +227,13 @@ namespace  MiniMap
 		
 		if ((mapData[y_][x_] & VISITED) == 0)
 		{
+			return;
+		}
+
+		if (mapData[y_][x_] & ISOTHER)
+		{
+			src_.x = this->res->imgChipSize.w * 3;
+			src_.y = this->res->imgChipSize.h * 3;
 			return;
 		}
 

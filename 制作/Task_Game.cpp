@@ -145,6 +145,16 @@ namespace  Game
 		ge->qa_Map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 
 		auto inp = ge->in1->GetState( );
+		
+		//デバッグ機能
+#ifdef DEBUG_GAME
+		auto ms = ge->mouse->GetState();
+		if (ms.LB.down)
+		{
+			ge->qa_Player->pos.x = ms.pos.x + ge->camera2D.x;
+			ge->qa_Player->pos.y = ms.pos.y + ge->camera2D.y;
+		}
+#endif
 
 		this->cnt++;
 

@@ -41,7 +41,7 @@ namespace  MapManager
 		//★データ初期化
 		//シード値設定
 		this->mapSeed = (unsigned int)time(NULL);
-		srand(mapSeed);
+		srand(1705452343);
 		ge->printToDebugFile(to_string(mapSeed),1);
 		//分岐確率
 		this->generateSubRate = 0.5f;
@@ -383,6 +383,11 @@ namespace  MapManager
 
 		ge->qa_Map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
 		ge->qa_Player->pos = ge->qa_Map->GetPlayerEnterPos(Map::MapFunc::ReverseMapDir(moveMapDir));
+		if (moveMapDir == MapDir::Up)
+		{
+			ge->qa_Player->motion = Player::Object::Motion::Jump;
+			ge->qa_Player->moveCnt = -1;
+		}
 		auto camera = ge->GetTask<Sprite::Object>("Sprite");
 		camera->MoveImmediately();
 		this->mapTransition->Disappear();
