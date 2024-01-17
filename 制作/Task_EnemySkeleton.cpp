@@ -58,6 +58,19 @@ namespace  EnemySkeleton
 		this->hp.SetValues(HP, 0, HP);
 		this->attackPow = 10;
 		this->dropMoney = 10;
+
+		//◇◇◇◇◇◇◇◇◇◇
+		//以下22CI0329記述
+		this->standTimeStd = 10;
+		this->standTime = 60;
+		this->standTimeDif = 60;
+		this->trackCoolTime = 20;
+
+		this->attackAnimCnt.SetValues(0, 0, 17);
+		this->attackAnimCut = 7;
+		this->attackAnimSpeed = 0.2f;
+		this->turnCoolTime = 60;
+		// ◆◆◆◆◆◆◆◆◆◆
 		//★タスクの生成
 
 		return  true;
@@ -99,7 +112,18 @@ namespace  EnemySkeleton
 		switch (nm)
 		{
 		case Motion::Stand:	//立っている
-			nm = Motion::Walk;
+			if (moveCnt > this->standTime)
+			{
+				nm = Motion::Walk;
+			}
+			if (moveCnt == this->trackCoolTime)
+			{
+				if (this->SearchPlayer(800, 192))
+				{
+					nm = Motion::Tracking;
+				}
+			}
+
 			if (!this->CheckFoot()) { nm = Motion::Fall; }//足元障害なしなら落下させる
 
 			//if (this->moveCnt > 60 * 3) { nm = Motion::Walk; }
@@ -114,11 +138,11 @@ namespace  EnemySkeleton
 			if (this->moveCnt > 60 * 5) { nm = Motion::Stand; }
 			//以降　プレイヤ索敵
 
-			if (this->searchCnt > 60 && this->SearchPlayer(800,192)) {
+			if (this->searchCnt > 0 && this->SearchPlayer(800, 192)) {
 				nm = Motion::Tracking;
 			}
 		}
-			break;
+		break;
 
 		case Motion::Tracking:
 			//追跡時の処理
@@ -126,21 +150,24 @@ namespace  EnemySkeleton
 				nm = Motion::Turn;
 			}//もし壁に当たったら向きを変える
 
-			if (this->searchCnt > 30) {
-				this->searchCnt = 0;
-				if (!this->SearchPlayer(1000,256)) {
+			if (this->searchCnt > 0) {
+				if (!this->SearchPlayer(1000, 256)) {
 					//3回見つからなければ通常処理に戻す
-					if (++this->notFoundPlayerCnt > 3) {
+					if (this->notFoundPlayerCnt > 3) {
 						this->notFoundPlayerCnt = 0;
 						nm = Motion::Stand;
 					}
 					else {
-						nm = Motion::Turn;
+						if (++searchCnt > trackCoolTime) 
+						{
+							++this->notFoundPlayerCnt;
+							nm = Motion::Turn;
+							searchCnt = 1;
+						}
 					}
 				}
 				else {
-					if (this->SearchPlayer(100, this->hitBase.h) && 
-						!this->SearchPlayer(ge->qa_Player->hitBase.w, this->hitBase.h)) {
+					if (this->SearchPlayer(100, this->hitBase.h)) {
 						//攻撃させる
 						nm = Motion::Attack;
 					}
@@ -150,7 +177,7 @@ namespace  EnemySkeleton
 
 			break;
 		case Motion::Turn:
-			if (this->moveCnt >= 5) { 
+			if (this->moveCnt >= 5) {
 				if (this->preMotion == Motion::Tracking) {
 					nm = Motion::Tracking;
 				}
@@ -160,7 +187,7 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Fall:	//下降中
-			if (this->CheckFoot()) { 
+			if (this->CheckFoot()) {
 				if (this->preMotion == Motion::Tracking) {
 					nm = Motion::Tracking;
 				}
@@ -170,8 +197,8 @@ namespace  EnemySkeleton
 			}//足元障害ありで着地する
 			break;
 		case Motion::Attack://攻撃中
-			if (this->moveCnt > 36) {
-				nm = this->preMotion;
+			if (this->moveCnt > (int)(attackAnimCnt.vmax / attackAnimSpeed)) {
+				nm = Motion::Stand;
 			}
 			break;
 		case Motion::Landing://着地
@@ -234,6 +261,10 @@ namespace  EnemySkeleton
 		switch (this->motion)
 		{
 		case Motion::Stand://立っている
+			if (moveCnt == 0)
+			{
+				standTime = standTimeStd + (rand() % standTimeDif);
+			}
 			break;
 		case Motion::Walk://歩いている
 			if (this->angle_LR == Angle_LR::Left) {
@@ -260,7 +291,11 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Attack://攻撃中
-			if (this->moveCnt == 16) {
+			if (this->moveCnt == 0)
+			{
+				this->attackAnimCnt.Setval(0);
+			}
+			if ((int)this->attackAnimCnt.vnow == this->attackAnimCut) {
 				ML::Box2D hit(
 					-this->hitBase.w / 2, 
 					this->hitBase.y,
@@ -280,6 +315,7 @@ namespace  EnemySkeleton
 				BChara::AttackInfo ai = { static_cast<float>(this->attackPow),0,0 };
 				this->Attack_Std(Player::defGroupName, ai, hit);
 			}
+			attackAnimCnt.Addval(attackAnimSpeed);
 			break;
 		case Motion::Turn:
 			if (this->moveCnt == 3) {
@@ -401,9 +437,7 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Attack:
-			work = this->animCnt / 2;
-			work %= 18;
-			rtv = imageTable[work + 24];
+			rtv = imageTable[(int)attackAnimCnt.vnow + 24];
 			break;
 		case Motion::Bound:
 			work = this->animCnt / 2;
@@ -453,6 +487,40 @@ namespace  EnemySkeleton
 	//-------------------------------------------------------------------
 	// Playerを索敵する
 	bool Object::SearchPlayer(int distX_, int distY_) {
+#if true
+		if (ge->qa_Player == nullptr || ge->qa_Map == nullptr) 
+		{ 
+			return false;
+		}
+		ML::Box2D eye(0, 0, distX_, distY_);
+		eye.Offset(this->pos);
+		if (this->angle_LR == Angle_LR::Left) 
+		{
+			eye.Offset(-eye.w, -eye.h);
+		}
+		//プレイヤーが範囲内にいるか
+		if (eye.Hit(ge->qa_Player->CallHitBox()))
+		{
+			ML::Vec2 toVec = ge->qa_Player->pos - this->pos;
+			ML::Vec2 toVecN = toVec.Normalize();
+			ML::Vec2 checkPos = this->pos;
+			
+			while (
+				abs(ge->qa_Player->pos.x - checkPos.x) > abs(toVec.x)
+				&& abs(ge->qa_Player->pos.x - checkPos.y) > abs(toVec.y)
+				)
+			{
+				if (ge->qa_Map->CheckHit(checkPos))
+				{
+					return false;
+				}
+				checkPos += toVecN;
+			}
+
+			return true;
+		}
+		return false;
+#else
 		this->searchCnt = 0;
 		//auto map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 
@@ -479,7 +547,7 @@ namespace  EnemySkeleton
 				ML::Box2D eb = eye.OffsetCopy(0, -y);
 				if (ge->qa_Map->CheckHit(eb))break;
 				if (ge->qa_Player != nullptr && ge->qa_Player->CallHitBox().Hit(eb)) { return true; }
-				ge->debugRect(eb, 4, -ge->camera2D.x, -ge->camera2D.y);
+				//ge->debugRect(eb, 4, -ge->camera2D.x, -ge->camera2D.y);
 				
 			}
 			if (this->angle_LR == Angle_LR::Left) {
@@ -491,6 +559,7 @@ namespace  EnemySkeleton
 		}
 
 		return false;
+#endif
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

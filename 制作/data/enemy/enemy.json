@@ -13,7 +13,7 @@
 		},
 		{
 			"name": "SkyEye",
-			"hp": 10.0,
+			"hp": 3.0,
 			"jumpPow": -6.0,
 			"maxSpeed": 5.0,
 			"addSpeed": 0.7,

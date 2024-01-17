@@ -238,6 +238,12 @@ namespace  Map
 		return this->CheckHitTo(hit_, 0);
 	}
 	//-------------------------------------------------------------------
+	//あたり判定
+	bool  Object::CheckHit(const  ML::Vec2& pos_)
+	{
+		return this->CheckHitTo(pos_, 0);
+	}
+	//-------------------------------------------------------------------
 	//坂とのあたり判定
 	ML::Vec2 Object::CheckSlope(const ML::Box2D& hit_)
 	{
@@ -456,6 +462,13 @@ namespace  Map
 			}
 		}
 		return false;
+	}
+	bool Object::CheckHitTo(const ML::Vec2& pos_, int chipNum_)
+	{
+		int mapX = pos_.x / this->res->drawSize;
+		int mapY = pos_.y / this->res->drawSize;
+
+		return this->ObjectMap.chipdata[mapY][mapX] == chipNum_;
 	}
 	//-------------------------------------------------------------------
 	//マップ外を見せないようにカメラを位置調整する

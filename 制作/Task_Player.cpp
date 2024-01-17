@@ -65,7 +65,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 1000;  //所持金
+		this->balanceMoney = 100;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
@@ -887,7 +887,7 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		//this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= (at_.power - this->DEF);
+		this->balanceMoney -= at_.power * (10.0f / (10 + this->DEF));
 		if (this->balanceMoney <= 0)this->balanceMoney = 0; //仮処理
 		if (this->hp.IsMin()) {
 			//this->Kill();

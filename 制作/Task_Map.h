@@ -90,6 +90,7 @@ namespace  Map
 
 		//‚ ‚½‚è”»’è
 		bool  CheckHit(const  ML::Box2D& hit_);
+		bool  CheckHit(const ML::Vec2& pos_);
 
 		//â‚Æ‚Ì“–‚½‚è”»’è
 		ML::Vec2 CheckSlope(const ML::Box2D& hit_);
@@ -117,6 +118,7 @@ namespace  Map
 
 	private:
 		bool  CheckHitTo(const  ML::Box2D& hit_, int chipNum_);//‚ ‚½‚è”»’è
+		bool CheckHitTo(const ML::Vec2& pos_, int chipNum_);//À•W‚Æ‚Ì“–‚½‚è”»’è
 		//”wŒi‚Ì•`‰æ
 		void DrawBackMap();
 		void SetEnemyOnMap();
