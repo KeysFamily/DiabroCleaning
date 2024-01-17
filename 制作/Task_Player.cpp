@@ -887,8 +887,8 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		//this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= (at_.power - this->DEF);
-		if (this->balanceMoney <= 0)this->balanceMoney = 0; //仮処理
+		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF)) ; //ダメージ計算公式
+		if (this->balanceMoney <= 0)this->balanceMoney = 0; //デバッグ用仮処理
 		if (this->hp.IsMin()) {
 			//this->Kill();
 		}
