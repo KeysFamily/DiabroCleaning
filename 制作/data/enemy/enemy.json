@@ -21,6 +21,17 @@
 			"unHitTime": 10,
 			"dropMoney": 10,
 			"attack": 10
+		},
+		{
+			"name": "Boss",
+			"hp": 100.0,
+			"jumpPow": -6.0,
+			"maxSpeed": 5.0,
+			"addSpeed": 0.7,
+			"decSpeed": 0.5,
+			"unHitTime": 10,
+			"dropMoney": 1,
+			"attack": 50
 		}
 	]
 }
