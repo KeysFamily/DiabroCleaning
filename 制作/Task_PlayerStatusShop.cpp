@@ -200,12 +200,12 @@ namespace  PlayerStatusShop
 		else if (money_ >= price[currentStatus.vnow + 1])
 		{
 			money_ -= price[currentStatus.vnow + 1];
+			ge->TotalUsedCoinCnt += price[currentStatus.vnow + 1];
 			currentStatus.Addval(1);
 			if (currentStatus.IsMax())
 			{
 				this->priceDp->active = false;
 			}
-			ge->TotalUsedCoinCnt += price[currentStatus.vnow + 1];
 			return true;
 		}
 
