@@ -69,7 +69,9 @@ namespace  Map
 		{
 			DG::Image::SP img;	//画像
 			OL::Size2D imgSize;	//画像サイズ
+			float scale;
 			float moveScale;	//カメラ移動によって画像が動く量
+			bool infinity;		//画像を無限に続かせるか
 		};
 		//坂道判定データ
 		struct SlopeData
@@ -78,7 +80,7 @@ namespace  Map
 			float    slopeHeight;	//坂開始時の高さ
 		};
 
-		vector<BackMapData> backMap;	//背景
+		BackMapData backMap;	//背景
 		vector<MapData> drawMap;		//描画用チップデータ
 		MapData			ObjectMap;		//当たり判定用チップデータ
 		MapData			GenerateMap;	//エンティティ用チップデータ
@@ -87,6 +89,8 @@ namespace  Map
 		bool				visited;	//一度訪れたか
 		int					depth;		//深度
 		string				folderPath;	//マップデータフォルダへのパス
+		int					depthInLevel;	//1レベルにおける深度
+		int					depthInLevel_Conn;	//1レベルにおける深度（通路）
 
 		//あたり判定
 		bool  CheckHit(const  ML::Box2D& hit_);
@@ -121,6 +125,8 @@ namespace  Map
 		bool CheckHitTo(const ML::Vec2& pos_, int chipNum_);//座標との当たり判定
 		//背景の描画
 		void DrawBackMap();
+		void DrawBackSubUD(const ML::Box2D& draw_, const ML::Box2D src_, const ML::Rect& bg_, const ML::Rect& gSc_);
+
 		void SetEnemyOnMap();
 
 

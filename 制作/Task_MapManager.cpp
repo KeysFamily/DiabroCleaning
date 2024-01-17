@@ -41,12 +41,12 @@ namespace  MapManager
 		//★データ初期化
 		//シード値設定
 		this->mapSeed = (unsigned int)time(NULL);
-		srand(1705452343);
+		srand(mapSeed);
 		ge->printToDebugFile(to_string(mapSeed),1);
 		//分岐確率
 		this->generateSubRate = 0.5f;
 		this->subDepthMax = 2;
-		this->depthMax = 3;
+		this->depthMax = 5;
 		//セーブ先
 		this->saveFolderPath = "./data/inGame/run/mapData/";
 

@@ -44,6 +44,8 @@ namespace  Map
 		this->depth = 1;
 		this->visited = true;
 		this->folderPath = "";
+		this->depthInLevel = 1;
+		this->depthInLevel_Conn = 1;
 		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
 		//★タスクの生成
 
@@ -123,29 +125,95 @@ namespace  Map
 		json js = OL::LoadJsonFile(folderPath_ + "/mapData.json");
 
 		string mapName = js["mapName"];
+		Map::MapType mapType = (Map::MapType)((int)js["mapType"]);
 		this->depth = js["depth"];
 		this->visited = js["visited"];
 
 		this->folderPath = folderPath_;
+		js.clear();
+
 		//背景マップ読み込み
-		backMap.clear();
 
 		int layerNum = 0;
-		ifstream ifs("./data/map/" + mapName + "/" + mapName + "_BG.json");
-		if (ifs.is_open())
+		js = OL::LoadJsonFile("./data/map/backGroundData.json");
+		this->backMap.img.reset();
+		if (mapType == Map::MapType::Connect)
 		{
-			json backMapData = json::parse(ifs);
-			for (auto& bmd : backMapData["BackMap"])
+			int level = this->depth / this->depthInLevel_Conn;
+			int levelCnt = 1;
+			for (auto& bmd : js["connects"])
 			{
-				BackMapData bglayer;
-				bglayer.img = DG::Image::Create(bmd["imgFilePath"]);
-				bglayer.imgSize.w = bmd["imgWidth"];
-				bglayer.imgSize.h = bmd["imgHeight"];
-				bglayer.moveScale = bmd["moveScale"];
-				this->backMap.push_back(bglayer);
+				if (levelCnt >= level)
+				{
+					this->backMap.img = DG::Image::Create(bmd["imgFilePath"]);
+					this->backMap.imgSize.w = bmd["imgWidth"];
+					this->backMap.imgSize.h = bmd["imgHeight"];
+					this->backMap.scale = bmd["scale"];
+					this->backMap.moveScale = bmd["moveScale"];
+					this->backMap.infinity = bmd["infinity"];
+					break;
+				}
+				else if (levelCnt >= js["connects"].size())
+				{
+					this->backMap.img = DG::Image::Create(bmd["imgFilePath"]);
+					this->backMap.imgSize.w = bmd["imgWidth"];
+					this->backMap.imgSize.h = bmd["imgHeight"];
+					this->backMap.scale = bmd["scale"];
+					this->backMap.moveScale = bmd["moveScale"];
+					this->backMap.infinity = bmd["infinity"];
+				}
+				++levelCnt;
 			}
-			ifs.close();
 		}
+		else if (mapType == Map::MapType::Map)
+		{
+			int level = this->depth / this->depthInLevel;
+			int levelCnt = 1;
+			for (auto& bmd : js["backGrounds"])
+			{
+				if (levelCnt >= level)
+				{
+					this->backMap.img = DG::Image::Create(bmd["imgFilePath"]);
+					this->backMap.imgSize.w = bmd["imgWidth"];
+					this->backMap.imgSize.h = bmd["imgHeight"];
+					this->backMap.scale = bmd["scale"];
+					this->backMap.moveScale = bmd["moveScale"];
+					this->backMap.infinity = bmd["infinity"];
+					break;
+				}
+				else if (levelCnt >= js["backGrounds"].size())
+				{
+					this->backMap.img = DG::Image::Create(bmd["imgFilePath"]);
+					this->backMap.imgSize.w = bmd["imgWidth"];
+					this->backMap.imgSize.h = bmd["imgHeight"];
+					this->backMap.scale = bmd["scale"];
+					this->backMap.moveScale = bmd["moveScale"];
+					this->backMap.infinity = bmd["infinity"];
+				}
+				++levelCnt;
+			}
+		}
+		else if (mapName == "map_start")
+		{
+			json& bmd = js["start"];
+			this->backMap.img = DG::Image::Create(bmd["imgFilePath"]);
+			this->backMap.imgSize.w = bmd["imgWidth"];
+			this->backMap.imgSize.h = bmd["imgHeight"];
+			this->backMap.scale = bmd["scale"];
+			this->backMap.moveScale = bmd["moveScale"];
+			this->backMap.infinity = bmd["infinity"];
+		}
+		else if (mapName == "map_goal")
+		{
+			json& bmd = js["goal"];
+			this->backMap.img = DG::Image::Create(bmd["imgFilePath"]);
+			this->backMap.imgSize.w = bmd["imgWidth"];
+			this->backMap.imgSize.h = bmd["imgHeight"];
+			this->backMap.scale = bmd["scale"];
+			this->backMap.moveScale = bmd["moveScale"];
+			this->backMap.infinity = bmd["infinity"];
+		}
+
 
 		//描画マップ読み込み
 		drawMap.clear();
@@ -499,39 +567,97 @@ namespace  Map
 	//マップ外を見せないようにカメラを位置調整する
 	void  Object::DrawBackMap()
 	{
-		if (this->backMap.empty())
+		ML::Vec2 mapCenter(this->hitBase.w / 2, this->hitBase.h / 2);
+		ML::Vec2 cameraPos(ge->camera2D.x, ge->camera2D.y);
+		cameraPos += OL::BoxCenterPos(ge->camera2D);
+		ML::Box2D draw = OL::setBoxCenter(this->backMap.imgSize * this->backMap.scale);
+		draw.Offset(ge->GetScreenCenter());
+		draw.Offset((mapCenter - cameraPos) * this->backMap.moveScale);
+		ML::Box2D src(0, 0, this->backMap.imgSize.w, this->backMap.imgSize.h);
+
+		//スクリーンとマップの範囲を用意
+		ML::Rect  c = OL::BoxToRect(ge->GetScreenBox());
+		ML::Rect  bg = OL::BoxToRect(draw);
+
+		//有限の場合
+		if (this->backMap.infinity == false)
 		{
-			return;
-		}
-
-		for (auto& bglayer : this->backMap)
-		{
-			ML::Vec2 mapCenter(this->hitBase.w / 2, this->hitBase.h / 2);
-			ML::Vec2 cameraPos(ge->camera2D.x, ge->camera2D.y);
-			cameraPos += OL::BoxCenterPos(ge->camera2D);
-			ML::Box2D draw = OL::setBoxCenter(bglayer.imgSize);
-			draw.Offset(ge->GetScreenCenter());
-			draw.Offset((mapCenter - cameraPos) * bglayer.moveScale);
-
-
-			//スクリーンとマップの範囲を用意
-			ML::Rect  c = OL::BoxToRect(ge->GetScreenBox());
-			ML::Rect  bg = OL::BoxToRect(draw);
-
 			//スクリーンの位置を調整
-			if (c.right > bg.right) { draw.x = c.right - draw.w; }
+			if (c.right > bg.right){ draw.x = c.right - draw.w; }
 			if (c.bottom > bg.bottom) { draw.y = c.bottom - draw.h; }
 			if (c.left < bg.left) { draw.x = c.left; }
 			if (c.top < bg.top) { draw.y = c.top; }
 			//マップがスクリーンより小さい場合
 			if (draw.w < ge->screenWidth) { draw.x = c.left; }
-			if (draw.h < ge->screenHeight) { draw.y = c.top; }
-
-			ML::Box2D src(0, 0, bglayer.imgSize.w, bglayer.imgSize.h);
-
-			bglayer.img->Draw(draw, src);
+			if (draw.h < ge->screenHeight){ draw.y = c.top; }
+		}
+		//無限の場合
+		else
+		{
+			//上下方向
+			this->DrawBackSubUD(draw, src, bg, c);
+			ML::Box2D subDraw = draw;
+			ML::Box2D subSrc = src;
+			ML::Rect subBg = bg;
+			//右方向
+			while (c.right > subBg.right)
+			{
+				subDraw.x = subDraw.x + draw.w;
+				subDraw.w = min(c.right - subBg.right, draw.w);
+				subSrc.w = subDraw.w / this->backMap.scale;
+				this->backMap.img->Draw(subDraw, subSrc);
+				subBg = OL::BoxToRect(subDraw);
+				//上下方向
+				this->DrawBackSubUD(subDraw, subSrc, subBg, c);
+			}
+			subDraw = draw;
+			subSrc = src;
+			subBg = bg;
+			//左方向
+			while (c.left < subBg.left)
+			{
+				subDraw.x = max(c.left, subDraw.x - draw.w);
+				subDraw.w = min(subBg.left - c.left, draw.w);
+				subSrc.x = (draw.w - subDraw.w) / this->backMap.scale;
+				subSrc.w = subDraw.w / this->backMap.scale;
+				this->backMap.img->Draw(subDraw, subSrc);
+				subBg = OL::BoxToRect(subDraw);
+				//上下方向
+				this->DrawBackSubUD(subDraw, subSrc, subBg, c);
+			}
 		}
 
+		this->backMap.img->Draw(draw, src);
+
+	}
+	void Object::DrawBackSubUD(const ML::Box2D& draw_, const ML::Box2D src_, const ML::Rect& bg_, const ML::Rect& gSc_)
+	{
+		//上方向
+		ML::Box2D subDraw = draw_;
+		ML::Box2D subSrc = src_;
+		ML::Rect subBg = bg_;
+		while (gSc_.top < subBg.top)
+		{
+			subDraw.y = max(gSc_.top, subDraw.y - draw_.h);
+			subDraw.h = min(subBg.top - gSc_.top, draw_.h);
+			subSrc.y = (draw_.h - subDraw.h) / this->backMap.scale;;
+			subSrc.h = subDraw.h / this->backMap.scale;
+			this->backMap.img->Draw(subDraw, subSrc);
+			subBg = OL::BoxToRect(subDraw);
+		}
+
+		//下方向
+		subDraw = draw_;
+		subSrc = src_;
+		subBg = bg_;
+		while (gSc_.bottom > subBg.bottom)
+		{
+			subDraw.y = subDraw.y + draw_.h;
+			subDraw.h = min(gSc_.bottom - subBg.bottom, draw_.h);
+			subSrc.h = subDraw.h / this->backMap.scale;
+			this->backMap.img->Draw(subDraw, subSrc);
+			subBg = OL::BoxToRect(subDraw);
+		}
 	}
 	//-------------------------------------------------------------------
 	//読み込み処理
