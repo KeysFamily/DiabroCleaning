@@ -19,12 +19,14 @@ namespace  Item
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
+		this->ImgItem = DG::Image::Create("./data/Item/image/Item.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
+		this->ImgItem.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -35,8 +37,14 @@ namespace  Item
 		__super::Initialize(defGroupName, defName, true);
 		//リソースクラス生成orリソース共有
 		this->res = Resource::Create();
-		Object::InputJsonFile("Attack");
 		//★データ初期化
+
+		string str[] = { "Attack","Defense","Magic","Speed" };
+		InputJsonFile(str[rand() % 4]);
+		this->itemb.Power_step = rand() % this->itemb.Power_step;
+
+		this->angle = ML::ToRadian((float)(rand() % 360));
+		this->moveVec = ML::Vec2(cos(angle) * 4, sin(angle) * 4);
 		this->hitBase = ML::Box2D(-16, -16, 32, 32);
 		//★タスクの生成
 
@@ -59,18 +67,20 @@ namespace  Item
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		this->itemb.Time--;
+		if (this->itemb.Time < 0) this->Kill();
+		//めり込まない移動
+		ML::Vec2  est = this->moveVec;
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		int x = rand() % this->itemb.Power_step;
-		int y = this->itemb.Item_pos;
 		auto draw = this->hitBase.OffsetCopy(this->pos);
-		ML::Box2D src(32 * x, 32 * y, 32, 32);
+		ML::Box2D src((32 * this->itemb.Power_step)-32, (32 * this->itemb.Item_pos)-32, 32, 32);
 	    //スクロール対応
 		//di.draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
-		this->res->img->Draw(draw, src);
+		this->res->ImgItem->Draw(draw, src);
 		ge->debugRect(this->CallHitBox(), 4, -ge->camera2D.x, -ge->camera2D.y);
 	}
 
@@ -167,7 +177,7 @@ namespace  Item
 	//接触時の応答処理（これ自体はダミーのようなモノ）
 	void Object::Received(BChara* from_, AttackInfo at_)
 	{
-		
+
 		//this->UpdateMotion(Motion::Bound);
 		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う
 	}
@@ -175,7 +185,10 @@ namespace  Item
 	void Object::GiftPlayer(BChara* pl_)
 	{
 		Player::Object* pl = dynamic_cast<Player::Object*>(pl_);
-		pl->power += itemb.Attack;
+		pl->power += (itemb.Attack + itemb.Power_step);
+		pl->DEF += (itemb.Defense + itemb.Power_step);
+		pl->INT += (itemb.Magic + itemb.Power_step);
+		pl->speed += (itemb.Speed + itemb.Power_step);
 		this->Kill();
 	}
 
@@ -187,24 +200,27 @@ namespace  Item
 		//・攻撃力
 		//・防御力
 		//・魔法力
-		// ・スピード
-		// ・持続時間
-		// ・描画位置
+		//・スピード
+		//・持続時間
+		//・描画位置
 		//****************************************
-		ifstream f("./data/enemy/json/Item.json");
-		if (!f.is_open()) return;//ファイルオープンに失敗
-		json data = json::parse(f);
-		auto& i = data[itemName_];
+		json js = OL::LoadJsonFile("./data/Item/Item.json");
 
-		this->itemb.Attack= i["ATK"];
-		this->itemb.Defense = i["DEF"];
-		this->itemb.Magic = i["INT"];
-		this->itemb.Speed = i["SPD"];
-		this->itemb.Time = i["TIME"];
-		this->itemb.Item_pos= i["ITEM_POS"];
-		this->itemb.Power_step = i["POWER_STEP"];
-		f.close();
+		for (auto& ji : js["item"])
+		{
+			if (ji["itemName"] == itemName_)
+			{
+				//アイテムがプレイヤーに与えるステータス
+				this->itemb.Attack = ji["ATK"];
+				this->itemb.Defense = ji["DEF"];
+				this->itemb.Magic = ji["INT"]; 
+				this->itemb.Speed = ji["SPD"]; 
 
+				this->itemb.Time = ji["Time"]; //アイテムの生存時間
+				this->itemb.Item_pos = js["Item_pos"]; //アイテムの画像のY軸を決める
+				this->itemb.Power_step = js["POWER_STEP"]; //アイテムのレアリティ＆アイテムの画像のX軸を決める
+			}
+		}
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

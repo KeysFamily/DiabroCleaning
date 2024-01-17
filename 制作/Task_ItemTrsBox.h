@@ -8,13 +8,13 @@
 //作成年月日:
 //概　　　要:
 //?------------------------------------------------------
-#include "BItem.h"
+#include "BChara.h"
 
-namespace  Item
+namespace  ItemTrsBox
 {
 	//タスクに割り当てるグループ名と固有名
 	const  string  defGroupName("アイテム");	//グループ名
-	const  string  defName("アイテム");		//タスク名
+	const  string  defName("トレジャーボックス");		//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -29,10 +29,11 @@ namespace  Item
 		static  Resource::SP  Create();
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//共有する変数はここに追加する
-		DG::Image::SP ImgItem;
+		DG::Image::SP ImgTrsBox;
+		
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BItem
+	class  Object : public  BChara
 	{
 	public:
 		virtual  ~Object();
@@ -54,42 +55,25 @@ namespace  Item
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
 		//BCharaに含まれないモノのみここに追加する
-
+		
 		enum Motion
 		{
 			Unnon = -1,	//	無効(使えません）
 			Stand,		//	停止
-			Fall,       //  落下
-			Bound,		//	弾き飛ばされてる
+			Hit,        //プレイヤーが宝箱に当たった状態
 			Lose,		//  消滅中
 		};
 
-		class item_buff  //格納するアイテムの効果
-		{
-		public:
-			int Attack;     //攻撃力
-			int Defense;    //防御力
-			int Magic;      //魔法力
-			int Speed;      //スピード
-			int Time;       //持続時間
-			int Item_pos;   //アイテムの種類
-			int Power_step; //強さの段階
-		};
-
-		void InputJsonFile(string fileName_);
 		void  Think();
 		//モーションに対応した処理
 		void  Move();
+		//アニメーション制御
+		BChara::DrawInfo  Anim();
 		//接触時の応答処理(必ず受け身の処理として実装する)
 		void Received(BChara* from_, AttackInfo at_) override;
-		//プレイヤーのステータスを変える
-		void GiftPlayer(BChara* pl_) override;
-		item_buff itemb;
-		//デバック用
-		XI::GamePad::SP controller;
-
 		//画面外に出たらアイテムを消す処理
 		void out_coin(int x, int y);
-		
+		//デバック用
+		XI::GamePad::SP controller;
 	};
 }

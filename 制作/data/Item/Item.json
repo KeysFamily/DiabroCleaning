@@ -6,7 +6,9 @@
 			"DEF": 0,
 			"INT": 0,
 			"SPD": 0,
-			"TIME": 120
+			"TIME": 120,
+			"ITEM_POS": 1,
+			"POWER_STEP": 5
 		},
 		{
 			"itemName": "Defense",
@@ -14,7 +16,9 @@
 			"DEF": 5,
 			"INT": 0,
 			"SPD": 0,
-			"TIME": 120
+			"TIME": 120,
+			"ITEM_POS": 2,
+			"POWER_STEP": 5
 		},
 		{
 			"itemName": "Magic",
@@ -22,7 +26,9 @@
 			"DEF": 0,
 			"INT": 5,
 			"SPD": 0,
-			"TIME": 120
+			"TIME": 120,
+			"ITEM_POS": 3,
+			"POWER_STEP": 5
 		},
 		{
 			"itemName": "Speed",
@@ -30,7 +36,9 @@
 			"DEF": 0,
 			"INT": 0,
 			"SPD": 5,
-			"TIME": 120
+			"TIME": 120,
+			"ITEM_POS": 4,
+			"POWER_STEP": 5
 		}
 	]
 }
