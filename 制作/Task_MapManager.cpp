@@ -46,7 +46,7 @@ namespace  MapManager
 		//分岐確率
 		this->generateSubRate = 0.5f;
 		this->subDepthMax = 2;
-		this->depthMax = 6;
+		this->depthMax = 3;
 		//セーブ先
 		this->saveFolderPath = "./data/inGame/run/mapData/";
 
