@@ -1021,6 +1021,13 @@ namespace  Player
 		if (checkBase.x + checkBase.w >= map->hitBase.w) { //右
 			this->pos.x = map->hitBase.w - (this->hitBase.w / 2);
 		}
+
+		if (checkBase.y <= 0) { //上
+			this->pos.y = 1 + this->hitBase.h / 2;
+		}
+		if (checkBase.y + checkBase.h >= map->hitBase.h) { //下
+			this->pos.y = map->hitBase.h - (this->hitBase.h / 2);
+		}
 	}
 	//-------------------------------------------------------------------
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
