@@ -20,7 +20,7 @@ namespace  EnemyBoss
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		//this->img = DG::Image::Create("./data/enemy/__.png");
+		this->img = DG::Image::Create("./data/enemy/image/BossO.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -41,7 +41,7 @@ namespace  EnemyBoss
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.6f;
-		this->hitBase = OL::setBoxCenter(62, 102);
+		this->hitBase = OL::setBoxCenter(128, 256);
 		this->angle_LR = Angle_LR::Left;
 		this->motion = BossMotion::Stand;
 		this->maxSpeed = 2.0f;
@@ -78,7 +78,7 @@ namespace  EnemyBoss
 	{
 		this->UpDate_Std();
 		//当たり判定仮処理
-		BChara::AttackInfo at = {1,0,0};
+		BChara::AttackInfo at = { attackPow * 0.1f,0,0 };
 		if(this->Attack_Std(Player::defGroupName,at,this->CallHitBox())){
 		// 	//接触した際、自身に何かをする際の処理
 		}
@@ -97,32 +97,54 @@ namespace  EnemyBoss
 		switch (nm)
 		{
 		case BossMotion::Stand:
+			if (this->moveCnt > 60 * 3) {
+				nm = BossMotion::Teleport;
+			}
 			break;
 		case BossMotion::Teleport:
+			//飛ばす場所
+			if (this->moveCnt == 20) {
+				nm = BossMotion::Attack;
+			}
 			break;
 		case BossMotion::CoolTime:
+			if (this->moveCnt > 60 * 3) {
+				nm = BossMotion::Teleport;
+			}
 			break;
 		case BossMotion::Attack:
 		{
 			vector<BossMotion> sheet;
 			sheet.push_back(BossMotion::Attack1);
-			if (this->hp.GetRate() <= 0.5f) {//50%以下で第二段階
+			if (this->hp.GetRate() <= 0.5f) {//50%以下で第二段階解放
 				sheet.push_back(BossMotion::Attack2);
 			}
-			if (this->hp.GetRate() <= 0.25f) {//25%以下で第三段階
+			if (this->hp.GetRate() <= 0.25f) {//25%以下で第三段階解放
 				sheet.push_back(BossMotion::Attack3);
 			}
 			sheet.push_back(BossMotion::Attack4);
-			nm = sheet[GetRandom<int>(1, sheet.size())];
+			nm = sheet[GetRandom<int>(0, sheet.size() - 1)];
 		}
 			break;
 		case BossMotion::Attack1:
+			if (this->moveCnt > 39) {
+				nm = BossMotion::CoolTime;
+			}
 			break;
 		case BossMotion::Attack2:
+			if (this->moveCnt > 39) {
+				nm = BossMotion::CoolTime;
+			}
 			break;
 		case BossMotion::Attack3:
+			if (this->moveCnt > 39) {
+				nm = BossMotion::CoolTime;
+			}
 			break;
 		case BossMotion::Attack4:
+			if (this->moveCnt > 39) {
+				nm = BossMotion::CoolTime;
+			}
 			break;
 		case BossMotion::Lose:
 			break;
@@ -136,26 +158,56 @@ namespace  EnemyBoss
 	// 動作制御
 	void Object::Move(){
 		//重力加速
-		switch (this->motion) {
-		default:
-			//上昇中もしくは足元に地面がない
-			if (this->moveVec.y < 0 || !this->CheckFoot()) {
-				this->moveVec.y = min(this->moveVec.y + this->gravity, this->maxFallSpeed);
-			}
-			//地面に接触している
-			else {
-				this->moveVec.y = 0.0f;
-			}
-			break;
-			//重力加速を無効化する必要があるモーションは下にcaseを書く（現在対象なし）
-		case Motion::Unnon:		break;
-		}
+		//switch (this->motion) {
+		//default:
+		//	//上昇中もしくは足元に地面がない
+		//	if (this->moveVec.y < 0 || !this->CheckFoot()) {
+		//		this->moveVec.y = min(this->moveVec.y + this->gravity, this->maxFallSpeed);
+		//	}
+		//	//地面に接触している
+		//	else {
+		//		this->moveVec.y = 0.0f;
+		//	}
+		//	break;
+		//	//重力加速を無効化する必要があるモーションは下にcaseを書く（現在対象なし）
+		//case Motion::Unnon:		break;
+		//}
 
 		switch (this->motion)
 		{
 		case BossMotion::Stand:
 			break;
 		case BossMotion::Teleport:
+			if (this->moveCnt == 10) {
+				ML::Vec2 tpPos = this->pos;
+
+				for (int i = 0; i < 100; ++i) {
+					int mcsize = ge->qa_Map->res->drawSize;	//マップチップ一片のサイズ
+					float dist = GetRandom<float>(mcsize * 10.0f, mcsize * 20.0f);
+					float rad = GetRandom<float>(0, 2 * ML::PI);
+					ML::Vec2 offsetPos;
+					offsetPos.x = cos(rad);
+					offsetPos.y = sin(rad);
+					offsetPos *= dist;
+
+					ML::Box2D test = this->CallHitBox().OffsetCopy(offsetPos);
+					if (!ge->qa_Map->CheckHit(test)
+						&& !ge->qa_Map->CheckFallGround(test)
+						&& test.Hit(ge->GetScreenBox())) {
+						tpPos += offsetPos;
+						break;
+					}
+				}
+
+				this->pos = tpPos;
+
+				if (ge->qa_Player->pos.x - this->pos.x >= 0) {
+					this->angle_LR = Angle_LR::Right;
+				}
+				else {
+					this->angle_LR = Angle_LR::Left;
+				}
+			}
 			break;
 		case BossMotion::CoolTime:
 			break;
@@ -163,28 +215,50 @@ namespace  EnemyBoss
 			break;
 		case BossMotion::Attack1:
 			//プレイヤーに向けてボスの杖から火の魔法を出す
+			if (this->moveCnt == 21) {
+
+			}
 			break;
 		case BossMotion::Attack2:
 			//プレイヤーの足元に魔法を出し１秒後に攻撃をする
+			if (this->moveCnt == 21) {
+				
+			}
 			break;
 		case BossMotion::Attack3:
 			//半径３マス以内に範囲攻撃
+			if (this->moveCnt == 24) {
+				if (this->PosInMyCircle(this->pos, ge->qa_Player->pos, ge->qa_Map->res->drawSize * 3.0f)) {
+					BChara::AttackInfo at = { attackPow,0,0 };
+					ge->qa_Player->Received(this, at);
+				}
+			}
 			break;
 		case BossMotion::Attack4:
-			//半径５マス以内のランダムな位置に敵を召喚する
-			//条件は以下のとおりとする。
-			//
-			if (this->hp.GetRate() > 0.5f) {
-				//３体召喚
-			}
-			else if (this->hp.GetRate() > 0.25f) {
-				//４体召喚
-			}
-			else {
-				//５体召喚
+			if (this->moveCnt == 21) {
+				//半径５マス以内のランダムな位置に敵を召喚する
+				//条件は以下のとおりとする。
+				//
+				int spawnMax;//召喚数
+				if (this->hp.GetRate() > 0.5f) {
+					spawnMax = 3;
+				}
+				else if (this->hp.GetRate() > 0.25f) {
+					spawnMax = 4;
+				}
+				else {
+					spawnMax = 5;
+				}
+
+				for (int i = 0; i < spawnMax; ++i) {
+					this->SpawnEnemyIsBoss();
+				}
 			}
 			break;
 		case BossMotion::Lose:
+			if (this->moveCnt >= 21) {
+				this->Kill();
+			}
 			break;
 		default:
 			break;
@@ -196,12 +270,95 @@ namespace  EnemyBoss
 	BEnemy::DrawInfo Object::Anim(){
 		ML::Color defColor(1.0f, 1.0f, 1.0f, 1.0f);
 		BEnemy::DrawInfo imageTable[] = {
-			{ML::Box2D(0, 0, 0, 0), ML::Box2D(0, 0, 0, 0), defColor},
+			//Stand
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D( 192, 224, 256, 256), defColor},	// 1	0
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D( 832, 224, 256, 256), defColor},	// 2
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(1472, 224, 256, 256), defColor},	// 3
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(2112, 224, 256, 256), defColor},	// 4
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(2752, 224, 256, 256), defColor},	// 5
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(3392, 224, 256, 256), defColor},	// 6
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(4032, 224, 256, 256), defColor},	// 7
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(4672, 224, 256, 256), defColor},	// 8	7
+			//Attack大
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D( 192, 736, 256, 256), defColor},	// 1	8
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D( 832, 736, 256, 256), defColor},	// 2
+			{ML::Box2D(-128,-160, 256, 288), ML::Box2D(1472, 704, 256, 288), defColor},	// 3
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(2112, 640, 256, 352), defColor},	// 4
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(2752, 640, 256, 352), defColor},	// 5
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(3392, 640, 256, 352), defColor},	// 6
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(4032, 640, 256, 352), defColor},	// 7
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(4672, 640, 256, 352), defColor},	// 8
+			{ML::Box2D(-128,-228, 320, 416), ML::Box2D(5312, 576, 320, 416), defColor},	// 9
+			{ML::Box2D(-128,-228, 320, 416), ML::Box2D(5952, 576, 320, 416), defColor},	//10
+			{ML::Box2D(-128,-320, 384, 448), ML::Box2D(6592, 544, 384, 448), defColor},	//11
+			{ML::Box2D(-128,-320, 384, 448), ML::Box2D(7232, 544, 384, 448), defColor},	//12
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(7872, 736, 256, 256), defColor},	//13	20
+			//Attack小
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D( 192,1248, 256, 256), defColor},	// 1	21
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D( 832,1248, 256, 256), defColor},	// 2
+			{ML::Box2D(-128,-160, 256, 288), ML::Box2D(1472,1216, 256, 288), defColor},	// 3
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(2112,1152, 256, 352), defColor},	// 4
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(2752,1152, 256, 352), defColor},	// 5
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(3392,1152, 256, 352), defColor},	// 6
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(4032,1152, 256, 352), defColor},	// 7
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(4672,1152, 256, 352), defColor},	// 8
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(5312,1152, 256, 352), defColor},	// 9
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(5952,1152, 256, 352), defColor},	//10
+			{ML::Box2D(-128,-224, 256, 352), ML::Box2D(6592,1152, 256, 352), defColor},	//11
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(7232,1248, 256, 256), defColor},	//12
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(7872,1248, 256, 256), defColor},	//13	33
+			//Hit
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D( 192,1760, 256, 256), defColor},	// 1	34
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D( 832,1760, 256, 256), defColor},	// 2 
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(1472,1760, 256, 256), defColor},	// 3
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(2112,1760, 256, 256), defColor},	// 4
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(2752,1760, 256, 256), defColor},	// 5	38
+			//Dead
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D( 192,2272, 256, 256), defColor},	// 1	39
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D( 832,2272, 256, 256), defColor},	// 2
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(1472,2272, 256, 256), defColor},	// 3
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(2112,2272, 256, 256), defColor},	// 4
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(2752,2272, 256, 256), defColor},	// 5
+			{ML::Box2D(-128,-128, 256, 256), ML::Box2D(3392,2272, 256, 256), defColor},	// 6	44
+			{ML::Box2D(-128,-160, 256, 288), ML::Box2D(4032,2240, 256, 288), defColor},	// 7	45
 		};
-		return imageTable[0];
+		BEnemy::DrawInfo rtv;
+		int work = this->animCnt / 3;
+		switch (this->motion)
+		{
+		default:	rtv = imageTable[0];	break;
+		case BossMotion::Stand:
+		case BossMotion::Teleport:
+		case BossMotion::CoolTime:
+			work %= 8;
+			rtv = imageTable[work];
+			break;
+		case BossMotion::Attack1:
+		case BossMotion::Attack2:
+		case BossMotion::Attack4:
+			work %= 13;
+			rtv = imageTable[work + 21];
+			if (this->motion == BossMotion::Attack4) {
+				rtv.color = ML::Color(1.0f, 1.0f, 0.0f, 0.0f);
+			}
+			break;
+		case BossMotion::Attack3:
+			work %= 13;
+			rtv = imageTable[work + 8];
+			break;
+		case BossMotion::Lose:
+			work %= 7;
+			rtv = imageTable[work + 39];
+			break;
+		}
+		if (this->angle_LR == Angle_LR::Left) {
+			rtv.draw.x = -rtv.draw.x;
+			rtv.draw.w = -rtv.draw.w;
+		}
+		return rtv;
 	}
 	
-	void Object::Received(BEnemy* from_, AttackInfo at_) {
+	void Object::Received(BChara* from_, AttackInfo at_) {
 		if (this->unHitTime > 0) { 
 			return; //無敵時間中は処理を受けない
 		}
@@ -212,6 +369,49 @@ namespace  EnemyBoss
 			return;
 		}
 		//吹き飛ばされる
+	}
+
+	void Object::SpawnEnemyIsBoss() {
+#if true
+		auto em = ge->GetTask<EnemyManager::Object>(EnemyManager::defGroupName, EnemyManager::defName);
+
+		ML::Vec2 spos = this->pos;
+		if (this->angle_LR == Angle_LR::Left) {
+			spos += ML::Vec2(-70, 166);
+		}
+		else {
+			spos += ML::Vec2(+70, 166);
+		}
+
+		for (int i = 0; i < 50; ++i) {
+			float dist = GetRandom<float>(0.0f, ge->qa_Map->res->drawSize * 5.0f);
+			float rad = GetRandom<float>(0.0f, 2.0f * ML::PI);
+
+			ML::Vec2 offsetPos;
+			offsetPos.x = cos(rad);
+			offsetPos.y = sin(rad);
+			offsetPos *= dist;
+
+			ML::Box2D test = OL::setBoxCenter(128, 148).OffsetCopy(spos + offsetPos);
+			if (!ge->qa_Map->CheckHit(test)
+				&& !ge->qa_Map->CheckFallGround(test)
+				&& test.Hit(ge->GetScreenBox())) {
+				spos += offsetPos;
+				break;
+			}
+		}
+
+
+
+		em->SpawnEnemyNum(GetRandom<int>(0, 1), spos);
+#endif
+	}
+
+	bool Object::PosInMyCircle(const ML::Vec2 me_, const ML::Vec2 you_, const float dist_) {
+		float x = you_.x - me_.x;
+		float y = you_.y - me_.y;
+
+		return x * x + y * y < dist_ * dist_;
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
