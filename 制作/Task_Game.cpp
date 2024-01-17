@@ -61,11 +61,7 @@ namespace  Game
 		player->render2D_Priority[1] = 0.5f;
 
 		MapManager::Object::Create(true);
-		MiniMap::Object::Create(true);
 		
-		auto map = Map::Object::Create(true);
-		map->render2D_Priority[1] = 0.9f;
-
 		auto spr = Sprite::Object::Create(true);
 		spr->pos = player->pos;
 		spr->target = player;

@@ -1,0 +1,10 @@
+{
+    "depth": 1,
+    "enterDir": -1,
+    "exitDir": -1,
+    "exitSubDir": -1,
+    "isSub": false,
+    "mapName": "map_start",
+    "mapType": 3,
+    "visited": false
+}
