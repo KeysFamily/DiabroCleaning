@@ -338,7 +338,6 @@
     <ClCompile Include="Task_ShopStaff.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
-    <ClCompile Include="Task_EnemyBoss.cpp" />
     <ClCompile Include="Task_SystemMenuMessageWindow.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
@@ -353,6 +352,9 @@
     </ClCompile>
     <ClCompile Include="Task_SystemMenuBackButton.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemyBoss.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="MapStruct.cpp" />
     <ClCompile Include="Task_PlayerScore.cpp">
@@ -524,7 +526,6 @@
     <ClInclude Include="Task_ShopStaff.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
-    <ClInclude Include="Task_EnemyBoss.h" />
     <ClInclude Include="Task_SystemMenuMessageWindow.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
@@ -539,6 +540,9 @@
     </ClInclude>
     <ClInclude Include="Task_SystemMenuBackButton.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemyBoss.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Task_PlayerScore.h">
       <Filter>MyPG\Task\Ending</Filter>
