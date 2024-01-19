@@ -15,8 +15,6 @@
 
 #include  "randomLib.h"
 
-#define DEBUG_ENEMY
-
 namespace  EnemyManager
 {
 	Resource::WP  Resource::instance;

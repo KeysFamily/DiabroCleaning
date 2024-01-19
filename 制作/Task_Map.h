@@ -98,6 +98,10 @@ namespace  Map
 
 		//坂との当たり判定
 		ML::Vec2 CheckSlope(const ML::Box2D& hit_);
+		//そのチップ内に坂が存在するか
+		bool  CheckSlopeOnChip(const ML::Box2D& hit_);
+		//そのチップ内に坂が存在するか
+		bool  CheckSlopeOnChip(const ML::Vec2& pos_);
 
 		//すり抜ける床判定
 		bool CheckFallGround(const ML::Box2D& hit_);
@@ -116,6 +120,9 @@ namespace  Map
 
 		//マップ移動時のプレイヤーの座標
 		ML::Vec2 GetPlayerEnterPos(const MapDir& mapDirection_);
+
+		//プレイヤーのスタート地点の座標
+		ML::Vec2 GetPlayerStartPos()const;
 
 		//マップ外を見せないようにカメラを位置調整する
 		void  AdjustCameraPos();

@@ -5,7 +5,7 @@
 			"imgWidth": 256,
 			"imgHeight": 144,
 			"scale": 2,
-			"moveScale": 0.3,
+			"moveScale": 0.6,
 			"infinity": true
 		},
 		{
@@ -13,7 +13,7 @@
 			"imgWidth": 512,
 			"imgHeight": 288,
 			"scale": 2,
-			"moveScale": 0.3,
+			"moveScale": 0.6,
 			"infinity": true
 		},
 		{
@@ -21,7 +21,7 @@
 			"imgWidth": 512,
 			"imgHeight": 288,
 			"scale": 1,
-			"moveScale": 0.3,
+			"moveScale": 0.6,
 			"infinity": true
 		},
 		{
@@ -29,7 +29,7 @@
 			"imgWidth": 512,
 			"imgHeight": 288,
 			"scale": 1,
-			"moveScale": 0.3,
+			"moveScale": 0.6,
 			"infinity": true
 		},
 		{
@@ -37,7 +37,7 @@
 			"imgWidth": 512,
 			"imgHeight": 288,
 			"scale": 1,
-			"moveScale": 0.3,
+			"moveScale": 0.6,
 			"infinity": true
 		}
 	],
@@ -47,7 +47,7 @@
 			"imgWidth": 256,
 			"imgHeight": 144,
 			"scale": 4,
-			"moveScale": 0.3,
+			"moveScale": 1.0,
 			"infinity": true
 		},
 		{
@@ -55,16 +55,16 @@
 			"imgWidth": 256,
 			"imgHeight": 144,
 			"scale": 4,
-			"moveScale": 0.3,
+			"moveScale": 1.0,
 			"infinity": true
 		}
 	],
 	"start": {
-		"imgFilePath": "./data/map/backMap/bgStart.jpg",
-		"imgWidth": 3200,
-		"imgHeight": 2400,
+		"imgFilePath": "./data/map/backMap/bgStart.png",
+		"imgWidth": 2048,
+		"imgHeight": 1536,
 		"scale": 1,
-		"moveScale": 0.3,
+		"moveScale": 0.1,
 		"infinity": false
 	},
 	"goal": {

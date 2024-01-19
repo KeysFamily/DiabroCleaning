@@ -120,7 +120,7 @@ namespace  Player
 		this->Move();
 		//めり込まない移動
 		ML::Vec2  est = this->moveVec;
-		this->CheckMove(est);
+		this->CheckMoveWithSlope(est);
 		this->CheckMove_();
 		//hitbase更新
 		BChara::DrawInfo  di = this->Anim();

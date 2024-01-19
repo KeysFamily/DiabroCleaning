@@ -358,6 +358,12 @@
     <ClCompile Include="Task_PlayerScore.cpp">
       <Filter>MyPG\Task\Ending</Filter>
     </ClCompile>
+    <ClCompile Include="Task_GuideControll.cpp">
+      <Filter>MyPG\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="KeysString.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -536,6 +542,12 @@
     </ClInclude>
     <ClInclude Include="Task_PlayerScore.h">
       <Filter>MyPG\Task\Ending</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_GuideControll.h">
+      <Filter>MyPG\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="KeysString.h">
+      <Filter>Lib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,12 @@
+X,	0
+A,	1
+Y,	2
+B,	3
+LStick,	4
+RStick,	5
+LTrigger,6
+RTrigger,7
+LButton,8
+RButton,9
+Select,	10
+Start	11

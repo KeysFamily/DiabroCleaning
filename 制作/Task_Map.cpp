@@ -44,7 +44,7 @@ namespace  Map
 		this->depth = 1;
 		this->visited = true;
 		this->folderPath = "";
-		this->depthInLevel = 1;
+		this->depthInLevel = 2;
 		this->depthInLevel_Conn = 1;
 		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
 		//★タスクの生成
@@ -451,6 +451,31 @@ namespace  Map
 		return result;
 	}
 	//-------------------------------------------------------------------
+	//そのチップ内に坂が存在するか
+	bool Object::CheckSlopeOnChip(const ML::Box2D& hit_)
+	{
+		for (auto& sp : this->slopeData)
+		{
+			if (CheckHitTo(hit_, sp.first) == true)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	//そのチップ内に坂が存在するか
+	bool Object::CheckSlopeOnChip(const ML::Vec2& pos_)
+	{
+		for (auto& sp : this->slopeData)
+		{
+			if (CheckHitTo(pos_, sp.first) == true)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	//-------------------------------------------------------------------
 	//すり抜ける床判定
 	bool  Object::CheckFallGround(const  ML::Box2D& hit_)
 	{
@@ -479,6 +504,26 @@ namespace  Map
 
 		return ML::Vec2(0, 0);
 
+	}
+	//-------------------------------------------------------------------
+	// プレイヤーのスタート地点の座標
+	ML::Vec2 Object::GetPlayerStartPos() const
+	{
+		int enterChip = 12;
+
+		OL::Size2D mapSize(ObjectMap.width, ObjectMap.height);
+
+		//チップを探す
+		for (int y = 0; y < mapSize.h; ++y)
+		{
+			for (int x = 0; x < mapSize.w; ++x)
+			{
+				while (ObjectMap.chipdata[y][x] == enterChip)
+				{
+					return ML::Vec2(x, y) * this->res->drawSize;
+				}
+			}
+		}
 	}
 	//-------------------------------------------------------------------
 	//出口判定

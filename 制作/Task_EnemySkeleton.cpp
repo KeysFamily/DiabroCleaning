@@ -275,11 +275,15 @@ namespace  EnemySkeleton
 			}
 			break;
 		case Motion::Tracking://•à‚¢‚Ä‚¢‚é
-			if (this->angle_LR == Angle_LR::Left) {
-				this->moveVec.x = max(-this->maxSpeed * 1.5f, this->moveVec.x - this->addSpeed);
-			}
-			else {
-				this->moveVec.x = min(+this->maxSpeed * 1.5f, this->moveVec.x + this->addSpeed);
+			//ƒvƒŒƒCƒ„[‚ªŒ©‚Â‚©‚Á‚Ä‚¢‚éŽž‚¾‚¯“®‚­
+			if (this->SearchPlayer(1000, 256))
+			{
+				if (this->angle_LR == Angle_LR::Left) {
+					this->moveVec.x = max(-this->maxSpeed * 1.5f, this->moveVec.x - this->addSpeed);
+				}
+				else {
+					this->moveVec.x = min(+this->maxSpeed * 1.5f, this->moveVec.x + this->addSpeed);
+				}
 			}
 			break;
 		case Motion::Fall://—Ž‰º’†
@@ -421,13 +425,24 @@ namespace  EnemySkeleton
 		BEnemy::DrawInfo rtv;
 		switch (this->motion)
 		{
-		default:	rtv = imageTable[0]; break;
+		default:
+			rtv = imageTable[0];
+			if (this->preMotion == Motion::Tracking) {
+				rtv.color = ML::Color(1.0f, 1.0f, 0.5f, 0.5f);
+			}
+			break;
 		case Motion::Stand:
 			work = this->animCnt / 3;
 			work %= 11;
 			rtv = imageTable[work];
 			break;
 		case Motion::Tracking:
+			if (!this->SearchPlayer(1000, 256))
+			{
+				rtv = imageTable[0];
+				rtv.color = ML::Color(1.0f, 1.0f, 0.5f, 0.5f);
+				break;
+			}
 		case Motion::Walk:
 			work = this->animCnt / 2;
 			work %= 13;
