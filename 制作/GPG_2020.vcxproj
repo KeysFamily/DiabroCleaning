@@ -139,6 +139,7 @@
     <ClCompile Include="easing.cpp" />
     <ClCompile Include="fpscounter.cpp" />
     <ClCompile Include="GameEngine_Ver3_83.cpp" />
+    <ClCompile Include="KeysString.cpp" />
     <ClCompile Include="MapStruct.cpp" />
     <ClCompile Include="myLib.cpp" />
     <ClCompile Include="MyPG.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="Task_Game.cpp" />
     <ClCompile Include="Task_GameUI.cpp" />
     <ClCompile Include="Task_GameUI_MiniMap.cpp" />
+    <ClCompile Include="Task_GuideControll.cpp" />
     <ClCompile Include="Task_Item_coin.cpp" />
     <ClCompile Include="Task_Item_coin_maneger.cpp" />
     <ClCompile Include="Task_Load.cpp" />
@@ -203,6 +205,7 @@
     <ClInclude Include="easing.h" />
     <ClInclude Include="fpscounter.h" />
     <ClInclude Include="GameEngine_Ver3_83.h" />
+    <ClInclude Include="KeysString.h" />
     <ClInclude Include="MapStruct.h" />
     <ClInclude Include="myLib.h" />
     <ClInclude Include="MyPG.h" />
@@ -222,6 +225,7 @@
     <ClInclude Include="Task_Game.h" />
     <ClInclude Include="Task_GameUI.h" />
     <ClInclude Include="Task_GameUI_MiniMap.h" />
+    <ClInclude Include="Task_GuideControll.h" />
     <ClInclude Include="Task_Item_coin.h" />
     <ClInclude Include="Task_Item_coin_maneger.h" />
     <ClInclude Include="Task_Load.h" />

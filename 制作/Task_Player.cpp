@@ -65,7 +65,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 1000;  //所持金
+		this->balanceMoney = 100;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
@@ -120,7 +120,7 @@ namespace  Player
 		this->Move();
 		//めり込まない移動
 		ML::Vec2  est = this->moveVec;
-		this->CheckMove(est);
+		this->CheckMoveWithSlope(est);
 		this->CheckMove_();
 		//hitbase更新
 		BChara::DrawInfo  di = this->Anim();

@@ -156,8 +156,8 @@ namespace  EnemyManager
 			//}
 			this->KillAllEnemys();
 		}
-		if (ms.RB.down) {
-			this->SpawnEnemyNum(rand() % 2, spos);
+		if (ms.RB.on) {
+			this->SpawnEnemyNum(0, spos);//rand() % 2, spos);
 		}
 #endif // DEBUG_ENEMY
 	}

@@ -89,6 +89,8 @@ public:
 	virtual bool CheckFallGround(float preY_, float estY_);
 	//‚ß‚è‚Ü‚È‚¢ˆÚ“®ˆ—
 	virtual  void  CheckMove(ML::Vec2& est_);
+	//â“¹”»’è
+	virtual void CheckMoveWithSlope(ML::Vec2& est_);
 	//‘«Œ³ÚG”»’è
 	virtual bool  CheckFoot();
 	//“ªãÚG”»’è

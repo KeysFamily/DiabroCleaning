@@ -41,12 +41,12 @@ namespace  MapManager
 		//★データ初期化
 		//シード値設定
 		this->mapSeed = (unsigned int)time(NULL);
-		srand(1705452343);
+		srand(mapSeed);
 		ge->printToDebugFile(to_string(mapSeed),1);
 		//分岐確率
 		this->generateSubRate = 0.5f;
 		this->subDepthMax = 2;
-		this->depthMax = 6;
+		this->depthMax = 5;
 		//セーブ先
 		this->saveFolderPath = "./data/inGame/run/mapData/";
 
@@ -54,9 +54,9 @@ namespace  MapManager
 
 		this->Generate();
 
-		auto map = Map::Object::Create(true);
-		map->render2D_Priority[1] = 0.9f;
-		map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
+		ge->qa_Map = Map::Object::Create(true);
+		ge->qa_Map->render2D_Priority[1] = 0.9f;
+		ge->qa_Map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
 
 		this->moveMapDir = Map::MapDir::Non;
 

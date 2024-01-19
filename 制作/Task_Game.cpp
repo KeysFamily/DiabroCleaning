@@ -15,6 +15,7 @@
 #include  "Task_MapManager.h"
 #include  "Task_GameUI_MiniMap.h"
 #include  "Task_SystemMenu.h"
+#include  "Task_GuideControll.h"
 
 #include  "sound.h"
 
@@ -51,20 +52,21 @@ namespace  Game
 		//22ci0308
 		bgm::LoadFile("bgm3", "./data/sound/bgm/industrial_zone.mp3");
 		bgm::Play("bgm3");
-		//this->volume.SetValues(100, 0, 100);
+		this->volume.SetValues(100, 0, 100);
 		// ◆◆◆◆◆◆◆◆◆◆
 
 		//★タスクの生成
-		auto player = Player::Object::Create(true);
-		player->pos.x = 1200;
-		player->pos.y = 500;
-		player->render2D_Priority[1] = 0.5f;
+		ge->qa_Player = Player::Object::Create(true);
+		ge->qa_Player->render2D_Priority[1] = 0.5f;
 
 		MapManager::Object::Create(true);
+
+		ge->qa_Player->pos = ge->qa_Map->GetPlayerStartPos();
+
 		
 		auto spr = Sprite::Object::Create(true);
-		spr->pos = player->pos;
-		spr->target = player;
+		spr->pos = ge->qa_Player->pos;
+		spr->target = ge->qa_Player;
 		spr->render2D_Priority[1] = 0.6f;
 
 		ge->camera2D.x = 0;
@@ -83,6 +85,7 @@ namespace  Game
 
 		this->cnt = 0;
 
+		GuideControll::Object::Create(true);
 		return  true;
 	}
 	//-------------------------------------------------------------------
@@ -132,6 +135,8 @@ namespace  Game
 					gameObj->render2D_Priority[1] -= 1;
 				}
 				this->render2D_Priority[1] -= 1;
+				auto guide = ge->GetTask<GuideControll::Object>("GuideControll");
+				guide->SetGuide(GuideControll::Game);
 			}
 			else
 			{
@@ -181,6 +186,9 @@ namespace  Game
 			this->render2D_Priority[1] += 1;
 			this->StopGameObj();
 			this->openingMenu = true;
+			auto guide = ge->GetTask<GuideControll::Object>("GuideControll");
+			guide->SetGuide(GuideControll::Menu);
+
 			return;
 			// ◆◆◆◆◆◆◆◆◆◆
 		}

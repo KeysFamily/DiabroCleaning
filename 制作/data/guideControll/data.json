@@ -1,0 +1,43 @@
+{
+	"game": [
+		{
+			"button": 4,
+			"str": "Move"
+		},
+		{
+			"button": 1,
+			"str": "Jump"
+		},
+		{
+			"button": 3,
+			"str": "Magic"
+		},
+		{
+			"button": 2,
+			"str": "Avoid"
+		},
+		{
+			"button": 7,
+			"str": "Attack"
+		},
+		{
+			"button": 11,
+			"str": "Shop"
+		}
+	],
+	"menu": [
+		{
+			"button": 4,
+			"str": "Select"
+		},
+		{
+			"button": 3,
+			"str": "Decide"
+		},
+		{
+			"button": 11,
+			"str": "Back"
+		}
+	]
+
+}
