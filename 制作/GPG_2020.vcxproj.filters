@@ -366,6 +366,9 @@
     <ClCompile Include="KeysString.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
+    <ClCompile Include="Task_TitleMenu.cpp">
+      <Filter>MyPG\Task\Title</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -552,6 +555,9 @@
     </ClInclude>
     <ClInclude Include="KeysString.h">
       <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_TitleMenu.h">
+      <Filter>MyPG\Task\Title</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

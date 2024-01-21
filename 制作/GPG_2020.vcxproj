@@ -183,6 +183,7 @@
     <ClCompile Include="Task_SystemMenuSelectObject.cpp" />
     <ClCompile Include="Task_Thunder.cpp" />
     <ClCompile Include="Task_Title.cpp" />
+    <ClCompile Include="Task_TitleMenu.cpp" />
     <ClCompile Include="Task_WaterBlast.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="XI2018_Ver1_0.cpp" />
@@ -251,6 +252,7 @@
     <ClInclude Include="Task_SystemMenuSelectObject.h" />
     <ClInclude Include="Task_Thunder.h" />
     <ClInclude Include="Task_Title.h" />
+    <ClInclude Include="Task_TitleMenu.h" />
     <ClInclude Include="Task_WaterBlast.h" />
     <ClInclude Include="XI2018_Ver1_0.h" />
   </ItemGroup>

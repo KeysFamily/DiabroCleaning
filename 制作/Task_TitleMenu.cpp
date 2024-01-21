@@ -1,34 +1,27 @@
-//-------------------------------------------------------------------
-//タイトル画面
-//-------------------------------------------------------------------
+//?------------------------------------------------------
+//タスク名:タイトルメニュー
+//作　成　者:土田誠也
+//TODO:もしいれば下記へ記述
+//編　集　者:
+//作成年月日:
+//概　　　要:
+//?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Title.h"
-#include  "sound.h"
+#include  "Task_TitleMenu.h"
 
-#include  "Task_Effect00.h"
-
-#include "Task_Game.h"
-#include "Task_Ending.h"
-
-namespace  Title
+namespace  TitleMenu
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		bgm::LoadFile("bgmTitle", "./data/sound/bgm/titleUra_bgm.mp3");
-		bgm::Play("bgmTitle");
-		this->img = DG::Image::Create("./data/title/Diobro_Cleaning_title.png");
-		this->Logo = DG::Image::Create("./data/title/title_text.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->img.reset();
-		this->Logo.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -41,23 +34,20 @@ namespace  Title
 		this->res = Resource::Create();
 
 		//★データ初期化
-		ge->GameCnt=0; 
-		ge->TotalEnemyKill=0; 
-		ge->TotalDamage = 0;
-		ge->TotalGetCoinCnt = 0;
-		ge->TotalUsedCoinCnt=0;
-		ge->GameClearFlag = true;
+		
+		//★タスクの生成
 
-		return true;
-	}	
-	//--TotalGetCoinCnt; -----------------------------------------------------------------
+		return  true;
+	}
+	//-------------------------------------------------------------------
 	//「終了」タスク消滅時に１回だけ行う処理
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-		bgm::Stop("bgmTitle");
+
+
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
-			Game::Object::Create(true);
+			//★引き継ぎタスクの生成
 		}
 
 		return  true;
@@ -66,38 +56,13 @@ namespace  Title
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		auto inp = ge->in1->GetState();
-
-		this->cnt++;
-
-		if (inp.ST.down && ge->getCounterFlag("title") != ge->ACTIVE) {
-			ge->StartCounter("title", 45); //フェードは90フレームなので半分の45で切り替え
-			ge->CreateEffect(98, ML::Vec2(0, 0));
-
-		}
-		if (ge->getCounterFlag("title") == ge->LIMIT) {
-			this->Kill();
-		}
-
-
-		return;
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D draw(0, 0, 1920, 1080);
-		ML::Box2D src(0, 0, 1920, 1080);
-		this->res->img->Draw(draw, src);	//背景を用意する
-
-		if (this->cnt%60<=30) {
-			ML::Box2D Lg_draw((ge->screen2DWidth / 2) - 300, (ge->screen2DHeight / 4) * 3, 600, 100);
-			ML::Box2D Lg_src(0, 0, 400, 74);
-			this->res->Logo->Draw(Lg_draw, Lg_src); //テキストロゴを用意する
-		}
-
-		ge->Dbg_ToDisplay(100, 100, "Title");
 	}
+
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -110,6 +75,7 @@ namespace  Title
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
+				
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill
