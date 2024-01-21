@@ -21,7 +21,7 @@ namespace  TitleMenu
 		imgBgSize.Set(704, 416);
 		imgSelect = DG::Image::Create("./data/image/title/selectObject.png");
 		imgSelectSize.Set(32, 32);
-		fontTitleSize.Set(32, 64);
+		fontTitleSize.Set(24, 48);
 		fontTitle = DG::Font::Create("‚l‚r ƒSƒVƒbƒN", this->fontTitleSize.w, this->fontTitleSize.h);
 		fontMainSize.Set(16, 32);
 		fontMain = DG::Font::Create("‚l‚r ƒSƒVƒbƒN", fontMainSize.w, fontMainSize.h);
@@ -48,9 +48,9 @@ namespace  TitleMenu
 
 		//šƒf[ƒ^‰Šú‰»
 		this->pos = ML::Vec2(ge->screenWidth / 2, ge->screenHeight / 4 * 3);
-		this->titlePos = ML::Vec2(0, -120);
-		this->mainBeginPos = ML::Vec2(0, 0);
-		this->mainTextDistance = 10;
+		this->titlePos = ML::Vec2(0, -110);
+		this->mainBeginPos = ML::Vec2(0, -40);
+		this->mainTextDistance = 20;
 		this->selectObjDistance = 21;
 
 		this->LoadMenuAction("./data/title/MenuData.txt");

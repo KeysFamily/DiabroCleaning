@@ -79,6 +79,12 @@ namespace  Title
 
 		this->cnt++;
 
+		auto tm = ge->GetTask<TitleMenu::Object>("title", "Menu");
+		if (tm == nullptr)
+		{
+			createdMenu = false;
+		}
+
 		if (inp.ST.down ) 
 		{
 			if (createdMenu == false)
