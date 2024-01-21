@@ -58,11 +58,13 @@ namespace  Game
 		//★タスクの生成
 		ge->qa_Player = Player::Object::Create(true);
 		ge->qa_Player->render2D_Priority[1] = 0.5f;
-
-		MapManager::Object::Create(true);
-
 		ge->qa_Player->pos = ge->qa_Map->GetPlayerStartPos();
-
+		auto mapManager = ge->GetTask<MapManager::Object>("MapManager");
+		if (mapManager == nullptr)
+		{
+			mapManager = MapManager::Object::Create(true);
+		}
+		mapManager->Generate();
 		
 		auto spr = Sprite::Object::Create(true);
 		spr->pos = ge->qa_Player->pos;
