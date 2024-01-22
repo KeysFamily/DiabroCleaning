@@ -13,8 +13,8 @@
 namespace  Item
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("アイテム");	//グループ名
-	const  string  defName("アイテム");		//タスク名
+	const  string  defGroupName("item");	//グループ名
+	const  string  defName("item");		//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{

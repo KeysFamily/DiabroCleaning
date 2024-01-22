@@ -7,6 +7,7 @@
 #include  "Task_Player.h"
 #include  "Task_Map.h"
 #include  "Task_Sprite.h"
+#include  "Task_ItemTrsBox.h"
 #include  "Task_Item_coin.h"
 #include  "Task_Item_coin_maneger.h"
 #include  "Task_EnemyManager.h"
@@ -15,6 +16,7 @@
 #include  "Task_MapManager.h"
 #include  "Task_GameUI_MiniMap.h"
 #include  "Task_SystemMenu.h"
+
 
 #include  "sound.h"
 
@@ -77,6 +79,8 @@ namespace  Game
 		ge->camera2D.h = ge->screenHeight;
 
 		auto coin_man = coin_maneger::Object::Create(true);
+
+		auto item_Manager = ItemTrsBox::Object::Create(true);
 
 		auto UI = GameUI::Object::Create(true);
 		UI->numPos = ML::Vec2(50, 50);

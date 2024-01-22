@@ -40,6 +40,7 @@ namespace  ItemTrsBox
 
 		//★データ初期化
 		this->motion = Stand;
+		this->render2D_Priority[1] = 0.4f;
 		this->hitBase = ML::Box2D(-32, -32, 64, 64);
 		this->pos = ML::Vec2(1200, 300);
 		//★タスクの生成
@@ -143,7 +144,6 @@ namespace  ItemTrsBox
 			rtv = imageTable[0];
 			break;
 		case Hit:
-			
 			work = this->animCnt / 10;
 			work %= 7;
 			rtv = imageTable[work];
@@ -161,6 +161,12 @@ namespace  ItemTrsBox
 	//接触時の応答処理（これ自体はダミーのようなモノ）
 	void Object::Received(BChara* from_, AttackInfo at_)
 	{
+		
+	}
+
+	void Object::GiftPlayer(BChara* pl_)
+	{
+
 		this->motion = Motion::Hit;
 	}
 

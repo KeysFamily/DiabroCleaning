@@ -38,9 +38,10 @@ namespace  Item
 		//リソースクラス生成orリソース共有
 		this->res = Resource::Create();
 		//★データ初期化
-
+		this->render2D_Priority[1] = 0.4f;
 		string str[] = { "Attack","Defense","Magic","Speed" };
-		InputJsonFile(str[rand() % 4]);
+		InputJsonFile("Attack");
+		//InputJsonFile(str[rand() % 4]);
 		this->itemb.Power_step = rand() % this->itemb.Power_step;
 
 		this->angle = ML::ToRadian((float)(rand() % 360));

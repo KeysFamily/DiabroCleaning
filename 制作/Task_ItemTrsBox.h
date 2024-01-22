@@ -8,13 +8,13 @@
 //作成年月日:
 //概　　　要:
 //?------------------------------------------------------
-#include "BChara.h"
+#include "BItem.h"
 
 namespace  ItemTrsBox
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("アイテム");	//グループ名
-	const  string  defName("トレジャーボックス");		//タスク名
+	const  string  defGroupName("item");	//グループ名
+	const  string  defName("ItemTrsBox");		//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -30,10 +30,9 @@ namespace  ItemTrsBox
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//共有する変数はここに追加する
 		DG::Image::SP ImgTrsBox;
-		
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BChara
+	class  Object : public  BItem
 	{
 	public:
 		virtual  ~Object();
@@ -71,9 +70,11 @@ namespace  ItemTrsBox
 		BChara::DrawInfo  Anim();
 		//接触時の応答処理(必ず受け身の処理として実装する)
 		void Received(BChara* from_, AttackInfo at_) override;
-		//画面外に出たらアイテムを消す処理
-		void out_coin(int x, int y);
+		//プレイヤーのステータスを変える
+		void GiftPlayer(BChara* pl_) override;
 		//デバック用
 		XI::GamePad::SP controller;
+
+		
 	};
 }

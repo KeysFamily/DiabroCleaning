@@ -137,7 +137,6 @@ namespace  Player
 					//相手にダメージの処理を行わせる
 					BChara::AttackInfo at = { 0, 0, 0 };
 					(*it)->GiftPlayer(this);
-
 				}
 			}
 		}
