@@ -57,11 +57,13 @@ namespace  Game
 		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0329記述
 		shared_ptr<SystemMenu::Object> menu;
+		bool openingGameOver;	//ゲームオーバー画面を開いているか
 		bool openingMenu;	//メニューを開いているか
 
 		void StopGameObj();
 		void ResumeGameObj();
 		bool CheckFinishedMenu();
+		void SetGameOver();
 		shared_ptr<vector<BTask::SP>> GetGameObj();
 		// ◆◆◆◆◆◆◆◆◆◆
 

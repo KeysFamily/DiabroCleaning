@@ -8,7 +8,7 @@
 #include  "Task_Effect00.h"
 #include "Task_MapManager.h"
 #include  "Task_TitleMenu.h"
-
+#include "Task_LoadGameOver.h"
 
 #include "Task_Game.h"
 #include "Task_Ending.h"
@@ -44,6 +44,7 @@ namespace  Title
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
+		this->render2D_Priority[1] = 0.2f;
 		ge->GameCnt=0; 
 		ge->TotalEnemyKill=0; 
 		ge->TotalDamage = 0;
@@ -55,6 +56,7 @@ namespace  Title
 
 		MapManager::Object::Create(true);
 		
+
 		return true;
 	}	
 	//--TotalGetCoinCnt; -----------------------------------------------------------------

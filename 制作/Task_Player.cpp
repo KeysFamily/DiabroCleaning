@@ -25,6 +25,7 @@ namespace  Player
 		se::LoadFile("airdash", "./data/sound/se/se_airdash.wav");
 		se::LoadFile("swordSlash", "./data/sound/se/se_swordSlash.wav");
 		se::LoadFile("swordHitGround", "./data/sound/se/se_swordHitGround2.wav");
+		se::LoadFile("damaged", "./data/sound/se/se_player_damage.wav");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -888,9 +889,9 @@ namespace  Player
 		this->unHitTime = 90;
 		//this->hp.Addval(-at_.power);	//仮処理
 		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF)) ; //ダメージ計算公式
-		if (this->balanceMoney <= 0)this->balanceMoney = 0; //デバッグ用仮処理
-		if (this->hp.IsMin()) {
-			//this->Kill();
+		if (this->balanceMoney < 0)
+		{
+			this->balanceMoney = 0; //デバッグ用仮処理
 		}
 		//吹き飛ばされる
 		if (this->pos.x > from_->pos.x) {
@@ -900,6 +901,7 @@ namespace  Player
 			this->moveVec = ML::Vec2(-4, -9);
 		}
 		this->UpdateMotion(Motion::Bound);
+		se::Play("damaged");
 		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う
 	}
 	//----------------------------------------------------------------------------

@@ -16,6 +16,7 @@
 #include  "Task_GameUI_MiniMap.h"
 #include  "Task_SystemMenu.h"
 #include  "Task_GuideControll.h"
+#include  "Task_LoadGameOver.h"
 
 #include  "sound.h"
 
@@ -52,6 +53,8 @@ namespace  Game
 		//22ci0308
 		bgm::LoadFile("bgm3", "./data/sound/bgm/industrial_zone.mp3");
 		bgm::Play("bgm3");
+		this->openingGameOver = false;
+		this->openingMenu = false;
 		this->volume.SetValues(100, 0, 100);
 		// ◆◆◆◆◆◆◆◆◆◆
 
@@ -122,6 +125,10 @@ namespace  Game
 	void  Object::UpDate()
 	{
 		//メニュー画面を開いているときの処理
+		if (this->openingGameOver == true)
+		{
+			
+		}
 		if (this->openingMenu == true)
 		{
 			if (this->CheckFinishedMenu())
@@ -165,14 +172,14 @@ namespace  Game
 
 		this->cnt++;
 
-		if (inp.SE.down && ge->getCounterFlag("Game") != ge->ACTIVE) {
-			ge->StartCounter("Game", 45); //フェードは90フレームなので半分の45で切り替え
-			ge->CreateEffect(98, ML::Vec2(0, 0));
+		//if (inp.SE.down && ge->getCounterFlag("Game") != ge->ACTIVE) {
+		//	ge->StartCounter("Game", 45); //フェードは90フレームなので半分の45で切り替え
+		//	ge->CreateEffect(98, ML::Vec2(0, 0));
 
-		}
-		if (ge->getCounterFlag("Game") == ge->LIMIT) {
-			this->Kill();
-		}
+		//}
+		//if (ge->getCounterFlag("Game") == ge->LIMIT) {
+		//	this->Kill();
+		//}
 
 		if (inp.ST.down) {
 			//◇◇◇◇◇◇◇◇◇◇
@@ -283,6 +290,13 @@ namespace  Game
 		MergeObj(gameObjects, ge->GetTasks<BTask>("Magic"));
 
 		return gameObjects;
+	}
+
+	void Object::SetGameOver()
+	{
+		this->openingGameOver = true;
+		auto gov = LoadGameOver::Object::Create(true);
+		gov->Appear();
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
