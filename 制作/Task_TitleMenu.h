@@ -69,7 +69,6 @@ namespace  TitleMenu
 		vector<int> menuDisplay;
 		int selectingMenu;
 
-		void CreateGame();
 
 		void ResetMenu();
 		void AddMenu(int id_);

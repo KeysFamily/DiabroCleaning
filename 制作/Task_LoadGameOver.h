@@ -53,17 +53,26 @@ namespace  LoadGameOver
 		void  Render2D_AF()		override;//「2D描画」１フレーム毎に行う処理
 		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+		enum class State
+		{
+			Invalid,
+			Appear,
+			FinishAppear,
+			Disappear,
+		};
+		State state;
 		ML::Vec2 textPos;
 		float textDistance;
-		bool appeared;
 		int textAppearDistance;
 		int textAppearCnt;
 
 		void AppearUpDate();
+		void DisappearUpDate();
 	public:
 		//追加したい変数・メソッドはここに追加する
 
 		void Appear();
+		void Disappear();
 		bool CheckFinishdAppear();
 		
 	};

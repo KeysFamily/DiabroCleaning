@@ -6,6 +6,7 @@
 #include  "Task_Map.h"
 #include  "Task_Effect00.h"
 #include  "Task_Item_coin.h"
+#include  "Task_Game.h"
 #include  "BEnemy.h"
 #include  "Task_EnemySkeleton.h"
 #include "Task_MapManager.h"
@@ -66,7 +67,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 100;  //所持金
+		this->balanceMoney = 10;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
@@ -891,6 +892,8 @@ namespace  Player
 		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF)) ; //ダメージ計算公式
 		if (this->balanceMoney < 0)
 		{
+			auto game = ge->GetTask<Game::Object>("Game", "Game");
+			game->SetGameOver();
 			this->balanceMoney = 0; //デバッグ用仮処理
 		}
 		//吹き飛ばされる

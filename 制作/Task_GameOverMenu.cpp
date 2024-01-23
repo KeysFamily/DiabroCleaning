@@ -8,6 +8,7 @@
 //?------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_GameOverMenu.h"
+#include  "Task_Game.h"
 
 namespace  GameOverMenu
 {
@@ -172,7 +173,16 @@ namespace  GameOverMenu
 		switch (actId_)
 		{
 		case 0:
-			break;
+		{
+			auto game = ge->GetTask<Game::Object>("Game", "Game");
+			game->ReviveGame();
+		}
+		break;
+		case 1:
+		{
+			auto game = ge->GetTask<Game::Object>("Game", "Game");
+			game->SetGameOver();
+		}
 		default:
 			break;
 		}

@@ -69,7 +69,6 @@ namespace  GameOverMenu
 		vector<int> menuDisplay;
 		int selectingMenu;
 
-		void CreateGame();
 
 		void ResetMenu();
 		void AddMenu(int id_);
@@ -81,6 +80,5 @@ namespace  GameOverMenu
 		string titleStr;
 		float mainTextDistance;
 		float selectObjDistance;
-
 	};
 }

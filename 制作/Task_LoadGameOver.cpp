@@ -8,6 +8,7 @@
 //?------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_LoadGameOver.h"
+#include  "Task_GameOverMenu.h"
 
 namespace  LoadGameOver
 {
@@ -44,7 +45,7 @@ namespace  LoadGameOver
 		this->render2D_Priority[1] = 0.1f;
 		this->textPos = ML::Vec2(ge->screenWidth / 2, 200);
 		this->textDistance = 150;
-		this->appeared = false;
+		this->state = State::Invalid;
 		this->textAppearDistance = 20;
 		this->textAppearCnt = 0;
 
@@ -74,9 +75,16 @@ namespace  LoadGameOver
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		if (appeared == true && this->CheckFinishdAppear() == false)
+		switch (this->state)
 		{
+		case State::Invalid:
+			break;
+		case State::Appear:
 			this->AppearUpDate();
+			break;
+		case State::Disappear:
+			this->DisappearUpDate();
+			break;
 		}
 
 	}
@@ -122,11 +130,11 @@ namespace  LoadGameOver
 	//出現
 	void Object::Appear()
 	{
-		if (this->appeared == false)
+		if (this->state == State::Invalid)
 		{
 			easing::Start("gameOverBgAp");
 			easing::Start("gameOverTxtAp0");
-			this->appeared = true;
+			this->state = State::Appear;
 		}
 	}
 	//出現処理の更新
@@ -134,6 +142,11 @@ namespace  LoadGameOver
 	{
 		if (textAppearCnt >= textAppearDistance * this->res->textResSize)
 		{
+			if (easing::GetState("gameOverTxtAp" + to_string(this->res->textResSize - 1)) == easing::EQ_STATE::EQ_END)
+			{
+				GameOverMenu::Object::Create(true);
+				this->state = State::FinishAppear;
+			}
 			return;
 		}
 		int currentChar = textAppearCnt / textAppearDistance;
@@ -142,13 +155,40 @@ namespace  LoadGameOver
 		{
 			easing::Start("gameOverTxtAp" + to_string(currentChar));
 		}
+
+
 		++textAppearCnt;
 	}
 
 	//出現処理が終了したか
 	bool Object::CheckFinishdAppear()
 	{
-		return easing::GetState("gameOverTxtAp" + to_string(this->res->textResSize - 1)) == easing::EQ_STATE::EQ_END;
+		return this->state == State::FinishAppear;
+	}
+
+	//消滅処理開始
+	void Object::Disappear()
+	{
+		float startPos = easing::GetPos("gameOverBgAp");
+		easing::Create("gameOverBgAp", easing::EASINGTYPE::QUADOUT, startPos, 0, 120);
+		easing::Start("gameOverBgAp");
+		for (int i = 0; i < this->res->textResSize; ++i)
+		{
+			startPos = easing::GetPos("gameOverTxtAp" + to_string(i));
+
+			easing::Create("gameOverTxtAp" + to_string(i), easing::EASINGTYPE::QUADOUT, startPos, -this->res->imgTextSize.h, 30);
+			easing::Start("gameOverTxtAp" + to_string(i));
+		}
+		this->state = State::Disappear;
+	}
+
+	//消滅処理
+	void Object::DisappearUpDate()
+	{
+		if (easing::GetState("gameOverTxtAp" + to_string(this->res->textResSize - 1)) == easing::EQ_STATE::EQ_END)
+		{
+			this->Kill();
+		}
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド

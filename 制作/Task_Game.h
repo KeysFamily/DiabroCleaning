@@ -13,8 +13,8 @@ namespace SystemMenu
 namespace  Game
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("本編");	//グループ名
-	const  string  defName(		"統括");	//タスク名
+	const  string  defGroupName("Game");	//グループ名
+	const  string  defName("Game");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -57,16 +57,26 @@ namespace  Game
 		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0329記述
 		shared_ptr<SystemMenu::Object> menu;
-		bool openingGameOver;	//ゲームオーバー画面を開いているか
-		bool openingMenu;	//メニューを開いているか
+		enum class State
+		{
+			Normal,
+			OpeningMenu,
+			GameOver,
+			ReviveUpDate,
+		};
+		State state;
 
 		void StopGameObj();
 		void ResumeGameObj();
 		bool CheckFinishedMenu();
 		void SetGameOver();
+		void ReviveGame();
+		void SetResult();
 		shared_ptr<vector<BTask::SP>> GetGameObj();
+		void UpDateByState();
 		// ◆◆◆◆◆◆◆◆◆◆
 
+	public:
 		//◇◇◇◇◇◇◇◇◇◇
 		//以下22CI0333記述
 		OL::Limit<int> volume;
