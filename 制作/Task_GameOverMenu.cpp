@@ -53,7 +53,7 @@ namespace  GameOverMenu
 		this->mainTextDistance = 20;
 		this->selectObjDistance = 21;
 
-		this->LoadMenuAction("./data/title/MenuData.txt");
+		this->LoadMenuAction("./data/gameOver/MenuData.txt");
 
 		this->RunMenuAction(0);
 		//šƒ^ƒXƒN‚Ì¶¬
