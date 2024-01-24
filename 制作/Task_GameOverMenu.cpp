@@ -47,15 +47,15 @@ namespace  GameOverMenu
 		this->res = Resource::Create();
 
 		//šƒf[ƒ^‰Šú‰»
-		this->pos = ML::Vec2(ge->screenWidth / 2, ge->screenHeight / 4 * 3);
+		this->pos = ML::Vec2(ge->screenWidth / 2, ge->screenHeight / 3 * 2);
 		this->titlePos = ML::Vec2(0, -110);
 		this->mainBeginPos = ML::Vec2(0, -40);
 		this->mainTextDistance = 20;
 		this->selectObjDistance = 21;
 
 		this->LoadMenuAction("./data/gameOver/MenuData.txt");
-
-		this->RunMenuAction(0);
+		this->AddMenu(0);
+		this->AddMenu(1);
 		//šƒ^ƒXƒN‚Ì¶¬
 
 		return  true;
@@ -105,8 +105,8 @@ namespace  GameOverMenu
 	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
 	void  Object::Render2D_AF()
 	{
-		//”wŒi•\¦
-		ge->DrawStd(this->res->imgBg, this->res->imgBgSize, this->pos);
+		////”wŒi•\¦
+		//ge->DrawStd(this->res->imgBg, this->res->imgBgSize, this->pos);
 
 		//ƒ^ƒCƒgƒ‹•\¦
 		float titleSizeW = this->res->fontTitleSize.w * this->titleStr.size();
@@ -176,12 +176,14 @@ namespace  GameOverMenu
 		{
 			auto game = ge->GetTask<Game::Object>("Game", "Game");
 			game->ReviveGame();
+			this->Kill();
 		}
 		break;
 		case 1:
 		{
 			auto game = ge->GetTask<Game::Object>("Game", "Game");
-			game->SetGameOver();
+			game->SetResult();
+			this->Kill();
 		}
 		default:
 			break;

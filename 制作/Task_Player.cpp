@@ -108,6 +108,11 @@ namespace  Player
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		if (this->motion == Motion::Death)
+		{
+
+		}
+
 		this->moveCnt++;
 		this->animCnt++;
 		this->surviveFrame++;

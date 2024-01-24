@@ -50,11 +50,6 @@ namespace  MapManager
 		//セーブ先
 		this->saveFolderPath = "./data/inGame/run/mapData/";
 
-
-
-		this->Generate();
-
-
 		this->moveMapDir = Map::MapDir::Non;
 
 		//★タスクの生成

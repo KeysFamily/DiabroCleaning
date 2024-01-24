@@ -79,6 +79,8 @@ namespace  LoadGameOver
 		{
 		case State::Invalid:
 			break;
+		case State::FinishAppear:
+			break;
 		case State::Appear:
 			this->AppearUpDate();
 			break;

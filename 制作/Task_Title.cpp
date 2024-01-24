@@ -137,6 +137,7 @@ namespace  Title
 
 		auto manager = ge->GetTask<MapManager::Object>("MapManager");
 		manager->SetMaxDepth(mapMaxDepth_);
+		manager->Generate();
 
 		ge->StartCounter("title", 45); //フェードは90フレームなので半分の45で切り替え
 		ge->CreateEffect(98, ML::Vec2(0, 0));

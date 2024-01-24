@@ -88,6 +88,7 @@ namespace  Player
 			Dash,		//  ダッシュ
 			MagicAttack,//	魔法
 			Back,		//  避ける
+			Death,		//　死亡
 		};
 
 		enum Magic

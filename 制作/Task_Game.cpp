@@ -97,7 +97,7 @@ namespace  Game
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-		ge->KillAll_G("本編");
+		ge->KillAll_G("Game");
 		ge->KillAll_G("item");
 		ge->KillAll_G("coin_maneger");
 		ge->KillAll_G("UI");
@@ -311,13 +311,13 @@ namespace  Game
 			break;
 		case State::ReviveUpDate:
 		{
-			auto gov = LoadGameOver::Object::Create(true);
+			auto gov = ge->GetTask<LoadGameOver::Object>("Game","LoadGameOver");
 			if (gov == nullptr)
 			{
 				this->ResumeGameObj();
+				this->state = State::Normal;
 			}
 
-			this->state = State::Normal;
 			break;
 		}
 		}
