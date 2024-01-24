@@ -39,13 +39,6 @@ namespace  Load
 		//★データ初期化
 		this->Kill();
 		//★タスクの生成
-		auto player = Player::Object::Create(true);
-		player->pos.x = 1200;
-		player->pos.y = 500;
-		Map::Object::Create(true);
-		auto spr = Sprite::Object::Create(true);
-		spr->pos = player->pos;
-		spr->target = player;
 
 
 		return  true;

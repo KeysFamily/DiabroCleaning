@@ -1,0 +1,79 @@
+{
+	"backGrounds": [
+		{
+			"imgFilePath": "./data/map/backMap/bg1.png",
+			"imgWidth": 256,
+			"imgHeight": 144,
+			"scale": 2,
+			"moveScale": 0.6,
+			"infinity": true
+		},
+		{
+			"imgFilePath": "./data/map/backMap/bg2.png",
+			"imgWidth": 512,
+			"imgHeight": 288,
+			"scale": 2,
+			"moveScale": 0.6,
+			"infinity": true
+		},
+		{
+			"imgFilePath": "./data/map/backMap/bg2.png",
+			"imgWidth": 512,
+			"imgHeight": 288,
+			"scale": 1,
+			"moveScale": 0.6,
+			"infinity": true
+		},
+		{
+			"imgFilePath": "./data/map/backMap/bg3.png",
+			"imgWidth": 512,
+			"imgHeight": 288,
+			"scale": 1,
+			"moveScale": 0.6,
+			"infinity": true
+		},
+		{
+			"imgFilePath": "./data/map/backMap/bg4.png",
+			"imgWidth": 512,
+			"imgHeight": 288,
+			"scale": 1,
+			"moveScale": 0.6,
+			"infinity": true
+		}
+	],
+	"connects": [
+		{
+			"imgFilePath": "./data/map/backMap/con1.png",
+			"imgWidth": 256,
+			"imgHeight": 144,
+			"scale": 4,
+			"moveScale": 1.0,
+			"infinity": true
+		},
+		{
+			"imgFilePath": "./data/map/backMap/con2.png",
+			"imgWidth": 256,
+			"imgHeight": 144,
+			"scale": 4,
+			"moveScale": 1.0,
+			"infinity": true
+		}
+	],
+	"start": {
+		"imgFilePath": "./data/map/backMap/bgStart.png",
+		"imgWidth": 2048,
+		"imgHeight": 1536,
+		"scale": 1,
+		"moveScale": 0.1,
+		"infinity": false
+	},
+	"goal": {
+		"imgFilePath": "./data/map/backMap/bgGoal.jpg",
+		"imgWidth": 3200,
+		"imgHeight": 2400,
+		"scale": 1,
+		"moveScale": 0.3,
+		"infinity": false
+	}
+
+}

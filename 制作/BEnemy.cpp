@@ -101,7 +101,7 @@ void BEnemy::UpDate_Std() {
 	this->Think();
 	this->Move();
 	ML::Vec2 est = this->moveVec;
-	this->CheckMove(est);
+	this->CheckMoveWithSlope(est);
 	if (ge->qa_Map != nullptr && !ge->qa_Map->hitBase.Hit(this->CallHitBox())) {
 		this->Kill();
 	}

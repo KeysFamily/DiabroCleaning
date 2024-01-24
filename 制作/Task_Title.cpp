@@ -3,6 +3,7 @@
 //-------------------------------------------------------------------
 #include  "MyPG.h"
 #include  "Task_Title.h"
+#include  "sound.h"
 
 #include  "Task_Effect00.h"
 
@@ -16,6 +17,8 @@ namespace  Title
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
+		bgm::LoadFile("bgmTitle", "./data/sound/bgm/titleUra_bgm.mp3");
+		bgm::Play("bgmTitle");
 		this->img = DG::Image::Create("./data/title/Diobro_Cleaning_title.png");
 		this->Logo = DG::Image::Create("./data/title/title_text.png");
 		return true;
@@ -52,7 +55,7 @@ namespace  Title
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-		//bgm::Stop("bgm1");
+		bgm::Stop("bgmTitle");
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			Game::Object::Create(true);
 		}

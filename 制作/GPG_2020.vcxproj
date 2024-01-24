@@ -139,6 +139,8 @@
     <ClCompile Include="easing.cpp" />
     <ClCompile Include="fpscounter.cpp" />
     <ClCompile Include="GameEngine_Ver3_83.cpp" />
+    <ClCompile Include="KeysString.cpp" />
+    <ClCompile Include="MapStruct.cpp" />
     <ClCompile Include="myLib.cpp" />
     <ClCompile Include="MyPG.cpp" />
     <ClCompile Include="OriginalLibrary.cpp" />
@@ -157,6 +159,7 @@
     <ClCompile Include="Task_GameUI_MiniMap.cpp" />
     <ClCompile Include="Task_Item.cpp" />
     <ClCompile Include="Task_ItemTrsBox.cpp" />
+    <ClCompile Include="Task_GuideControll.cpp" />
     <ClCompile Include="Task_Item_coin.cpp" />
     <ClCompile Include="Task_Item_coin_maneger.cpp" />
     <ClCompile Include="Task_Load.cpp" />
@@ -182,6 +185,7 @@
     <ClCompile Include="Task_SystemMenuSelectObject.cpp" />
     <ClCompile Include="Task_Thunder.cpp" />
     <ClCompile Include="Task_Title.cpp" />
+    <ClCompile Include="Task_TitleMenu.cpp" />
     <ClCompile Include="Task_WaterBlast.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="XI2018_Ver1_0.cpp" />
@@ -205,6 +209,7 @@
     <ClInclude Include="easing.h" />
     <ClInclude Include="fpscounter.h" />
     <ClInclude Include="GameEngine_Ver3_83.h" />
+    <ClInclude Include="KeysString.h" />
     <ClInclude Include="MapStruct.h" />
     <ClInclude Include="myLib.h" />
     <ClInclude Include="MyPG.h" />
@@ -226,6 +231,7 @@
     <ClInclude Include="Task_GameUI_MiniMap.h" />
     <ClInclude Include="Task_Item.h" />
     <ClInclude Include="Task_ItemTrsBox.h" />
+    <ClInclude Include="Task_GuideControll.h" />
     <ClInclude Include="Task_Item_coin.h" />
     <ClInclude Include="Task_Item_coin_maneger.h" />
     <ClInclude Include="Task_Load.h" />
@@ -251,6 +257,7 @@
     <ClInclude Include="Task_SystemMenuSelectObject.h" />
     <ClInclude Include="Task_Thunder.h" />
     <ClInclude Include="Task_Title.h" />
+    <ClInclude Include="Task_TitleMenu.h" />
     <ClInclude Include="Task_WaterBlast.h" />
     <ClInclude Include="XI2018_Ver1_0.h" />
   </ItemGroup>

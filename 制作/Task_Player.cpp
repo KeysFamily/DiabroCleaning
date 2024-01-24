@@ -65,7 +65,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 1000;  //所持金
+		this->balanceMoney = 100;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
@@ -110,6 +110,7 @@ namespace  Player
 		this->animCnt++;
 		this->surviveFrame++;
 		this->surviveTime = this->surviveFrame / 60;
+		ge->GameCnt = this->surviveTime;
 		this->maxSpeed = 9.0f + 0.2 * this->speed; //ステータスによる移動速度加算
 		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 		if (this->unHitTime > 0) { this->unHitTime--; }
@@ -119,7 +120,7 @@ namespace  Player
 		this->Move();
 		//めり込まない移動
 		ML::Vec2  est = this->moveVec;
-		this->CheckMove(est);
+		this->CheckMoveWithSlope(est);
 		this->CheckMove_();
 		//hitbase更新
 		BChara::DrawInfo  di = this->Anim();
@@ -400,7 +401,24 @@ namespace  Player
 			}
 			break;
 			//移動速度減衰を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
-		case Motion::Bound: 
+		case Motion::Stand:
+			if (this->moveVec.x < 0) {
+				this->moveVec.x = min(this->moveVec.x + 2.2f * this->decSpeed, 0);
+			}
+			else {
+				this->moveVec.x = max(this->moveVec.x - 2.2f * this->decSpeed, 0);
+			}
+			break;
+		case Motion::Landing:
+			if (this->moveVec.x < 0) {
+				this->moveVec.x = min(this->moveVec.x + 2.2f * this->decSpeed, 0);
+			}
+			else {
+				this->moveVec.x = max(this->moveVec.x - 2.2f * this->decSpeed, 0);
+			}
+			break;
+		case Motion::Bound: break;
+		case Motion::Back: break;
 		case Motion::Unnon:	break;
 		}
 		//-----------------------------------------------------------------
@@ -869,8 +887,8 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		//this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= (at_.power - this->DEF);
-		if (this->balanceMoney <= 0)this->balanceMoney = 0; //仮処理
+		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF)) ; //ダメージ計算公式
+		if (this->balanceMoney <= 0)this->balanceMoney = 0; //デバッグ用仮処理
 		if (this->hp.IsMin()) {
 			//this->Kill();
 		}
@@ -1002,6 +1020,13 @@ namespace  Player
 		}
 		if (checkBase.x + checkBase.w >= map->hitBase.w) { //右
 			this->pos.x = map->hitBase.w - (this->hitBase.w / 2);
+		}
+
+		if (checkBase.y <= 0) { //上
+			this->pos.y = 1 + this->hitBase.h / 2;
+		}
+		if (checkBase.y + checkBase.h >= map->hitBase.h) { //下
+			this->pos.y = map->hitBase.h - (this->hitBase.h / 2);
 		}
 	}
 	//-------------------------------------------------------------------

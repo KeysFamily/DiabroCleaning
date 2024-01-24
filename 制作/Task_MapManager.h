@@ -10,7 +10,16 @@
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
 #include "MapStruct.h"
-#include "Task_MapTransition.h"
+
+namespace MiniMap
+{
+	class Object;
+}
+
+namespace MapTransition
+{
+	class Object;
+}
 
 namespace MapManager
 {
@@ -53,129 +62,19 @@ namespace MapManager
 		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
 		//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
-
-		class MapObject
-		{
-		public:
-			string mapName;
-
-			enum class MapType
-			{
-				Empty = 0,
-				Map,
-				Connect,
-			};
-			MapType mapType;
-			bool visited;
-
-			MapObject(const string& mapName_ = "")
-				:mapName(mapName_)
-				, mapType(MapType::Empty)
-				, visited(false)
-			{}
-
-			virtual void Generate() { return; };
-		};
-
-		class Area : public MapObject
-		{
-		private:
-			Map::MapDir enter;	//入口
-			Map::MapDir exit;		//出口
-			int depth;		//マップの深度
-
-		public:
-
-			Area(Map::MapDir enter_, Map::MapDir exit_, int depth_)
-				:enter(enter_)
-				, exit(exit_)
-				, depth(depth_)
-			{
-			}
-
-			void Generate() override
-			{
-				string genMapName = "map_";
-				string mapDirStr[4] = { "Up", "Down", "Right", "Left" };
-
-				genMapName += mapDirStr[(int)enter];
-				if (exit == Map::MapDir::Non)
-				{
-					genMapName += mapDirStr[(int)enter];
-				}
-				else
-				{
-					genMapName += mapDirStr[(int)exit];
-				}
-
-				genMapName += "_" + to_string(rand() % 3 + 1);
-
-				this->mapName = genMapName;
-			}
-
-			//ゲッタ
-			Map::MapDir GetEnter() { return enter; }
-			Map::MapDir GetExit() { return exit; }
-			int GetDepth() { return depth; }
-		};
-
-		//通路
-		class Connect : public MapObject
-		{
-		private:
-			Map::MapDir enter;
-			Map::MapDir exit;
-			Map::MapDir exitSub;
-		public:
-			Connect(Map::MapDir enter_, Map::MapDir exit_, Map::MapDir exitSub_ = Map::MapDir::Non)
-				:enter(enter_)
-				, exit(exit_)
-				, exitSub(exitSub_)
-			{
-			}
-
-			void Generate() override
-			{
-				string genMapName = "pass_";
-				string mapDirStr[4] = { "Up", "Down", "Right", "Left" };
-
-				genMapName += mapDirStr[(int)enter];
-
-				if (exitSub != Map::MapDir::Non)
-				{
-					if (exit == Map::MapDir::Down)
-					{
-						genMapName += mapDirStr[(int)exitSub] + mapDirStr[(int)exit];
-					}
-					else
-					{
-						genMapName += mapDirStr[(int)exit] + mapDirStr[(int)exitSub];
-					}
-				}
-				else
-				{
-					genMapName += mapDirStr[(int)exit];
-				}
-
-				this->mapName = genMapName;
-			}
-
-			//ゲッタ
-			Map::MapDir GetEnter() { return enter; }
-			Map::MapDir GetExit() { return exit; }
-			Map::MapDir GetExitSub() { return exitSub; }
-
-		};
-
-	public:
 		//追加したい変数・メソッドはここに追加する
 		int bossDepth;
 		unsigned int mapSeed;		//マップ生成のシード値
-		MapObject* map[30][30];
-		ML::Point currentPos;		//現在のマップ
-		
-		Map::MapDir moveMapDir;		//マップ移動時の方向
-		MapTransition::Object::SP mapTransition;	//マップトランジションへのポインタ
+		float generateSubRate;		//分岐を作る確率
+		int	  subDepthMax;			//外れの道の深度最大
+		int   depthMax;				//最下層
+		Map::MapObject* map[Map::MAPSIZE_MAX][Map::MAPSIZE_MAX];	//マップデータ
+		int mapid[Map::MAPSIZE_MAX][Map::MAPSIZE_MAX];				//マップデータ（省データ版）
+		ML::Point currentPos;			//現在のマップ
+		string saveFolderPath;			//保存先のパス
+		Map::MapDir moveMapDir;			//マップ移動時の方向
+		shared_ptr<MapTransition::Object> mapTransition;	//マップトランジションへのポインタ
+		shared_ptr<MiniMap::Object> minimap;		//ミニマップへのポインタ
 
 		//マップのロードに使用する列挙体
 		//ロード
@@ -183,7 +82,9 @@ namespace MapManager
 
 	private:
 		void Generate();
-		void GenerateMap(int x_, int y_, int depth_, int depthRest_, Map::MapDir enter_);
+		void GenerateMap(int x_, int y_, int depth_, int depthRest_, Map::MapDir enter_, bool setSub_ = false);
+		bool GetSubFlag(int connX_, int connY_);
+		void GenerateSub();
 		void Destroy();		//消滅時の処理
 
 		void MoveMapUpDate();

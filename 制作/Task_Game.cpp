@@ -11,14 +11,16 @@
 #include  "Task_Item_coin.h"
 #include  "Task_Item_coin_maneger.h"
 #include  "Task_EnemyManager.h"
-#include  "Task_Ending.h"
 #include  "Task_GameUI.h"
 #include  "Task_MapManager.h"
 #include  "Task_GameUI_MiniMap.h"
 #include  "Task_SystemMenu.h"
+#include  "Task_GuideControll.h"
 
 
 #include  "sound.h"
+
+#include  "Task_Ending.h"
 
 namespace  Game
 {
@@ -53,24 +55,21 @@ namespace  Game
 		//22ci0308
 		bgm::LoadFile("bgm3", "./data/sound/bgm/industrial_zone.mp3");
 		bgm::Play("bgm3");
-		//this->volume.SetValues(100, 0, 100);
+		this->volume.SetValues(100, 0, 100);
 		// ◆◆◆◆◆◆◆◆◆◆
 
 		//★タスクの生成
-		auto player = Player::Object::Create(true);
-		player->pos.x = 1200;
-		player->pos.y = 500;
-		player->render2D_Priority[1] = 0.5f;
+		ge->qa_Player = Player::Object::Create(true);
+		ge->qa_Player->render2D_Priority[1] = 0.5f;
 
 		MapManager::Object::Create(true);
-		MiniMap::Object::Create(true);
-		
-		auto map = Map::Object::Create(true);
-		map->render2D_Priority[1] = 0.9f;
 
+		ge->qa_Player->pos = ge->qa_Map->GetPlayerStartPos();
+
+		
 		auto spr = Sprite::Object::Create(true);
-		spr->pos = player->pos;
-		spr->target = player;
+		spr->pos = ge->qa_Player->pos;
+		spr->target = ge->qa_Player;
 		spr->render2D_Priority[1] = 0.6f;
 
 		ge->camera2D.x = 0;
@@ -91,6 +90,7 @@ namespace  Game
 
 		this->cnt = 0;
 
+		GuideControll::Object::Create(true);
 		return  true;
 	}
 	//-------------------------------------------------------------------
@@ -103,7 +103,6 @@ namespace  Game
 		ge->KillAll_G("coin_maneger");
 		ge->KillAll_G("UI");
 		ge->KillAll_G("GameUI");
-		ge->KillAll_G("Enemy");
 		ge->KillAll_G("EnemyManager");
 		ge->KillAll_G("Player");
 		ge->KillAll_G("Map");
@@ -140,6 +139,8 @@ namespace  Game
 					gameObj->render2D_Priority[1] -= 1;
 				}
 				this->render2D_Priority[1] -= 1;
+				auto guide = ge->GetTask<GuideControll::Object>("GuideControll");
+				guide->SetGuide(GuideControll::Game);
 			}
 			else
 			{
@@ -152,12 +153,29 @@ namespace  Game
 		ge->qa_Map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 
 		auto inp = ge->in1->GetState( );
+		
+		//デバッグ機能
+#ifdef DEBUG_GAME
+		auto ms = ge->mouse->GetState();
+		if (ms.LB.down)
+		{
+			ge->qa_Player->pos.x = ms.pos.x + ge->camera2D.x;
+			ge->qa_Player->pos.y = ms.pos.y + ge->camera2D.y;
+		}
+#endif
 
 		this->cnt++;
 
-		if(inp.B3.down){
-			auto item_Manager = ItemTrsBox::Object::Create(true);
+		if (inp.SE.down && ge->getCounterFlag("Game") != ge->ACTIVE) {
+			ge->StartCounter("Game", 45); //フェードは90フレームなので半分の45で切り替え
+			ge->CreateEffect(98, ML::Vec2(0, 0));
+
 		}
+		if (ge->getCounterFlag("Game") == ge->LIMIT) {
+			this->Kill();
+		}
+
+
 		if (inp.ST.down) {
 			//◇◇◇◇◇◇◇◇◇◇
 			//以下22CI0329記述
@@ -172,6 +190,9 @@ namespace  Game
 			this->render2D_Priority[1] += 1;
 			this->StopGameObj();
 			this->openingMenu = true;
+			auto guide = ge->GetTask<GuideControll::Object>("GuideControll");
+			guide->SetGuide(GuideControll::Menu);
+
 			return;
 			// ◆◆◆◆◆◆◆◆◆◆
 		}

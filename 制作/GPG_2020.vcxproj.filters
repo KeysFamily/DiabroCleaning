@@ -344,7 +344,6 @@
     <ClCompile Include="Task_ShopStaff.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
-    <ClCompile Include="Task_EnemyBoss.cpp" />
     <ClCompile Include="Task_SystemMenuMessageWindow.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
@@ -360,11 +359,24 @@
     <ClCompile Include="Task_SystemMenuBackButton.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
+    <ClCompile Include="Task_EnemyBoss.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="MapStruct.cpp" />
     <ClCompile Include="Task_PlayerScore.cpp">
       <Filter>MyPG\Task\Ending</Filter>
     </ClCompile>
     <ClCompile Include="Task_ItemTrsBox.cpp">
       <Filter>MyPG\Task\Game\Item</Filter>
+	</ClCompile>
+    <ClCompile Include="Task_GuideControll.cpp">
+      <Filter>MyPG\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="KeysString.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_TitleMenu.cpp">
+      <Filter>MyPG\Task\Title</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -530,7 +542,6 @@
     <ClInclude Include="Task_ShopStaff.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
-    <ClInclude Include="Task_EnemyBoss.h" />
     <ClInclude Include="Task_SystemMenuMessageWindow.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
@@ -546,11 +557,23 @@
     <ClInclude Include="Task_SystemMenuBackButton.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
+    <ClInclude Include="Task_EnemyBoss.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClInclude>
     <ClInclude Include="Task_PlayerScore.h">
       <Filter>MyPG\Task\Ending</Filter>
     </ClInclude>
     <ClInclude Include="Task_ItemTrsBox.h">
       <Filter>MyPG\Task\Game\Item</Filter>
+	</ClInclude>
+    <ClInclude Include="Task_GuideControll.h">
+      <Filter>MyPG\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="KeysString.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_TitleMenu.h">
+      <Filter>MyPG\Task\Title</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

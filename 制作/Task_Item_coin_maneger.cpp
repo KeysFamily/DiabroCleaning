@@ -62,7 +62,7 @@ namespace  coin_maneger
 	{
 		auto inp = ge->in1->GetState();
 		if (inp.B3.down) {
-			Create_coin(1500,300,10);
+			//Create_coin(1500,300,10);
 		}
 	}
 	//-------------------------------------------------------------------

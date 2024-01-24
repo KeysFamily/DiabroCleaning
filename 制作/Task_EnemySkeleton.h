@@ -53,6 +53,22 @@ namespace  EnemySkeleton
 	public:
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
+		//◇◇◇◇◇◇◇◇◇◇
+		//以下22CI0329記述
+		int standTimeStd;
+		int standTime;
+		int standTimeDif;	//立つ時間のばらつき
+		int trackCoolTime;
+
+		OL::Limit<float> attackAnimCnt;
+		float attackAnimSpeed;
+		int attackAnimCut;
+		int turnCoolTime;
+		// ◆◆◆◆◆◆◆◆◆◆
+
+		
+
+
 		void Think()override;			//思考＆状況判断
 		void Move()override;			//モーションに対応した処理
 		BChara::DrawInfo Anim()override;//アニメーション制御

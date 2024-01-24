@@ -162,6 +162,10 @@ namespace  PlayerStatusShop
 			++statusLvMax;
 		}
 
+		this->currentStatus.SetValues(0, 0, statusLvMax - 1);
+		this->progressBeginPos.x = this->res->imgProgressSize.w * (currentStatus.vmax - 1) / -2.0f;
+		this->progressBeginPos.x += this->progressDistance * currentStatus.vmax / -2.0f;
+
 		return true;
 	}
 
@@ -200,6 +204,7 @@ namespace  PlayerStatusShop
 		else if (money_ >= price[currentStatus.vnow + 1])
 		{
 			money_ -= price[currentStatus.vnow + 1];
+			ge->TotalUsedCoinCnt += price[currentStatus.vnow + 1];
 			currentStatus.Addval(1);
 			if (currentStatus.IsMax())
 			{

@@ -237,6 +237,7 @@ namespace  Item_coin
 	void Object::GiftPlayer(BChara* pl_)
 	{
 		pl_->balanceMoney += 1;
+		ge->TotalGetCoinCnt += 1;
 		this->Kill();
 		se::Stop("se_get_coin");
 		se::Play("se_get_coin");

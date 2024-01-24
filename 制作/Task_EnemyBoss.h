@@ -53,6 +53,7 @@ namespace  EnemyBoss
 	public:
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
+
 		enum BossMotion {
 			Unnon = -1,	// 無効(使えません）
 			Stand,		// N停止
@@ -66,11 +67,16 @@ namespace  EnemyBoss
 			Lose,		// 消滅中
 		};
 
+		ML::Vec2 tpPos;
+
 		void Think()override;			//思考＆状況判断
 		void Move()override;			//モーションに対応した処理
 		BEnemy::DrawInfo Anim()override;//アニメーション制御
 
 		//接触時の応答処理(必ず受け身の処理として実装する)
-		void Received(BEnemy* from_, AttackInfo at_);
+		void Received(BChara* from_, AttackInfo at_);
+	private:
+		void SpawnEnemyIsBoss();		//ボスによる敵召喚
+		bool PosInMyCircle(const ML::Vec2 me_, const ML::Vec2 you_, const float dist_ = 0.0f);
 	};
 }

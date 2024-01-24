@@ -113,6 +113,76 @@ void BChara::CheckMove(ML::Vec2& e_)
 	}
 }
 //-------------------------------------------------------------------
+//めり込まない移動処理
+void BChara::CheckMoveWithSlope(ML::Vec2& e_)
+{
+	//坂道判定をする必要がない場合は通常処理
+	if (e_.y != 0)
+	{
+		this->CheckMove(e_);
+		return;
+	}
+
+	//マップが存在するか調べてからアクセス
+	auto   map = ge->qa_Map;
+	if (nullptr == map) { return; }//マップが無ければ判定しない(出来ない）
+
+	//横軸に対する移動
+	while (e_.x != 0) {
+		float  preX = this->pos.x;
+		if (e_.x >= 1) { this->pos.x += 1;		e_.x -= 1; }
+		else if (e_.x <= -1) { this->pos.x -= 1;		e_.x += 1; }
+		else { this->pos.x += e_.x;		e_.x = 0; }
+		
+		//坂を下りているときの処理
+		ML::Box2D  foot(this->hitBase.x,
+			this->hitBase.y + this->hitBase.h,
+			this->hitBase.w,
+			1);
+		foot.Offset(this->pos);
+		if (map->CheckSlope(foot) == ML::Vec2(0, 0))
+		{
+			foot.y += 2;
+			if (map->CheckSlope(foot) != ML::Vec2(0, 0))
+			{
+				this->pos.y += 2;
+			}
+		}
+		ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
+
+		//坂道判定
+		this->pos += map->CheckSlope(hit);
+
+		if (true == map->CheckHit(hit)) {
+			this->pos.x = preX;		//移動をキャンセル
+			break;
+		}
+	}
+	//縦軸に対する移動
+	while (e_.y != 0) {
+		float  preY = this->pos.y;
+		if (e_.y >= 1) { this->pos.y += 1;		e_.y -= 1; }
+		else if (e_.y <= -1) { this->pos.y -= 1;		e_.y += 1; }
+		else { this->pos.y += e_.y;		e_.y = 0; }
+		ML::Box2D  hit = this->hitBase.OffsetCopy(this->pos);
+
+		//坂道判定
+		this->pos += map->CheckSlope(hit);
+
+		if (true == map->CheckHit(hit)) {
+			this->pos.y = preY;		//移動をキャンセル
+			break;
+		}
+		if (true == CheckFallGround(preY, e_.y))
+		{
+			this->pos.y = preY;
+			break;
+		}
+	}
+
+}
+
+//-------------------------------------------------------------------
 //すり抜ける床判定
 bool BChara::CheckFallGround(float preY_, float estY_)
 {
@@ -207,6 +277,20 @@ bool  BChara::CheckBack_LR()
 //正面足元チェック（サイドビューゲーム専用）
 bool  BChara::CheckFrontFoot_LR()
 {
+	//足元に坂が存在するならチェックせずにtrueを返す
+	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
+
+	ML::Box2D  foot(this->hitBase.x,
+		this->hitBase.y + this->hitBase.h,
+		this->hitBase.w,
+		1);
+	foot.Offset(this->pos);
+	if (ge->qa_Map->CheckSlope(foot) != ML::Vec2(0, 0))
+	{
+		return true;
+	}
+
+
 	//あたり判定を基にして矩形を生成(とりあえず、縦幅と横幅１になった矩形を用意する）
 	ML::Box2D  frontFoot(this->hitBase.x,
 		this->hitBase.y + this->hitBase.h,
@@ -222,10 +306,10 @@ bool  BChara::CheckFrontFoot_LR()
 	//現在の位置に合わせる
 	frontFoot.Offset((int)this->pos.x, (int)this->pos.y);
 
-	if (nullptr == ge->qa_Map) { return  false; }//マップが無ければ判定しない(出来ない）
 	//マップと接触判定
 	return ge->qa_Map->CheckHit(frontFoot)
-		|| ge->qa_Map->CheckFallGround(frontFoot);
+		|| ge->qa_Map->CheckFallGround(frontFoot)
+		|| ge->qa_Map->CheckSlopeOnChip(frontFoot);
 }
 //-----------------------------------------------------------------------------
 //接触判定

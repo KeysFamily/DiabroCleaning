@@ -70,11 +70,11 @@ namespace  PlayerScore
 		ostringstream oss;
 		
 		oss << "　　　　　　　戦績　　　　　　" << endl << endl;
-		oss << "クリアタイム[s]：" << ge->GameCnt / 60 << endl << endl;
-		oss << "敵を倒した数：" << ge->TotalEnemyKill << endl<<endl;
-		oss << "敵に与えたダメージ：" << ge->TotalDamage << endl << endl;
-		oss << "獲得したコインの枚数：" << ge->TotalGetCoinCnt << endl<<endl;
-		oss << "消費したコインの枚数：" << ge->TotalUsedCoinCnt << endl;
+		oss << "クリアタイム[s]：" << ge->GameCnt << endl << endl;						//Player->surviveTime
+		oss << "敵を倒した数：" << ge->TotalEnemyKill << endl<<endl;							//Enemy側
+		oss << "敵に与えたダメージ：" << ge->TotalDamage << endl << endl;						//Enemy側
+		oss << "獲得したコインの枚数：" << ge->TotalGetCoinCnt << endl<<endl;					//Item_coin側
+		oss << "消費したコインの枚数：" << ge->TotalUsedCoinCnt << endl;						//shop側
 		//oss << "クリアタイム[s]：" << 111111111 << endl << endl;
 		//oss << "クリアタイム[s]：" << 111111111 << endl << endl;
 		//oss << "クリアタイム[s]：" << 111111111 << endl << endl;
