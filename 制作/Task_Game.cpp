@@ -7,6 +7,7 @@
 #include  "Task_Player.h"
 #include  "Task_Map.h"
 #include  "Task_Sprite.h"
+#include  "Task_ItemTrsBox.h"
 #include  "Task_Item_coin.h"
 #include  "Task_Item_coin_maneger.h"
 #include  "Task_EnemyManager.h"
@@ -15,6 +16,7 @@
 #include  "Task_GameUI_MiniMap.h"
 #include  "Task_SystemMenu.h"
 #include  "Task_GuideControll.h"
+
 
 #include  "sound.h"
 
@@ -76,6 +78,8 @@ namespace  Game
 		ge->camera2D.h = ge->screenHeight;
 
 		auto coin_man = coin_maneger::Object::Create(true);
+
+		auto item_Manager = ItemTrsBox::Object::Create(true);
 
 		auto UI = GameUI::Object::Create(true);
 		UI->numPos = ML::Vec2(50, 50);
@@ -144,7 +148,6 @@ namespace  Game
 			}
 		}
 
-
 		//(22CI0333)他のタスクで以下の処理は行わなくてよい
 		ge->qa_Player = ge->GetTask<Player::Object>(Player::defGroupName, Player::defName);
 		ge->qa_Map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
@@ -171,6 +174,7 @@ namespace  Game
 		if (ge->getCounterFlag("Game") == ge->LIMIT) {
 			this->Kill();
 		}
+
 
 		if (inp.ST.down) {
 			//◇◇◇◇◇◇◇◇◇◇

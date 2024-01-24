@@ -42,6 +42,9 @@
     <Filter Include="MyPG\Task\Game\Magic">
       <UniqueIdentifier>{b4b8e054-d770-4f47-bbc0-a199dd969647}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyPG\Task\Game\Item">
+      <UniqueIdentifier>{b9684222-4995-4441-b241-338418806d92}</UniqueIdentifier>
+    </Filter>
     <Filter Include="MyPG\Task\SystemMenu">
       <UniqueIdentifier>{9d38ab56-21d8-4d2d-ac4e-3c7a8d87c2a2}</UniqueIdentifier>
     </Filter>
@@ -284,6 +287,9 @@
     <ClCompile Include="Task_Thunder.cpp">
       <Filter>MyPG\Task\Game\Magic</Filter>
     </ClCompile>
+    <ClCompile Include="Task_Item.cpp">
+      <Filter>MyPG\Task\Game\Item</Filter>
+    </ClCompile>
     <ClCompile Include="Task_SystemMenu.cpp">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClCompile>
@@ -360,6 +366,9 @@
     <ClCompile Include="Task_PlayerScore.cpp">
       <Filter>MyPG\Task\Ending</Filter>
     </ClCompile>
+    <ClCompile Include="Task_ItemTrsBox.cpp">
+      <Filter>MyPG\Task\Game\Item</Filter>
+	</ClCompile>
     <ClCompile Include="Task_GuideControll.cpp">
       <Filter>MyPG\Task</Filter>
     </ClCompile>
@@ -487,6 +496,10 @@
     <ClInclude Include="Task_Thunder.h">
       <Filter>MyPG\Task\Game\Magic</Filter>
     </ClInclude>
+    <ClInclude Include="Task_Item.h">
+      <Filter>MyPG\Task\Game\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="BItem.h" />
     <ClInclude Include="Task_SystemMenu.h">
       <Filter>MyPG\Task\SystemMenu</Filter>
     </ClInclude>
@@ -550,6 +563,9 @@
     <ClInclude Include="Task_PlayerScore.h">
       <Filter>MyPG\Task\Ending</Filter>
     </ClInclude>
+    <ClInclude Include="Task_ItemTrsBox.h">
+      <Filter>MyPG\Task\Game\Item</Filter>
+	</ClInclude>
     <ClInclude Include="Task_GuideControll.h">
       <Filter>MyPG\Task</Filter>
     </ClInclude>
