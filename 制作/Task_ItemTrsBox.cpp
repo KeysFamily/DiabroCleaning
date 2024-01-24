@@ -42,7 +42,8 @@ namespace  ItemTrsBox
 		this->motion = Stand;
 		this->render2D_Priority[1] = 0.4f;
 		this->hitBase = ML::Box2D(-32, -32, 64, 64);
-		this->pos = ML::Vec2(1200, 300);
+		this->pos = ML::Vec2(1200, 700);
+		this->Hitbool = false;
 		//★タスクの生成
 
 		return  true;
@@ -64,8 +65,7 @@ namespace  ItemTrsBox
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		this->moveCnt++;
-		this->animCnt++;
+		if (this->Hitbool == true) this->animCnt++;
 		this->Think();
 		this->Move();
 	}
@@ -91,7 +91,9 @@ namespace  ItemTrsBox
 		case Motion::Stand:
 			break;
 		case Motion::Hit:
-			if (this->animCnt > 80)nm = Motion::Lose;
+			if (this->animCnt > 70)nm = Motion::Lose;
+			break;
+		case Motion::Lose:
 			break;
 		}
 		//モーション更新
@@ -114,7 +116,7 @@ namespace  ItemTrsBox
 			}
 			break;
 		case Lose:
-			if (this->moveCnt == 20)this->Kill();
+			this->Kill();
 			break;
 		}
 	}
@@ -133,7 +135,7 @@ namespace  ItemTrsBox
 			{this->hitBase,ML::Box2D(96,0,32,32),defColor},
 			{this->hitBase,ML::Box2D(128,0,32,32),defColor},
 			{this->hitBase,ML::Box2D(160,0,32,32),defColor},
-			{this->hitBase,ML::Box2D(182,0,32,32),defColor},
+			{this->hitBase,ML::Box2D(192,0,32,32),defColor},
 			};
 		BChara::DrawInfo  rtv;
 		int work;
@@ -149,7 +151,7 @@ namespace  ItemTrsBox
 			rtv = imageTable[work];
 			break;
 		case Lose:
-			rtv = imageTable[7];
+			rtv = imageTable[6];
 			rtv.color = ML::Color(1.f-(0.05*this->moveCnt),1,1,1);
 			break;
 		}
@@ -166,8 +168,10 @@ namespace  ItemTrsBox
 
 	void Object::GiftPlayer(BChara* pl_)
 	{
-
-		this->motion = Motion::Hit;
+		if (this->Hitbool != true) {
+			this->motion = Motion::Hit;
+			this->Hitbool = true;
+		}
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

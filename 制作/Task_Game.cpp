@@ -147,7 +147,6 @@ namespace  Game
 			}
 		}
 
-
 		//(22CI0333)他のタスクで以下の処理は行わなくてよい
 		ge->qa_Player = ge->GetTask<Player::Object>(Player::defGroupName, Player::defName);
 		ge->qa_Map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
@@ -156,6 +155,9 @@ namespace  Game
 
 		this->cnt++;
 
+		if(inp.B3.down){
+			auto item_Manager = ItemTrsBox::Object::Create(true);
+		}
 		if (inp.ST.down) {
 			//◇◇◇◇◇◇◇◇◇◇
 			//以下22CI0329記述

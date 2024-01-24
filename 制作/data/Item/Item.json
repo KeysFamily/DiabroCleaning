@@ -2,32 +2,32 @@
 	"item": [
 		{
 			"itemName": "Attack",
-			"ATK": 5,
+			"ATK": 1,
 			"DEF": 0,
 			"INT": 0,
 			"SPD": 0,
-			"TIME": 120,
-			"ITEM_POS": 1,
+			"TIME": 600,
+			"ITEM_POS": 0,
 			"POWER_STEP": 5
 		},
 		{
 			"itemName": "Defense",
 			"ATK": 0,
-			"DEF": 5,
+			"DEF": 1,
 			"INT": 0,
 			"SPD": 0,
-			"TIME": 120,
-			"ITEM_POS": 2,
+			"TIME": 600,
+			"ITEM_POS": 1,
 			"POWER_STEP": 5
 		},
 		{
 			"itemName": "Magic",
 			"ATK": 0,
 			"DEF": 0,
-			"INT": 5,
+			"INT": 1,
 			"SPD": 0,
-			"TIME": 120,
-			"ITEM_POS": 3,
+			"TIME": 600,
+			"ITEM_POS": 2,
 			"POWER_STEP": 5
 		},
 		{
@@ -35,9 +35,9 @@
 			"ATK": 0,
 			"DEF": 0,
 			"INT": 0,
-			"SPD": 5,
-			"TIME": 120,
-			"ITEM_POS": 4,
+			"SPD": 1,
+			"TIME": 600,
+			"ITEM_POS": 3,
 			"POWER_STEP": 5
 		}
 	]

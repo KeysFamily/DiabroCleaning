@@ -75,6 +75,6 @@ namespace  ItemTrsBox
 		//デバック用
 		XI::GamePad::SP controller;
 
-		
+		bool Hitbool;
 	};
 }

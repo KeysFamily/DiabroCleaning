@@ -40,13 +40,17 @@ namespace  Item
 		//★データ初期化
 		this->render2D_Priority[1] = 0.4f;
 		string str[] = { "Attack","Defense","Magic","Speed" };
-		InputJsonFile("Attack");
-		//InputJsonFile(str[rand() % 4]);
+		InputJsonFile(str[rand() % 4]);
 		this->itemb.Power_step = rand() % this->itemb.Power_step;
 
 		this->angle = ML::ToRadian((float)(rand() % 360));
 		this->moveVec = ML::Vec2(cos(angle) * 4, sin(angle) * 4);
-		this->hitBase = ML::Box2D(-16, -16, 32, 32);
+		this->hitBase = ML::Box2D(-24, -24, 48, 48);
+		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
+		this->decSpeed = 0.05f;		//接地状態の時の速度減衰量（摩擦
+		this->maxFallSpeed = 11.0f;	//最大落下速度
+		this->motion = Stand;
+
 		//★タスクの生成
 
 		return  true;
@@ -69,18 +73,27 @@ namespace  Item
 	void  Object::UpDate()
 	{
 		this->itemb.Time--;
+		this->Think();
+		this->Move();
 		if (this->itemb.Time < 0) this->Kill();
 		//めり込まない移動
 		ML::Vec2  est = this->moveVec;
+		this->CheckMove(est);
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		if (this->itemb.Time < 300){
+			if (this->itemb.Time < 120) {
+				if ((this->itemb.Time / 4) % 2 == 0)return;
+			}
+			if ((this->itemb.Time/8)%2==0)return;
+		}
 		auto draw = this->hitBase.OffsetCopy(this->pos);
-		ML::Box2D src((32 * this->itemb.Power_step)-32, (32 * this->itemb.Item_pos)-32, 32, 32);
+		draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+		ML::Box2D src((32 * this->itemb.Power_step), (32 * this->itemb.Item_pos), 32, 32);
 	    //スクロール対応
-		//di.draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
 		this->res->ImgItem->Draw(draw, src);
 		ge->debugRect(this->CallHitBox(), 4, -ge->camera2D.x, -ge->camera2D.y);
 	}
@@ -93,10 +106,6 @@ namespace  Item
 		switch (nm)
 		{
 		case Motion::Stand:
-			if (inp.B2.down)
-			{
-				//nm = Motion::Suction;
-			}
 			break;
 		case Motion::Fall:
 			if (this->CheckFoot() == true)
@@ -151,26 +160,6 @@ namespace  Item
 			case Motion::Bound:
 			case Motion::Unnon:	break;
 			}
-
-			//switch (this->motion)
-			//{
-			//case Motion::Suction:
-			//	//auto pl = ge->GetTask<Player::Object>("Player");
-			//	this->target = ge->qa_Player;
-			//	if (auto  tg = this->target.lock()) {
-			//		//ターゲットへの相対座標を求める
-			//		ML::Vec2  toVec = tg->pos - this->pos;
-
-			//		float speed = 20;
-			//		auto vec = toVec.Normalize();
-			//		vec *= speed;
-			//		//ターゲットに５％近づく
-			//		//this->pos += toVec * 0.05f;
-
-			//		this->pos += vec;
-			//	}
-			//	break;
-			//}
 		}
 	}
 
@@ -216,10 +205,9 @@ namespace  Item
 				this->itemb.Defense = ji["DEF"];
 				this->itemb.Magic = ji["INT"]; 
 				this->itemb.Speed = ji["SPD"]; 
-
-				this->itemb.Time = ji["Time"]; //アイテムの生存時間
-				this->itemb.Item_pos = js["Item_pos"]; //アイテムの画像のY軸を決める
-				this->itemb.Power_step = js["POWER_STEP"]; //アイテムのレアリティ＆アイテムの画像のX軸を決める
+				this->itemb.Time = ji["TIME"]; //アイテムの生存時間
+				this->itemb.Item_pos = ji["ITEM_POS"]; //アイテムの画像のY軸を決める
+				this->itemb.Power_step = ji["POWER_STEP"]; //アイテムのレアリティ＆アイテムの画像のX軸を決める
 			}
 		}
 	}
