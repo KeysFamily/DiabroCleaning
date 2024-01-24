@@ -128,6 +128,11 @@ namespace  Player
 		//status
 		int DEF;
 		float INT;
+		//アイテムによるステータス
+		float itemSpeed;
+		float itemPower;
+		int itemDEF;
+		float itemINT;
 
 		//攻撃発動
 		void MakeAttack();
