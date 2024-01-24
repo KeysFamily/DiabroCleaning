@@ -175,10 +175,10 @@ namespace  Item
 	void Object::GiftPlayer(BChara* pl_)
 	{
 		Player::Object* pl = dynamic_cast<Player::Object*>(pl_);
-		pl->power += (itemb.Attack + itemb.Power_step);
-		pl->DEF += (itemb.Defense + itemb.Power_step);
-		pl->INT += (itemb.Magic + itemb.Power_step);
-		pl->speed += (itemb.Speed + itemb.Power_step);
+		pl->itemPower += (itemb.Attack + itemb.Power_step);
+		pl->itemDEF += (itemb.Defense + itemb.Power_step);
+		pl->itemINT += (itemb.Magic + itemb.Power_step);
+		pl->itemSpeed += (itemb.Speed + itemb.Power_step);
 		this->Kill();
 	}
 
