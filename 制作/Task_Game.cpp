@@ -10,7 +10,6 @@
 #include  "Task_Item_coin.h"
 #include  "Task_Item_coin_maneger.h"
 #include  "Task_EnemyManager.h"
-#include  "Task_Ending.h"
 #include  "Task_GameUI.h"
 #include  "Task_MapManager.h"
 #include  "Task_GameUI_MiniMap.h"
@@ -18,6 +17,8 @@
 #include  "Task_GuideControll.h"
 
 #include  "sound.h"
+
+#include  "Task_Ending.h"
 
 namespace  Game
 {
@@ -98,7 +99,6 @@ namespace  Game
 		ge->KillAll_G("coin_maneger");
 		ge->KillAll_G("UI");
 		ge->KillAll_G("GameUI");
-		ge->KillAll_G("Enemy");
 		ge->KillAll_G("EnemyManager");
 		ge->KillAll_G("Player");
 		ge->KillAll_G("Map");
