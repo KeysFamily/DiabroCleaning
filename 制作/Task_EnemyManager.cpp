@@ -109,8 +109,8 @@ namespace  EnemyManager
 		this->residentResource.push_back(EnemySkeleton::Resource::Create());
 		this->residentResource.push_back(EnemySkyEye::Resource::Create());
 		//šƒ^ƒXƒN‚Ì¶¬
-		SpawnEnemyName("Skeleton",ML::Vec2(1000, 600));
-		SpawnEnemyName("SkyEye", ML::Vec2(1300, 500));
+		//SpawnEnemyName("Skeleton",ML::Vec2(1000, 600));
+		//SpawnEnemyName("SkyEye", ML::Vec2(1300, 500));
 		ge->debugRectLoad();
 		return  true;
 	}
@@ -176,10 +176,15 @@ namespace  EnemyManager
 
 	void Object::SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_, int depth_) {
 		int size = this->res->enemyNames.size();
-		if (enemyNum_ < 0 || enemyNum_ >= size)return;
+		string name;
+		if (enemyNum_ == 6) {
+			name = this->res->enemyNames[2];
 
-		string name = this->res->enemyNames[enemyNum_];
-
+		}
+		else {
+			if (enemyNum_ < 0 || enemyNum_ >= size)return;
+			name = this->res->enemyNames[enemyNum_];
+		}
 		this->SpawnEnemyName(name, pos_, depth_);
 	}
 

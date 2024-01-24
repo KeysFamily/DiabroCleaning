@@ -10,6 +10,7 @@
 #include  "Task_EnemyBoss.h"
 
 #include  "Task_EnemyManager.h"
+#include  "Task_EnemyFireBall.h"
 
 #include  "randomLib.h"
 
@@ -124,6 +125,7 @@ namespace  EnemyBoss
 			}
 			sheet.push_back(BossMotion::Attack4);
 			nm = sheet[GetRandom<int>(0, sheet.size() - 1)];
+			//nm = BossMotion::Attack3;
 		}
 			break;
 		case BossMotion::Attack1:
@@ -216,7 +218,21 @@ namespace  EnemyBoss
 		case BossMotion::Attack1:
 			//プレイヤーに向けてボスの杖から火の魔法を出す
 			if (this->moveCnt == 21) {
+				ML::Vec2 spos = this->pos;
+				if (this->angle_LR == Angle_LR::Left) {
+					spos += ML::Vec2(-70, -166);
+				}
+				else {
+					spos += ML::Vec2(+70, -166);
+				}
+				float mcsize = static_cast<float>(ge->qa_Map->res->drawSize);
+				ML::Vec2 tpos = ge->qa_Player->pos + mcsize * ML::Vec2(GetRandom<float>(-2.0f, 2.0f), GetRandom<float>(-2.0f, 2.0f));
 
+				ML::Vec2 diff = tpos - spos;
+				float rad = atan2(diff.y, diff.x);
+
+				auto fb = EnemyFireBall::Object::Create(true);
+				fb->Setting(spos, 15.0f, rad, this->attackPow * 0.6f);
 			}
 			break;
 		case BossMotion::Attack2:
@@ -377,10 +393,10 @@ namespace  EnemyBoss
 
 		ML::Vec2 spos = this->pos;
 		if (this->angle_LR == Angle_LR::Left) {
-			spos += ML::Vec2(-70, 166);
+			spos += ML::Vec2(-70, -166);
 		}
 		else {
-			spos += ML::Vec2(+70, 166);
+			spos += ML::Vec2(+70, -166);
 		}
 
 		for (int i = 0; i < 50; ++i) {
