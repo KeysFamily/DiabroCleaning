@@ -111,7 +111,7 @@ namespace  Player
 		this->surviveFrame++;
 		this->surviveTime = this->surviveFrame / 60;
 		ge->GameCnt = this->surviveTime;
-		this->maxSpeed = 9.0f + 0.2 * this->speed; //ステータスによる移動速度加算
+		this->maxSpeed = 9.0f + 0.2 * (this->speed+this->itemSpeed);	//ステータスによる移動速度加算
 		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 		if (this->unHitTime > 0) { this->unHitTime--; }
 		//思考・状況判断
@@ -887,7 +887,7 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		//this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF)) ; //ダメージ計算公式
+		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF + this->itemDEF)) ; //ダメージ計算公式
 		if (this->balanceMoney <= 0)this->balanceMoney = 0; //デバッグ用仮処理
 		if (this->hp.IsMin()) {
 			//this->Kill();
@@ -913,7 +913,7 @@ namespace  Player
 			if ((*it)->CheckHit(this->attackBase.OffsetCopy(this->pos))) {
 				se::Play("swordHit");
 				ge->CreateEffect(59, (*it)->pos);
-				BChara::AttackInfo at = { this->power * this->powerScale, 0, 0 };
+				BChara::AttackInfo at = { (this->power + this->itemPower) * this->powerScale, 0, 0 };
 				(*it)->Received(this, at);
 				this->haveAttacked = true;
 			}

@@ -73,7 +73,7 @@ namespace  MagicManager
 		case Magic::FireBall:
 			if (this->moveCnt % 30 == 1) {
 				auto fb = FireBall::Object::Create(true); //(‰¼)
-				fb->power *= pl->INT;
+				fb->power *= pl->INT + pl->itemINT;
 				if (pl->balanceMoney > fb->cost) {
 					if (this->LR) {
 						fb->angle_LR = BChara::Angle_LR::Right;
@@ -97,7 +97,7 @@ namespace  MagicManager
 		case Magic::WaterBlast:
 			if (this->moveCnt == 1) {
 				auto wb = WaterBlast::Object::Create(true);
-				wb->power *= pl->INT;
+				wb->power *= pl->INT + pl->itemINT;
 				if (pl->balanceMoney > wb->cost) {
 					if (this->LR) {
 						wb->pos.x = pl->pos.x + 150;
@@ -114,7 +114,7 @@ namespace  MagicManager
 		case Magic::Thunder:
 			if (this->moveCnt % 30 == 1) {
 				auto th = Thunder::Object::Create(true); //(‰¼)
-				th->power *= pl->INT;
+				th->power *= pl->INT + pl->itemINT;
 				if (pl->balanceMoney > th->cost) {
 					if (this->LR) {
 						th->angle_LR = BChara::Angle_LR::Right;
@@ -138,7 +138,7 @@ namespace  MagicManager
 		case Magic::Beam:
 			if (this->moveCnt == 1) {
 				auto bm = Beam::Object::Create(true);
-				bm->power *= pl->INT;
+				bm->power *= pl->INT + pl->itemINT;
 				if (pl->balanceMoney > bm->cost) {
 					if (this->LR) {
 						bm->angle_LR = BChara::Angle_LR::Right;
