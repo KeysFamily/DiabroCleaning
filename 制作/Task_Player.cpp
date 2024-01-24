@@ -65,7 +65,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 100;  //所持金
+		this->balanceMoney = 1000;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
@@ -76,7 +76,10 @@ namespace  Player
 		this->INT = 1.0f;
 		this->speed = 0.f;
 		this->haveAttacked = false;
-
+		this->itemDEF = 0;
+		this->itemINT = 0.f;
+		this->itemPower = 0.f;
+		this->itemSpeed = 0.f;
 
 		//--------------------------------------
 		//0329
