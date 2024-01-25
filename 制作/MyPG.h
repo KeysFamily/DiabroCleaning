@@ -4,7 +4,7 @@
 #include <sstream>
 
 #define DEBUG_GAME
-#define DEBUG_ENEMY	//TODO: 敵デバッグ用(最後に消せ)
+//#define DEBUG_ENEMY	//TODO: 敵デバッグ用(最後に消せ)
 
 
 //ゲーム内全域で使用する構造体などを定義する

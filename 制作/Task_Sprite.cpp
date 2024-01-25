@@ -33,7 +33,7 @@ namespace  Sprite
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.5f;
-		
+		this->isGameOver = false;
 		//★タスクの生成
 
 		return  true;
@@ -55,6 +55,14 @@ namespace  Sprite
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		//ゲームオーバー時の処理
+		if (isGameOver == true)
+		{
+			this->GameOverUpDate();
+			return;
+		}
+
+
 		//ターゲットが存在するか調べてからアクセス
 		if (auto  tg = this->target.lock()) {
 			//ターゲットへの相対座標を求める
@@ -119,7 +127,6 @@ namespace  Sprite
 				toVec += adjust;
 			}
 
-			//ターゲットに５％近づく
 			this->pos += toVec;
 		}
 
@@ -128,6 +135,57 @@ namespace  Sprite
 			//プレイヤを画面の何処に置くか（今回は画面中央）
 			int  px = 1200;
 			int  py = 500;
+			//プレイヤを画面中央に置いた時のカメラの左上座標を求める
+			int  cpx = int(this->pos.x) - px;
+			int  cpy = int(this->pos.y) - py;
+			//カメラの座標を更新
+			ge->camera2D.x = cpx;
+			ge->camera2D.y = cpy;
+			if (auto   map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName)) {
+				map->AdjustCameraPos();
+			}
+		}
+	}
+	//-------------------------------------------------------------------
+	//ゲームオーバーに設定
+	void Object::SetGameOver()
+	{
+		this->isGameOver = true;
+	}
+	//-------------------------------------------------------------------
+	//一気に移動
+	void Object::SetRevive()
+	{
+		this->isGameOver = false;
+	}
+	//-------------------------------------------------------------------
+	//ゲームオーバー時の処理
+	void Object::GameOverUpDate()
+	{
+		//ターゲットが存在するか調べてからアクセス
+		if (auto  tg = this->target.lock()) {
+			//ターゲットへの相対座標を求める
+			ML::Vec2  toVec = tg->pos - this->pos;
+
+			//ターゲットの向きに合わせて自分の移動先を変更
+			if (tg->angle_LR == BChara::Angle_LR::Left) {
+				ML::Vec2  adjust(0, 0);
+				toVec += adjust;
+			}
+			else {
+				ML::Vec2  adjust(0, 0);
+				toVec += adjust;
+			}
+
+			//ターゲットに５％近づく
+			this->pos += toVec * 0.03f;
+		}
+
+		//カメラの位置を再調整
+		{
+			//プレイヤを画面の何処に置くか（今回は画面中央）
+			int  px = 1920 / 2;
+			int  py = 600;
 			//プレイヤを画面中央に置いた時のカメラの左上座標を求める
 			int  cpx = int(this->pos.x) - px;
 			int  cpy = int(this->pos.y) - py;

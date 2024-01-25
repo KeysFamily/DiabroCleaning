@@ -226,6 +226,11 @@ namespace  Game
 
 		this->StopGameObj();
 		ge->qa_Player->Stop(false);
+		ge->qa_Player->render2D_Priority[1] -= 1;
+
+		auto sp = ge->GetTask<Sprite::Object>("Sprite", "Sprite");
+		sp->Stop(false);
+		sp->SetGameOver();
 
 		auto gov = LoadGameOver::Object::Create(true);
 		gov->Appear();
@@ -239,6 +244,13 @@ namespace  Game
 		}
 		auto gov = ge->GetTask<LoadGameOver::Object>("Game", "LoadGameOver");
 		gov->Disappear();
+
+		auto sp = ge->GetTask<Sprite::Object>("Sprite", "Sprite");
+		sp->SetRevive();
+
+		ge->qa_Player->ReviveToGame();
+		ge->qa_Player->render2D_Priority[1] += 1;
+
 
 		this->state = State::ReviveUpDate;
 	}
