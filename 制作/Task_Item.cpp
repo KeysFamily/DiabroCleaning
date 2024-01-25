@@ -1,38 +1,32 @@
 //?------------------------------------------------------
-//タスク名:Task_Item_coin
-//作　成　者:荻野　剛志
+//タスク名:
+//作　成　者:
 //TODO:もしいれば下記へ記述
 //編　集　者:
-//作成年月日:11/15
-//概　　　要:coinの元データ
-//------------------------------------------------------
+//作成年月日:
+//概　　　要:
+//?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Map.h"
-#include  "Task_Player.h"
-#include  "Task_Item_coin.h"
-#include  "sound.h"
-#include  "Task_Map.h"
+#include  "Task_Item.h"
 
-namespace  Item_coin
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
+
+namespace  Item
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/image/coin.png");
-
-		//22ci0308
-		//se
-		se::LoadFile("se_get_coin", "./data/sound/se/se_select2.wav");
-		//
+		this->ImgItem = DG::Image::Create("./data/Item/image/Item.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->img.reset();
+		this->ImgItem.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -43,19 +37,19 @@ namespace  Item_coin
 		__super::Initialize(defGroupName, defName, true);
 		//リソースクラス生成orリソース共有
 		this->res = Resource::Create();
-
 		//★データ初期化
 		this->render2D_Priority[1] = 0.4f;
-		this->hitBase = OL::setBoxCenter(32, 32);
+		string str[] = { "Attack","Defense","Magic","Speed" };
+		InputJsonFile(str[rand() % 4]);
+		this->itemb.Power_step = rand() % this->itemb.Power_step;
+
+		this->angle = ML::ToRadian((float)(rand() % 360));
+		this->moveVec = ML::Vec2(cos(angle) * 4, sin(angle) * 4);
+		this->hitBase = ML::Box2D(-24, -24, 48, 48);
 		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
 		this->decSpeed = 0.05f;		//接地状態の時の速度減衰量（摩擦
 		this->maxFallSpeed = 11.0f;	//最大落下速度
-		this->angle = ML::ToRadian((float)(rand() % 360));
-		this->moveVec = ML::Vec2(cos(angle) * 4, sin(angle) * 4);
 		this->motion = Stand;
-
-		this->pos.x = 1300;
-		this->pos.y = 500;
 
 		//★タスクの生成
 
@@ -66,7 +60,7 @@ namespace  Item_coin
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-		ge->CreateEffect(58, this->pos);
+
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -78,36 +72,32 @@ namespace  Item_coin
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		auto inp = ge->in1->GetState();
-
-		this->moveCnt++;
-		this->animCnt++;
-		if (this->unHitTime > 0) { this->unHitTime--; }
-
+		this->itemb.Time--;
 		this->Think();
 		this->Move();
-
+		if (this->itemb.Time < 0) this->Kill();
 		//めり込まない移動
 		ML::Vec2  est = this->moveVec;
 		this->CheckMove(est);
-
-		//画面内にコインがあるか
-		auto map = ge->qa_Map;
-		ML::Vec2 map_size (map->ObjectMap.width, map->ObjectMap.height);
-		this->out_coin(map_size.x,map_size.y);
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		BChara::DrawInfo di = this->Anim();
-		di.draw.Offset(this->pos);
-		//スクロール対応
-		di.draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
-		this->res->img->Draw(di.draw, di.src);
+		if (this->itemb.Time < 300){
+			if (this->itemb.Time < 120) {
+				if ((this->itemb.Time / 4) % 2 == 0)return;
+			}
+			if ((this->itemb.Time/8)%2==0)return;
+		}
+		auto draw = this->hitBase.OffsetCopy(this->pos);
+		draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+		ML::Box2D src((32 * this->itemb.Power_step), (32 * this->itemb.Item_pos), 32, 32);
+	    //スクロール対応
+		this->res->ImgItem->Draw(draw, src);
 		ge->debugRect(this->CallHitBox(), 4, -ge->camera2D.x, -ge->camera2D.y);
 	}
-	
+
 	//-----------------------------------------------------------------
 	void Object::Think()
 	{
@@ -116,10 +106,6 @@ namespace  Item_coin
 		switch (nm)
 		{
 		case Motion::Stand:
-			if (inp.B2.down)
-			{
-				nm = Motion::Suction;
-			}
 			break;
 		case Motion::Fall:
 			if (this->CheckFoot() == true)
@@ -132,7 +118,6 @@ namespace  Item_coin
 		this->UpdateMotion(nm);
 
 	}
-
 	//------------------------------------------------------------------
 	void Object::Move()
 	{
@@ -150,7 +135,7 @@ namespace  Item_coin
 				//地面に接触している
 				else {
 					this->fallSpeed = min(this->moveVec.y - this->gravity, this->maxFallSpeed);
-					this->moveVec.y -= this->fallSpeed*1.7;
+					this->moveVec.y -= this->fallSpeed * 1.7;
 				}
 
 
@@ -175,57 +160,10 @@ namespace  Item_coin
 			case Motion::Bound:
 			case Motion::Unnon:	break;
 			}
-
-			switch (this->motion)
-			{
-			case Motion::Suction:
-				//auto pl = ge->GetTask<Player::Object>("Player");
-				this->target = ge->qa_Player;
-				if (auto  tg = this->target.lock()) {
-					//ターゲットへの相対座標を求める
-					ML::Vec2  toVec = tg->pos - this->pos;
-
-					float speed = 20;
-					auto vec = toVec.Normalize();
-					vec *= speed;
-					//ターゲットに５％近づく
-					//this->pos += toVec * 0.05f;
-
-					this->pos += vec;
-				}
-				break;
-			}
 		}
 	}
 
-	//-------------------------------------------------------------------
-	//アニメーション制御
-	BChara::DrawInfo Object::Anim()
-	{
-		ML::Color defColor(1, 1, 1, 1);
-
-		BChara::DrawInfo imageTable[] = {
-			//draw                   src
-			{this->hitBase,ML::Box2D(6,6,20,20),defColor},
-			{this->hitBase,ML::Box2D(40,6,16,20),defColor},
-			{this->hitBase,ML::Box2D(76,6,8,20),defColor},
-			{this->hitBase,ML::Box2D(40,6,16,20),defColor},
-		};
-		BChara::DrawInfo  rtv;
-		int work;
-		switch (this->motion)
-		{
-		default:
-			work = this->animCnt/5;
-			work %= 4;
-			rtv = imageTable[work]; 
-			break;
-		}
-
-		return rtv;
-	}
 	//-----------------------------------------------------------------------------
-	// 
 	//接触時の応答処理（これ自体はダミーのようなモノ）
 	void Object::Received(BChara* from_, AttackInfo at_)
 	{
@@ -236,26 +174,43 @@ namespace  Item_coin
 
 	void Object::GiftPlayer(BChara* pl_)
 	{
-		pl_->balanceMoney += 1;
-		ge->TotalGetCoinCnt += 1;
+		Player::Object* pl = dynamic_cast<Player::Object*>(pl_);
+		pl->itemPower += (itemb.Attack + itemb.Power_step);
+		pl->itemDEF += (itemb.Defense + itemb.Power_step);
+		pl->itemINT += (itemb.Magic + itemb.Power_step);
+		pl->itemSpeed += (itemb.Speed + itemb.Power_step);
 		this->Kill();
-		se::Stop("se_get_coin");
-		se::Play("se_get_coin");
-		//this->UpdateMotion(Motion::Bound);
-		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う
 	}
 
-	//------------------------------------------------------------------------------
-	//画面外にcoinが出たら消す処理
-	void Object::out_coin(int x_,int y_)
-	{
-		ML::Box2D drawsize(0, 0, x_ * 64, y_ * 64);
-		if ( drawsize.y>= this->pos.y || drawsize.h <= this->pos.y ||
-			drawsize.x >= this->pos.x || drawsize.w <= this->pos.x) {
-			this->Kill();
+	//-----------------------------------------------------------------------------
+//ファイル読み込み
+	void Object::InputJsonFile(string itemName_) {
+		//****************************************
+		//ファイルから受け付けるもの
+		//・攻撃力
+		//・防御力
+		//・魔法力
+		//・スピード
+		//・持続時間
+		//・描画位置
+		//****************************************
+		json js = OL::LoadJsonFile("./data/Item/Item.json");
+
+		for (auto& ji : js["item"])
+		{
+			if (ji["itemName"] == itemName_)
+			{
+				//アイテムがプレイヤーに与えるステータス
+				this->itemb.Attack = ji["ATK"];
+				this->itemb.Defense = ji["DEF"];
+				this->itemb.Magic = ji["INT"]; 
+				this->itemb.Speed = ji["SPD"]; 
+				this->itemb.Time = ji["TIME"]; //アイテムの生存時間
+				this->itemb.Item_pos = ji["ITEM_POS"]; //アイテムの画像のY軸を決める
+				this->itemb.Power_step = ji["POWER_STEP"]; //アイテムのレアリティ＆アイテムの画像のX軸を決める
+			}
 		}
 	}
-
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド

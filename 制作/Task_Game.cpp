@@ -7,10 +7,10 @@
 #include  "Task_Player.h"
 #include  "Task_Map.h"
 #include  "Task_Sprite.h"
+#include  "Task_ItemTrsBox.h"
 #include  "Task_Item_coin.h"
 #include  "Task_Item_coin_maneger.h"
 #include  "Task_EnemyManager.h"
-#include  "Task_Ending.h"
 #include  "Task_GameUI.h"
 #include  "Task_MapManager.h"
 #include  "Task_GameUI_MiniMap.h"
@@ -18,7 +18,10 @@
 #include  "Task_GuideControll.h"
 #include  "Task_LoadGameOver.h"
 
+
 #include  "sound.h"
+
+#include  "Task_Ending.h"
 
 namespace  Game
 {
@@ -80,6 +83,8 @@ namespace  Game
 
 		auto coin_man = coin_maneger::Object::Create(true);
 
+		auto item_Manager = ItemTrsBox::Object::Create(true);
+
 		auto UI = GameUI::Object::Create(true);
 		UI->numPos = ML::Vec2(50, 50);
 
@@ -102,7 +107,6 @@ namespace  Game
 		ge->KillAll_G("coin_maneger");
 		ge->KillAll_G("UI");
 		ge->KillAll_G("GameUI");
-		ge->KillAll_G("Enemy");
 		ge->KillAll_G("EnemyManager");
 		ge->KillAll_G("Player");
 		ge->KillAll_G("Map");

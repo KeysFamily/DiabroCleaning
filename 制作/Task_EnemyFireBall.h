@@ -1,20 +1,20 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//タスク名:
-//作　成　者:
+//タスク名:火球
+//作　成　者:22CI0306 王 功 健
 //TODO:もしいれば下記へ記述
-//編　集　者:
+//編　集　者:22CI0333 長谷川 勇一朗
 //作成年月日:
-//概　　　要:
+//概　　　要:火球(ボス攻撃)
 //?------------------------------------------------------
-#include "BItem.h"
+#include "BChara.h"
 
-namespace  Item_coin
+namespace  EnemyFireBall
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("item");	//グループ名
-	const  string  defName("coin");		//タスク名
+	const  string  defGroupName("Magic");	//グループ名
+	const  string  defName("FireBall");		//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -29,11 +29,10 @@ namespace  Item_coin
 		static  Resource::SP  Create();
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//共有する変数はここに追加する
-		DG::Image::SP img;
-
+		DG::Image::SP	img;
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BItem
+	class  Object : public  BChara
 	{
 	public:
 		virtual  ~Object();
@@ -55,33 +54,12 @@ namespace  Item_coin
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
 		//BCharaに含まれないモノのみここに追加する
-		//思考＆状況判断(ステータス決定）
+		float power;	//ダメージ
 
-		enum Motion
-		{
-			Unnon = -1,	//	無効(使えません）
-			Stand,		//	停止
-			Jump,		//	ジャン
-			Fall,		//	落下
-			Suction,    //　プレイヤに集める
-			Landing,	//	着地
-			Bound,		//	弾き飛ばされてる
-			Lose,		//  消滅中
-		};
-
-		void  Think();
-		//モーションに対応した処理
-		void  Move();
 		//アニメーション制御
-		BChara::DrawInfo  Anim();
-		//接触時の応答処理(必ず受け身の処理として実装する)
-		void Received(BChara* from_, AttackInfo at_) override;
-		//プレイヤーのステータスを変える
-		void GiftPlayer(BChara* pl_) override;
-		//デバック用
-		XI::GamePad::SP controller;
+		void Setting(ML::Vec2 setPos_, float speed_, float rad_, float AttackPow_);
 
-		//画面外に出たらアイテムを消す処理
-		void out_coin(int x,int y);
+	private:
+		BChara::DrawInfo  Anim();
 	};
 }

@@ -102,8 +102,11 @@ namespace  MapManager
 
 		map[0][0] = new MapObject(1,"map_start");
 
+#if true
+		map[0][1] = new MapObject(1, "map_goal");
+#else
 		map[0][1] = new MapObject(1, MapType::Connect, MapDir::Left, MapDir::Right);
-
+#endif
 		this->GenerateMap(2, 0, 2, this->depthMax, MapDir::Left);
 
 		this->GenerateSub();

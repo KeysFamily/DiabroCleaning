@@ -1,32 +1,31 @@
 //?------------------------------------------------------
-//タスク名:
-//作　成　者:
+//タスク名:火球
+//作　成　者:22CI0306 王 功 健
 //TODO:もしいれば下記へ記述
-//編　集　者:
+//編　集　者:22CI0333 長谷川 勇一朗
 //作成年月日:
-//概　　　要:
+//概　　　要:火球(ボス攻撃)
 //?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_MagicManager.h"
-#include  "Task_FireBall.h"
-#include  "Task_WaterBlast.h"
-#include  "Task_Thunder.h"
-#include  "Task_Beam.h"
-#include  "Task_Player.h"
+#include  "Task_EnemyFireBall.h"
 
-namespace  MagicManager
+//#include  "Task_Effect00.h"
+
+namespace  EnemyFireBall
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
+		this->img = DG::Image::Create("./data/effect/fireball.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
+		this->img.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -40,10 +39,9 @@ namespace  MagicManager
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.5f;
-		this->moveCnt = 0;
-		this->LR = true;
+		this->hitBase = OL::setBoxCenter(52, 52);
 		this->pos = ML::Vec2(0, 0);
-		this->magicSelect = Magic::Unnon;
+		this->power = 5.0f;
 		//★タスクの生成
 
 		return  true;
@@ -66,98 +64,75 @@ namespace  MagicManager
 	void  Object::UpDate()
 	{
 		this->moveCnt++;
-		auto pl = ge->GetTask<Player::Object>("Player");
-		switch (this->magicSelect) {
-		case Magic::Unnon:
-			break;
-		case Magic::FireBall:
-			if (this->moveCnt % 30 == 1) {
-				auto fb = FireBall::Object::Create(true); //(仮)
-				fb->power *= pl->INT + pl->itemINT;
-				if (pl->balanceMoney > fb->cost) {
-					if (this->LR) {
-						fb->angle_LR = BChara::Angle_LR::Right;
-						fb->moveVec = ML::Vec2(fb->speed, 0);
-						fb->pos.x = this->pos.x + 60;
-						fb->pos.y = this->pos.y;
-					}
-					if (!this->LR) {
-						fb->angle_LR = BChara::Angle_LR::Left;
-						fb->moveVec = ML::Vec2(-fb->speed, 0);
-						fb->pos.x = this->pos.x - 60;
-						fb->pos.y = this->pos.y;
-					}
-					pl->balanceMoney -= fb->cost;
-				}
-				else {
-					fb->Kill();
-				}
+		this->animCnt++;
+		if (this->CheckFront_LR()) { ge->CreateEffect(8, this->pos);  this->Kill(); }
+		this->pos += this->moveVec;
+#if false
+		auto enemys = ge->GetTasks<BChara>("Enemy");
+		for (auto it = enemys->begin();
+			it != enemys->end();
+			++it) {
+			if ((*it)->CheckHit(this->hitBase.OffsetCopy(this->pos))) {
+				ge->CreateEffect(89, (*it)->pos);
+				BChara::AttackInfo at = { this->power, 0, 0 };
+				(*it)->Received(this, at);
+				ge->CreateEffect(8, this->pos);
+				this->Kill();
+				break;
 			}
-			break;
-		case Magic::WaterBlast:
-			if (this->moveCnt == 1) {
-				auto wb = WaterBlast::Object::Create(true);
-				wb->power *= pl->INT + pl->itemINT;
-				if (pl->balanceMoney > wb->cost) {
-					if (this->LR) {
-						wb->pos.x = pl->pos.x + 150;
-						wb->pos.y = pl->pos.y;
-					}
-					if (!this->LR) {
-						wb->pos.x = pl->pos.x - 150;
-						wb->pos.y = pl->pos.y;
-					}
-					pl->balanceMoney -= wb->cost;
-				}
-			}
-			break;
-		case Magic::Thunder:
-			if (this->moveCnt % 30 == 1) {
-				auto th = Thunder::Object::Create(true); //(仮)
-				th->power *= pl->INT + pl->itemINT;
-				if (pl->balanceMoney > th->cost) {
-					if (this->LR) {
-						th->angle_LR = BChara::Angle_LR::Right;
-						th->moveVec = ML::Vec2(th->speed, 0);
-						th->pos.x = pl->pos.x + 60;
-						th->pos.y = pl->pos.y;
-					}
-					if (!this->LR) {
-						th->angle_LR = BChara::Angle_LR::Left;
-						th->moveVec = ML::Vec2(-th->speed, 0);
-						th->pos.x = pl->pos.x - 60;
-						th->pos.y = pl->pos.y;
-					}
-					pl->balanceMoney -= th->cost;
-				}
-				else {
-					th->Kill();
-				}
-			}
-			break;
-		case Magic::Beam:
-			if (this->moveCnt == 1) {
-				auto bm = Beam::Object::Create(true);
-				bm->power *= pl->INT + pl->itemINT;
-				if (pl->balanceMoney > bm->cost) {
-					if (this->LR) {
-						bm->angle_LR = BChara::Angle_LR::Right;
-					}
-					if (!this->LR) {
-						bm->angle_LR = BChara::Angle_LR::Left;
-					}
-					pl->balanceMoney -= bm->cost;
-				}
-			}
-			break;
 		}
+#endif
+		if (ge->qa_Player == nullptr)return;
+		if (ge->qa_Player->CheckHit(this->CallHitBox())) {
+			ge->CreateEffect(89, this->pos);
+			BChara::AttackInfo at = { this->power, 0, 0 };
+			ge->qa_Player->Received(this, at);
+			ge->CreateEffect(8, this->pos);
+			this->Kill();
+		}
+
+		
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
+		BChara::DrawInfo  di = this->Anim();
+		di.draw.Offset(this->pos);
+		//スクロール対応
+		di.draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+
+		this->res->img->Draw(di.draw, di.src, di.color);
 	}
 
+	//--------------------------------------------------------------------
+	// 火球設定
+	void Object::Setting(ML::Vec2 setPos_, float speed_, float rad_, float AttackPow_) {
+		this->pos = setPos_;
+		this->moveVec.x = speed_ * cos(rad_);
+		this->moveVec.y = speed_ * sin(rad_);
+		this->power = AttackPow_;
+	}
+
+	//--------------------------------------------------------------------
+	// アニメーション制御
+	BChara::DrawInfo  Object::Anim()
+	{
+		ML::Color  defColor(1, 0.1, 1, 2);
+		BChara::DrawInfo imageTable[] = {
+			//draw							src
+			{ ML::Box2D(-26,-26,52,52), ML::Box2D(0, 0, 26, 26), defColor },			//0
+			{ ML::Box2D(-26,-26,52,52), ML::Box2D(26, 0, 26, 26), defColor },			//1
+			{ ML::Box2D(-26,-26,52,52), ML::Box2D(26*2, 0, 26, 26), defColor },			//2
+		};
+		BChara::DrawInfo  rtv;
+		int  work;
+		work = this->animCnt / 6;
+		work %= 3;
+		rtv = imageTable[work];
+
+		return rtv;
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

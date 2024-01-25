@@ -10,11 +10,11 @@
 //?------------------------------------------------------
 #include "BItem.h"
 
-namespace  Item_coin
+namespace  ItemTrsBox
 {
 	//タスクに割り当てるグループ名と固有名
 	const  string  defGroupName("item");	//グループ名
-	const  string  defName("coin");		//タスク名
+	const  string  defName("ItemTrsBox");		//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -29,8 +29,7 @@ namespace  Item_coin
 		static  Resource::SP  Create();
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//共有する変数はここに追加する
-		DG::Image::SP img;
-
+		DG::Image::SP ImgTrsBox;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BItem
@@ -55,17 +54,12 @@ namespace  Item_coin
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
 		//BCharaに含まれないモノのみここに追加する
-		//思考＆状況判断(ステータス決定）
-
+		
 		enum Motion
 		{
 			Unnon = -1,	//	無効(使えません）
 			Stand,		//	停止
-			Jump,		//	ジャン
-			Fall,		//	落下
-			Suction,    //　プレイヤに集める
-			Landing,	//	着地
-			Bound,		//	弾き飛ばされてる
+			Hit,        //プレイヤーが宝箱に当たった状態
 			Lose,		//  消滅中
 		};
 
@@ -81,7 +75,6 @@ namespace  Item_coin
 		//デバック用
 		XI::GamePad::SP controller;
 
-		//画面外に出たらアイテムを消す処理
-		void out_coin(int x,int y);
+		bool Hitbool;
 	};
 }

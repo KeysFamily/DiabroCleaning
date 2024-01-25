@@ -67,7 +67,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 10;  //所持金
+		this->balanceMoney = 100;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
@@ -78,7 +78,10 @@ namespace  Player
 		this->INT = 1.0f;
 		this->speed = 0.f;
 		this->haveAttacked = false;
-
+		this->itemDEF = 0;
+		this->itemINT = 0.f;
+		this->itemPower = 0.f;
+		this->itemSpeed = 0.f;
 
 		//--------------------------------------
 		//0329
@@ -120,7 +123,7 @@ namespace  Player
 
 		this->moveCnt++;
 		this->animCnt++;
-		this->maxSpeed = 9.0f + 0.2 * this->speed; //ステータスによる移動速度加算
+		this->maxSpeed = 9.0f + 0.2 * (this->speed+this->itemSpeed);	//ステータスによる移動速度加算
 		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 		//思考・状況判断
 		this->Think();
@@ -137,7 +140,7 @@ namespace  Player
 		//あたり判定
 		{
 			ML::Box2D me = this->hitBase.OffsetCopy(this->pos);
-			auto targets = ge->GetTasks<BChara>("item");
+			auto targets = ge->GetTasks <BItem> ("item");
 			for (auto it = targets->begin();
 				it != targets->end();
 				++it) {
@@ -145,7 +148,7 @@ namespace  Player
 				if ((*it)->CheckHit(me)) {
 					//相手にダメージの処理を行わせる
 					BChara::AttackInfo at = { 0, 0, 0 };
-					(*it)->Received(this, at);
+					(*it)->GiftPlayer(this);
 				}
 			}
 		}
@@ -938,7 +941,7 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		//this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF)) ; //ダメージ計算公式
+		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF + this->itemDEF)); //ダメージ計算公式
 		if (this->balanceMoney < 0)
 		{
 			this->moveVec = ML::Vec2(0, 0);
@@ -970,7 +973,7 @@ namespace  Player
 			if ((*it)->CheckHit(this->attackBase.OffsetCopy(this->pos))) {
 				se::Play("swordHit");
 				ge->CreateEffect(59, (*it)->pos);
-				BChara::AttackInfo at = { this->power * this->powerScale, 0, 0 };
+				BChara::AttackInfo at = { (this->power + this->itemPower) * this->powerScale, 0, 0 };
 				(*it)->Received(this, at);
 				this->haveAttacked = true;
 			}
