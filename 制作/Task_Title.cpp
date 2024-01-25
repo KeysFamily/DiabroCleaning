@@ -6,6 +6,9 @@
 #include  "sound.h"
 
 #include  "Task_Effect00.h"
+#include "Task_MapManager.h"
+#include  "Task_TitleMenu.h"
+#include "Task_LoadGameOver.h"
 
 #include "Task_Game.h"
 #include "Task_Ending.h"
@@ -41,12 +44,18 @@ namespace  Title
 		this->res = Resource::Create();
 
 		//★データ初期化
+		this->render2D_Priority[1] = 0.2f;
 		ge->GameCnt=0; 
 		ge->TotalEnemyKill=0; 
 		ge->TotalDamage = 0;
 		ge->TotalGetCoinCnt = 0;
 		ge->TotalUsedCoinCnt=0;
 		ge->GameClearFlag = true;
+		
+		this->createdMenu = false;
+
+		MapManager::Object::Create(true);
+		
 
 		return true;
 	}	
@@ -56,6 +65,8 @@ namespace  Title
 	{
 		//★データ＆タスク解放
 		bgm::Stop("bgmTitle");
+		ge->KillAll_G("title");
+
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			Game::Object::Create(true);
 		}
@@ -70,10 +81,24 @@ namespace  Title
 
 		this->cnt++;
 
-		if (inp.ST.down && ge->getCounterFlag("title") != ge->ACTIVE) {
-			ge->StartCounter("title", 45); //フェードは90フレームなので半分の45で切り替え
-			ge->CreateEffect(98, ML::Vec2(0, 0));
+		auto tm = ge->GetTask<TitleMenu::Object>("title", "Menu");
+		if (tm == nullptr)
+		{
+			createdMenu = false;
+		}
 
+		if (inp.ST.down ) 
+		{
+			if (createdMenu == false)
+			{
+				createdMenu = true;
+				TitleMenu::Object::Create(true);
+			}
+			else
+			{
+				createdMenu = false;
+				ge->KillAll_GN("title", "Menu");
+			}
 		}
 		if (ge->getCounterFlag("title") == ge->LIMIT) {
 			this->Kill();
@@ -90,13 +115,32 @@ namespace  Title
 		ML::Box2D src(0, 0, 1920, 1080);
 		this->res->img->Draw(draw, src);	//背景を用意する
 
-		if (this->cnt%60<=30) {
-			ML::Box2D Lg_draw((ge->screen2DWidth / 2) - 300, (ge->screen2DHeight / 4) * 3, 600, 100);
-			ML::Box2D Lg_src(0, 0, 400, 74);
-			this->res->Logo->Draw(Lg_draw, Lg_src); //テキストロゴを用意する
+		if (createdMenu == false)
+		{
+			if (this->cnt % 60 <= 30) {
+				ML::Box2D Lg_draw((ge->screen2DWidth / 2) - 300, (ge->screen2DHeight / 4) * 3, 600, 100);
+				ML::Box2D Lg_src(0, 0, 400, 74);
+				this->res->Logo->Draw(Lg_draw, Lg_src); //テキストロゴを用意する
+			}
 		}
 
 		ge->Dbg_ToDisplay(100, 100, "Title");
+	}
+	//-------------------------------------------------------------------
+	//ゲーム生成処理
+	void Object::CreateGame(int mapMaxDepth_)
+	{
+		if (ge->getCounterFlag("title") == ge->ACTIVE)
+		{
+			return;
+		}
+
+		auto manager = ge->GetTask<MapManager::Object>("MapManager");
+		manager->SetMaxDepth(mapMaxDepth_);
+		manager->Generate();
+
+		ge->StartCounter("title", 45); //フェードは90フレームなので半分の45で切り替え
+		ge->CreateEffect(98, ML::Vec2(0, 0));
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド

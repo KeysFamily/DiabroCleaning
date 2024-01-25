@@ -61,33 +61,34 @@ namespace MapManager
 		void  Render2D_AF()		override;//「2D描画」１フレーム毎に行う処理
 		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
 		//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
-	public:
 		//追加したい変数・メソッドはここに追加する
 		int bossDepth;
-		unsigned int mapSeed;		//マップ生成のシード値
-		float generateSubRate;		//分岐を作る確率
-		int	  subDepthMax;			//外れの道の深度最大
-		int   depthMax;				//最下層
-		Map::MapObject* map[Map::MAPSIZE_MAX][Map::MAPSIZE_MAX];	//マップデータ
-		int mapid[Map::MAPSIZE_MAX][Map::MAPSIZE_MAX];				//マップデータ（省データ版）
-		ML::Point currentPos;			//現在のマップ
-		string saveFolderPath;			//保存先のパス
-		Map::MapDir moveMapDir;			//マップ移動時の方向
-		shared_ptr<MapTransition::Object> mapTransition;	//マップトランジションへのポインタ
-		shared_ptr<MiniMap::Object> minimap;		//ミニマップへのポインタ
+		unsigned int mapSeed;									//マップ生成のシード値
+		float generateSubRate;									//分岐を作る確率
+		int	  subDepthMax;										//外れの道の深度最大
+		int   depthMax;											//最下層
+		Map::MapObject* map[Map::MAPSIZE_MAX][Map::MAPSIZE_MAX];//マップデータ
+		int mapid[Map::MAPSIZE_MAX][Map::MAPSIZE_MAX];			//マップデータ（省データ版）
+		ML::Point currentPos;									//現在のマップ
+		string saveFolderPath;									//保存先のパス
+		Map::MapDir moveMapDir;									//マップ移動時の方向
+		shared_ptr<MapTransition::Object> mapTransition;		//マップトランジションへのポインタ
+		shared_ptr<MiniMap::Object> minimap;					//ミニマップへのポインタ
+		bool generated;											//すでに生成済みか
 
-		//マップのロードに使用する列挙体
-		//ロード
-		void MoveMap(const Map::MapDir& mapDirection_);
 
-	private:
-		void Generate();
 		void GenerateMap(int x_, int y_, int depth_, int depthRest_, Map::MapDir enter_, bool setSub_ = false);
 		bool GetSubFlag(int connX_, int connY_);
 		void GenerateSub();
 		void Destroy();		//消滅時の処理
 
 		void MoveMapUpDate();
+	public:
+		//マップのロードに使用する列挙体
+		//ロード
+		void MoveMap(const Map::MapDir& mapDirection_);
+		void SetMaxDepth(int depth_);
+		bool Generate();
 
 	};
 }

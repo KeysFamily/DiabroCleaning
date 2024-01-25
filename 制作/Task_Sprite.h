@@ -49,7 +49,12 @@ namespace  Sprite
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
 		//BCharaに含まれないモノのみここに追加するall at once
-	
-		void MoveImmediately();
+		bool isGameOver;
+
+		void SetGameOver();		//ゲームオーバー処理に設定
+		void SetRevive();		//通常処理に戻す
+		void MoveImmediately();	//一気にカメラ移動
+	private:
+		void GameOverUpDate();	//ゲームオーバー時の更新処理
 	};
 }

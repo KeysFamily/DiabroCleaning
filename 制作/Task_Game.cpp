@@ -16,6 +16,7 @@
 #include  "Task_GameUI_MiniMap.h"
 #include  "Task_SystemMenu.h"
 #include  "Task_GuideControll.h"
+#include  "Task_LoadGameOver.h"
 
 
 #include  "sound.h"
@@ -55,17 +56,20 @@ namespace  Game
 		//22ci0308
 		bgm::LoadFile("bgm3", "./data/sound/bgm/industrial_zone.mp3");
 		bgm::Play("bgm3");
+		this->state = State::Normal;
 		this->volume.SetValues(100, 0, 100);
 		// ◆◆◆◆◆◆◆◆◆◆
 
 		//★タスクの生成
 		ge->qa_Player = Player::Object::Create(true);
 		ge->qa_Player->render2D_Priority[1] = 0.5f;
-
-		MapManager::Object::Create(true);
-
 		ge->qa_Player->pos = ge->qa_Map->GetPlayerStartPos();
-
+		auto mapManager = ge->GetTask<MapManager::Object>("MapManager");
+		if (mapManager == nullptr)
+		{
+			mapManager = MapManager::Object::Create(true);
+		}
+		mapManager->Generate();
 		
 		auto spr = Sprite::Object::Create(true);
 		spr->pos = ge->qa_Player->pos;
@@ -98,7 +102,7 @@ namespace  Game
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-		ge->KillAll_G("本編");
+		ge->KillAll_G("Game");
 		ge->KillAll_G("item");
 		ge->KillAll_G("coin_maneger");
 		ge->KillAll_G("UI");
@@ -123,79 +127,12 @@ namespace  Game
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		//メニュー画面を開いているときの処理
-		if (this->openingMenu == true)
-		{
-			if (this->CheckFinishedMenu())
-			{
-				//メニュー画面を閉じたときの処理
-				ge->qa_Player->LoadFile();
-				this->ResumeGameObj();
-				bgm::Play("bgm3");
-				this->openingMenu = false;
-				auto gameObjs = this->GetGameObj();
-				for (auto& gameObj : *gameObjs)
-				{
-					gameObj->render2D_Priority[1] -= 1;
-				}
-				this->render2D_Priority[1] -= 1;
-				auto guide = ge->GetTask<GuideControll::Object>("GuideControll");
-				guide->SetGuide(GuideControll::Game);
-			}
-			else
-			{
-				return;
-			}
-		}
+		this->UpDateByState();
 
 		//(22CI0333)他のタスクで以下の処理は行わなくてよい
 		ge->qa_Player = ge->GetTask<Player::Object>(Player::defGroupName, Player::defName);
 		ge->qa_Map = ge->GetTask<Map::Object>(Map::defGroupName, Map::defName);
 
-		auto inp = ge->in1->GetState( );
-		
-		//デバッグ機能
-#ifdef DEBUG_GAME
-		auto ms = ge->mouse->GetState();
-		if (ms.LB.down)
-		{
-			ge->qa_Player->pos.x = ms.pos.x + ge->camera2D.x;
-			ge->qa_Player->pos.y = ms.pos.y + ge->camera2D.y;
-		}
-#endif
-
-		this->cnt++;
-
-		if (inp.SE.down && ge->getCounterFlag("Game") != ge->ACTIVE) {
-			ge->StartCounter("Game", 45); //フェードは90フレームなので半分の45で切り替え
-			ge->CreateEffect(98, ML::Vec2(0, 0));
-
-		}
-		if (ge->getCounterFlag("Game") == ge->LIMIT) {
-			this->Kill();
-		}
-
-
-		if (inp.ST.down) {
-			//◇◇◇◇◇◇◇◇◇◇
-			//以下22CI0329記述
-			this->menu->Suspend(false);
-			this->menu->StartMenu();
-			bgm::Pause("bgm3");
-			auto gameObjs = this->GetGameObj();
-			for (auto& gameObj : *gameObjs)
-			{
-				gameObj->render2D_Priority[1] += 1;
-			}
-			this->render2D_Priority[1] += 1;
-			this->StopGameObj();
-			this->openingMenu = true;
-			auto guide = ge->GetTask<GuideControll::Object>("GuideControll");
-			guide->SetGuide(GuideControll::Menu);
-
-			return;
-			// ◆◆◆◆◆◆◆◆◆◆
-		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -287,6 +224,129 @@ namespace  Game
 		return gameObjects;
 	}
 
+	void Object::SetGameOver()
+	{
+		this->state = State::GameOver;
+
+		this->StopGameObj();
+		ge->qa_Player->Stop(false);
+		ge->qa_Player->render2D_Priority[1] -= 1;
+
+		auto sp = ge->GetTask<Sprite::Object>("Sprite", "Sprite");
+		sp->Stop(false);
+		sp->SetGameOver();
+
+		auto gov = LoadGameOver::Object::Create(true);
+		gov->Appear();
+	}
+
+	void Object::ReviveGame()
+	{
+		if (this->state != State::GameOver)
+		{
+			return;
+		}
+		auto gov = ge->GetTask<LoadGameOver::Object>("Game", "LoadGameOver");
+		gov->Disappear();
+
+		auto sp = ge->GetTask<Sprite::Object>("Sprite", "Sprite");
+		sp->SetRevive();
+
+		ge->qa_Player->ReviveToGame();
+		ge->qa_Player->render2D_Priority[1] += 1;
+
+
+		this->state = State::ReviveUpDate;
+	}
+
+	void Object::UpDateByState()
+	{
+
+		switch (this->state)
+		{
+		case State::Normal:
+		{
+			auto inp = ge->in1->GetState();
+
+			//デバッグ機能
+#ifdef DEBUG_GAME
+			auto ms = ge->mouse->GetState();
+			if (ms.LB.down)
+			{
+				ge->qa_Player->pos.x = ms.pos.x + ge->camera2D.x;
+				ge->qa_Player->pos.y = ms.pos.y + ge->camera2D.y;
+			}
+#endif
+
+			if (inp.ST.down) 
+			{
+				//◇◇◇◇◇◇◇◇◇◇
+				//以下22CI0329記述
+				this->menu->Suspend(false);
+				this->menu->StartMenu();
+				bgm::Pause("bgm3");
+				auto gameObjs = this->GetGameObj();
+				for (auto& gameObj : *gameObjs)
+				{
+					gameObj->render2D_Priority[1] += 1;
+				}
+				this->render2D_Priority[1] += 1;
+				this->StopGameObj();
+				this->state = State::OpeningMenu;
+				auto guide = ge->GetTask<GuideControll::Object>("GuideControll");
+				guide->SetGuide(GuideControll::Menu);
+
+				return;
+				// ◆◆◆◆◆◆◆◆◆◆
+			}
+
+			break;
+		}
+		case State::GameOver:
+			if (ge->getCounterFlag("Game") == ge->LIMIT) {
+				this->Kill();
+			}
+			break;
+		case State::OpeningMenu:
+			if (this->CheckFinishedMenu())
+			{
+				//メニュー画面を閉じたときの処理
+				ge->qa_Player->LoadFile();
+				this->ResumeGameObj();
+				bgm::Play("bgm3");
+				this->state = State::Normal;
+				auto gameObjs = this->GetGameObj();
+				for (auto& gameObj : *gameObjs)
+				{
+					gameObj->render2D_Priority[1] -= 1;
+				}
+				this->render2D_Priority[1] -= 1;
+				auto guide = ge->GetTask<GuideControll::Object>("GuideControll");
+				guide->SetGuide(GuideControll::Game);
+			}
+			break;
+		case State::ReviveUpDate:
+		{
+			auto gov = ge->GetTask<LoadGameOver::Object>("Game","LoadGameOver");
+			if (gov == nullptr)
+			{
+				this->ResumeGameObj();
+				this->state = State::Normal;
+			}
+
+			break;
+		}
+		}
+	}
+
+	void Object::SetResult()
+	{
+		if (ge->getCounterFlag("Game") != ge->ACTIVE) {
+			ge->StartCounter("Game", 45); //フェードは90フレームなので半分の45で切り替え
+			ge->CreateEffect(98, ML::Vec2(0, 0));
+		}
+		this->state = State::GameOver;
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

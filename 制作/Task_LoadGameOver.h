@@ -1,15 +1,20 @@
 #pragma warning(disable:4996)
 #pragma once
-//-------------------------------------------------------------------
-//タイトル画面
-//-------------------------------------------------------------------
+//?------------------------------------------------------
+//タスク名:ゲームオーバーロードタスク
+//作　成　者:土田誠也
+//TODO:もしいれば下記へ記述
+//編　集　者:
+//作成年月日:
+//概　　　要:
+//?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
 
-namespace  Title
+namespace  LoadGameOver
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("title");	//グループ名
-	const  string  defName("NoName");			//タスク名
+	const  string  defGroupName("Game");	//グループ名
+	const  string  defName("LoadGameOver");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -23,8 +28,10 @@ namespace  Title
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP img;
-		DG::Image::SP Logo;
+		DG::Image::SP imgBg;
+		DG::Image::SP imgText;
+		OL::Size2D imgTextSize;
+		int textResSize;		//テキストの文字数
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -42,14 +49,31 @@ namespace  Title
 		bool  B_Initialize();
 		bool  B_Finalize();
 		bool  Initialize();	//「初期化」タスク生成時に１回だけ行う処理
-		void  UpDate()			override;	//「実行」１フレーム毎に行う処理
-		void  Render2D_AF()		override;	//「2D描画」１フレーム毎に行う処理
-		bool  Finalize();	//「終了」タスク消滅時に１回だけ行う処理
+		void  UpDate()			override;//「実行」１フレーム毎に行う処理
+		void  Render2D_AF()		override;//「2D描画」１フレーム毎に行う処理
+		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+		enum class State
+		{
+			Invalid,
+			Appear,
+			FinishAppear,
+			Disappear,
+		};
+		State state;
+		ML::Vec2 textPos;
+		float textDistance;
+		int textAppearDistance;
+		int textAppearCnt;
+
+		void AppearUpDate();
+		void DisappearUpDate();
 	public:
 		//追加したい変数・メソッドはここに追加する
-		void CreateGame(int mapMaxDepth_);
-		bool createdMenu;
-		int cnt;
+
+		void Appear();
+		void Disappear();
+		bool CheckFinishdAppear();
+		
 	};
 }

@@ -88,6 +88,8 @@ namespace  Player
 			Dash,		//  ダッシュ
 			MagicAttack,//	魔法
 			Back,		//  避ける
+			Death,		//　死亡
+			Revive,		//　復活
 		};
 
 		enum Magic
@@ -140,6 +142,7 @@ namespace  Player
 		//時間管理
 		int surviveFrame, surviveTime;
 
+
 		//--------------------------------------
 		//0329
 		enum StatusID
@@ -155,6 +158,8 @@ namespace  Player
 		void LoadFile();	//スキル等ファイルのロード
 		int magicIndex;						//使っている魔法の要素番号
 		vector<int> unlockedMagic;			//解放済みのスキル
+		int reviveBonusMoney;				//復活した時のお金
+		void ReviveToGame();						//復活
 		//--------------------------------------
 		void CheckMove_();					//マップ外に出ないように
 

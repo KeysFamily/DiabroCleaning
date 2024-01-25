@@ -57,6 +57,9 @@
     <Filter Include="MyPG\Task\Game\Item_coin">
       <UniqueIdentifier>{28df0327-2d3a-4bcf-b33e-c52c36ef562d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyPG\Task\Game\GameOver">
+      <UniqueIdentifier>{33665348-11fe-427b-9252-780fb78a2e44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine_Ver3_83.cpp">
@@ -378,6 +381,12 @@
     <ClCompile Include="Task_TitleMenu.cpp">
       <Filter>MyPG\Task\Title</Filter>
     </ClCompile>
+    <ClCompile Include="Task_LoadGameOver.cpp">
+      <Filter>MyPG\Task\Game\GameOver</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_GameOverMenu.cpp">
+      <Filter>MyPG\Task\Game\GameOver</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -574,6 +583,12 @@
     </ClInclude>
     <ClInclude Include="Task_TitleMenu.h">
       <Filter>MyPG\Task\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_LoadGameOver.h">
+      <Filter>MyPG\Task\Game\GameOver</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_GameOverMenu.h">
+      <Filter>MyPG\Task\Game\GameOver</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

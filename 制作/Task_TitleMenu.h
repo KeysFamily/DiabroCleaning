@@ -13,7 +13,7 @@
 namespace  TitleMenu
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("Title");	//グループ名
+	const  string  defGroupName("title");	//グループ名
 	const  string  defName("Menu");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
@@ -28,7 +28,14 @@ namespace  TitleMenu
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		
+		DG::Image::SP imgBg;
+		OL::Size2D imgBgSize;
+		DG::Image::SP imgSelect;
+		OL::Size2D imgSelectSize;
+		DG::Font::SP fontTitle;
+		OL::Size2D fontTitleSize;
+		DG::Font::SP fontMain;
+		OL::Size2D fontMainSize;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -50,7 +57,29 @@ namespace  TitleMenu
 		void  Render2D_AF()		override;//「2D描画」１フレーム毎に行う処理
 		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
+		
+		void RunMenuAction(int actId_);
+		void LoadMenuAction(const string& filePath_);
+		struct MenuObject
+		{
+			int actionId;
+			string text;
+		};
+		vector<MenuObject> menuObj;
+		vector<int> menuDisplay;
+		int selectingMenu;
+
+
+		void ResetMenu();
+		void AddMenu(int id_);
 	public:
 		//追加したい変数・メソッドはここに追加する
+		ML::Vec2 pos;
+		ML::Vec2 titlePos;
+		ML::Vec2 mainBeginPos;
+		string titleStr;
+		float mainTextDistance;
+		float selectObjDistance;
+		
 	};
 }

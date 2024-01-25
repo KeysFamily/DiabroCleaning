@@ -156,6 +156,8 @@
     <ClCompile Include="Task_EnemySkyEye.cpp" />
     <ClCompile Include="Task_FireBall.cpp" />
     <ClCompile Include="Task_Game.cpp" />
+    <ClCompile Include="Task_GameOverMenu.cpp" />
+    <ClCompile Include="Task_LoadGameOver.cpp" />
     <ClCompile Include="Task_GameUI.cpp" />
     <ClCompile Include="Task_GameUI_MiniMap.cpp" />
     <ClCompile Include="Task_Item.cpp" />
@@ -229,6 +231,8 @@
     <ClInclude Include="Task_EnemySkyEye.h" />
     <ClInclude Include="Task_FireBall.h" />
     <ClInclude Include="Task_Game.h" />
+    <ClInclude Include="Task_GameOverMenu.h" />
+    <ClInclude Include="Task_LoadGameOver.h" />
     <ClInclude Include="Task_GameUI.h" />
     <ClInclude Include="Task_GameUI_MiniMap.h" />
     <ClInclude Include="Task_Item.h" />

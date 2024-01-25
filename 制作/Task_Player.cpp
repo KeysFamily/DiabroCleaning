@@ -6,6 +6,7 @@
 #include  "Task_Map.h"
 #include  "Task_Effect00.h"
 #include  "Task_Item_coin.h"
+#include  "Task_Game.h"
 #include  "BEnemy.h"
 #include  "Task_EnemySkeleton.h"
 #include "Task_MapManager.h"
@@ -25,6 +26,7 @@ namespace  Player
 		se::LoadFile("airdash", "./data/sound/se/se_airdash.wav");
 		se::LoadFile("swordSlash", "./data/sound/se/se_swordSlash.wav");
 		se::LoadFile("swordHitGround", "./data/sound/se/se_swordHitGround2.wav");
+		se::LoadFile("damaged", "./data/sound/se/se_player_damage.wav");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -65,7 +67,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 1000;  //所持金
+		this->balanceMoney = 100;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
@@ -88,6 +90,7 @@ namespace  Player
 		this->unlockedMagic.clear();
 		this->unlockedMagic.push_back(Magic::NoMagic);
 		this->magicIndex = 0;
+		this->reviveBonusMoney = 100;
 		//--------------------------------------
 		//★タスクの生成
 
@@ -109,14 +112,19 @@ namespace  Player
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		if (this->motion != Motion::Death
+			|| this->motion != Motion::Revive)
+		{
+			this->surviveFrame++;
+			this->surviveTime = this->surviveFrame / 60;
+			ge->GameCnt = this->surviveTime;
+			if (this->unHitTime > 0) { this->unHitTime--; }
+		}
+
 		this->moveCnt++;
 		this->animCnt++;
-		this->surviveFrame++;
-		this->surviveTime = this->surviveFrame / 60;
-		ge->GameCnt = this->surviveTime;
 		this->maxSpeed = 9.0f + 0.2 * (this->speed+this->itemSpeed);	//ステータスによる移動速度加算
 		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
-		if (this->unHitTime > 0) { this->unHitTime--; }
 		//思考・状況判断
 		this->Think();
 		//現モーションに対応した制御
@@ -347,6 +355,11 @@ namespace  Player
 		case Motion::Back:
 			if (this->moveCnt > 10 || true == this->CheckBack_LR()) { this->moveVec.x = 0; nm = Motion::Landing; }
 			break;
+		case Motion::Death:
+			break;
+		case Motion::Revive:
+			if (this->moveCnt / 2 >= 10) { nm = Motion::Stand; }
+			break;
 		}
 		//モーション更新
 		this->UpdateMotion(nm);
@@ -390,6 +403,8 @@ namespace  Player
 		case Motion::AirAttack2: break;
 		case Motion::AirAttack3: break;
 		case Motion::Dash: break;
+		case Motion::Death: break;
+		case Motion::Revive: break;
 		case Motion::Unnon:	break;
 		}
 
@@ -422,6 +437,8 @@ namespace  Player
 			break;
 		case Motion::Bound: break;
 		case Motion::Back: break;
+		case Motion::Death: break;
+		case Motion::Revive: break;
 		case Motion::Unnon:	break;
 		}
 		//-----------------------------------------------------------------
@@ -648,6 +665,10 @@ namespace  Player
 		case Motion::Back:
 			if (this->angle_LR == Angle_LR::Left) { this->moveVec.x += 2; }
 			else { this->moveVec.x -= 2; }
+		case Motion::Death:
+			break;
+		case Motion::Revive:
+			break;
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -715,6 +736,18 @@ namespace  Player
 			{ ML::Box2D(-56, -38, 116, 96), ML::Box2D(1252, 1824, 116, 96),defColor},		//55 魔法4
 			{ ML::Box2D(-48, -38, 108, 96), ML::Box2D(60, 1972, 108, 96),defColor},			//56 魔法5
 			{ ML::Box2D(-56, -38, 116, 96), ML::Box2D(252, 1972, 116, 96),defColor},		//57 魔法6
+			{ ML::Box2D(-42, -38, 84, 96), ML::Box2D(664, 1232, 84, 96),defColor},			//58 死亡1
+			{ ML::Box2D(-38, -38, 76, 96), ML::Box2D(868, 1232, 76, 96),defColor},			//59 死亡2
+			{ ML::Box2D(-38, -48, 76, 96), ML::Box2D(1060, 1232, 76, 96),defColor},			//60 死亡3
+			{ ML::Box2D(-42, -48, 84, 96), ML::Box2D(1264, 1232, 84, 96),defColor},			//61 死亡4
+			{ ML::Box2D(-38, -48, 76, 96), ML::Box2D(68, 1380, 76, 96),defColor},			//62 死亡5
+			{ ML::Box2D(-38, -48, 76, 96), ML::Box2D(260, 1380, 76, 96),defColor},			//63 死亡6
+			{ ML::Box2D(-44, -44, 88, 88), ML::Box2D(464, 1388, 88, 88),defColor},			//64 死亡7
+			{ ML::Box2D(-36, -36, 72, 72), ML::Box2D(672, 1404, 72, 72),defColor},			//65 死亡8
+			{ ML::Box2D(-30, -34, 60, 68), ML::Box2D(884, 1408, 60, 68),defColor},			//66 死亡9
+			{ ML::Box2D(-36, -36, 72, 72), ML::Box2D(1072, 1404, 72, 72),defColor},			//67 死亡10
+
+
 
 		};
 		ML::Box2D attackTable[] = {
@@ -850,6 +883,24 @@ namespace  Player
 		case Motion::Back:
 			rtv = imageTable[53];
 			break;
+		case Motion::Death:
+			work = this->animCnt / 2;
+			if(work >= 10)
+			{
+				work = 9;
+			}
+
+			rtv = imageTable[work + 58];
+			break;
+		case Motion::Revive:
+			work = this->animCnt / 2;
+			if (work >= 10)
+			{
+				work = 9;
+			}
+
+			rtv = imageTable[67 - work];
+			break;
 		}
 
 		//this->hitBase = rtv.draw;
@@ -890,10 +941,15 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		//this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF + this->itemDEF)) ; //ダメージ計算公式
-		if (this->balanceMoney <= 0)this->balanceMoney = 0; //デバッグ用仮処理
-		if (this->hp.IsMin()) {
-			//this->Kill();
+		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF + this->itemDEF)); //ダメージ計算公式
+		if (this->balanceMoney < 0)
+		{
+			this->moveVec = ML::Vec2(0, 0);
+			auto game = ge->GetTask<Game::Object>("Game", "Game");
+			game->SetGameOver();
+			this->UpdateMotion(Motion::Death);
+			this->balanceMoney = 0; //デバッグ用仮処理
+			return;
 		}
 		//吹き飛ばされる
 		if (this->pos.x > from_->pos.x) {
@@ -903,6 +959,7 @@ namespace  Player
 			this->moveVec = ML::Vec2(-4, -9);
 		}
 		this->UpdateMotion(Motion::Bound);
+		se::Play("damaged");
 		//from_は攻撃してきた相手、カウンターなどで逆にダメージを与えたい時使う
 	}
 	//----------------------------------------------------------------------------
@@ -1007,6 +1064,14 @@ namespace  Player
 				this->speed = param;
 			}
 		}
+	}
+	//-------------------------------------------------------------------
+	//復活処理
+	void Object::ReviveToGame()
+	{
+		this->balanceMoney = reviveBonusMoney;
+		this->unHitTime = 270;
+		this->UpdateMotion(Motion::Revive);
 	}
 	//-------------------------------------------------------------------
 	//めり込まない移動処理

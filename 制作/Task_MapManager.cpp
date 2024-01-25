@@ -50,14 +50,6 @@ namespace  MapManager
 		//セーブ先
 		this->saveFolderPath = "./data/inGame/run/mapData/";
 
-
-
-		this->Generate();
-
-		ge->qa_Map = Map::Object::Create(true);
-		ge->qa_Map->render2D_Priority[1] = 0.9f;
-		ge->qa_Map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
-
 		this->moveMapDir = Map::MapDir::Non;
 
 		//★タスクの生成
@@ -93,8 +85,13 @@ namespace  MapManager
 	//-------------------------------------------------------------------
 	//その他のメソッド
 	//生成全般
-	void Object::Generate()
+	bool Object::Generate()
 	{
+		if (generated == true)
+		{
+			return false;
+		}
+
 		for (int y = 0; y < Map::MAPSIZE_MAX; ++y)
 		{
 			for (int x = 0; x < Map::MAPSIZE_MAX; ++x)
@@ -148,6 +145,13 @@ namespace  MapManager
 			this->minimap = MiniMap::Object::Create(true);
 		}
 		this->minimap->LoadData(this->saveFolderPath);
+
+		ge->qa_Map = Map::Object::Create(true);
+		ge->qa_Map->render2D_Priority[1] = 0.9f;
+		ge->qa_Map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
+		this->generated = true;
+
+		return true;
 	}
 	//-------------------------------------------------------------------
 	//1マップ生成処理
@@ -360,6 +364,8 @@ namespace  MapManager
 			return;
 		}
 
+
+
 		if (this->mapTransition->CheckFinishedAppear() == false)
 		{
 			return;
@@ -415,6 +421,13 @@ namespace  MapManager
 				}
 			}
 		}
+	}
+
+	//-------------------------------------------------------------------
+	//セッタ
+	void Object::SetMaxDepth(int depth_)
+	{
+		this->depthMax = depth_;
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド

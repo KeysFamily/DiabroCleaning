@@ -1,5 +1,5 @@
 //?------------------------------------------------------
-//タスク名:タイトルメニュー
+//タスク名:ゲームオーバーメニュー
 //作　成　者:土田誠也
 //TODO:もしいれば下記へ記述
 //編　集　者:
@@ -7,10 +7,10 @@
 //概　　　要:
 //?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_TitleMenu.h"
-#include  "Task_Title.h"
+#include  "Task_GameOverMenu.h"
+#include  "Task_Game.h"
 
-namespace  TitleMenu
+namespace  GameOverMenu
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
@@ -47,15 +47,15 @@ namespace  TitleMenu
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->pos = ML::Vec2(ge->screenWidth / 2, ge->screenHeight / 4 * 3);
+		this->pos = ML::Vec2(ge->screenWidth / 2, ge->screenHeight / 3 * 2);
 		this->titlePos = ML::Vec2(0, -110);
 		this->mainBeginPos = ML::Vec2(0, -40);
 		this->mainTextDistance = 20;
 		this->selectObjDistance = 21;
 
-		this->LoadMenuAction("./data/title/MenuData.txt");
-
-		this->RunMenuAction(0);
+		this->LoadMenuAction("./data/gameOver/MenuData.txt");
+		this->AddMenu(0);
+		this->AddMenu(1);
 		//★タスクの生成
 
 		return  true;
@@ -105,15 +105,15 @@ namespace  TitleMenu
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		//背景表示
-		ge->DrawStd(this->res->imgBg, this->res->imgBgSize, this->pos);
+		////背景表示
+		//ge->DrawStd(this->res->imgBg, this->res->imgBgSize, this->pos);
 
 		//タイトル表示
 		float titleSizeW = this->res->fontTitleSize.w * this->titleStr.size();
 		ML::Box2D draw = OL::setBoxCenter(titleSizeW, this->res->fontTitleSize.h);
 		draw.Offset(this->pos + this->titlePos);
 		this->res->fontTitle->Draw(draw, this->titleStr);
-		
+
 		//メニュー表示
 		int selectObjCnt = 0;
 		ML::Vec2 mainDrawPos = this->mainBeginPos;
@@ -122,7 +122,7 @@ namespace  TitleMenu
 			float menuSizeW = this->res->fontMainSize.w * this->menuObj[dp].text.size();
 			draw = OL::setBoxCenter(menuSizeW, this->res->fontMainSize.h);
 			draw.Offset(this->pos + mainDrawPos);
-			
+
 			for (auto& menu : menuObj)
 			{
 				if (menu.actionId == dp)
@@ -132,7 +132,7 @@ namespace  TitleMenu
 
 			}
 
-			if(selectObjCnt == this->selectingMenu)
+			if (selectObjCnt == this->selectingMenu)
 			{
 				//選択オブジェクト表示
 				ML::Vec2 selectObjPos = this->pos;
@@ -173,34 +173,18 @@ namespace  TitleMenu
 		switch (actId_)
 		{
 		case 0:
-			this->ResetMenu();
-			this->AddMenu(1);
-			this->AddMenu(2);
-			this->AddMenu(3);
-			this->AddMenu(4);
-			this->titleStr = "難易度選択";
-			break;
+		{
+			auto game = ge->GetTask<Game::Object>("Game", "Game");
+			game->ReviveGame();
+			this->Kill();
+		}
+		break;
 		case 1:
 		{
-			auto title = ge->GetTask<Title::Object>("title", "NoName");
-			title->CreateGame(3);
-		}
-		break;
-		case 2:
-		{
-			auto title = ge->GetTask<Title::Object>("title", "NoName");
-			title->CreateGame(5);
-		}
-		break;
-		case 3:
-		{
-			auto title = ge->GetTask<Title::Object>("title", "NoName");
-			title->CreateGame(10);
-		}
-		break;
-		case 4:
+			auto game = ge->GetTask<Game::Object>("Game", "Game");
+			game->SetResult();
 			this->Kill();
-			break;
+		}
 		default:
 			break;
 		}
@@ -219,6 +203,7 @@ namespace  TitleMenu
 	{
 		this->menuDisplay.push_back(id_);
 	}
+
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
