@@ -102,7 +102,7 @@ namespace  MapManager
 
 		map[0][0] = new MapObject(1,"map_start");
 
-#if true
+#if false
 		map[0][1] = new MapObject(1, "map_goal");
 #else
 		map[0][1] = new MapObject(1, MapType::Connect, MapDir::Left, MapDir::Right);
