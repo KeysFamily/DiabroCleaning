@@ -85,6 +85,7 @@ namespace  Map
 		MapData			ObjectMap;		//当たり判定用チップデータ
 		MapData			GenerateMap;	//エンティティ用チップデータ
 		map<int, SlopeData> slopeData;	//坂の情報のマップ配列
+		map<int, Map::SpikeData> spikeData;	//ダメージ床データ
 		ML::Box2D			hitBase;	//ピクセル単位のマップサイズを持つ
 		bool				visited;	//一度訪れたか
 		int					depth;		//深度
@@ -100,11 +101,13 @@ namespace  Map
 		ML::Vec2 CheckSlope(const ML::Box2D& hit_);
 		//そのチップ内に坂が存在するか
 		bool  CheckSlopeOnChip(const ML::Box2D& hit_);
-		//そのチップ内に坂が存在するか
 		bool  CheckSlopeOnChip(const ML::Vec2& pos_);
 
 		//すり抜ける床判定
 		bool CheckFallGround(const ML::Box2D& hit_);
+
+		//ダメージ床判定
+		Map::SpikeData CheckSpike(const ML::Box2D& hit_);
 
 		//マップ読み込み
 		bool LoadMap(const string& folderPath_);
@@ -114,6 +117,9 @@ namespace  Map
 
 		//坂判定読み込み
 		bool LoadSlope(const string& filepath_);
+
+		//ダメージ床読み込み
+		bool LoadSpike(const string& filepath_);
 
 		//出口判定
 		MapDir CheckExit(const ML::Box2D& hit_);

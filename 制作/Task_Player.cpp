@@ -151,6 +151,17 @@ namespace  Player
 					(*it)->GiftPlayer(this);
 				}
 			}
+			
+			if (ge->qa_Map != nullptr)
+			{
+				Map::SpikeData spike = ge->qa_Map->CheckSpike(me);
+				if (spike.damage >= 0)
+				{
+					AttackInfo ati;
+					ati.power = spike.damage;
+					this->Received(this, ati);
+				}
+			}
 		}
 
 		this->CheckMoveMap();
