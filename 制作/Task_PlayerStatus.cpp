@@ -24,6 +24,8 @@ namespace  PlayerStatus
 		this->systemFontSize.Set(32, 64);
 		this->systemFont = DG::Font::Create("ＭＳ ゴシック", systemFontSize.w, systemFontSize.h);
 
+		this->addStFontSize.Set(16, 32);
+		this->addStFont = DG::Font::Create("ＭＳ ゴシック", addStFontSize.w, addStFontSize.h);
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -73,6 +75,9 @@ namespace  PlayerStatus
 
 		this->statusBeginPos = ML::Vec2(-300, 6);
 		this->statusDistance = 74;
+
+		this->addStatusDistance = ML::Vec2(100, 24);
+		this->addStatusColor = ML::Color(1, 0.5f, 0.5f, 0.5f);
 
 		this->currentShop = shops[0].get();
 
@@ -127,12 +132,16 @@ namespace  PlayerStatus
 		draw.Offset(this->pos + this->statusBeginPos);
 
 		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->power));
+		this->res->addStFont->Draw(draw.OffsetCopy(this->addStatusDistance), " +" + to_string((int)ge->qa_Player->itemPower), this->addStatusColor);
 		draw.y += this->statusDistance;
 		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->DEF));
+		this->res->addStFont->Draw(draw.OffsetCopy(this->addStatusDistance), " +" + to_string((int)ge->qa_Player->itemDEF), this->addStatusColor);
 		draw.y += this->statusDistance;
 		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->INT));
+		this->res->addStFont->Draw(draw.OffsetCopy(this->addStatusDistance), " +" + to_string((int)ge->qa_Player->itemINT), this->addStatusColor);
 		draw.y += this->statusDistance;
 		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->speed));
+		this->res->addStFont->Draw(draw.OffsetCopy(this->addStatusDistance), " +" + to_string((int)ge->qa_Player->itemSpeed), this->addStatusColor);
 	}
 	//-------------------------------------------------------------------
 	//その他メソッド
