@@ -11,6 +11,7 @@
 #include  "Task_PlayerStatus.h"
 #include  "Task_Price.h"
 #include  "Task_SystemMenuMessageWindow.h"
+#include  "sound.h"
 
 namespace  PlayerStatusShop
 {
@@ -210,11 +211,15 @@ namespace  PlayerStatusShop
 			{
 				this->priceDp->active = false;
 			}
+			se::Stop("bought");
+			se::Play("bought");
 			return true;
 		}
 
 		auto msg = ge->GetTask<SystemMenuMessageWindow::Object>("SystemMenu", "MessageWindow");
 		msg->SetMessage("cantBuy");
+		se::Stop("errorSelect");
+		se::Play("errorSelect");
 		return false;
 	}
 
@@ -261,7 +266,11 @@ namespace  PlayerStatusShop
 	{
 		if (ge->qa_Player != nullptr)
 		{
-			this->Buy(ge->qa_Player->balanceMoney);
+			if (this->Buy(ge->qa_Player->balanceMoney) == false)
+			{
+				se::Stop("errorSelect");
+				se::Play("errorSelect");
+			}
 		}
 
 	}

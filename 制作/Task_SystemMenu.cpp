@@ -27,6 +27,8 @@ namespace  SystemMenu
 	//ƒŠƒ\[ƒX‚Ì‰Šú‰»
 	bool  Resource::Initialize()
 	{
+		se::LoadFile("errorSelect", "./data/sound/se/se_errorSelect.wav");
+		se::LoadFile("bought", "./data/sound/se/se_bought.wav");
 		this->imgBg = DG::Image::Create("./data/image/Menu/backGround.png");
 		return true;
 	}
