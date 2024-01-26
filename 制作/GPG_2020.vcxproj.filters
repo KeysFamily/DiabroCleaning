@@ -371,7 +371,7 @@
     </ClCompile>
     <ClCompile Include="Task_ItemTrsBox.cpp">
       <Filter>MyPG\Task\Game\Item</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="Task_GuideControll.cpp">
       <Filter>MyPG\Task</Filter>
     </ClCompile>
@@ -386,6 +386,10 @@
     </ClCompile>
     <ClCompile Include="Task_GameOverMenu.cpp">
       <Filter>MyPG\Task\Game\GameOver</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemyFireBall.cpp" />
+    <ClCompile Include="Task_EnemyEffect.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -574,7 +578,7 @@
     </ClInclude>
     <ClInclude Include="Task_ItemTrsBox.h">
       <Filter>MyPG\Task\Game\Item</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="Task_GuideControll.h">
       <Filter>MyPG\Task</Filter>
     </ClInclude>
@@ -589,6 +593,10 @@
     </ClInclude>
     <ClInclude Include="Task_GameOverMenu.h">
       <Filter>MyPG\Task\Game\GameOver</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemyFireBall.h" />
+    <ClInclude Include="Task_EnemyEffect.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

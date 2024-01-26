@@ -1,48 +1,22 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//タスク名:敵管理タスク
-//作　成　者:22CI0333 長谷川勇一朗
+//タスク名:
+//作　成　者:
 //TODO:もしいれば下記へ記述
 //編　集　者:
-//作成年月日:2023/12/1
-//概　　　要:敵を管理する
+//作成年月日:
+//概　　　要:
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
-#include "BEnemy.h"
 
-namespace  EnemyManager
+class BChara;
+
+namespace  EnemyEffect
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("EnemyManager");	//グループ名
-	const  string  defName("Normal");	//タスク名
-
-	struct EnemyData {	//敵情報
-		float hp;
-		float jumpPow;
-		float maxSpeed;
-		float addSpeed;
-		float decSpeed;
-
-		int unHitTime;
-		int dropMoney;
-		int attackPow;
-	};
-
-	struct EnemyStatusRate {//敵ステータス倍率
-		float hpRate;		//体力倍率
-		float speedRate;	//速度倍率
-		float moneyRate;	//報酬倍率
-		float attackRate;	//攻撃力倍率
-		ML::Color efcollor;	//エフェクトの色
-	};
-	//---------------------------------------------------------
-	// 敵ステータス倍率について
-	// Rateを管理する配列の中に敵ごとに管理する。
-	// 
-	//---------------------------------------------------------
-
-
+	const  string  defGroupName("EnemyEffect");	//グループ名
+	const  string  defName("EnemyEffect");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -56,15 +30,9 @@ namespace  EnemyManager
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-
-		
-		std::map<string, EnemyData> enemyDatas;
-		std::vector<string> enemyNames;
-
-		std::vector<std::map<string, EnemyStatusRate>> stateRates;
-
-
-		std::map<string, function<BEnemy::SP(bool)>> enemyInits;
+		DG::Image::SP img;
+		OL::Size2D imgSize;
+		OL::Animation::SP anim;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -88,12 +56,9 @@ namespace  EnemyManager
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
-		std::vector<BResource::SP> residentResource;
-
-		void SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_, int level_ = 0);
-		void SpawnEnemyName(string name_, ML::Vec2 pos_, int level_ = 0);
-
-		void KillAllEnemys();
-
+		ML::Vec2 pos;
+		ML::Color color;
+		BChara* target;
+		int animCnt;
 	};
 }

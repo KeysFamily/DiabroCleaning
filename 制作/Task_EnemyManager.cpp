@@ -12,6 +12,7 @@
 #include  "Task_EnemyBoss.h"
 #include  "Task_EnemySkeleton.h"
 #include  "Task_EnemySkyEye.h"
+#include  "Task_EnemyEffect.h"
 
 #include  "randomLib.h"
 
@@ -59,18 +60,23 @@ namespace  EnemyManager
 		ifstream f("./data/enemy/stateRate.json");
 		if (!f.is_open())return false;
 		json esdata = json::parse(f);
-		for (int i = 1; i <= 3; ++i) {
-			string rate = "Rate" + to_string(i);
-
-			for (auto& e : esdata[rate]) {
+		for(auto& rate : esdata)
+		{
+			this->stateRates.push_back(std::map<string, EnemyStatusRate>());
+			for (auto& e : rate)
+			{
 				string en = e["name"];
 				EnemyStatusRate esr;
-				esr.hpRate     = e["hpRate"];
-				esr.speedRate  = e["speedRate"];
-				esr.moneyRate  = e["moneyRate"];
+				esr.hpRate = e["hpRate"];
+				esr.speedRate = e["speedRate"];
+				esr.moneyRate = e["moneyRate"];
 				esr.attackRate = e["attackRate"];
-				
-				this->stateRates[i][en] = esr;
+				esr.efcollor.c[0] = e["effect_a"];
+				esr.efcollor.c[1] = e["effect_r"];
+				esr.efcollor.c[2] = e["effect_g"];
+				esr.efcollor.c[3] = e["effect_b"];
+
+				(this->stateRates.end() - 1)->at(en) = esr;
 			}
 		}
 
@@ -174,7 +180,7 @@ namespace  EnemyManager
 	// “GƒXƒ|[ƒ“
 	
 
-	void Object::SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_, int depth_) {
+	void Object::SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_, int level_) {
 		int size = this->res->enemyNames.size();
 		string name;
 		if (enemyNum_ == 6) {
@@ -185,10 +191,10 @@ namespace  EnemyManager
 			if (enemyNum_ < 0 || enemyNum_ >= size)return;
 			name = this->res->enemyNames[enemyNum_];
 		}
-		this->SpawnEnemyName(name, pos_, depth_);
+		this->SpawnEnemyName(name, pos_, level_);
 	}
 
-	void Object::SpawnEnemyName(string name_, ML::Vec2 pos_, int depth_) {
+	void Object::SpawnEnemyName(string name_, ML::Vec2 pos_, int level_) {
 		if (this->res->enemyDatas.count(name_) > 0 &&
 			this->res->enemyInits.count(name_) > 0) {
 			
@@ -205,17 +211,28 @@ namespace  EnemyManager
 			e->attackPow = this->res->enemyDatas[name_].attackPow;
 
 			//”{—¦Ý’è
-			int Rate = 1;
+			int level;
+			if (level_ >= this->res->stateRates.size())
+			{
+				level = this->res->stateRates.size() - 1;
+			}
+			level = level_;
 
-			HP *= this->res->stateRates[depth_][name_].hpRate;
+
+			HP *= this->res->stateRates[level][name_].hpRate;
 
 			e->hp.SetValues(HP, 0, HP);
-			e->maxSpeed *= this->res->stateRates[depth_][name_].speedRate;
-			e->addSpeed *= this->res->stateRates[depth_][name_].speedRate;
-			e->decSpeed *= this->res->stateRates[depth_][name_].speedRate;
+			e->maxSpeed *= this->res->stateRates[level][name_].speedRate;
+			e->addSpeed *= this->res->stateRates[level][name_].speedRate;
+			e->decSpeed *= this->res->stateRates[level][name_].speedRate;
 
-			e->dropMoney *= this->res->stateRates[1][name_].moneyRate;
-			e->attackPow *= this->res->stateRates[1][name_].attackRate;
+			e->dropMoney *= this->res->stateRates[level][name_].moneyRate;
+			e->attackPow *= this->res->stateRates[level][name_].attackRate;
+
+			auto ef = EnemyEffect::Object::Create(true);
+			ef->pos = e->pos;
+			ef->target = e.get();
+			ef->color = this->res->stateRates[level][name_].efcollor;
 
 			BChara::Angle_LR angleSheet[] = {
 				BChara::Angle_LR::Left,

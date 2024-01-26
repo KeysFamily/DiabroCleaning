@@ -1,71 +1,109 @@
 {
-	"Rate1": [
-		{
-			"name": "Skeleton",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "SkyEye",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "Boss",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		}
-	],
-	"Rate2": [
-		{
-			"name": "Skeleton",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "SkyEye",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "Boss",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		}
-	],
-	"Rate3": [
-		{
-			"name": "Skeleton",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "SkyEye",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "Boss",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		}
+	"Rates": [
+		[
+			{
+				"name": "Skeleton",
+				"hpRate": 1,
+				"speedRate": 1,
+				"moneyRate": 1,
+				"attackRate": 1,
+				"effect_a": 0,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			},
+			{
+				"name": "SkyEye",
+				"hpRate": 1,
+				"speedRate": 1,
+				"moneyRate": 1,
+				"attackRate": 1,
+				"effect_a": 1,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			},
+			{
+				"name": "Boss",
+				"hpRate": 1,
+				"speedRate": 1,
+				"moneyRate": 1,
+				"attackRate": 1,
+				"effect_a": 0,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			}
+		],
+		[
+			{
+				"name": "Skeleton",
+				"hpRate": 2,
+				"speedRate": 2,
+				"moneyRate": 2,
+				"attackRate": 2,
+				"effect_a": 1,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			},
+			{
+				"name": "SkyEye",
+				"hpRate": 2,
+				"speedRate": 2,
+				"moneyRate": 2,
+				"attackRate": 2,
+				"effect_a": 1,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			},
+			{
+				"name": "Boss",
+				"hpRate": 2,
+				"speedRate": 2,
+				"moneyRate": 2,
+				"attackRate": 2,
+				"effect_a": 1,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			}
+		],
+		[
+			{
+				"name": "Skeleton",
+				"hpRate": 3,
+				"speedRate": 3,
+				"moneyRate": 3,
+				"attackRate": 3,
+				"effect_a": 1,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			},
+			{
+				"name": "SkyEye",
+				"hpRate": 3,
+				"speedRate": 3,
+				"moneyRate": 3,
+				"attackRate": 3,
+				"effect_a": 1,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			},
+			{
+				"name": "Boss",
+				"hpRate": 3,
+				"speedRate": 3,
+				"moneyRate": 3,
+				"attackRate": 3,
+				"effect_a": 1,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			}
+		]
 	]
 }
