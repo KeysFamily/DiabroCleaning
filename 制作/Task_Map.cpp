@@ -47,6 +47,7 @@ namespace  Map
 		this->depthInLevel = 2;
 		this->depthInLevel_Conn = 1;
 		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
+		auto resultSpike = this->LoadSpike("./data/map/spikesData.json");
 		//★タスクの生成
 
 		return  true;
@@ -284,7 +285,7 @@ namespace  Map
 	{
 		json js;
 		std::ifstream fin(filepath_);
-		if (!fin) { return json(); }
+		if (!fin) { return false; }
 		//JSONファイル読み込み
 		fin >> js;
 		//ファイル読み込み終了
@@ -297,7 +298,20 @@ namespace  Map
 			slopeData[ji["chipNum"]].slopeVec.x = this->res->drawSize * (float)ji["vecX"];
 			slopeData[ji["chipNum"]].slopeVec.y = this->res->drawSize * (float)ji["vecY"];
 		}
-		return false;
+		return true;
+	}
+	//-------------------------------------------------------------------
+	//ダメージ床データの読み込み
+	bool Object::LoadSpike(const string& filepath_)
+	{
+		json js = OL::LoadJsonFile(filepath_);
+		for (auto& ji : js)
+		{
+			spikeData[ji["chipNum"]] = SpikeData();
+			spikeData[ji["chipNum"]].damage = ji["damage"];
+		}
+		return true;
+
 	}
 	//-------------------------------------------------------------------
 	//あたり判定
@@ -480,6 +494,21 @@ namespace  Map
 	bool  Object::CheckFallGround(const  ML::Box2D& hit_)
 	{
 		return this->CheckHitTo(hit_, 9);
+	}
+	//-------------------------------------------------------------------
+	//ダメージ床判定
+	SpikeData Object::CheckSpike(const ML::Box2D& hit_)
+	{
+		for (auto& sp : this->spikeData)
+		{
+			if (CheckHitTo(hit_, sp.first) == true)
+			{
+				return sp.second;
+			}
+		}
+		SpikeData notSpike;
+		notSpike.damage = -1;
+		return notSpike;
 	}
 
 	//-------------------------------------------------------------------

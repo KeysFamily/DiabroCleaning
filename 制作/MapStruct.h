@@ -23,6 +23,12 @@ namespace Map
 		Other,
 	};
 
+	//ダメージ床データ
+	struct SpikeData
+	{
+		int damage;				//ダメージ
+	};
+
 	class MapFunc 
 	{
 	public:
