@@ -43,6 +43,8 @@ namespace  PlayerStatus
 		OL::Size2D imgBgSize;
 		DG::Font::SP systemFont;
 		OL::Size2D systemFontSize;
+		DG::Font::SP addStFont;
+		OL::Size2D addStFontSize;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -83,6 +85,8 @@ namespace  PlayerStatus
 
 		ML::Vec2 statusBeginPos;
 		float statusDistance;
+		ML::Vec2 addStatusDistance;	
+		ML::Color addStatusColor;
 
 		MyUI::SelectableObject* currentShop;		//選択中のショップ
 		
