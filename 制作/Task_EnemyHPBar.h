@@ -1,8 +1,8 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//タスク名:
-//作　成　者:
+//タスク名:敵HPバー
+//作　成　者:土田誠也
 //TODO:もしいれば下記へ記述
 //編　集　者:
 //作成年月日:
@@ -11,12 +11,11 @@
 #include "GameEngine_Ver3_83.h"
 #include "BChara.h"
 
-
-namespace  EnemyEffect
+namespace  EnemyHPBar
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("EnemyEffect");	//グループ名
-	const  string  defName("EnemyEffect");	//タスク名
+	const  string  defGroupName("UI");	//グループ名
+	const  string  defName("HPBar");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -32,7 +31,6 @@ namespace  EnemyEffect
 		//共有する変数はここに追加する
 		DG::Image::SP img;
 		OL::Size2D imgSize;
-		OL::Animation::SP anim;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -58,9 +56,9 @@ namespace  EnemyEffect
 		//追加したい変数・メソッドはここに追加する
 		ML::Vec2 pos;
 		ML::Vec2 offset;
-		float scale;
-		ML::Color color;
 		BChara::WP target;
-		int animCnt;
+		OL::Limit<int> decleaseTime;
+		int hpDecleased;
+		int hpDisplay;
 	};
 }

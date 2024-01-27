@@ -13,6 +13,7 @@
 #include  "Task_EnemySkeleton.h"
 #include  "Task_EnemySkyEye.h"
 #include  "Task_EnemyEffect.h"
+#include  "Task_EnemyHPBar.h"
 
 #include  "randomLib.h"
 
@@ -60,7 +61,7 @@ namespace  EnemyManager
 		ifstream f("./data/enemy/stateRate.json");
 		if (!f.is_open())return false;
 		json esdata = json::parse(f);
-		for(auto& rate : esdata)
+		for(auto& rate : esdata["Rates"])
 		{
 			this->stateRates.push_back(std::map<string, EnemyStatusRate>());
 			for (auto& e : rate)
@@ -71,15 +72,14 @@ namespace  EnemyManager
 				esr.speedRate = e["speedRate"];
 				esr.moneyRate = e["moneyRate"];
 				esr.attackRate = e["attackRate"];
-				esr.efcollor.c[0] = e["effect_a"];
-				esr.efcollor.c[1] = e["effect_r"];
-				esr.efcollor.c[2] = e["effect_g"];
-				esr.efcollor.c[3] = e["effect_b"];
+				esr.efcollor.c[3] = e["effect_a"];
+				esr.efcollor.c[0] = e["effect_r"];
+				esr.efcollor.c[1] = e["effect_g"];
+				esr.efcollor.c[2] = e["effect_b"];
 
-				(this->stateRates.end() - 1)->at(en) = esr;
+				(this->stateRates.end() - 1)->insert(pair<string, EnemyStatusRate>(en, esr));
 			}
 		}
-
 
 
 		//TODO: V‚½‚É“G‚ð’Ç‰Á‚ð‚·‚éÛ‚É‚±‚±‚É’Ç‰ÁB
@@ -216,7 +216,10 @@ namespace  EnemyManager
 			{
 				level = this->res->stateRates.size() - 1;
 			}
-			level = level_;
+			else
+			{
+				level = level_;
+			}
 
 
 			HP *= this->res->stateRates[level][name_].hpRate;
@@ -231,8 +234,12 @@ namespace  EnemyManager
 
 			auto ef = EnemyEffect::Object::Create(true);
 			ef->pos = e->pos;
-			ef->target = e.get();
+			ef->target = e;
 			ef->color = this->res->stateRates[level][name_].efcollor;
+			auto ehp = EnemyHPBar::Object::Create(true);
+			ehp->pos = e->pos;
+			ehp->target = e;
+			ehp->hpDisplay = e->hp.vmax;
 
 			BChara::Angle_LR angleSheet[] = {
 				BChara::Angle_LR::Left,

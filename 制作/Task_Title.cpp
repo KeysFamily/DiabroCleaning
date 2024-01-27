@@ -9,7 +9,7 @@
 #include "Task_MapManager.h"
 #include  "Task_TitleMenu.h"
 #include "Task_LoadGameOver.h"
-
+#include  "Task_EnemyManager.h"
 #include "Task_Game.h"
 #include "Task_Ending.h"
 
@@ -53,7 +53,8 @@ namespace  Title
 		ge->GameClearFlag = true;
 		
 		this->createdMenu = false;
-
+		
+		EnemyManager::Object::Create(true);
 		MapManager::Object::Create(true);
 		
 
@@ -136,6 +137,7 @@ namespace  Title
 		}
 
 		auto manager = ge->GetTask<MapManager::Object>("MapManager");
+		manager->SetDepthInLevel(2);
 		manager->SetMaxDepth(mapMaxDepth_);
 		manager->Generate();
 

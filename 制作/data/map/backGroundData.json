@@ -12,30 +12,30 @@
 			"imgFilePath": "./data/map/backMap/bg2.png",
 			"imgWidth": 512,
 			"imgHeight": 288,
-			"scale": 2,
-			"moveScale": 0.6,
-			"infinity": true
-		},
-		{
-			"imgFilePath": "./data/map/backMap/bg2.png",
-			"imgWidth": 512,
-			"imgHeight": 288,
 			"scale": 1,
 			"moveScale": 0.6,
 			"infinity": true
 		},
 		{
 			"imgFilePath": "./data/map/backMap/bg3.png",
-			"imgWidth": 512,
-			"imgHeight": 288,
+			"imgWidth": 1024,
+			"imgHeight": 576,
 			"scale": 1,
 			"moveScale": 0.6,
 			"infinity": true
 		},
 		{
 			"imgFilePath": "./data/map/backMap/bg4.png",
-			"imgWidth": 512,
-			"imgHeight": 288,
+			"imgWidth": 1024,
+			"imgHeight": 576,
+			"scale": 1,
+			"moveScale": 0.6,
+			"infinity": true
+		},
+		{
+			"imgFilePath": "./data/map/backMap/bg5.png",
+			"imgWidth": 1024,
+			"imgHeight": 576,
 			"scale": 1,
 			"moveScale": 0.6,
 			"infinity": true

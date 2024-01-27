@@ -67,7 +67,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 100;  //所持金
+		this->balanceMoney = 20;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
@@ -567,7 +567,7 @@ namespace  Player
 			}
 			break;
 		case  Motion::Attack2:	//�U����
-			this->powerScale = 1.5f;
+			this->powerScale = 1.2f;
 			this->attack2 = false;
 			if (this->moveCnt == 9)
 			{
@@ -579,7 +579,7 @@ namespace  Player
 			}
 			break;
 		case  Motion::Attack3:	//�U����
-			this->powerScale = 2.0f;
+			this->powerScale = 1.4f;
 			this->attack3 = false;
 			if (this->moveCnt == 9)
 			{
@@ -603,7 +603,7 @@ namespace  Player
 		case  Motion::AirAttack2:	//攻撃中
 			this->moveVec.y = 0.0f;
 			this->attack2 = false;
-			this->powerScale = 1.5f;
+			this->powerScale = 1.2f;
 			if (this->moveCnt == 1) 
 			{
 				se::Play("swordSlash");
@@ -616,7 +616,7 @@ namespace  Player
 		case Motion::AirAttack3:
 			this->moveVec.y = 20.0f;
 			this->attack3 = false;
-			this->powerScale = 2.0f;
+			this->powerScale = 1.4f;
 			if (this->haveAttacked == false) {
 				this->MakeAttack();
 			}
@@ -626,7 +626,7 @@ namespace  Player
 			}
 			break;
 		case Motion::AirAttack4:
-			this->powerScale = 2.5f;
+			this->powerScale = 2.0f;
 			if (this->moveCnt == 1)
 			{
 				se::Play("swordHitGround");

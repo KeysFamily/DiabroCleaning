@@ -7,18 +7,17 @@
 //概　　　要:
 //?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_EnemyEffect.h"
+#include  "Task_EnemyHPBar.h"
 
-namespace  EnemyEffect
+namespace  EnemyHPBar
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		this->img = DG::Image::Create("./data/enemy/image/enemyEffect.png");
-		this->imgSize.Set(96, 96);
-		this->anim = OL::Animation::Create("./data/enemy/animation/enemyEffect.txt");
+		this->img = DG::Image::Create("./data/image/enemyHPBar.png");
+		this->imgSize.Set(96, 15);
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -26,7 +25,6 @@ namespace  EnemyEffect
 	bool  Resource::Finalize()
 	{
 		this->img.reset();
-		this->anim.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -39,13 +37,10 @@ namespace  EnemyEffect
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->render2D_Priority[1] = 0.8f;
+		this->render2D_Priority[1] = 0.2f;
 		this->pos = ML::Vec2(0, 0);
-		this->offset = ML::Vec2(0, -80);
-		this->scale = 1;
-		this->color = ML::Color(0, 0, 0, 0);
-		this->animCnt = 0;
-		this->target;
+		this->offset = ML::Vec2(0, 60);
+		this->decleaseTime.SetValues(0, 0, 15);
 		//★タスクの生成
 
 		return  true;
@@ -67,24 +62,75 @@ namespace  EnemyEffect
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		if (target.expired() == true)
+		if (target.expired())
 		{
 			this->Kill();
 			return;
 		}
-		++this->animCnt;
-		this->pos = target.lock()->pos + offset;
+
+		const BChara::SP& en = target.lock();
+		this->pos = en->pos + this->offset;
+
+		if (hpDisplay != en->hp.vnow)
+		{
+			decleaseTime.vnow = decleaseTime.vmin;
+			hpDecleased += hpDisplay - en->hp.vnow;
+			hpDisplay = en->hp.vnow;
+		}
+
+		if (decleaseTime.IsMax() == false)
+		{
+			decleaseTime.Addval(1);
+			if (decleaseTime.IsMax())
+			{
+				hpDecleased = 0;
+			}
+		}
+
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D drawBase = this->res->anim->GetDrawBox();
-		ML::Box2D draw = OL::setBoxCenter(drawBase.w * scale, drawBase.h * scale);
-		ML::Box2D src = this->res->anim->GetSrcBox(this->animCnt);
-		draw.Offset(this->pos);
-		draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
-		this->res->img->Draw(draw, src, this->color);
+		if (!target.expired())
+		{
+			auto en = target.lock();
+			if (en->hp.IsMax() || en->hp.IsMin())
+			{
+				return;
+			}
+
+			//枠と背景の描画
+			ML::Box2D draw = OL::setBoxCenter(this->res->imgSize);
+			draw.Offset(this->pos);
+			draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+			ML::Box2D src(0, 0, this->res->imgSize.w, this->res->imgSize.h);
+			this->res->img->Draw(draw, src);
+
+			//被ダメージ時の白バー描画
+			if (decleaseTime.IsMax() == false)
+			{
+				float rate = 1 - (float)decleaseTime.vnow / decleaseTime.vmax;
+				ML::Box2D draw2 = OL::setBoxCenter(this->res->imgSize);
+				draw2.Offset(this->pos);
+				draw2.Offset(-ge->camera2D.x, -ge->camera2D.y);
+				ML::Box2D src2(0, this->res->imgSize.h * 2, this->res->imgSize.w, this->res->imgSize.h);
+
+				draw2.w = this->res->imgSize.w * (hpDisplay + hpDecleased * rate) / en->hp.vmax;
+				src2.w = this->res->imgSize.w * (hpDisplay + hpDecleased * rate) / en->hp.vmax;
+
+				this->res->img->Draw(draw2, src2);
+			}
+
+			//現在の体力を描画
+			draw = OL::setBoxCenter(this->res->imgSize);
+			draw.Offset(this->pos);
+			draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+			src = ML::Box2D(0, this->res->imgSize.h, this->res->imgSize.w, this->res->imgSize.h);
+			draw.w = this->res->imgSize.w * hpDisplay / (float)en->hp.vmax;
+			src.w = this->res->imgSize.w * hpDisplay / (float)en->hp.vmax;
+			this->res->img->Draw(draw, src);
+		}
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

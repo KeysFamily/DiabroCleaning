@@ -44,8 +44,7 @@ namespace  Map
 		this->depth = 1;
 		this->visited = true;
 		this->folderPath = "";
-		this->depthInLevel = 2;
-		this->depthInLevel_Conn = 1;
+		this->depthInLevel = 10;
 		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
 		auto resultSpike = this->LoadSpike("./data/map/spikesData.json");
 		//šƒ^ƒXƒN‚Ì¶¬
@@ -140,8 +139,8 @@ namespace  Map
 		this->backMap.img.reset();
 		if (mapType == Map::MapType::Connect)
 		{
-			int level = this->depth / this->depthInLevel_Conn;
-			int levelCnt = 1;
+			int level = this->depth / this->depthInLevel;
+			int levelCnt = 0;
 			for (auto& bmd : js["connects"])
 			{
 				if (levelCnt >= level)
@@ -154,7 +153,7 @@ namespace  Map
 					this->backMap.infinity = bmd["infinity"];
 					break;
 				}
-				else if (levelCnt >= js["connects"].size())
+				else if (levelCnt >= js["connects"].size() - 1)
 				{
 					this->backMap.img = DG::Image::Create(bmd["imgFilePath"]);
 					this->backMap.imgSize.w = bmd["imgWidth"];
@@ -162,6 +161,7 @@ namespace  Map
 					this->backMap.scale = bmd["scale"];
 					this->backMap.moveScale = bmd["moveScale"];
 					this->backMap.infinity = bmd["infinity"];
+					break;
 				}
 				++levelCnt;
 			}
@@ -169,7 +169,7 @@ namespace  Map
 		else if (mapType == Map::MapType::Map)
 		{
 			int level = this->depth / this->depthInLevel;
-			int levelCnt = 1;
+			int levelCnt = 0;
 			for (auto& bmd : js["backGrounds"])
 			{
 				if (levelCnt >= level)
@@ -182,7 +182,7 @@ namespace  Map
 					this->backMap.infinity = bmd["infinity"];
 					break;
 				}
-				else if (levelCnt >= js["backGrounds"].size())
+				else if (levelCnt >= js["backGrounds"].size() - 1)
 				{
 					this->backMap.img = DG::Image::Create(bmd["imgFilePath"]);
 					this->backMap.imgSize.w = bmd["imgWidth"];
@@ -190,6 +190,7 @@ namespace  Map
 					this->backMap.scale = bmd["scale"];
 					this->backMap.moveScale = bmd["moveScale"];
 					this->backMap.infinity = bmd["infinity"];
+					break;
 				}
 				++levelCnt;
 			}
@@ -777,7 +778,7 @@ namespace  Map
 						y * this->res->drawSize
 					);
 					
-					em->SpawnEnemyNum(en, epos);
+					em->SpawnEnemyNum(en, epos, this->depth / this->depthInLevel);
 				}
 			}
 		}
