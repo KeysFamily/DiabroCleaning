@@ -44,7 +44,7 @@ namespace  Thunder
 		this->pos = ML::Vec2(0, 0);
 		this->speed = 10.0f;
 		this->power = 1.0f;
-		this->cost = 10;
+		this->cost = 1;
 		this->motion = Motion::Start;
 		this->diff = ML::Vec2(0, 0);
 		this->searchEnemy = ML::Box2D(0, 0, 0, 0);

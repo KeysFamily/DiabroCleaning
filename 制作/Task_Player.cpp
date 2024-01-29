@@ -91,6 +91,7 @@ namespace  Player
 		this->unlockedMagic.push_back(Magic::NoMagic);
 		this->magicIndex = 0;
 		this->reviveBonusMoney = 100;
+		this->LoadFile();
 		//--------------------------------------
 		//★タスクの生成
 
@@ -1024,8 +1025,9 @@ namespace  Player
 	//ファイル読み込み処理
 	void Object::LoadFile()
 	{
+
 		//スキル読み込み
-		json js = OL::LoadJsonFile("./data/inGame/run/pData_skill.json");
+		json js = OL::LoadJsonFile(ge->filemg.GetRunFile() + "pData_skill.json");
 		
 		for (auto& ji : js["pData_skill"])
 		{
@@ -1044,7 +1046,7 @@ namespace  Player
 		js.clear();
 
 		//ステータス読み込み
-		js = OL::LoadJsonFile("./data/inGame/run/pData_status.json");
+		js = OL::LoadJsonFile(ge->filemg.GetRunFile() + "pData_status.json");
 		
 		for (auto& ji : js["pData_status"])
 		{
@@ -1057,6 +1059,8 @@ namespace  Player
 			int param;
 			for (int i = 0; i < ji["level"]; ++i)
 			{
+				int money;
+				ifs >> money;
 				ifs >> param;
 			}
 

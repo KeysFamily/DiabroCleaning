@@ -76,8 +76,6 @@ namespace  SystemMenu
 		void AppearUpDate();
 		void DisappearUpdate();
 		void SuspendMenu(bool f_);
-		//新規ファイル生成
-		void CreateNewFile();
 		//ファイルにセーブする
 		void SaveToFile();
 

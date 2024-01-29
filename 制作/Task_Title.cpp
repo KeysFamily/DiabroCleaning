@@ -54,8 +54,6 @@ namespace  Title
 		
 		this->createdMenu = false;
 		
-		EnemyManager::Object::Create(true);
-		MapManager::Object::Create(true);
 		
 
 		return true;
@@ -78,6 +76,14 @@ namespace  Title
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		if (ge->getCounterFlag("title") == ge->ACTIVE) {
+			return;
+		}
+
+		if (ge->getCounterFlag("title") == ge->LIMIT) {
+			this->Kill();
+		}
+
 		auto inp = ge->in1->GetState();
 
 		this->cnt++;
@@ -100,9 +106,6 @@ namespace  Title
 				createdMenu = false;
 				ge->KillAll_GN("title", "Menu");
 			}
-		}
-		if (ge->getCounterFlag("title") == ge->LIMIT) {
-			this->Kill();
 		}
 
 
@@ -136,7 +139,10 @@ namespace  Title
 			return;
 		}
 
-		auto manager = ge->GetTask<MapManager::Object>("MapManager");
+
+
+		EnemyManager::Object::Create(true);
+		auto manager = MapManager::Object::Create(true);
 		manager->SetDepthInLevel(2);
 		manager->SetMaxDepth(mapMaxDepth_);
 		manager->Generate();

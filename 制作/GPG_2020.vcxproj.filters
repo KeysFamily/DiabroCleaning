@@ -394,6 +394,9 @@
     <ClCompile Include="Task_EnemyHPBar.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="GameFileManager.cpp">
+      <Filter>MyPG</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine_Ver3_83.h">
@@ -603,6 +606,9 @@
     </ClInclude>
     <ClInclude Include="Task_EnemyHPBar.h">
       <Filter>MyPG\Task\Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFileManager.h">
+      <Filter>MyPG</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

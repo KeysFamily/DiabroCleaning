@@ -49,7 +49,7 @@ namespace  MapManager
 		this->depthMax = 5;
 		this->depthInLevel = 1;
 		//ƒZ[ƒuæ
-		this->saveFolderPath = "./data/inGame/run/mapData/";
+		this->saveFolderPath = ge->filemg.GetRunFile() + "mapData/";
 
 		this->moveMapDir = Map::MapDir::Non;
 

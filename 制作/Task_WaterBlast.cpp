@@ -45,7 +45,7 @@ namespace  WaterBlast
 		this->pos = ML::Vec2(0, 0);
 		/*this->speed = 10.0f;*/
 		this->power = 1.0f;
-		this->cost = 0;//‰¼
+		this->cost = 1;//‰¼
 		this->motion = Motion::Start;
 		this->coolTime = 0;
 		//šƒ^ƒXƒN‚Ì¶¬

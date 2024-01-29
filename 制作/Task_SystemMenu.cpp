@@ -59,8 +59,6 @@ namespace  SystemMenu
 		//終了判定
 		this->finishedAppear = false;
 		this->finishFlag = true;
-		//ゲーム用ファイルを生成しておく
-		this->CreateNewFile();
 
 		//★タスクの生成
 		this->status = PlayerStatus::Object::Create(true);
@@ -222,18 +220,12 @@ namespace  SystemMenu
 		this->finishFlag = true;
 	}
 
-	//新規ファイル作成
-	void Object::CreateNewFile()
-	{
-		CopyFile("./data/inGame/template/pData_skill.json", "./data/inGame/run/pData_skill.json", false);
-		CopyFile("./data/inGame/template/pData_status.json", "./data/inGame/run/pData_status.json", false);
-	}
 
 	//ファイルにセーブ
 	void Object::SaveToFile()
 	{
 		json js;
-		std::ifstream fin("./data/inGame/run/pData_skill.json");
+		std::ifstream fin(ge->filemg.GetRunFile() + "pData_skill.json");
 		if (!fin)
 		{
 			return;
@@ -255,7 +247,7 @@ namespace  SystemMenu
 			}
 		}
 
-		ofstream fout("./data/inGame/run/pData_skill.json");
+		ofstream fout(ge->filemg.GetRunFile() + "pData_skill.json");
 		fout << js.dump(4);
 
 		fout.close();
