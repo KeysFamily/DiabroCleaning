@@ -47,7 +47,7 @@ namespace  TitleMenu
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->pos = ML::Vec2(ge->screenWidth / 2, ge->screenHeight / 4 * 3);
+		this->pos = ML::Vec2(ge->screenWidth / 2.0f, ge->screenHeight / 4.0f * 3.0f);
 		this->titlePos = ML::Vec2(0, -110);
 		this->mainBeginPos = ML::Vec2(0, -40);
 		this->mainTextDistance = 20;
@@ -84,7 +84,7 @@ namespace  TitleMenu
 			--this->selectingMenu;
 			if (this->selectingMenu < 0)
 			{
-				this->selectingMenu = menuDisplay.size() - 1;
+				this->selectingMenu = static_cast<int>(menuDisplay.size() - 1);
 			}
 		}
 		if (inp.LStick.BD.down)
@@ -109,7 +109,7 @@ namespace  TitleMenu
 		ge->DrawStd(this->res->imgBg, this->res->imgBgSize, this->pos);
 
 		//タイトル表示
-		float titleSizeW = this->res->fontTitleSize.w * this->titleStr.size();
+		float titleSizeW = static_cast<float>(this->res->fontTitleSize.w * this->titleStr.size());
 		ML::Box2D draw = OL::setBoxCenter(titleSizeW, this->res->fontTitleSize.h);
 		draw.Offset(this->pos + this->titlePos);
 		this->res->fontTitle->Draw(draw, this->titleStr);
@@ -119,7 +119,7 @@ namespace  TitleMenu
 		ML::Vec2 mainDrawPos = this->mainBeginPos;
 		for (auto& dp : this->menuDisplay)
 		{
-			float menuSizeW = this->res->fontMainSize.w * this->menuObj[dp].text.size();
+			float menuSizeW = static_cast<int>(this->res->fontMainSize.w * this->menuObj[dp].text.size());
 			draw = OL::setBoxCenter(menuSizeW, this->res->fontMainSize.h);
 			draw.Offset(this->pos + mainDrawPos);
 			
@@ -137,7 +137,7 @@ namespace  TitleMenu
 				//選択オブジェクト表示
 				ML::Vec2 selectObjPos = this->pos;
 				selectObjPos.x = draw.x - this->res->imgSelectSize.w - this->selectObjDistance;
-				selectObjPos.y = draw.y + (draw.h / 2);
+				selectObjPos.y = draw.y + (draw.h / 2.0f);
 				ge->DrawStd(this->res->imgSelect, this->res->imgSelectSize, selectObjPos);
 			}
 

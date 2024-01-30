@@ -11,8 +11,12 @@
 
 #include  "Task_EnemyManager.h"
 #include  "Task_EnemyFireBall.h"
+#include  "Task_EnemyBlast.h"
 
 #include  "randomLib.h"
+#include  "RateLot.h"
+
+#define DEPTH_CONST	//è¢ä´ìGàÍó•
 
 namespace  EnemyBoss
 {
@@ -55,6 +59,7 @@ namespace  EnemyBoss
 		this->hp.SetValues(HP, 0, HP);
 		this->attackPow = 10;
 		this->dropMoney = 10;
+		this->depth = 1;
 		
 		//ÅöÉ^ÉXÉNÇÃê∂ê¨
 
@@ -116,16 +121,24 @@ namespace  EnemyBoss
 		case BossMotion::Attack:
 		{
 			vector<BossMotion> sheet;
+			vector<float> rate;
 			sheet.push_back(BossMotion::Attack1);
+			rate.push_back(0.5f);
 			if (this->hp.GetRate() <= 0.5f) {//50%à»â∫Ç≈ëÊìÒíiäKâï˙
 				sheet.push_back(BossMotion::Attack2);
+				rate.push_back(0.5f);
 			}
 			if (this->hp.GetRate() <= 0.25f) {//25%à»â∫Ç≈ëÊéOíiäKâï˙
 				sheet.push_back(BossMotion::Attack3);
+				rate.push_back(0.5f);
 			}
-			sheet.push_back(BossMotion::Attack4);
-			nm = sheet[GetRandom<int>(0, sheet.size() - 1)];
-			//nm = BossMotion::Attack3;
+			if (ge->qa_Enemys->size() < 100) {//ìGÇÃêîÇ™100ëÃà»ì‡Ç»ÇÁìGè¢ä´ÇÇ∑ÇÈ
+				sheet.push_back(BossMotion::Attack4);
+				rate.push_back(0.1f);
+			}
+			RateLot rl(rate);
+
+			nm = sheet[rl.result()];
 		}
 			break;
 		case BossMotion::Attack1:
@@ -226,7 +239,7 @@ namespace  EnemyBoss
 					spos += ML::Vec2(+70, -166);
 				}
 				float mcsize = static_cast<float>(ge->qa_Map->res->drawSize);
-				ML::Vec2 tpos = ge->qa_Player->pos + mcsize * ML::Vec2(GetRandom<float>(-2.0f, 2.0f), GetRandom<float>(-2.0f, 2.0f));
+				ML::Vec2 tpos = ge->qa_Player->pos + mcsize * ML::Vec2(GetRandom<float>(-1.0f, 1.0f), GetRandom<float>(-1.0f, 1.0f));
 
 				ML::Vec2 diff = tpos - spos;
 				float rad = atan2(diff.y, diff.x);
@@ -238,15 +251,31 @@ namespace  EnemyBoss
 		case BossMotion::Attack2:
 			//ÉvÉåÉCÉÑÅ[ÇÃë´å≥Ç…ñÇñ@ÇèoÇµÇPïbå„Ç…çUåÇÇÇ∑ÇÈ
 			if (this->moveCnt == 21) {
-				
+				auto bl = EnemyBlast::Object::Create(true);
+				bl->power = this->attackPow * 0.8f;
+				float mcsize = static_cast<float>(ge->qa_Map->res->drawSize);
+				bl->pos.y = ge->qa_Player->pos.y;
+				bl->pos.x = ge->qa_Player->pos.x + mcsize * GetRandom<float>(-1.0f, 1.0f);
+
 			}
 			break;
 		case BossMotion::Attack3:
 			//îºåaÇRÉ}ÉXà»ì‡Ç…îÕàÕçUåÇ
 			if (this->moveCnt == 24) {
-				if (this->PosInMyCircle(this->pos, ge->qa_Player->pos, ge->qa_Map->res->drawSize * 3.0f)) {
+				float r = ge->qa_Map->res->drawSize * 10.0f;
+				auto ew = ge->CreateEffect(9, this->pos);
+				auto es = ew.lock();
+				es->drawSizeX = es->drawSizeY = static_cast<int>(r * 4);
+
+				if (this->PosInMyCircle(this->pos, ge->qa_Player->pos, r)) {
 					BChara::AttackInfo at = { attackPow,0,0 };
 					ge->qa_Player->Received(this, at);
+				}
+
+				for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
+					if (this->PosInMyCircle(this->pos, (*it)->pos, r)) {
+						(*it)->Kill();
+					}
 				}
 			}
 			break;
@@ -267,7 +296,11 @@ namespace  EnemyBoss
 				}
 
 				for (int i = 0; i < spawnMax; ++i) {
-					this->SpawnEnemyIsBoss();
+#ifdef DEPTH_CONST
+					this->SpawnEnemyIsBoss(depth);
+#else
+					this->SpawnEnemyIsBoss(GetRandom<int>(1, this->depth));
+#endif // DEPTH_CONST
 				}
 			}
 			break;
@@ -387,8 +420,7 @@ namespace  EnemyBoss
 		//êÅÇ´îÚÇŒÇ≥ÇÍÇÈ
 	}
 
-	void Object::SpawnEnemyIsBoss() {
-#if true
+	void Object::SpawnEnemyIsBoss(int depth_) {
 		auto em = ge->GetTask<EnemyManager::Object>(EnemyManager::defGroupName, EnemyManager::defName);
 
 		ML::Vec2 spos = this->pos;
@@ -417,10 +449,8 @@ namespace  EnemyBoss
 			}
 		}
 
+		em->SpawnEnemyNum(GetRandom<int>(0, 1), spos, depth_);
 
-
-		em->SpawnEnemyNum(GetRandom<int>(0, 1), spos);
-#endif
 	}
 
 	bool Object::PosInMyCircle(const ML::Vec2 me_, const ML::Vec2 you_, const float dist_) {

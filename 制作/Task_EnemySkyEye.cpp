@@ -397,7 +397,7 @@ namespace  EnemySkyEye
 		}
 		this->unHitTime = 10;
 		this->hp.Addval(-at_.power);
-		ge->TotalDamage += at_.power;
+		ge->TotalDamage += static_cast<int>(at_.power);
 		if (this->hp.vnow <= 0) {
 			this->UpdateMotion(Motion::Fall);
 			ge->TotalEnemyKill += 1;

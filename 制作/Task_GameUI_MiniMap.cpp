@@ -43,8 +43,8 @@ namespace  MiniMap
 
 		//šƒf[ƒ^‰Šú‰»
 		this->render2D_Priority[1] = 0.2f;
-		this->pos.x = ge->screenWidth - this->res->imgBGSize.w / 2;
-		this->pos.y = this->res->imgBGSize.h / 2;
+		this->pos.x = ge->screenWidth - this->res->imgBGSize.w / 2.0f;
+		this->pos.y = this->res->imgBGSize.h / 2.0f;
 		this->cameraPos = ML::Vec2(0, 0);
 		this->screenSize.Set(240, 216);
 		this->screenOfs = ML::Vec2(0, 12);

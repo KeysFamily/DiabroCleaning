@@ -124,7 +124,7 @@ namespace  Player
 
 		this->moveCnt++;
 		this->animCnt++;
-		this->maxSpeed = 9.0f + 0.2 * (this->speed+this->itemSpeed);	//ステータスによる移動速度加算
+		this->maxSpeed = 9.0f + 0.2f * (this->speed+this->itemSpeed);	//ステータスによる移動速度加算
 		this->hitBase = this->DrawScale(this->initialHitBase, this->drawScale);
 		//思考・状況判断
 		this->Think();
@@ -159,7 +159,7 @@ namespace  Player
 				if (spike.damage >= 0)
 				{
 					AttackInfo ati;
-					ati.power = spike.damage;
+					ati.power = static_cast<float>(spike.damage);
 					this->Received(this, ati);
 				}
 			}
@@ -386,7 +386,7 @@ namespace  Player
 		if (inp.L1.down) {
 			this->magicIndex--; 
 			if (this->magicIndex < 0) {
-				this->magicIndex = this->unlockedMagic.size() - 1;
+				this->magicIndex = static_cast<int>(this->unlockedMagic.size() - 1);
 			}
 			this->magicSelect = this->unlockedMagic[this->magicIndex];
 		}
@@ -953,7 +953,7 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		//this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF + this->itemDEF)); //ダメージ計算公式
+		this->balanceMoney -= static_cast<int>(at_.power * (10.0f / (10 + this->DEF + this->itemDEF))); //ダメージ計算公式
 		if (this->balanceMoney < 0)
 		{
 			this->moveVec = ML::Vec2(0, 0);
@@ -1067,16 +1067,16 @@ namespace  Player
 			switch ((int)ji["id"])
 			{
 			case StatusID::ST_ATK:
-				this->power = param;
+				this->power = static_cast<float>(param);
 				break;
 			case StatusID::ST_DEF:
 				this->DEF = param;
 				break;
 			case StatusID::ST_INT:
-				this->INT = param;
+				this->INT = static_cast<float>(param);
 				break;
 			case StatusID::ST_SPD:
-				this->speed = param;
+				this->speed = static_cast<float>(param);
 			}
 		}
 	}
@@ -1099,17 +1099,17 @@ namespace  Player
 		ML::Box2D checkBase = this->hitBase.OffsetCopy(this->pos);
 
 		if (checkBase.x <= 0) { //左
-			this->pos.x = 1 + this->hitBase.w / 2;
+			this->pos.x = 1.0f + this->hitBase.w / 2.0f;
 		}
 		if (checkBase.x + checkBase.w >= map->hitBase.w) { //右
-			this->pos.x = map->hitBase.w - (this->hitBase.w / 2);
+			this->pos.x = map->hitBase.w - (this->hitBase.w / 2.0f);
 		}
 
 		if (checkBase.y <= 0) { //上
-			this->pos.y = 1 + this->hitBase.h / 2;
+			this->pos.y = 1.0f + this->hitBase.h / 2.0f;
 		}
 		if (checkBase.y + checkBase.h >= map->hitBase.h) { //下
-			this->pos.y = map->hitBase.h - (this->hitBase.h / 2);
+			this->pos.y = map->hitBase.h - (this->hitBase.h / 2.0f);
 		}
 	}
 	//-------------------------------------------------------------------

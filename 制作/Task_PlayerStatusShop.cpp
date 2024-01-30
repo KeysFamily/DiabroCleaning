@@ -103,7 +103,7 @@ namespace  PlayerStatusShop
 	{
 		//ステータス名描画
 		ML::Box2D draw = OL::setBoxCenter(
-			(int)(this->res->fontDisplaySize.w * 1.5f) * this->displayStr.size(),
+			(int)(this->res->fontDisplaySize.w * 1.5f) * static_cast<int>(this->displayStr.size()),
 			this->res->fontDisplaySize.h
 		);
 		draw.Offset(this->pos + this->displayPos);
@@ -126,7 +126,7 @@ namespace  PlayerStatusShop
 				src.x = this->res->imgProgressSize.w;
 			}
 			this->res->imgProgress->Draw(draw, src);
-			draw.x += this->res->imgProgressSize.w + this->progressDistance;
+			draw.x += static_cast<int>(this->res->imgProgressSize.w + this->progressDistance);
 			src.x = 0;
 		}
 	}
@@ -230,11 +230,11 @@ namespace  PlayerStatusShop
 		result.Offset(this->pos + this->progressBeginPos);
 		if (this->currentStatus.IsMax())
 		{
-			result.x += (this->res->imgProgressSize.w + this->progressDistance) * (this->currentStatus.vnow);
+			result.x += static_cast<int>(this->res->imgProgressSize.w + this->progressDistance) * (this->currentStatus.vnow);
 		}
 		else
 		{
-			result.x += (this->res->imgProgressSize.w + this->progressDistance) * (this->currentStatus.vnow + 1);
+			result.x += static_cast<int>(this->res->imgProgressSize.w + this->progressDistance) * (this->currentStatus.vnow + 1);
 		}
 		result.w *= this->selectScale;
 		result.h *= this->selectScale;

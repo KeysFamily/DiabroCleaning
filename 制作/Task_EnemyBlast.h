@@ -1,20 +1,20 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//タスク名:敵Boss
-//作　成　者:22CI0333 長谷川勇一朗
+//タスク名:
+//作　成　者:22CI0306 
 //TODO:もしいれば下記へ記述
-//編　集　者:
-//作成年月日:2024/1/9
-//概　　　要:敵ボス
+//編　集　者:22CI0333 長谷川 勇一朗
+//作成年月日:
+//概　　　要:
 //?------------------------------------------------------
-#include "BEnemy.h"
+#include "BChara.h"
 
-namespace  EnemyBoss
+namespace  EnemyBlast
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("Enemy");	//グループ名
-	const  string  defName("Boss");		//タスク名
+	const  string  defGroupName("Magic");	//グループ名
+	const  string  defName("WaterBlast");		//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -29,10 +29,11 @@ namespace  EnemyBoss
 		static  Resource::SP  Create();
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//共有する変数はここに追加する
-		DG::Image::SP img;
+		DG::Image::SP	img1;
+		DG::Image::SP	img2;
 	};
 	//-------------------------------------------------------------------
-	class  Object : public  BEnemy
+	class  Object : public  BChara
 	{
 	public:
 		virtual  ~Object();
@@ -53,30 +54,23 @@ namespace  EnemyBoss
 	public:
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
+		//BCharaに含まれないモノのみここに追加する
+		float power;	//ダメージ
+		//アニメーション制御
+		BChara::DrawInfo  Anim();
 
-		enum BossMotion {
-			Unnon = -1,	// 無効(使えません）
-			Stand,		// N停止
-			Teleport,	// テレポート
-			CoolTime,	// A追尾
-			Attack,
-			Attack1,	// A攻撃1 ボスの杖から火の魔法を出す
-			Attack2,	// A攻撃2 プレイヤーの足元に魔法を出し1秒後に攻撃をする
-			Attack3,	// A攻撃3 ボスから半径３マス以内に範囲攻撃をする。
-			Attack4,	// A攻撃4 ボスから半径5マス以内の敵が召喚可能なランダムな位置に敵を召喚する。
-			Lose,		// 消滅中
+		enum Motion
+		{
+			Unnon = -1,
+			Start,
+			Infinite,
+			End,
 		};
-		int depth;
-		ML::Vec2 tpPos;
+		
+		//思考＆状況判断(ステータス決定）
+		void  Think();
+		//モーションに対応した処理
+		void  Move();
 
-		void Think()override;			//思考＆状況判断
-		void Move()override;			//モーションに対応した処理
-		BEnemy::DrawInfo Anim()override;//アニメーション制御
-
-		//接触時の応答処理(必ず受け身の処理として実装する)
-		void Received(BChara* from_, AttackInfo at_);
-	private:
-		void SpawnEnemyIsBoss(int depth_);		//ボスによる敵召喚
-		bool PosInMyCircle(const ML::Vec2 me_, const ML::Vec2 you_, const float dist_ = 0.0f);
 	};
 }

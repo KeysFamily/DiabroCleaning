@@ -180,8 +180,8 @@ namespace  EnemyManager
 	// “GƒXƒ|[ƒ“
 	
 
-	void Object::SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_, int level_) {
-		int size = this->res->enemyNames.size();
+	void Object::SpawnEnemyNum(size_t enemyNum_, ML::Vec2 pos_, int level_) {
+		size_t size = this->res->enemyNames.size();
 		string name;
 		if (enemyNum_ == 6) {
 			name = this->res->enemyNames[2];
@@ -214,7 +214,7 @@ namespace  EnemyManager
 			int level;
 			if (level_ >= this->res->stateRates.size())
 			{
-				level = this->res->stateRates.size() - 1;
+				level = static_cast<int>(this->res->stateRates.size() - 1);
 			}
 			else
 			{
@@ -239,7 +239,7 @@ namespace  EnemyManager
 			auto ehp = EnemyHPBar::Object::Create(true);
 			ehp->pos = e->pos;
 			ehp->target = e;
-			ehp->hpDisplay = e->hp.vmax;
+			ehp->hpDisplay = static_cast<int>(e->hp.vmax);
 
 			BChara::Angle_LR angleSheet[] = {
 				BChara::Angle_LR::Left,

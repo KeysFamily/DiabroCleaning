@@ -214,15 +214,17 @@ namespace MyPG
 			}
 			break;
 
-		case 9:
+		case 9://爆発　アニメーション(敵Boss範囲攻撃に使用)
 			if (auto e = Effect00::Object::Create(true))
 			{
-				e->filename = "data/effect/Red_Effect.png";
-				e->resSizeX = 512;
-				e->resSizeY = 352;
-				e->drawSizeX = e->drawSizeY = 32;
+				e->filename = "data/effect/effect3_bomb1.png";
+				e->resSizeX = 256;
+				e->resSizeY = 256;
+				e->drawSizeX = 256;
+				e->drawSizeY = 256;
 				e->pos.x = pos.x;
 				e->pos.y = pos.y;
+
 				e->animResNum = 10;
 				e->animMax = 40;
 				e->addAnim = 0.6f;
@@ -232,6 +234,7 @@ namespace MyPG
 
 				resultEffect = e;
 			}
+			break;
 			//◇以下22CI0333追加
 		case 10://プレイヤーデス
 			if (auto e = Effect00::Object::Create(true)) {
