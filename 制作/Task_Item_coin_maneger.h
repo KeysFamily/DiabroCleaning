@@ -51,6 +51,8 @@ namespace  coin_maneger
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 	public:
 		//追加したい変数・メソッドはここに追加する
+		vector<BResource::SP> residentResource;
+
 		int coin_Max;     //map内で描画させるコインの枚数
 		int coin_num;     //見えないcoinの枚数
 
