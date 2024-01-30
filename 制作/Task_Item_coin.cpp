@@ -54,9 +54,6 @@ namespace  Item_coin
 		this->moveVec = ML::Vec2(cos(angle) * 4, sin(angle) * 4);
 		this->motion = Stand;
 
-		this->pos.x = 1300;
-		this->pos.y = 500;
-
 		//★タスクの生成
 
 		return  true;
@@ -78,8 +75,6 @@ namespace  Item_coin
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		auto inp = ge->in1->GetState();
-
 		this->moveCnt++;
 		this->animCnt++;
 		if (this->unHitTime > 0) { this->unHitTime--; }
@@ -92,8 +87,7 @@ namespace  Item_coin
 		this->CheckMove(est);
 
 		//画面内にコインがあるか
-		auto map = ge->qa_Map;
-		this->out_coin(map->ObjectMap.width, map->ObjectMap.height);
+		this->out_coin(ge->qa_Map->ObjectMap.width, ge->qa_Map->ObjectMap.height);
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -103,27 +97,22 @@ namespace  Item_coin
 		di.draw.Offset(this->pos);
 		//スクロール対応
 		di.draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
-		this->res->img->Draw(di.draw, di.src);
-		ge->debugRect(this->CallHitBox(), 4, -ge->camera2D.x, -ge->camera2D.y);
+		this->res->img->Draw(di.draw, di.src, di.color);
 	}
 	
 	//-----------------------------------------------------------------
 	void Object::Think()
 	{
-		auto inp = ge->in1->GetState();
 		int nm = this->motion;
 		switch (nm)
 		{
 		case Motion::Stand:
-			if (inp.B2.down)
-			{
-				nm = Motion::Suction;
-			}
+			
 			break;
 		case Motion::Fall:
-			if (this->CheckFoot() == true)
+			if (this->CheckFoot())
 			{
-				{ nm = Motion::Stand; }
+				nm = Motion::Stand;
 			}
 			break;
 		}
@@ -141,8 +130,7 @@ namespace  Item_coin
 			//上昇中もしくは足元に地面が無い
 			if (this->moveVec.y < 0 ||
 				this->CheckFoot() == false) {
-				this->fallSpeed = min(this->moveVec.y + this->gravity, this->maxFallSpeed);
-				this->moveVec.y = this->fallSpeed;
+				this->moveVec.y = min(this->moveVec.y + this->gravity, this->maxFallSpeed);
 			}
 			//地面に接触している
 			else {
@@ -158,7 +146,7 @@ namespace  Item_coin
 		//移動速度減衰
 		switch (this->motion) {
 		default:
-			if (this->CheckFoot() == true) {
+			if (this->CheckFoot()) {
 				if (this->moveVec.x < 0) {
 					this->moveVec.x = min(this->moveVec.x + this->decSpeed, 0);
 				}
@@ -176,7 +164,6 @@ namespace  Item_coin
 		switch (this->motion)
 		{
 		case Motion::Suction:
-			//auto pl = ge->GetTask<Player::Object>("Player");
 			this->target = ge->qa_Player;
 			if (auto  tg = this->target.lock()) {
 				//ターゲットへの相対座標を求める
@@ -185,8 +172,6 @@ namespace  Item_coin
 				float speed = 20;
 				auto vec = toVec.Normalize();
 				vec *= speed;
-				//ターゲットに５％近づく
-				//this->pos += toVec * 0.05f;
 
 				this->pos += vec;
 			}
@@ -202,9 +187,9 @@ namespace  Item_coin
 
 		BChara::DrawInfo imageTable[] = {
 			//draw                   src
-			{this->hitBase,ML::Box2D(6,6,20,20),defColor},
+			{this->hitBase,ML::Box2D( 6,6,20,20),defColor},
 			{this->hitBase,ML::Box2D(40,6,16,20),defColor},
-			{this->hitBase,ML::Box2D(76,6,8,20),defColor},
+			{this->hitBase,ML::Box2D(76,6, 8,20),defColor},
 			{this->hitBase,ML::Box2D(40,6,16,20),defColor},
 		};
 		BChara::DrawInfo  rtv;
@@ -242,8 +227,7 @@ namespace  Item_coin
 	void Object::out_coin(int x_,int y_)
 	{
 		ML::Box2D drawsize(0, 0, x_ * 64, y_ * 64);
-		if ( drawsize.y>= this->pos.y || drawsize.h <= this->pos.y ||
-			drawsize.x >= this->pos.x || drawsize.w <= this->pos.x) {
+		if (!drawsize.Hit(this->CallHitBox())) {
 			this->Kill();
 		}
 	}
