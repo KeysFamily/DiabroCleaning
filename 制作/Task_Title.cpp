@@ -48,7 +48,7 @@ namespace  Title
 		ge->TotalDamage = 0;
 		ge->TotalGetCoinCnt = 0;
 		ge->TotalUsedCoinCnt=0;
-		ge->GameClearFlag = true;
+		ge->GameClearFlag = false;
 		
 		this->createdMenu = false;
 		
