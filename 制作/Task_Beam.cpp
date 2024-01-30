@@ -42,7 +42,7 @@ namespace  Beam
 		this->hitBase = ML::Box2D(0, -16, 0, 32);
 		this->pos = ML::Vec2(0, 0);
 		this->power = 1.0f;
-		this->cost = 0;
+		this->cost = 2;
 		this->motion = Motion::Start;
 		this->length = 100;
 		this->coolTime = 0;
@@ -144,7 +144,7 @@ namespace  Beam
 					}
 				}
 			}
-			if (this->moveCnt % 60 == 1) { pl->balanceMoney -= this->cost; }
+			if (this->moveCnt % 20 == 1) { pl->balanceMoney -= this->cost; }
 			break;
 		case Motion::End:
 			break;

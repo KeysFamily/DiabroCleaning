@@ -43,7 +43,7 @@ namespace  FireBall
 		this->pos = ML::Vec2(0, 0);
 		this->speed = 10.0f;
 		this->power = 5.0f;
-		this->cost = 10;
+		this->cost = 5;
 		//šƒ^ƒXƒN‚Ì¶¬
 
 		return  true;

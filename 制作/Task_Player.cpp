@@ -274,7 +274,7 @@ namespace  Player
 			if (this->CheckFoot() == false) { nm = Motion::Fall; }
 			break;
 		case  Motion::Landing:	//着地
-			if (this->moveCnt >= 6) { nm = Motion::Stand; }
+			if (this->moveCnt >= 2) { nm = Motion::Stand; }
 			if (this->CheckFoot() == false) { nm = Motion::Fall; }
 			break;
 		case Motion::Bound:
