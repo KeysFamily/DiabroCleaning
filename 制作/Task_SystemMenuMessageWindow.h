@@ -9,6 +9,7 @@
 //概　　　要:
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "KeysString.h"
 
 namespace ShopStaff
 {
@@ -66,8 +67,8 @@ namespace  SystemMenuMessageWindow
 		ML::Vec2 messageStartPos;			//メッセージ開始位置
 		OL::Limit<int> currentMessagePos;	//現在表示している文字
 		int appearMessageDistance;			//メッセージ表示の間隔フレーム数
-		string displayStr;					//
-		string messageStr;					//表示するメッセージ
+		KeysString::Strings msg;
+		string displayStr;					//画面に表示する文字
 		int appearMessageCount;				//メッセージ表示用カウント
 
 		ML::Color messageColor;

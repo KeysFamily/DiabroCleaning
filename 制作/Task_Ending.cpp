@@ -40,6 +40,17 @@ namespace  Ending
 
 		//★データ初期化
 		this->KeyTime = 0;
+
+		//ゲームクリア時とゲームオーバー時の効果音
+		bgm::LoadFile("bgm_GameClear", "./data/sound/bgm/GameClear.mp3");
+		bgm::LoadFile("bgm_GameOver", "./data/sound/bgm/GameOver.mp3");
+
+		if (ge->GameClearFlag == true) {
+			bgm::Play("bgm_GameClear");
+		}else{
+			bgm::Play("bgm_GameOver");
+		}
+
 		//★タスクの生成
 		
 		PlayerScore::Object::Create(true);
@@ -51,6 +62,9 @@ namespace  Ending
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
+		bgm::Stop("bgm_GameClear");
+		bgm::Stop("bgm_GameOver");
+
 		ge->KillAll_G("エンディング");
 		bgm::AllStop();
 

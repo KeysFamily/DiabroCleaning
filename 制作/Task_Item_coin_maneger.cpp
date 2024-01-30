@@ -35,9 +35,7 @@ namespace  coin_maneger
 		this->res = Resource::Create();
 
 		//★データ初期化
-		
-		//auto coin = Item_coin::Object::Create(true);
-		//auto coin = ge->GetTask<Item_coin::Object>("アイテム","coin");
+		this->residentResource.push_back(Item_coin::Resource::Create());
 		
         //★タスクの生成
 
@@ -48,7 +46,9 @@ namespace  coin_maneger
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
+		this->residentResource.clear();
 
+		ge->KillAll_G(Item_coin::defGroupName);
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -61,8 +61,11 @@ namespace  coin_maneger
 	void  Object::UpDate()
 	{
 		auto inp = ge->in1->GetState();
-		if (inp.B3.down) {
-			//Create_coin(1500,300,10);
+		if (inp.B2.down) {
+			auto coins = ge->GetTasks<BChara>(Item_coin::defGroupName);
+			for (auto it = coins->begin(); it != coins->end(); ++it) {
+				(*it)->motion = Item_coin::Object::Motion::Suction;
+			}
 		}
 	}
 	//-------------------------------------------------------------------
@@ -72,15 +75,6 @@ namespace  coin_maneger
 		
 	}
 
-	void Object::Create_coin(int x_, int y_, int rand_)
-	{
-		int coin_num = rand() % rand_;
-		for (int i = 0; i < coin_num;i++) {
-			auto coin = Item_coin::Object::Create(true);
-			coin->pos.x = static_cast<float>(x_);
-			coin->pos.y = static_cast<float>(y_);
-		}
-	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

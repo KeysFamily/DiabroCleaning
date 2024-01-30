@@ -21,12 +21,16 @@ namespace KeysString
 		return retSize_;
 	}
 
+	void Strings::SetString(const std::string str_) {
+		this->str = str_;
+	}
+
 	std::string Strings::SubStr(const StringLength size_) {
 		StringLength sizeCnt = 0;
 		int cnt = 0;
 		StringLength strSize = size_ <= this->Length() ? size_ : this->Length();
 
-
+		if (str.size() == 0) return str;
 		while (cnt <= strSize) {
 			if (SJISMultiCheck(str[sizeCnt])) {
 				sizeCnt += 2;

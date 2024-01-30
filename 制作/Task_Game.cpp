@@ -107,6 +107,8 @@ namespace  Game
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
+		bgm::Stop("bgm3");
+
 		ge->KillAll_G("Game");
 		ge->KillAll_G("item");
 		ge->KillAll_G("coin_maneger");
