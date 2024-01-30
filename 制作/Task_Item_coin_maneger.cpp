@@ -61,10 +61,6 @@ namespace  coin_maneger
 	void  Object::UpDate()
 	{
 		auto inp = ge->in1->GetState();
-		if (inp.B3.down) {
-			Create_coin(1500,300,1000);
-		}
-
 		if (inp.B2.down) {
 			auto coins = ge->GetTasks<BChara>(Item_coin::defGroupName);
 			for (auto it = coins->begin(); it != coins->end(); ++it) {
@@ -77,16 +73,6 @@ namespace  coin_maneger
 	void  Object::Render2D_AF()
 	{
 		
-	}
-
-	void Object::Create_coin(int x_, int y_, int rand_)
-	{
-		int coin_num = rand_;
-		for (int i = 0; i < coin_num; i++) {
-			auto coin = Item_coin::Object::Create(true);
-			coin->pos.x = static_cast<float>(x_);
-			coin->pos.y = static_cast<float>(y_);
-		}
 	}
 
 	//šššššššššššššššššššššššššššššššššššššššššš
