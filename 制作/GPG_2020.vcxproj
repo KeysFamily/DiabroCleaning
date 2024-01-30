@@ -139,6 +139,7 @@
     <ClCompile Include="easing.cpp" />
     <ClCompile Include="fpscounter.cpp" />
     <ClCompile Include="GameEngine_Ver3_83.cpp" />
+    <ClCompile Include="GameFileManager.cpp" />
     <ClCompile Include="KeysString.cpp" />
     <ClCompile Include="MapStruct.cpp" />
     <ClCompile Include="myLib.cpp" />
@@ -152,7 +153,9 @@
     <ClCompile Include="Task_Ending.cpp" />
     <ClCompile Include="Task_EnemyBlast.cpp" />
     <ClCompile Include="Task_EnemyBoss.cpp" />
+    <ClCompile Include="Task_EnemyEffect.cpp" />
     <ClCompile Include="Task_EnemyFireBall.cpp" />
+    <ClCompile Include="Task_EnemyHPBar.cpp" />
     <ClCompile Include="Task_EnemyManager.cpp" />
     <ClCompile Include="Task_EnemySkeleton.cpp" />
     <ClCompile Include="Task_EnemySkyEye.cpp" />
@@ -214,6 +217,7 @@
     <ClInclude Include="easing.h" />
     <ClInclude Include="fpscounter.h" />
     <ClInclude Include="GameEngine_Ver3_83.h" />
+    <ClInclude Include="GameFileManager.h" />
     <ClInclude Include="KeysString.h" />
     <ClInclude Include="MapStruct.h" />
     <ClInclude Include="myLib.h" />
@@ -229,7 +233,9 @@
     <ClInclude Include="Task_Ending.h" />
     <ClInclude Include="Task_EnemyBlast.h" />
     <ClInclude Include="Task_EnemyBoss.h" />
+    <ClInclude Include="Task_EnemyEffect.h" />
     <ClInclude Include="Task_EnemyFireBall.h" />
+    <ClInclude Include="Task_EnemyHPBar.h" />
     <ClInclude Include="Task_EnemyManager.h" />
     <ClInclude Include="Task_EnemySkeleton.h" />
     <ClInclude Include="Task_EnemySkyEye.h" />

@@ -1,29 +1,24 @@
-//-------------------------------------------------------------------
-//タイトル画面
-//-------------------------------------------------------------------
+//?------------------------------------------------------
+//タスク名:
+//作　成　者:
+//TODO:もしいれば下記へ記述
+//編　集　者:
+//作成年月日:
+//概　　　要:
+//?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Title.h"
-#include  "sound.h"
+#include  "Task_EnemyEffect.h"
 
-#include  "Task_Effect00.h"
-#include "Task_MapManager.h"
-#include  "Task_TitleMenu.h"
-#include "Task_LoadGameOver.h"
-#include  "Task_EnemyManager.h"
-#include "Task_Game.h"
-#include "Task_Ending.h"
-
-namespace  Title
+namespace  EnemyEffect
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		bgm::LoadFile("bgmTitle", "./data/sound/bgm/titleUra_bgm.mp3");
-		bgm::Play("bgmTitle");
-		this->img = DG::Image::Create("./data/title/Diobro_Cleaning_title.png");
-		this->Logo = DG::Image::Create("./data/title/title_text.png");
+		this->img = DG::Image::Create("./data/enemy/image/enemyEffect.png");
+		this->imgSize.Set(96, 96);
+		this->anim = OL::Animation::Create("./data/enemy/animation/enemyEffect.txt");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -31,7 +26,7 @@ namespace  Title
 	bool  Resource::Finalize()
 	{
 		this->img.reset();
-		this->Logo.reset();
+		this->anim.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -44,30 +39,26 @@ namespace  Title
 		this->res = Resource::Create();
 
 		//★データ初期化
-		this->render2D_Priority[1] = 0.2f;
-		ge->GameCnt=0; 
-		ge->TotalEnemyKill=0; 
-		ge->TotalDamage = 0;
-		ge->TotalGetCoinCnt = 0;
-		ge->TotalUsedCoinCnt=0;
-		ge->GameClearFlag = true;
-		
-		this->createdMenu = false;
-		
-		
+		this->render2D_Priority[1] = 0.8f;
+		this->pos = ML::Vec2(0, 0);
+		this->offset = ML::Vec2(0, -80);
+		this->scale = 1;
+		this->color = ML::Color(0, 0, 0, 0);
+		this->animCnt = 0;
+		this->target;
+		//★タスクの生成
 
-		return true;
-	}	
-	//--TotalGetCoinCnt; -----------------------------------------------------------------
+		return  true;
+	}
+	//-------------------------------------------------------------------
 	//「終了」タスク消滅時に１回だけ行う処理
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-		bgm::Stop("bgmTitle");
-		ge->KillAll_G("title");
+
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
-			Game::Object::Create(true);
+			//★引き継ぎタスクの生成
 		}
 
 		return  true;
@@ -76,80 +67,26 @@ namespace  Title
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		if (ge->getCounterFlag("title") == ge->ACTIVE) {
+		if (target.expired() == true)
+		{
+			this->Kill();
 			return;
 		}
-
-		if (ge->getCounterFlag("title") == ge->LIMIT) {
-			this->Kill();
-		}
-
-		auto inp = ge->in1->GetState();
-
-		this->cnt++;
-
-		auto tm = ge->GetTask<TitleMenu::Object>("title", "Menu");
-		if (tm == nullptr)
-		{
-			createdMenu = false;
-		}
-
-		if (inp.ST.down ) 
-		{
-			if (createdMenu == false)
-			{
-				createdMenu = true;
-				TitleMenu::Object::Create(true);
-			}
-			else
-			{
-				createdMenu = false;
-				ge->KillAll_GN("title", "Menu");
-			}
-		}
-
-
-		return;
+		++this->animCnt;
+		this->pos = target.lock()->pos + offset;
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D draw(0, 0, 1920, 1080);
-		ML::Box2D src(0, 0, 1920, 1080);
-		this->res->img->Draw(draw, src);	//背景を用意する
-
-		if (createdMenu == false)
-		{
-			if (this->cnt % 60 <= 30) {
-				ML::Box2D Lg_draw((ge->screen2DWidth / 2) - 300, (ge->screen2DHeight / 4) * 3, 600, 100);
-				ML::Box2D Lg_src(0, 0, 400, 74);
-				this->res->Logo->Draw(Lg_draw, Lg_src); //テキストロゴを用意する
-			}
-		}
-
-		ge->Dbg_ToDisplay(100, 100, "Title");
+		ML::Box2D drawBase = this->res->anim->GetDrawBox();
+		ML::Box2D draw = OL::setBoxCenter(drawBase.w * scale, drawBase.h * scale);
+		ML::Box2D src = this->res->anim->GetSrcBox(this->animCnt);
+		draw.Offset(this->pos);
+		draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+		this->res->img->Draw(draw, src, this->color);
 	}
-	//-------------------------------------------------------------------
-	//ゲーム生成処理
-	void Object::CreateGame(int mapMaxDepth_)
-	{
-		if (ge->getCounterFlag("title") == ge->ACTIVE)
-		{
-			return;
-		}
 
-
-
-		EnemyManager::Object::Create(true);
-		auto manager = MapManager::Object::Create(true);
-		manager->SetDepthInLevel(2);
-		manager->SetMaxDepth(mapMaxDepth_);
-		manager->Generate();
-
-		ge->StartCounter("title", 45); //フェードは90フレームなので半分の45で切り替え
-		ge->CreateEffect(98, ML::Vec2(0, 0));
-	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -162,6 +99,7 @@ namespace  Title
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
+				
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill

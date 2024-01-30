@@ -182,20 +182,26 @@ namespace  TitleMenu
 			break;
 		case 1:
 		{
+			ge->filemg.SetRunPath("./data/inGame", true);
 			auto title = ge->GetTask<Title::Object>("title", "NoName");
 			title->CreateGame(3);
+			this->Kill();
 		}
 		break;
 		case 2:
 		{
+			ge->filemg.SetRunPath("./data/inGame", true);
 			auto title = ge->GetTask<Title::Object>("title", "NoName");
 			title->CreateGame(5);
+			this->Kill();
 		}
 		break;
 		case 3:
 		{
+			ge->filemg.SetRunPath("./data/inGame", true);
 			auto title = ge->GetTask<Title::Object>("title", "NoName");
 			title->CreateGame(10);
+			this->Kill();
 		}
 		break;
 		case 4:

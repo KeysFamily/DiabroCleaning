@@ -44,8 +44,7 @@ namespace  Map
 		this->depth = 1;
 		this->visited = true;
 		this->folderPath = "";
-		this->depthInLevel = 2;
-		this->depthInLevel_Conn = 1;
+		this->depthInLevel = 10;
 		auto resultSlope = this->LoadSlope("./data/map/slopesData.json");
 		auto resultSpike = this->LoadSpike("./data/map/spikesData.json");
 		//★タスクの生成
@@ -140,8 +139,8 @@ namespace  Map
 		this->backMap.img.reset();
 		if (mapType == Map::MapType::Connect)
 		{
-			int level = this->depth / this->depthInLevel_Conn;
-			int levelCnt = 1;
+			int level = this->depth / this->depthInLevel;
+			int levelCnt = 0;
 			for (auto& bmd : js["connects"])
 			{
 				if (levelCnt >= level)
@@ -154,7 +153,7 @@ namespace  Map
 					this->backMap.infinity = bmd["infinity"];
 					break;
 				}
-				else if (levelCnt >= js["connects"].size())
+				else if (levelCnt >= js["connects"].size() - 1)
 				{
 					this->backMap.img = DG::Image::Create(bmd["imgFilePath"]);
 					this->backMap.imgSize.w = bmd["imgWidth"];
@@ -162,6 +161,7 @@ namespace  Map
 					this->backMap.scale = bmd["scale"];
 					this->backMap.moveScale = bmd["moveScale"];
 					this->backMap.infinity = bmd["infinity"];
+					break;
 				}
 				++levelCnt;
 			}
@@ -169,7 +169,7 @@ namespace  Map
 		else if (mapType == Map::MapType::Map)
 		{
 			int level = this->depth / this->depthInLevel;
-			int levelCnt = 1;
+			int levelCnt = 0;
 			for (auto& bmd : js["backGrounds"])
 			{
 				if (levelCnt >= level)
@@ -182,7 +182,7 @@ namespace  Map
 					this->backMap.infinity = bmd["infinity"];
 					break;
 				}
-				else if (levelCnt >= js["backGrounds"].size())
+				else if (levelCnt >= js["backGrounds"].size() - 1)
 				{
 					this->backMap.img = DG::Image::Create(bmd["imgFilePath"]);
 					this->backMap.imgSize.w = bmd["imgWidth"];
@@ -190,6 +190,7 @@ namespace  Map
 					this->backMap.scale = bmd["scale"];
 					this->backMap.moveScale = bmd["moveScale"];
 					this->backMap.infinity = bmd["infinity"];
+					break;
 				}
 				++levelCnt;
 			}
@@ -538,16 +539,16 @@ namespace  Map
 	// プレイヤーのスタート地点の座標
 	ML::Vec2 Object::GetPlayerStartPos() const
 	{
-		int enterChip = 12;
+		int enterChip = 7;
 
-		OL::Size2D mapSize(ObjectMap.width, ObjectMap.height);
+		OL::Size2D mapSize(GenerateMap.width, GenerateMap.height);
 
 		//チップを探す
 		for (int y = 0; y < mapSize.h; ++y)
 		{
 			for (int x = 0; x < mapSize.w; ++x)
 			{
-				while (ObjectMap.chipdata[y][x] == enterChip)
+				while (GenerateMap.chipdata[y][x] == enterChip)
 				{
 					return ML::Vec2(x, y) * this->res->drawSize;
 				}
@@ -777,7 +778,7 @@ namespace  Map
 						y * this->res->drawSize
 					);
 					
-					em->SpawnEnemyNum(en, epos);
+					em->SpawnEnemyNum(en, epos, this->depth / this->depthInLevel);
 				}
 			}
 		}

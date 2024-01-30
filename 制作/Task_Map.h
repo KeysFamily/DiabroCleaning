@@ -89,9 +89,8 @@ namespace  Map
 		ML::Box2D			hitBase;	//ピクセル単位のマップサイズを持つ
 		bool				visited;	//一度訪れたか
 		int					depth;		//深度
+		int					depthInLevel;		//レベル
 		string				folderPath;	//マップデータフォルダへのパス
-		int					depthInLevel;	//1レベルにおける深度
-		int					depthInLevel_Conn;	//1レベルにおける深度（通路）
 
 		//あたり判定
 		bool  CheckHit(const  ML::Box2D& hit_);

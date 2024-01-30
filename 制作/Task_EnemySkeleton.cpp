@@ -481,7 +481,8 @@ namespace  EnemySkeleton
 		if (this->unHitTime > 0) { 
 			return; //–³“GŽžŠÔ’†‚Íˆ—‚ðŽó‚¯‚È‚¢
 		}
-		//this->unHitTime = 20;
+
+		this->unHitTime = 10;
 		this->hp.Addval(-at_.power);
 		ge->TotalDamage += at_.power;
 		if (this->hp.vnow <= 0) {
