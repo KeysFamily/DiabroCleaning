@@ -77,8 +77,8 @@ namespace  coin_maneger
 		int coin_num = rand() % rand_;
 		for (int i = 0; i < coin_num;i++) {
 			auto coin = Item_coin::Object::Create(true);
-			coin->pos.x = x_;
-			coin->pos.y = y_;
+			coin->pos.x = static_cast<float>(x_);
+			coin->pos.y = static_cast<float>(y_);
 		}
 	}
 	//šššššššššššššššššššššššššššššššššššššššššš

@@ -44,8 +44,8 @@ namespace  GuideControll
 		//ÅöÉfÅ[É^èâä˙âª
 		this->render2D_Priority[1] = 0.01f;
 
-		this->posRB.x = ge->screenWidth;
-		this->posRB.y = ge->screenHeight;
+		this->posRB.x = static_cast<float>(ge->screenWidth);
+		this->posRB.y = static_cast<float>(ge->screenHeight);
 		this->distance = 20;
 		this->currentGuide = GuideType::Game;
 		this->Load("./data/guideControll");
@@ -88,9 +88,9 @@ namespace  GuideControll
 			ML::Box2D src = GetButtonSrc(gd.buttonNum);
 
 			//ï∂éöÇÃê›íË
-			ML::Box2D drawf = ML::Box2D(0, 0, this->res->fontSize.w * gd.guideStr.size(), this->res->fontSize.h);
-			drawf.x = imgPos.x + this->res->imgSize.w / 2;
-			drawf.y = this->posRB.y - this->res->fontSize.h;
+			ML::Box2D drawf = ML::Box2D(0, 0, this->res->fontSize.w * static_cast<int>(gd.guideStr.size()), this->res->fontSize.h);
+			drawf.x = static_cast<int>(imgPos.x + this->res->imgSize.w / 2);
+			drawf.y = static_cast<int>(this->posRB.y - this->res->fontSize.h);
 			
 			//îwåiÇÃê›íË
 			ML::Box2D drawbg(0, 0, 0, 0);
