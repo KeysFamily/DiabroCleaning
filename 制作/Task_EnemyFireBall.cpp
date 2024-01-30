@@ -118,7 +118,7 @@ namespace  EnemyFireBall
 	// アニメーション制御
 	BChara::DrawInfo  Object::Anim()
 	{
-		ML::Color  defColor(1, 0.1, 1, 2);
+		ML::Color  defColor(1.0f, 0.1f, 1.0f, 2.0f);
 		BChara::DrawInfo imageTable[] = {
 			//draw							src
 			{ ML::Box2D(-26,-26,52,52), ML::Box2D(0, 0, 26, 26), defColor },			//0
