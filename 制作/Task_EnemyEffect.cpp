@@ -80,7 +80,7 @@ namespace  EnemyEffect
 	void  Object::Render2D_AF()
 	{
 		ML::Box2D drawBase = this->res->anim->GetDrawBox();
-		ML::Box2D draw = OL::setBoxCenter(drawBase.w * scale, drawBase.h * scale);
+		ML::Box2D draw = OL::setBoxCenter(drawBase.w * static_cast<int>(scale), drawBase.h * static_cast<int>(scale));
 		ML::Box2D src = this->res->anim->GetSrcBox(this->animCnt);
 		draw.Offset(this->pos);
 		draw.Offset(-ge->camera2D.x, -ge->camera2D.y);

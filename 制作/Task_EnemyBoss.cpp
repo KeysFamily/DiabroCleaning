@@ -265,7 +265,7 @@ namespace  EnemyBoss
 				float r = ge->qa_Map->res->drawSize * 10.0f;
 				auto ew = ge->CreateEffect(9, this->pos);
 				auto es = ew.lock();
-				es->drawSizeX = es->drawSizeY = r * 4;
+				es->drawSizeX = es->drawSizeY = static_cast<int>(r * 4);
 
 				if (this->PosInMyCircle(this->pos, ge->qa_Player->pos, r)) {
 					BChara::AttackInfo at = { attackPow,0,0 };

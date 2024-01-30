@@ -214,7 +214,7 @@ namespace  EnemyManager
 			int level;
 			if (level_ >= this->res->stateRates.size())
 			{
-				level = this->res->stateRates.size() - 1;
+				level = static_cast<int>(this->res->stateRates.size() - 1);
 			}
 			else
 			{
@@ -239,7 +239,7 @@ namespace  EnemyManager
 			auto ehp = EnemyHPBar::Object::Create(true);
 			ehp->pos = e->pos;
 			ehp->target = e;
-			ehp->hpDisplay = e->hp.vmax;
+			ehp->hpDisplay = static_cast<int>(e->hp.vmax);
 
 			BChara::Angle_LR angleSheet[] = {
 				BChara::Angle_LR::Left,
