@@ -20,8 +20,6 @@ namespace  Title
 	//ƒŠƒ\[ƒX‚Ì‰Šú‰»
 	bool  Resource::Initialize()
 	{
-		bgm::LoadFile("bgmTitle", "./data/sound/bgm/titleUra_bgm.mp3");
-		bgm::Play("bgmTitle");
 		this->img = DG::Image::Create("./data/title/Diobro_Cleaning_title.png");
 		this->Logo = DG::Image::Create("./data/title/title_text.png");
 		return true;
@@ -50,11 +48,12 @@ namespace  Title
 		ge->TotalDamage = 0;
 		ge->TotalGetCoinCnt = 0;
 		ge->TotalUsedCoinCnt=0;
-		ge->GameClearFlag = true;
+		ge->GameClearFlag = false;
 		
 		this->createdMenu = false;
 		
-		
+		bgm::LoadFile("bgmTitle", "./data/sound/bgm/titleUra_bgm.mp3");
+		bgm::Play("bgmTitle");
 
 		return true;
 	}	
