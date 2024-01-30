@@ -75,6 +75,14 @@ namespace  ItemTrsBox
 		//デバック用
 		XI::GamePad::SP controller;
 
+		int minCoin;
+		int maxCoin;
+		int minLevel;
+		int maxLevel;
 		bool Hitbool;
+
+		ML::Point mapPos;
+
+		void BoxInit(ML::Point mapPos_, int coinMin_, int coinMax_, int levelMin_, int levelMax_);
 	};
 }

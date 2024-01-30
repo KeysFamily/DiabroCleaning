@@ -392,6 +392,7 @@ namespace  MapManager
 			break;
 		}
 
+		ge->qa_Map->SaveMap();
 		ge->qa_Map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
 		ge->qa_Player->pos = ge->qa_Map->GetPlayerEnterPos(Map::MapFunc::ReverseMapDir(moveMapDir));
 		if (moveMapDir == MapDir::Up)

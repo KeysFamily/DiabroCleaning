@@ -77,7 +77,6 @@ namespace  Game
 
 		auto coin_man = coin_maneger::Object::Create(true);
 
-		auto item_Manager = ItemTrsBox::Object::Create(true);
 
 		auto UI = GameUI::Object::Create(true);
 		UI->numPos = ML::Vec2(50, 50);

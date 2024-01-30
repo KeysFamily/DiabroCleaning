@@ -1,0 +1,34 @@
+{
+	"Rate": [
+		{
+			"coinMin": 1,
+			"coinMax": 5,
+			"levelMin": 0,
+			"levelMax": 1
+		},
+		{
+			"coinMin": 1,
+			"coinMax": 5,
+			"levelMin": 1,
+			"levelMax": 2
+		},
+		{
+			"coinMin": 1,
+			"coinMax": 5,
+			"levelMin": 2,
+			"levelMax": 3
+		},
+		{
+			"coinMin": 1,
+			"coinMax": 5,
+			"levelMin": 3,
+			"levelMax": 4
+		},
+		{
+			"coinMin": 1,
+			"coinMax": 5,
+			"levelMin": 4,
+			"levelMax": 5
+		}
+	]
+}
