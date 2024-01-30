@@ -137,7 +137,7 @@ namespace  WaterBlast
 					}
 				}
 			}
-			if (this->moveCnt % 60 == 1) { pl->balanceMoney -= this->cost; }
+			if (this->moveCnt % 20 == 1) { pl->balanceMoney -= this->cost; }
 			break;
 		case Motion::End:
 			break;
