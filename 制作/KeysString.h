@@ -18,13 +18,15 @@ namespace KeysString
 		bool SJISMultiCheck(unsigned char c) const;
 	public:
 		Strings()
-			: str()
+			: str("")
 		{}
 		Strings(const std::string str_)
 			: str(str_)
 		{}
 
 		~Strings() {}
+
+		void SetString(const std::string str_);
 
 		/// <summary>
 		/// •¶š”‚ğ•Ô‚·(std::string::size()‚Æ‚Í•Ê•¨)
