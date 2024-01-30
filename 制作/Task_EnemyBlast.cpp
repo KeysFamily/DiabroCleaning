@@ -130,7 +130,7 @@ namespace  EnemyBlast
 	// アニメーション制御
 	BChara::DrawInfo  Object::Anim()
 	{
-		ML::Color  defColor(1, 1, 2, 0.1);
+		ML::Color  defColor(1.0f, 1.0f, 2.0f, 0.1f);
 		BChara::DrawInfo imageTable[] = {
 			//draw							src
 			{ ML::Box2D(-150,-210,300,300), ML::Box2D(0, 0, 128, 128), defColor },					//0

@@ -90,7 +90,7 @@ namespace  EnemyManager
 		//追加したい変数・メソッドはここに追加する
 		std::vector<BResource::SP> residentResource;
 
-		void SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_, int level_ = 0);
+		void SpawnEnemyNum(size_t enemyNum_, ML::Vec2 pos_, int level_ = 0);
 		void SpawnEnemyName(string name_, ML::Vec2 pos_, int level_ = 0);
 
 		void KillAllEnemys();

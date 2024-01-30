@@ -180,8 +180,8 @@ namespace  EnemyManager
 	// “GƒXƒ|[ƒ“
 	
 
-	void Object::SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_, int level_) {
-		int size = this->res->enemyNames.size();
+	void Object::SpawnEnemyNum(size_t enemyNum_, ML::Vec2 pos_, int level_) {
+		size_t size = this->res->enemyNames.size();
 		string name;
 		if (enemyNum_ == 6) {
 			name = this->res->enemyNames[2];
