@@ -145,10 +145,12 @@
     <ClCompile Include="MyPG.cpp" />
     <ClCompile Include="OriginalLibrary.cpp" />
     <ClCompile Include="randomLib.cpp" />
+    <ClCompile Include="RateLot.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="Task_Beam.cpp" />
     <ClCompile Include="Task_Effect00.cpp" />
     <ClCompile Include="Task_Ending.cpp" />
+    <ClCompile Include="Task_EnemyBlast.cpp" />
     <ClCompile Include="Task_EnemyBoss.cpp" />
     <ClCompile Include="Task_EnemyFireBall.cpp" />
     <ClCompile Include="Task_EnemyManager.cpp" />
@@ -218,12 +220,14 @@
     <ClInclude Include="MyPG.h" />
     <ClInclude Include="OriginalLibrary.h" />
     <ClInclude Include="randomLib.h" />
+    <ClInclude Include="RateLot.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SelectableObject.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="Task_Beam.h" />
     <ClInclude Include="Task_Effect00.h" />
     <ClInclude Include="Task_Ending.h" />
+    <ClInclude Include="Task_EnemyBlast.h" />
     <ClInclude Include="Task_EnemyBoss.h" />
     <ClInclude Include="Task_EnemyFireBall.h" />
     <ClInclude Include="Task_EnemyManager.h" />
