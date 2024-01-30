@@ -80,7 +80,8 @@ namespace  SystemMenuMessageWindow
 		this->shopStaff->pos = this->pos + this->staffPos;
 
 		this->currentMessagePos.Setval(this->appearMessageCount / appearMessageDistance);
-		this->displayStr = this->messageStr.substr(0, this->currentMessagePos.vnow);
+
+		this->displayStr = this->msg.SubStr(this->currentMessagePos.vnow);
 
 		++this->appearMessageCount;
 	}
@@ -124,11 +125,14 @@ namespace  SystemMenuMessageWindow
 		{
 			return;
 		}
+		string messageStr;
+		ifs >> messageStr;
 
-		ifs >> this->messageStr;
+		this->msg.SetString(messageStr);
 
 		this->appearMessageDistance = distance;
-		this->currentMessagePos.SetValues(0, 0, static_cast<int>(this->messageStr.size()));
+		this->currentMessagePos.SetValues(0, 0, static_cast<int>(this->msg.Length()));
+
 		this->shopStaff->SetAnimation((ShopStaff::Motion)motion);
 		this->appearMessageCount = 0;
 
