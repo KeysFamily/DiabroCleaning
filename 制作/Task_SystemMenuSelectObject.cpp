@@ -127,10 +127,10 @@ namespace  SystemMenuSelectObject
 		//イージング中の処理
 		if (isEasing) {
 			ML::Box2D box;
-			box.x = easing::GetPos(enx);
-			box.y = easing::GetPos(eny);
-			box.w = easing::GetPos(enw);
-			box.h = easing::GetPos(enh);
+			box.x = static_cast<int>(easing::GetPos(enx));
+			box.y = static_cast<int>(easing::GetPos(eny));
+			box.w = static_cast<int>(easing::GetPos(enw));
+			box.h = static_cast<int>(easing::GetPos(enh));
 			viewRate = easing::GetPos(enr);
 
 			this->selectBox = box;
@@ -142,7 +142,7 @@ namespace  SystemMenuSelectObject
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		int size = 12 * this->viewRate;
+		int size = 12 * static_cast<int>(this->viewRate);
 		ML::Box2D UIBox = this->selectBox;
 		//画像は4つに分割(左上、右上、左下、右下)
 		ML::Box2D draw[4] = {
