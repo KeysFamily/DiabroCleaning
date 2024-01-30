@@ -10,6 +10,7 @@
 #include  "Task_SkillShop.h"
 #include  "Task_Price.h"
 #include  "Task_SystemMenuMessageWindow.h"
+#include	"sound.h"
 
 namespace  SkillShop
 {
@@ -127,7 +128,17 @@ namespace  SkillShop
 			this->currentState = State::BOUGHT;
 			this->objPrice->active = false;
 			ge->TotalUsedCoinCnt += this->shopData.price;
+			se::Stop("bought");
+			se::Play("bought");
 			return true;
+		}
+		else 
+		{
+			auto msg = ge->GetTask<SystemMenuMessageWindow::Object>("SystemMenu", "MessageWindow");
+			msg->SetMessage("cantBuy");
+			se::Stop("errorSelect");
+			se::Play("errorSelect");
+			return false;
 		}
 	}
 

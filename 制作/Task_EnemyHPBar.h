@@ -1,7 +1,7 @@
 #pragma warning(disable:4996)
 #pragma once
 //?------------------------------------------------------
-//タスク名:メニュー画面管理
+//タスク名:敵HPバー
 //作　成　者:土田誠也
 //TODO:もしいれば下記へ記述
 //編　集　者:
@@ -9,34 +9,13 @@
 //概　　　要:
 //?------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
+#include "BChara.h"
 
-namespace PlayerStatus
-{
-	class Object;
-}
-namespace SystemMenuMessageWindow
-{
-	class Object;
-}
-namespace SkillSelect
-{
-	class Object;
-}
-namespace SystemMenuMoneyDisplay
-{
-	class Object;
-}
-namespace SystemMenuBackButton
-{
-	class Object;
-}
-
-
-namespace  SystemMenu
+namespace  EnemyHPBar
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("SystemMenu");	//グループ名
-	const  string  defName("System");	//タスク名
+	const  string  defGroupName("UI");	//グループ名
+	const  string  defName("HPBar");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -50,7 +29,8 @@ namespace  SystemMenu
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP imgBg;
+		DG::Image::SP img;
+		OL::Size2D imgSize;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -72,36 +52,13 @@ namespace  SystemMenu
 		void  Render2D_AF()		override;//「2D描画」１フレーム毎に行う処理
 		bool  Finalize();		//「終了」タスク消滅時に１回だけ行う処理
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
-		void SetPos();
-		void AppearUpDate();
-		void DisappearUpdate();
-		void SuspendMenu(bool f_);
-		//ファイルにセーブする
-		void SaveToFile();
-
 	public:
 		//追加したい変数・メソッドはここに追加する
 		ML::Vec2 pos;
-		ML::Vec2 skillPos;
-		ML::Vec2 statusPos;
-		ML::Vec2 backPos;
-		ML::Vec2 msgPos;
-		ML::Vec2 moneyPos;
-
-		shared_ptr<PlayerStatus::Object> status;
-		shared_ptr<SystemMenuMessageWindow::Object> message;
-		shared_ptr<SkillSelect::Object> skill;
-		shared_ptr<SystemMenuMoneyDisplay::Object> moneyDp;
-		shared_ptr<SystemMenuBackButton::Object> back;
-
-		shared_ptr<vector<BTask::SP>> menuObj;
-
-		bool finishedAppear;	//出現が終了したか
-		bool finishFlag;		//終了するか
-
-		//開始処理
-		void StartMenu();
-		//終了判定
-		void FinishMenu();
+		ML::Vec2 offset;
+		BChara::WP target;
+		OL::Limit<int> decleaseTime;
+		int hpDecleased;
+		int hpDisplay;
 	};
 }

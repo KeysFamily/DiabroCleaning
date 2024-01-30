@@ -1,5 +1,6 @@
 #pragma once
 #include "GameEngine_Ver3_83.h"
+#include "GameFileManager.h"
 #include <fstream>
 #include <sstream>
 
@@ -96,6 +97,7 @@ namespace  MyPG
 		ML::Box2D				camera2D;	//  ２Ｄスクロール制御用
 		map<string, float> evFlags;
 
+		GameFileManager filemg;		//ファイル管理クラス
 		bool GameOverFlag = false; //ゲームオーバーフラグ
 		bool GameClearFlag = false;//クリアフラグ
 		bool unHitEnemy = false;//敵との当たり判定

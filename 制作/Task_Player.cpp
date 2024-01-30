@@ -67,7 +67,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 100;  //所持金
+		this->balanceMoney = 20;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
@@ -91,6 +91,7 @@ namespace  Player
 		this->unlockedMagic.push_back(Magic::NoMagic);
 		this->magicIndex = 0;
 		this->reviveBonusMoney = 100;
+		this->LoadFile();
 		//--------------------------------------
 		//★タスクの生成
 
@@ -567,7 +568,7 @@ namespace  Player
 			}
 			break;
 		case  Motion::Attack2:	//�U����
-			this->powerScale = 1.5f;
+			this->powerScale = 1.2f;
 			this->attack2 = false;
 			if (this->moveCnt == 9)
 			{
@@ -579,7 +580,7 @@ namespace  Player
 			}
 			break;
 		case  Motion::Attack3:	//�U����
-			this->powerScale = 2.0f;
+			this->powerScale = 1.4f;
 			this->attack3 = false;
 			if (this->moveCnt == 9)
 			{
@@ -603,7 +604,7 @@ namespace  Player
 		case  Motion::AirAttack2:	//攻撃中
 			this->moveVec.y = 0.0f;
 			this->attack2 = false;
-			this->powerScale = 1.5f;
+			this->powerScale = 1.2f;
 			if (this->moveCnt == 1) 
 			{
 				se::Play("swordSlash");
@@ -616,7 +617,7 @@ namespace  Player
 		case Motion::AirAttack3:
 			this->moveVec.y = 20.0f;
 			this->attack3 = false;
-			this->powerScale = 2.0f;
+			this->powerScale = 1.4f;
 			if (this->haveAttacked == false) {
 				this->MakeAttack();
 			}
@@ -626,7 +627,7 @@ namespace  Player
 			}
 			break;
 		case Motion::AirAttack4:
-			this->powerScale = 2.5f;
+			this->powerScale = 2.0f;
 			if (this->moveCnt == 1)
 			{
 				se::Play("swordHitGround");
@@ -1024,8 +1025,9 @@ namespace  Player
 	//ファイル読み込み処理
 	void Object::LoadFile()
 	{
+
 		//スキル読み込み
-		json js = OL::LoadJsonFile("./data/inGame/run/pData_skill.json");
+		json js = OL::LoadJsonFile(ge->filemg.GetRunFile() + "pData_skill.json");
 		
 		for (auto& ji : js["pData_skill"])
 		{
@@ -1044,7 +1046,7 @@ namespace  Player
 		js.clear();
 
 		//ステータス読み込み
-		js = OL::LoadJsonFile("./data/inGame/run/pData_status.json");
+		js = OL::LoadJsonFile(ge->filemg.GetRunFile() + "pData_status.json");
 		
 		for (auto& ji : js["pData_status"])
 		{
@@ -1057,6 +1059,8 @@ namespace  Player
 			int param;
 			for (int i = 0; i < ji["level"]; ++i)
 			{
+				int money;
+				ifs >> money;
 				ifs >> param;
 			}
 

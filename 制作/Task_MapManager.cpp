@@ -47,8 +47,9 @@ namespace  MapManager
 		this->generateSubRate = 0.5f;
 		this->subDepthMax = 2;
 		this->depthMax = 5;
+		this->depthInLevel = 1;
 		//セーブ先
-		this->saveFolderPath = "./data/inGame/run/mapData/";
+		this->saveFolderPath = ge->filemg.GetRunFile() + "mapData/";
 
 		this->moveMapDir = Map::MapDir::Non;
 
@@ -100,14 +101,14 @@ namespace  MapManager
 			}
 		}
 
-		map[0][0] = new MapObject(1,"map_start");
+		map[0][0] = new MapObject(0,"map_start");
 
-#if true
+#if false
 		map[0][1] = new MapObject(1, "map_goal");
 #else
-		map[0][1] = new MapObject(1, MapType::Connect, MapDir::Left, MapDir::Right);
+		map[0][1] = new MapObject(0, MapType::Connect, MapDir::Left, MapDir::Right);
 #endif
-		this->GenerateMap(2, 0, 2, this->depthMax, MapDir::Left);
+		this->GenerateMap(2, 0, 1, this->depthMax, MapDir::Left);
 
 		this->GenerateSub();
 
@@ -148,6 +149,7 @@ namespace  MapManager
 
 		ge->qa_Map = Map::Object::Create(true);
 		ge->qa_Map->render2D_Priority[1] = 0.9f;
+		ge->qa_Map->depthInLevel = this->depthInLevel;
 		ge->qa_Map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
 		this->generated = true;
 
@@ -428,6 +430,10 @@ namespace  MapManager
 	void Object::SetMaxDepth(int depth_)
 	{
 		this->depthMax = depth_;
+	}
+	void Object::SetDepthInLevel(int dil_)
+	{
+		this->depthInLevel = dil_;
 	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
