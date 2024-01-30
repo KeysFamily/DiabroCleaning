@@ -951,6 +951,9 @@ namespace  Player
 		if (this->motion == Motion::Dash || this->motion == Motion::Back) {
 			return;
 		}
+		if (this->motion == Motion::Death) {
+			return;
+		}
 		this->unHitTime = 90;
 		//this->hp.Addval(-at_.power);	//仮処理
 		this->balanceMoney -= at_.power * (10.f / (10 + this->DEF + this->itemDEF)); //ダメージ計算公式
