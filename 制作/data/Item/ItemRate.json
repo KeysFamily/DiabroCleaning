@@ -1,33 +1,33 @@
 {
 	"Rate": [
 		{
-			"coinMin": 1,
-			"coinMax": 5,
+			"coinMin": 5,
+			"coinMax": 100,
 			"levelMin": 0,
 			"levelMax": 1
 		},
 		{
-			"coinMin": 1,
-			"coinMax": 5,
-			"levelMin": 1,
+			"coinMin": 9,
+			"coinMax": 180,
+			"levelMin": 0,
 			"levelMax": 2
 		},
 		{
-			"coinMin": 1,
-			"coinMax": 5,
-			"levelMin": 2,
+			"coinMin": 16,
+			"coinMax": 320,
+			"levelMin": 1,
 			"levelMax": 3
 		},
 		{
-			"coinMin": 1,
-			"coinMax": 5,
-			"levelMin": 3,
+			"coinMin": 28,
+			"coinMax": 570,
+			"levelMin": 2,
 			"levelMax": 4
 		},
 		{
-			"coinMin": 1,
-			"coinMax": 5,
-			"levelMin": 4,
+			"coinMin": 52,
+			"coinMax": 1030,
+			"levelMin": 3,
 			"levelMax": 5
 		}
 	]
