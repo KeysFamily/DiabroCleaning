@@ -274,6 +274,10 @@ namespace  EnemyBoss
 
 				for (auto it = ge->qa_Enemys->begin(); it != ge->qa_Enemys->end(); ++it) {
 					if (this->PosInMyCircle(this->pos, (*it)->pos, r)) {
+						if ((*it)->UKey() == this->UKey())
+						{
+							continue;
+						}
 						(*it)->Kill();
 					}
 				}
@@ -305,6 +309,19 @@ namespace  EnemyBoss
 			}
 			break;
 		case BossMotion::Lose:
+			if (this->moveCnt == 0)
+			{
+				//自分以外のEnemyタスクを消す
+				auto enemys = ge->GetTasks<BTask>("Enemy");
+				for (auto& en : *enemys)
+				{
+					if (en->UKey() == this->UKey())
+					{
+						continue;
+					}
+					en->Kill();
+				}
+			}
 			if (this->moveCnt >= 21) {
 				this->Kill();
 			}
@@ -411,7 +428,7 @@ namespace  EnemyBoss
 		if (this->unHitTime > 0) { 
 			return; //無敵時間中は処理を受けない
 		}
-		this->unHitTime = 30;
+		this->unHitTime = 10;
 		this->hp.Addval(-at_.power);
 		if (this->hp.vnow <= 0) {
 			this->UpdateMotion(Motion::Lose);

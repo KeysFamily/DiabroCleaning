@@ -4,6 +4,7 @@
 #include  "MyPG.h"
 #include  "Task_Ending.h"
 #include  "Task_Title.h"
+#include  "sound.h"
 
 #include  "Task_PlayerScore.h"
 
@@ -51,6 +52,7 @@ namespace  Ending
 	{
 		//★データ＆タスク解放
 		ge->KillAll_G("エンディング");
+		bgm::AllStop();
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -91,7 +93,6 @@ namespace  Ending
 		
 		if(this->KeyOnOff==true)this->res->Key_img->Draw(KeyDraw, KeySrc);
 		
-		ge->Dbg_ToDisplay(100, 100, "Ending");
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

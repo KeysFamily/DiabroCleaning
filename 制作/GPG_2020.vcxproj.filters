@@ -387,7 +387,6 @@
     <ClCompile Include="Task_GameOverMenu.cpp">
       <Filter>MyPG\Task\Game\GameOver</Filter>
     </ClCompile>
-
     <ClCompile Include="RateLot.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
@@ -400,7 +399,6 @@
     <ClCompile Include="Task_EnemyBlast.cpp">
       <Filter>MyPG\Task\Game\Enemy\Attack</Filter>
     </ClCompile>
-    
     <ClCompile Include="Task_EnemyFireBall.cpp" />
     <ClCompile Include="Task_EnemyEffect.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
@@ -410,7 +408,12 @@
     </ClCompile>
     <ClCompile Include="GameFileManager.cpp">
       <Filter>MyPG</Filter>
-
+    </ClCompile>
+    <ClCompile Include="Task_DamageNum.cpp">
+      <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_BossHPBar.cpp">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -612,7 +615,6 @@
     <ClInclude Include="Task_GameOverMenu.h">
       <Filter>MyPG\Task\Game\GameOver</Filter>
     </ClInclude>
-
     <ClInclude Include="RateLot.h">
       <Filter>Lib</Filter>
     </ClInclude>
@@ -634,7 +636,12 @@
     </ClInclude>
     <ClInclude Include="GameFileManager.h">
       <Filter>MyPG</Filter>
-
+    </ClInclude>
+    <ClInclude Include="Task_DamageNum.h">
+      <Filter>MyPG\Task\Game\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_BossHPBar.h">
+      <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

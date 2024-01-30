@@ -8,6 +8,8 @@
 #include  "Task_EnemyManager.h"
 
 #include  "Task_ItemTrsBox.h"	
+#include "Task_GameUI_MiniMap.h"
+#include "sound.h"
 
 namespace  Map
 {
@@ -23,6 +25,8 @@ namespace  Map
 
 		this->debugFont = DG::Font::Create("non", 8, 16);	//数字フォント
 		this->drawObject = false;	//オブジェクトチップの数字描画
+
+		bgm::LoadFile("boss", "./data/sound/bgm/bossBattle.mp3");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -268,8 +272,8 @@ namespace  Map
 		//生成済みアイテム読み込み
 		this->boxOpenData.clear();
 
-		ifstream ifs(this->folderPath + "openedBox.txt");
-		while (!ifs)
+		ifstream ifs(this->folderPath + "/openedBox.txt");
+		while (ifs)
 		{
 			ML::Point mapPos;
 			ifs >> mapPos.x;
@@ -287,7 +291,12 @@ namespace  Map
 		//アイテム生成
 		this->SetItemOnMap();
 
-
+		//ボス部屋か判定
+		this->isBossRoom = false;
+		if (mapName == "map_goal") 
+		{
+			this->SetBossRoom();
+		}
 
 		//当たり判定矩形設定
 		this->hitBase = ML::Box2D(0, 0, this->ObjectMap.width * this->res->drawSize, this->ObjectMap.height * this->res->drawSize);
@@ -299,10 +308,10 @@ namespace  Map
 	//マップ読み込み
 	bool Object::SaveMap()
 	{
-		json js = OL::LoadJsonFile(this->folderPath + "mapData.json");
+		json js = OL::LoadJsonFile(this->folderPath + "/mapData.json");
 		js["visited"] = true;
 		
-		ofstream ofs(this->folderPath + "openedBox.txt");
+		ofstream ofs(this->folderPath + "/openedBox.txt");
 		for (auto& boxPos : this->boxOpenData)
 		{
 			ofs << boxPos.x << ' ';
@@ -310,7 +319,7 @@ namespace  Map
 		}
 		ofs.close();
 
-		OL::SaveJsonFile(js, this->folderPath + "mapData.json");
+		OL::SaveJsonFile(js, this->folderPath + "/mapData.json");
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -830,7 +839,8 @@ namespace  Map
 		ge->KillAll_G("item");
 
 		json js = OL::LoadJsonFile("./data/Item/ItemRate.json");
-		auto& itRate = js["Rate"].at(this->depth / this->depthInLevel);
+		int level = min(4, this->depth / this->depthInLevel);
+		auto& itRate = js["Rate"].at(level);
 
 		//チップを探す
 		for (int y = 0; y < this->GenerateMap.height; ++y)
@@ -872,6 +882,15 @@ namespace  Map
 		}
 	}
 
+	//-------------------------------------------------------------------
+	void Object::SetBossRoom()
+	{
+		this->isBossRoom = true;
+		bgm::AllStop();
+		bgm::Play("boss");
+		auto minimap = ge->GetTask<MiniMap::Object>("GameUI", "MiniMap");
+		minimap->hide = true;
+	}
 
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

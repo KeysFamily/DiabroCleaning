@@ -32,7 +32,8 @@ namespace  MiniMap
 		OL::Size2D imgBGSize;
 		DG::Image::SP imgChip;
 		OL::Size2D imgChipSize;
-
+		DG::Image::SP imgPl;
+		OL::Size2D imgPlSize;
 
 	};
 	//-------------------------------------------------------------------
@@ -76,6 +77,9 @@ namespace  MiniMap
 		ML::Vec2 screenOfs;
 		vector<vector<int>> mapData;
 		int mapSizeMax;
+		ML::Point playerPos;
+		OL::Limit<int> animCnt;
+		bool hide;
 
 
 		//マップの向きを画像の位置番号に変更

@@ -64,7 +64,23 @@ bool BEnemy::SearchPlayer(int distX_, int distY_) {
 	ML::MsgBox("処理が実装されていません");
 	return false;
 }
+//-----------------------------------------------------------------------------
+//溶岩検知
+bool BEnemy::CheckLava() const
+{
+	if (ge->qa_Map == nullptr)
+	{
+		return false;
+	}
+	ML::Box2D me = this->CallHitBox();
+	Map::SpikeData spike = ge->qa_Map->CheckSpike(me);
+	if (spike.damage >= 0)
+	{
+		return true;
+	}
+	return false;
 
+}
 //-----------------------------------------------------------------------------
 // コインをドロップする
 void BEnemy::DropCoins(unsigned int dropNum_) {
@@ -96,6 +112,11 @@ void BEnemy::UpDate_Std() {
 	++this->moveCnt;
 	++this->animCnt;
 	++this->searchCnt;
+
+	if (this->CheckLava() == true)
+	{
+		this->UpdateMotion(Burn);
+	}
 
 	if (this->unHitTime > 0) { --this->unHitTime; }
 	this->Think();

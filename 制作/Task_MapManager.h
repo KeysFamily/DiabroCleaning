@@ -88,6 +88,7 @@ namespace MapManager
 		//マップのロードに使用する列挙体
 		//ロード
 		void MoveMap(const Map::MapDir& mapDirection_);
+		void SetToStart();
 		void SetMaxDepth(int depth_);
 		void SetDepthInLevel(int dil_);
 		bool Generate();

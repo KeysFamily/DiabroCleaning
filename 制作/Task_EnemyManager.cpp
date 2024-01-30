@@ -14,6 +14,7 @@
 #include  "Task_EnemySkyEye.h"
 #include  "Task_EnemyEffect.h"
 #include  "Task_EnemyHPBar.h"
+#include  "Task_BossHPBar.h"
 
 #include  "randomLib.h"
 
@@ -236,10 +237,18 @@ namespace  EnemyManager
 			ef->pos = e->pos;
 			ef->target = e;
 			ef->color = this->res->stateRates[level][name_].efcollor;
-			auto ehp = EnemyHPBar::Object::Create(true);
-			ehp->pos = e->pos;
-			ehp->target = e;
-			ehp->hpDisplay = static_cast<int>(e->hp.vmax);
+			if (name_ == "Boss")
+			{
+				auto ehp = BossHPBar::Object::Create(true);
+				ehp->target = e;
+			}
+			else
+			{
+				auto ehp = EnemyHPBar::Object::Create(true);
+				ehp->pos = e->pos;
+				ehp->target = e;
+				ehp->hpDisplay = static_cast<int>(e->hp.vmax);
+			}
 
 			BChara::Angle_LR angleSheet[] = {
 				BChara::Angle_LR::Left,

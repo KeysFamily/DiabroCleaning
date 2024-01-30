@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 
-#define DEBUG_GAME
+//#define DEBUG_GAME
 //#define DEBUG_ENEMY	//TODO: 敵デバッグ用(最後に消せ)
 
 

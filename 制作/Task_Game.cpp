@@ -58,6 +58,11 @@ namespace  Game
 		this->state = State::Normal;
 		this->volume.SetValues(100, 0, 100);
 		// ◆◆◆◆◆◆◆◆◆◆
+		// ◇◇◇◇◇◇◇◇◇◇
+		//22ci0329
+		bgm::LoadFile("gameover", "./data/sound/bgm/gameover.mp3");
+		bgm::LoadFile("gameclear", "./data/sound/bgm/ending_bgm.mp3");
+		// ◆◆◆◆◆◆◆◆◆◆
 
 		//★タスクの生成
 		ge->qa_Player = Player::Object::Create(true);
@@ -116,6 +121,7 @@ namespace  Game
 		ge->KillAll_G("MagicManager");
 		ge->KillAll_G("Magic");
 		ge->KillAll_G("SystemMenu");
+		ge->KillAll_G("GuideControll");
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
 			auto next = Ending::Object::Create(true);
@@ -232,6 +238,17 @@ namespace  Game
 		ge->qa_Player->Stop(false);
 		ge->qa_Player->render2D_Priority[1] -= 1;
 
+		if (ge->qa_Map->isBossRoom)
+		{
+			bgm::Stop("boss");
+		}
+		else
+		{
+			bgm::Pause("bgm3");
+		}
+
+		bgm::Play("gameover");
+
 		auto sp = ge->GetTask<Sprite::Object>("Sprite", "Sprite");
 		sp->Stop(false);
 		sp->SetGameOver();
@@ -246,11 +263,18 @@ namespace  Game
 		{
 			return;
 		}
-		auto gov = ge->GetTask<LoadGameOver::Object>("Game", "LoadGameOver");
-		gov->Disappear();
 
 		auto sp = ge->GetTask<Sprite::Object>("Sprite", "Sprite");
 		sp->SetRevive();
+
+		auto mapMng = ge->GetTask<MapManager::Object>("MapManager", "MapManager");
+		mapMng->SetToStart();
+
+		auto gov = ge->GetTask<LoadGameOver::Object>("Game", "LoadGameOver");
+		gov->Disappear();
+
+		bgm::AllStop();
+		bgm::Play("bgm3");
 
 		ge->qa_Player->ReviveToGame();
 		ge->qa_Player->render2D_Priority[1] += 1;
@@ -278,13 +302,29 @@ namespace  Game
 			}
 #endif
 
+			if (ge->qa_Map->isBossRoom == true)
+			{
+				if (ge->GetTask<BTask>("Enemy", "Boss") == nullptr)
+				{
+					this->SetClear();
+					return;
+				}
+			}
+
 			if (inp.ST.down) 
 			{
 				//◇◇◇◇◇◇◇◇◇◇
 				//以下22CI0329記述
 				this->menu->Suspend(false);
 				this->menu->StartMenu();
-				bgm::Pause("bgm3");
+				if (ge->qa_Map->isBossRoom)
+				{
+					bgm::Pause("boss");
+				}
+				else
+				{
+					bgm::Pause("bgm3");
+				}
 				auto gameObjs = this->GetGameObj();
 				for (auto& gameObj : *gameObjs)
 				{
@@ -305,6 +345,14 @@ namespace  Game
 		case State::GameOver:
 			if (ge->getCounterFlag("Game") == ge->LIMIT) {
 				this->Kill();
+				ge->GameClearFlag = false;
+			}
+			break;
+		case State::GameClear:
+			if (ge->getCounterFlag("Game") == ge->LIMIT) {
+				bgm::Play("gameclear");
+				this->Kill();
+				ge->GameClearFlag = true;
 			}
 			break;
 		case State::OpeningMenu:
@@ -313,7 +361,14 @@ namespace  Game
 				//メニュー画面を閉じたときの処理
 				ge->qa_Player->LoadFile();
 				this->ResumeGameObj();
-				bgm::Play("bgm3");
+				if (ge->qa_Map->isBossRoom)
+				{
+					bgm::Play("boss");
+				}
+				else
+				{
+					bgm::Play("bgm3");
+				}
 				this->state = State::Normal;
 				auto gameObjs = this->GetGameObj();
 				for (auto& gameObj : *gameObjs)
@@ -337,6 +392,16 @@ namespace  Game
 			break;
 		}
 		}
+	}
+
+	void Object::SetClear()
+	{
+		bgm::AllStop();
+		if (ge->getCounterFlag("Game") != ge->ACTIVE) {
+			ge->StartCounter("Game", 45); //フェードは90フレームなので半分の45で切り替え
+			ge->CreateEffect(98, ML::Vec2(0, 0));
+		}
+		this->state = State::GameClear;
 	}
 
 	void Object::SetResult()

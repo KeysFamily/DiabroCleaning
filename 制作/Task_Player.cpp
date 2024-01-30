@@ -11,6 +11,7 @@
 #include  "Task_EnemySkeleton.h"
 #include "Task_MapManager.h"
 #include  "Task_MagicManager.h"
+#include  "Task_DamageNum.h"
 #include "sound.h"
 
 
@@ -67,7 +68,7 @@ namespace  Player
 		this->airattack = true;
 		this->canJump = true;
 		this->canDash = true;
-		this->balanceMoney = 100;  //所持金
+		this->balanceMoney = 50;  //所持金
 		this->hp.SetValues(100, 0, 100);
 		this->power = 1.0f;
 		this->powerScale = 1.0f;
@@ -153,14 +154,19 @@ namespace  Player
 				}
 			}
 			
+			//マグマ判定
 			if (ge->qa_Map != nullptr)
 			{
-				Map::SpikeData spike = ge->qa_Map->CheckSpike(me);
-				if (spike.damage >= 0)
+				if (this->unHitTime <= 0)
 				{
-					AttackInfo ati;
-					ati.power = static_cast<float>(spike.damage);
-					this->Received(this, ati);
+					Map::SpikeData spike = ge->qa_Map->CheckSpike(me);
+					if (spike.damage >= 0)
+					{
+						AttackInfo ati;
+						ati.power = static_cast<float>(spike.damage);
+						ge->CreateEffect(10, this->pos);
+						this->Received(this, ati);
+					}
 				}
 			}
 		}
@@ -956,7 +962,10 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		//this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= static_cast<int>(at_.power * (10.0f / (10 + this->DEF + this->itemDEF))); //ダメージ計算公式
+		this->balanceMoney -= max(1, (int)at_.power - this->DEF + this->itemDEF); //ダメージ計算公式
+		auto dmg = DamageNum::Object::Create(true);
+		dmg->pos = this->pos;
+		dmg->damageNum = max(1, (int)at_.power - this->DEF + this->itemDEF);
 		if (this->balanceMoney < 0)
 		{
 			this->moveVec = ML::Vec2(0, 0);
