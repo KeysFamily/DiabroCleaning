@@ -84,6 +84,7 @@ namespace  Map
 		vector<MapData> drawMap;		//描画用チップデータ
 		MapData			ObjectMap;		//当たり判定用チップデータ
 		MapData			GenerateMap;	//エンティティ用チップデータ
+		vector<ML::Point>boxOpenData;		//取得済みアイテムデータ
 		map<int, SlopeData> slopeData;	//坂の情報のマップ配列
 		map<int, Map::SpikeData> spikeData;	//ダメージ床データ
 		ML::Box2D			hitBase;	//ピクセル単位のマップサイズを持つ
@@ -132,6 +133,9 @@ namespace  Map
 		//マップ外を見せないようにカメラを位置調整する
 		void  AdjustCameraPos();
 
+		//アイテムを取得したことを受け取る
+		void AddOpenedBox(ML::Point pos_);
+
 	private:
 		bool  CheckHitTo(const  ML::Box2D& hit_, int chipNum_);//あたり判定
 		bool CheckHitTo(const ML::Vec2& pos_, int chipNum_);//座標との当たり判定
@@ -140,6 +144,7 @@ namespace  Map
 		void DrawBackSubUD(const ML::Box2D& draw_, const ML::Box2D src_, const ML::Rect& bg_, const ML::Rect& gSc_);
 
 		void SetEnemyOnMap();
+		void SetItemOnMap();
 
 
 	};

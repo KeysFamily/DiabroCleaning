@@ -39,17 +39,6 @@ namespace  Item
 		this->res = Resource::Create();
 		//★データ初期化
 		this->render2D_Priority[1] = 0.4f;
-		string str[] = { "Attack","Defense","Magic","Speed" };
-		InputJsonFile(str[rand() % 4]);
-		this->itemb.Power_step = rand() % this->itemb.Power_step;
-
-		this->angle = ML::ToRadian((float)(rand() % 360));
-		this->moveVec = ML::Vec2(cos(angle) * 4, sin(angle) * 4);
-		this->hitBase = ML::Box2D(-24, -24, 48, 48);
-		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
-		this->decSpeed = 0.05f;		//接地状態の時の速度減衰量（摩擦
-		this->maxFallSpeed = 11.0f;	//最大落下速度
-		this->motion = Stand;
 
 		//★タスクの生成
 
@@ -72,6 +61,11 @@ namespace  Item
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
+		if (initialized)
+		{
+
+		}
+
 		this->itemb.Time--;
 		this->Think();
 		this->Move();
@@ -175,10 +169,10 @@ namespace  Item
 	void Object::GiftPlayer(BChara* pl_)
 	{
 		Player::Object* pl = dynamic_cast<Player::Object*>(pl_);
-		pl->itemPower += (itemb.Attack + itemb.Power_step);
-		pl->itemDEF += (itemb.Defense + itemb.Power_step);
-		pl->itemINT += (itemb.Magic + itemb.Power_step);
-		pl->itemSpeed += (itemb.Speed + itemb.Power_step);
+		pl->itemPower += itemb.Attack;
+		pl->itemDEF += itemb.Defense;
+		pl->itemINT += itemb.Magic;
+		pl->itemSpeed += itemb.Speed;
 		this->Kill();
 	}
 
@@ -210,6 +204,46 @@ namespace  Item
 				this->itemb.Power_step = ji["POWER_STEP"]; //アイテムのレアリティ＆アイテムの画像のX軸を決める
 			}
 		}
+	}
+
+	//-----------------------------------------------------------------------------
+	//ファイル読み込み
+	void Object::ItemInit(ML::Vec2 pos_, int minLevel_, int maxLevel_)
+	{
+		string str[] = { "Attack","Defense","Magic","Speed" };
+		InputJsonFile(str[rand() % 4]);
+		int minLevel = min(minLevel_, this->itemb.Power_step);
+		int maxLevel = min(maxLevel_, this->itemb.Power_step);
+		if (maxLevel - minLevel > 0)
+		{
+			this->itemb.Power_step = minLevel + (rand() % (maxLevel - minLevel + 1));
+		}
+		else
+		{
+			this->itemb.Power_step = minLevel;
+		}
+
+		//ステータス割り振り
+		int statBase = 1;
+		for (int i = 0; i < itemb.Power_step; ++i)
+		{
+			statBase *= 2;
+		}
+		this->itemb.Attack *= statBase;
+		this->itemb.Defense *= ceil(statBase * 0.6f);
+		this->itemb.Magic *= statBase;
+		this->itemb.Speed *= itemb.Power_step + 1;
+
+
+		this->angle = ML::ToRadian((float)(rand() % 360));
+		this->moveVec = ML::Vec2(cos(angle) * 4, sin(angle) * 4);
+		this->hitBase = ML::Box2D(-24, -24, 48, 48);
+		this->gravity = ML::Gravity(32) * 5; //重力加速度＆時間速度による加算量
+		this->decSpeed = 0.05f;		//接地状態の時の速度減衰量（摩擦
+		this->maxFallSpeed = 11.0f;	//最大落下速度
+		this->motion = Stand;
+		this->pos = pos_;
+
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★

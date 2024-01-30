@@ -88,6 +88,9 @@ namespace  Item
 		//デバック用
 		XI::GamePad::SP controller;
 
+		bool initialized;
+		void ItemInit(ML::Vec2 pos_, int minLevel_, int maxLevel_);
+
 		//画面外に出たらアイテムを消す処理
 		void out_coin(int x, int y);
 		

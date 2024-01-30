@@ -7,6 +7,8 @@
 #include  "Task_Player.h"
 #include  "Task_EnemyManager.h"
 
+#include  "Task_ItemTrsBox.h"	
+
 namespace  Map
 {
 	Resource::WP  Resource::instance;
@@ -259,8 +261,30 @@ namespace  Map
 		{
 			return false;
 		}	
+
+		//敵生成
 		this->SetEnemyOnMap();
 		
+		//生成済みアイテム読み込み
+		ifstream ifs(this->folderPath + "openedBox.txt");
+		while (!ifs)
+		{
+			ML::Point mapPos;
+			ifs >> mapPos.x;
+			if(!ifs )
+			{
+				break;
+			}
+
+			ifs >> mapPos.y;
+
+			this->boxOpenData.push_back(mapPos);
+		}
+
+
+		//アイテム生成
+		this->SetItemOnMap();
+
 
 
 		//当たり判定矩形設定
@@ -274,8 +298,15 @@ namespace  Map
 	bool Object::SaveMap()
 	{
 		json js = OL::LoadJsonFile(this->folderPath + "mapData.json");
-
 		js["visited"] = true;
+		
+		ofstream ofs(this->folderPath + "openedBox.txt");
+		for (auto& boxPos : this->boxOpenData)
+		{
+			ofs << boxPos.x << ' ';
+			ofs << boxPos.y << endl;
+		}
+		ofs.close();
 
 		OL::SaveJsonFile(js, this->folderPath + "mapData.json");
 		return true;
@@ -760,7 +791,8 @@ namespace  Map
 
 		return true;
 	}
-
+	//-------------------------------------------------------------------
+	//敵の生成
 	void Object::SetEnemyOnMap() {
 		auto em = ge->GetTask<EnemyManager::Object>(EnemyManager::defGroupName, EnemyManager::defName);
 		if (em == nullptr)return;
@@ -779,6 +811,60 @@ namespace  Map
 					);
 					
 					em->SpawnEnemyNum(en, epos, this->depth / this->depthInLevel);
+				}
+			}
+		}
+	}
+	//-------------------------------------------------------------------
+	//アイテムの生成
+	void Object::AddOpenedBox(ML::Point pos_)
+	{
+		this->boxOpenData.push_back(pos_);
+	}
+	//-------------------------------------------------------------------
+	//アイテムの生成
+	void Object::SetItemOnMap()
+	{
+		ge->KillAll_G("item");
+
+		json js = OL::LoadJsonFile("./data/Item/ItemRate.json");
+		auto& itRate = js["Rate"].at(this->depth / this->depthInLevel);
+
+		//チップを探す
+		for (int y = 0; y < this->GenerateMap.height; ++y)
+		{
+			for (int x = 0; x < this->GenerateMap.width; ++x)
+			{
+				bool opened = false;
+				for (auto& mapPos : this->boxOpenData)
+				{
+					if (mapPos.x == x && mapPos.y == y)
+					{
+						opened = true;
+					}
+				}
+
+				if (opened)
+				{
+					continue;
+				}
+
+				int in = this->GenerateMap.chipdata[y][x];
+				//enの範囲は0～6の範囲とする。
+				if (in == 12) {
+					auto box = ItemTrsBox::Object::Create(true);
+					box->pos.x = x * this->res->drawSize;
+					box->pos.y = y * this->res->drawSize;
+					ML::Point mapPos;
+					mapPos.x = x;
+					mapPos.y = y;
+					box->BoxInit(
+						mapPos,
+						itRate["coinMin"],
+						itRate["coinMax"],
+						itRate["levelMin"],
+						itRate["levelMax"]
+					);
 				}
 			}
 		}

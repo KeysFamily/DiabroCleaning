@@ -41,6 +41,13 @@ namespace Map
 		js["mapName"] = this->mapName;
 		js["isSub"] = this->isSub;
 		OL::SaveJsonFile(js, folderPath + "/mapData.json");
+
+		ofstream ofs(this->folderPath + "openedBox.txt");
+		ofs << 0 << ' ';
+		ofs << 0 << endl;
+		ofs.close();
+
+
 	}
 
 }

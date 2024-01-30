@@ -43,6 +43,10 @@ namespace  ItemTrsBox
 		this->render2D_Priority[1] = 0.4f;
 		this->hitBase = ML::Box2D(-32, -32, 64, 64);
 		this->pos = ML::Vec2(1200, 700);
+		this->minCoin = 1;
+		this->maxCoin = 50;
+		this->minLevel = 0;
+		this->maxLevel = 1;
 		this->Hitbool = false;
 		//★タスクの生成
 
@@ -109,10 +113,20 @@ namespace  ItemTrsBox
 			//アイテムを生成
 			if (this->animCnt == 50) {
 				auto coinMg = ge->GetTask<BChara>("coin_maneger");
-				coinMg->Create_coin(this->pos.x,this->pos.y,50);
+				int genCoin = this->minCoin + (rand() % (this->maxCoin - this->minCoin + 1));
+				if (maxCoin - minCoin > 0)
+				{
+					genCoin = minCoin + (rand() % (minCoin - maxCoin));
+				}
+				else
+				{
+					genCoin = minCoin;
+				}
+				coinMg->Create_coin(this->pos.x, this->pos.y, genCoin);
 				
 				auto item = Item::Object::Create(true);
 				item->pos = this->pos;
+				item->ItemInit(this->pos, minLevel, maxLevel);
 			}
 			break;
 		case Lose:
@@ -171,9 +185,19 @@ namespace  ItemTrsBox
 		if (this->Hitbool != true) {
 			this->motion = Motion::Hit;
 			this->Hitbool = true;
+			ge->qa_Map->AddOpenedBox(this->mapPos);
 		}
 	}
-
+	//-----------------------------------------------------------------------------
+	//ボックス初期化
+	void Object::BoxInit(ML::Point mapPos_, int coinMin_, int coinMax_, int levelMin_, int levelMax_)
+	{
+		this->mapPos = mapPos_;
+		this->minCoin = coinMin_;
+		this->maxCoin = coinMax_;
+		this->minLevel = levelMin_;
+		this->maxLevel = levelMax_;
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
