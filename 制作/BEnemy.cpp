@@ -36,7 +36,7 @@ void BEnemy::InputJsonFile(string enemyName_) {
 	json data = json::parse(f);
 	auto& e = data[enemyName_];
 
-	int HP = e["hp"];
+	float HP = e["hp"];
 	this->hp.SetValues(HP, 0, HP);
 	this->jumpPow = e["jumpPow"];
 	this->maxSpeed = e["maxSpeed"];

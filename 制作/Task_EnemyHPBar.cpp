@@ -74,8 +74,8 @@ namespace  EnemyHPBar
 		if (hpDisplay != en->hp.vnow)
 		{
 			decleaseTime.vnow = decleaseTime.vmin;
-			hpDecleased += hpDisplay - en->hp.vnow;
-			hpDisplay = en->hp.vnow;
+			hpDecleased += hpDisplay - static_cast<int>(en->hp.vnow);
+			hpDisplay = static_cast<int>(en->hp.vnow);
 		}
 
 		if (decleaseTime.IsMax() == false)
@@ -116,8 +116,8 @@ namespace  EnemyHPBar
 				draw2.Offset(-ge->camera2D.x, -ge->camera2D.y);
 				ML::Box2D src2(0, this->res->imgSize.h * 2, this->res->imgSize.w, this->res->imgSize.h);
 
-				draw2.w = this->res->imgSize.w * (hpDisplay + hpDecleased * rate) / en->hp.vmax;
-				src2.w = this->res->imgSize.w * (hpDisplay + hpDecleased * rate) / en->hp.vmax;
+				draw2.w = static_cast<int>(this->res->imgSize.w * (hpDisplay + hpDecleased * rate) / en->hp.vmax);
+				src2.w = static_cast<int>(this->res->imgSize.w * (hpDisplay + hpDecleased * rate) / en->hp.vmax);
 
 				this->res->img->Draw(draw2, src2);
 			}
@@ -127,8 +127,8 @@ namespace  EnemyHPBar
 			draw.Offset(this->pos);
 			draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
 			src = ML::Box2D(0, this->res->imgSize.h, this->res->imgSize.w, this->res->imgSize.h);
-			draw.w = this->res->imgSize.w * hpDisplay / (float)en->hp.vmax;
-			src.w = this->res->imgSize.w * hpDisplay / (float)en->hp.vmax;
+			draw.w = static_cast<int>(this->res->imgSize.w * hpDisplay / (float)en->hp.vmax);
+			src.w = static_cast<int>(this->res->imgSize.w * hpDisplay / (float)en->hp.vmax);
 			this->res->img->Draw(draw, src);
 		}
 	}
