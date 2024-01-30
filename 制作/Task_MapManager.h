@@ -67,6 +67,7 @@ namespace MapManager
 		float generateSubRate;									//分岐を作る確率
 		int	  subDepthMax;										//外れの道の深度最大
 		int   depthMax;											//最下層
+		int   depthInLevel;										//いくつ進むとレベルが上がるか
 		Map::MapObject* map[Map::MAPSIZE_MAX][Map::MAPSIZE_MAX];//マップデータ
 		int mapid[Map::MAPSIZE_MAX][Map::MAPSIZE_MAX];			//マップデータ（省データ版）
 		ML::Point currentPos;									//現在のマップ
@@ -88,6 +89,7 @@ namespace MapManager
 		//ロード
 		void MoveMap(const Map::MapDir& mapDirection_);
 		void SetMaxDepth(int depth_);
+		void SetDepthInLevel(int dil_);
 		bool Generate();
 
 	};

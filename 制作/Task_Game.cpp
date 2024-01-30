@@ -10,7 +10,6 @@
 #include  "Task_ItemTrsBox.h"
 #include  "Task_Item_coin.h"
 #include  "Task_Item_coin_maneger.h"
-#include  "Task_EnemyManager.h"
 #include  "Task_GameUI.h"
 #include  "Task_MapManager.h"
 #include  "Task_GameUI_MiniMap.h"
@@ -64,12 +63,7 @@ namespace  Game
 		ge->qa_Player = Player::Object::Create(true);
 		ge->qa_Player->render2D_Priority[1] = 0.5f;
 		ge->qa_Player->pos = ge->qa_Map->GetPlayerStartPos();
-		auto mapManager = ge->GetTask<MapManager::Object>("MapManager");
-		if (mapManager == nullptr)
-		{
-			mapManager = MapManager::Object::Create(true);
-		}
-		mapManager->Generate();
+		
 		
 		auto spr = Sprite::Object::Create(true);
 		spr->pos = ge->qa_Player->pos;
@@ -88,9 +82,16 @@ namespace  Game
 		auto UI = GameUI::Object::Create(true);
 		UI->numPos = ML::Vec2(50, 50);
 
-		EnemyManager::Object::Create(true);
 
 		this->menu = SystemMenu::Object::Create(true);
+
+		auto mapManager = ge->GetTask<MapManager::Object>("MapManager");
+		if (mapManager == nullptr)
+		{
+			mapManager = MapManager::Object::Create(true);
+		}
+		mapManager->Generate();
+
 
 		this->cnt = 0;
 

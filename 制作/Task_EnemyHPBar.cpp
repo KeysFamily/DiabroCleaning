@@ -1,29 +1,23 @@
-//-------------------------------------------------------------------
-//タイトル画面
-//-------------------------------------------------------------------
+//?------------------------------------------------------
+//タスク名:
+//作　成　者:
+//TODO:もしいれば下記へ記述
+//編　集　者:
+//作成年月日:
+//概　　　要:
+//?------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Title.h"
-#include  "sound.h"
+#include  "Task_EnemyHPBar.h"
 
-#include  "Task_Effect00.h"
-#include "Task_MapManager.h"
-#include  "Task_TitleMenu.h"
-#include "Task_LoadGameOver.h"
-#include  "Task_EnemyManager.h"
-#include "Task_Game.h"
-#include "Task_Ending.h"
-
-namespace  Title
+namespace  EnemyHPBar
 {
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		bgm::LoadFile("bgmTitle", "./data/sound/bgm/titleUra_bgm.mp3");
-		bgm::Play("bgmTitle");
-		this->img = DG::Image::Create("./data/title/Diobro_Cleaning_title.png");
-		this->Logo = DG::Image::Create("./data/title/title_text.png");
+		this->img = DG::Image::Create("./data/image/enemyHPBar.png");
+		this->imgSize.Set(96, 15);
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -31,7 +25,6 @@ namespace  Title
 	bool  Resource::Finalize()
 	{
 		this->img.reset();
-		this->Logo.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -45,29 +38,22 @@ namespace  Title
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.2f;
-		ge->GameCnt=0; 
-		ge->TotalEnemyKill=0; 
-		ge->TotalDamage = 0;
-		ge->TotalGetCoinCnt = 0;
-		ge->TotalUsedCoinCnt=0;
-		ge->GameClearFlag = true;
-		
-		this->createdMenu = false;
-		
-		
+		this->pos = ML::Vec2(0, 0);
+		this->offset = ML::Vec2(0, 60);
+		this->decleaseTime.SetValues(0, 0, 15);
+		//★タスクの生成
 
-		return true;
-	}	
-	//--TotalGetCoinCnt; -----------------------------------------------------------------
+		return  true;
+	}
+	//-------------------------------------------------------------------
 	//「終了」タスク消滅時に１回だけ行う処理
 	bool  Object::Finalize()
 	{
 		//★データ＆タスク解放
-		bgm::Stop("bgmTitle");
-		ge->KillAll_G("title");
+
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
-			Game::Object::Create(true);
+			//★引き継ぎタスクの生成
 		}
 
 		return  true;
@@ -76,80 +62,77 @@ namespace  Title
 	//「更新」１フレーム毎に行う処理
 	void  Object::UpDate()
 	{
-		if (ge->getCounterFlag("title") == ge->ACTIVE) {
+		if (target.expired())
+		{
+			this->Kill();
 			return;
 		}
 
-		if (ge->getCounterFlag("title") == ge->LIMIT) {
-			this->Kill();
+		const BChara::SP& en = target.lock();
+		this->pos = en->pos + this->offset;
+
+		if (hpDisplay != en->hp.vnow)
+		{
+			decleaseTime.vnow = decleaseTime.vmin;
+			hpDecleased += hpDisplay - en->hp.vnow;
+			hpDisplay = en->hp.vnow;
 		}
 
-		auto inp = ge->in1->GetState();
-
-		this->cnt++;
-
-		auto tm = ge->GetTask<TitleMenu::Object>("title", "Menu");
-		if (tm == nullptr)
+		if (decleaseTime.IsMax() == false)
 		{
-			createdMenu = false;
-		}
-
-		if (inp.ST.down ) 
-		{
-			if (createdMenu == false)
+			decleaseTime.Addval(1);
+			if (decleaseTime.IsMax())
 			{
-				createdMenu = true;
-				TitleMenu::Object::Create(true);
-			}
-			else
-			{
-				createdMenu = false;
-				ge->KillAll_GN("title", "Menu");
+				hpDecleased = 0;
 			}
 		}
 
-
-		return;
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
 	void  Object::Render2D_AF()
 	{
-		ML::Box2D draw(0, 0, 1920, 1080);
-		ML::Box2D src(0, 0, 1920, 1080);
-		this->res->img->Draw(draw, src);	//背景を用意する
-
-		if (createdMenu == false)
+		if (!target.expired())
 		{
-			if (this->cnt % 60 <= 30) {
-				ML::Box2D Lg_draw((ge->screen2DWidth / 2) - 300, (ge->screen2DHeight / 4) * 3, 600, 100);
-				ML::Box2D Lg_src(0, 0, 400, 74);
-				this->res->Logo->Draw(Lg_draw, Lg_src); //テキストロゴを用意する
+			auto en = target.lock();
+			if (en->hp.IsMax() || en->hp.IsMin())
+			{
+				return;
 			}
+
+			//枠と背景の描画
+			ML::Box2D draw = OL::setBoxCenter(this->res->imgSize);
+			draw.Offset(this->pos);
+			draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+			ML::Box2D src(0, 0, this->res->imgSize.w, this->res->imgSize.h);
+			this->res->img->Draw(draw, src);
+
+			//被ダメージ時の白バー描画
+			if (decleaseTime.IsMax() == false)
+			{
+				float rate = 1 - (float)decleaseTime.vnow / decleaseTime.vmax;
+				ML::Box2D draw2 = OL::setBoxCenter(this->res->imgSize);
+				draw2.Offset(this->pos);
+				draw2.Offset(-ge->camera2D.x, -ge->camera2D.y);
+				ML::Box2D src2(0, this->res->imgSize.h * 2, this->res->imgSize.w, this->res->imgSize.h);
+
+				draw2.w = this->res->imgSize.w * (hpDisplay + hpDecleased * rate) / en->hp.vmax;
+				src2.w = this->res->imgSize.w * (hpDisplay + hpDecleased * rate) / en->hp.vmax;
+
+				this->res->img->Draw(draw2, src2);
+			}
+
+			//現在の体力を描画
+			draw = OL::setBoxCenter(this->res->imgSize);
+			draw.Offset(this->pos);
+			draw.Offset(-ge->camera2D.x, -ge->camera2D.y);
+			src = ML::Box2D(0, this->res->imgSize.h, this->res->imgSize.w, this->res->imgSize.h);
+			draw.w = this->res->imgSize.w * hpDisplay / (float)en->hp.vmax;
+			src.w = this->res->imgSize.w * hpDisplay / (float)en->hp.vmax;
+			this->res->img->Draw(draw, src);
 		}
-
-		ge->Dbg_ToDisplay(100, 100, "Title");
 	}
-	//-------------------------------------------------------------------
-	//ゲーム生成処理
-	void Object::CreateGame(int mapMaxDepth_)
-	{
-		if (ge->getCounterFlag("title") == ge->ACTIVE)
-		{
-			return;
-		}
 
-
-
-		EnemyManager::Object::Create(true);
-		auto manager = MapManager::Object::Create(true);
-		manager->SetDepthInLevel(2);
-		manager->SetMaxDepth(mapMaxDepth_);
-		manager->Generate();
-
-		ge->StartCounter("title", 45); //フェードは90フレームなので半分の45で切り替え
-		ge->CreateEffect(98, ML::Vec2(0, 0));
-	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
@@ -162,6 +145,7 @@ namespace  Title
 			ob->me = ob;
 			if (flagGameEnginePushBack_) {
 				ge->PushBack(ob);//ゲームエンジンに登録
+				
 			}
 			if (!ob->B_Initialize()) {
 				ob->Kill();//イニシャライズに失敗したらKill

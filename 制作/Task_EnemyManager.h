@@ -34,6 +34,7 @@ namespace  EnemyManager
 		float speedRate;	//速度倍率
 		float moneyRate;	//報酬倍率
 		float attackRate;	//攻撃力倍率
+		ML::Color efcollor;	//エフェクトの色
 	};
 	//---------------------------------------------------------
 	// 敵ステータス倍率について
@@ -60,7 +61,7 @@ namespace  EnemyManager
 		std::map<string, EnemyData> enemyDatas;
 		std::vector<string> enemyNames;
 
-		std::map<int, std::map<string, EnemyStatusRate>> stateRates;
+		std::vector<std::map<string, EnemyStatusRate>> stateRates;
 
 
 		std::map<string, function<BEnemy::SP(bool)>> enemyInits;
@@ -89,8 +90,8 @@ namespace  EnemyManager
 		//追加したい変数・メソッドはここに追加する
 		std::vector<BResource::SP> residentResource;
 
-		void SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_, int depth_ = 1);
-		void SpawnEnemyName(string name_, ML::Vec2 pos_, int depth_ = 1);
+		void SpawnEnemyNum(int enemyNum_, ML::Vec2 pos_, int level_ = 0);
+		void SpawnEnemyName(string name_, ML::Vec2 pos_, int level_ = 0);
 
 		void KillAllEnemys();
 

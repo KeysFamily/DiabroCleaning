@@ -1,71 +1,179 @@
 {
-	"Rate1": [
-		{
-			"name": "Skeleton",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "SkyEye",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "Boss",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		}
-	],
-	"Rate2": [
-		{
-			"name": "Skeleton",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "SkyEye",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "Boss",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		}
-	],
-	"Rate3": [
-		{
-			"name": "Skeleton",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "SkyEye",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		},
-		{
-			"name": "Boss",
-			"hpRate": 1,
-			"speedRate": 1,
-			"moneyRate": 1,
-			"attackRate": 1
-		}
+	"Rates": [
+		[
+			{
+				"name": "Skeleton",
+				"hpRate": 3,
+				"speedRate": 1,
+				"moneyRate": 1,
+				"attackRate": 0.2,
+				"effect_a": 0,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			},
+			{
+				"name": "SkyEye",
+				"hpRate": 1.4,
+				"speedRate": 1,
+				"moneyRate": 1,
+				"attackRate": 0.2,
+				"effect_a": 0,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			},
+			{
+				"name": "Boss",
+				"hpRate": 16,
+				"speedRate": 1,
+				"moneyRate": 1,
+				"attackRate": 1,
+				"effect_a": 0,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			}
+		],
+		[
+			{
+				"name": "Skeleton",
+				"hpRate": 8,
+				"speedRate": 1.2,
+				"moneyRate": 1.8,
+				"attackRate": 0.9,
+				"effect_a": 0.5,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			},
+			{
+				"name": "SkyEye",
+				"hpRate": 4.8,
+				"speedRate": 1.2,
+				"moneyRate": 1.8,
+				"attackRate": 0.9,
+				"effect_a": 0.5,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			},
+			{
+				"name": "Boss",
+				"hpRate": 41.6,
+				"speedRate": 1,
+				"moneyRate": 1,
+				"attackRate": 2,
+				"effect_a": 0.5,
+				"effect_r": 1,
+				"effect_g": 1,
+				"effect_b": 1
+			}
+		],
+		[
+			{
+				"name": "Skeleton",
+				"hpRate": 28,
+				"speedRate": 1.4,
+				"moneyRate": 3.2,
+				"attackRate": 3.2,
+				"effect_a": 0.5,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			},
+			{
+				"name": "SkyEye",
+				"hpRate": 16,
+				"speedRate": 1.6,
+				"moneyRate": 3.2,
+				"attackRate": 3.2,
+				"effect_a": 0.5,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			},
+			{
+				"name": "Boss",
+				"hpRate": 144,
+				"speedRate": 1,
+				"moneyRate": 1,
+				"attackRate": 3,
+				"effect_a": 0.5,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			}
+		],
+		[
+			{
+				"name": "Skeleton",
+				"hpRate": 122.4,
+				"speedRate": 1.6,
+				"moneyRate": 5.7,
+				"attackRate": 11.4,
+				"effect_a": 0.5,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			},
+			{
+				"name": "SkyEye",
+				"hpRate": 68,
+				"speedRate": 1.8,
+				"moneyRate": 5.7,
+				"attackRate": 11.4,
+				"effect_a": 0.5,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			},
+			{
+				"name": "Boss",
+				"hpRate": 625.6,
+				"speedRate": 1,
+				"moneyRate": 1,
+				"attackRate": 3,
+				"effect_a": 0.5,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			}
+		],
+		[
+			{
+				"name": "Skeleton",
+				"hpRate": 572,
+				"speedRate": 1.8,
+				"moneyRate": 10.3,
+				"attackRate": 41.2,
+				"effect_a": 0.5,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			},
+			{
+				"name": "SkyEye",
+				"hpRate": 312,
+				"speedRate": 2.0,
+				"moneyRate": 10.3,
+				"attackRate": 41.2,
+				"effect_a": 0.5,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			},
+			{
+				"name": "Boss",
+				"hpRate": 2912,
+				"speedRate": 1,
+				"moneyRate": 1,
+				"attackRate": 3,
+				"effect_a": 0.5,
+				"effect_r": 0.5,
+				"effect_g": 1,
+				"effect_b": 0.5
+			}
+		]
 	]
 }
