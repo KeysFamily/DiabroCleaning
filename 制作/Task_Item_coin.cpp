@@ -93,8 +93,7 @@ namespace  Item_coin
 
 		//画面内にコインがあるか
 		auto map = ge->qa_Map;
-		ML::Vec2 map_size (map->ObjectMap.width, map->ObjectMap.height);
-		this->out_coin(map_size.x,map_size.y);
+		this->out_coin(map->ObjectMap.width, map->ObjectMap.height);
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -136,65 +135,62 @@ namespace  Item_coin
 	//------------------------------------------------------------------
 	void Object::Move()
 	{
+		//重力加速
 		switch (this->motion) {
 		default:
-			//重力加速
-			switch (this->motion) {
-			default:
-				//上昇中もしくは足元に地面が無い
-				if (this->moveVec.y < 0 ||
-					this->CheckFoot() == false) {
-					this->fallSpeed = min(this->moveVec.y + this->gravity, this->maxFallSpeed);
-					this->moveVec.y = this->fallSpeed;
+			//上昇中もしくは足元に地面が無い
+			if (this->moveVec.y < 0 ||
+				this->CheckFoot() == false) {
+				this->fallSpeed = min(this->moveVec.y + this->gravity, this->maxFallSpeed);
+				this->moveVec.y = this->fallSpeed;
+			}
+			//地面に接触している
+			else {
+				this->fallSpeed = min(this->moveVec.y - this->gravity, this->maxFallSpeed);
+				this->moveVec.y -= this->fallSpeed * 1.7f;
+			}
+
+
+			break;
+			//重力加速を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
+		case Motion::Unnon:	break;
+		}
+		//移動速度減衰
+		switch (this->motion) {
+		default:
+			if (this->CheckFoot() == true) {
+				if (this->moveVec.x < 0) {
+					this->moveVec.x = min(this->moveVec.x + this->decSpeed, 0);
 				}
-				//地面に接触している
 				else {
-					this->fallSpeed = min(this->moveVec.y - this->gravity, this->maxFallSpeed);
-					this->moveVec.y -= this->fallSpeed*1.7;
+					this->moveVec.x = max(this->moveVec.x - this->decSpeed, 0);
 				}
-
-
-				break;
-				//重力加速を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
-			case Motion::Unnon:	break;
 			}
-			//移動速度減衰
-			switch (this->motion) {
-			default:
-				if (this->CheckFoot() == true) {
-					if (this->moveVec.x < 0) {
-						this->moveVec.x = min(this->moveVec.x + this->decSpeed, 0);
-					}
-					else {
-						this->moveVec.x = max(this->moveVec.x - this->decSpeed, 0);
-					}
-				}
-				break;
+			break;
 
-				//移動速度減衰を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
-			case Motion::Bound:
-			case Motion::Unnon:	break;
+			//移動速度減衰を無効化する必要があるモーションは下にcaseを書く（現在対象無し）
+		case Motion::Bound:
+		case Motion::Unnon:	break;
+		}
+
+		switch (this->motion)
+		{
+		case Motion::Suction:
+			//auto pl = ge->GetTask<Player::Object>("Player");
+			this->target = ge->qa_Player;
+			if (auto  tg = this->target.lock()) {
+				//ターゲットへの相対座標を求める
+				ML::Vec2  toVec = tg->pos - this->pos;
+
+				float speed = 20;
+				auto vec = toVec.Normalize();
+				vec *= speed;
+				//ターゲットに５％近づく
+				//this->pos += toVec * 0.05f;
+
+				this->pos += vec;
 			}
-
-			switch (this->motion)
-			{
-			case Motion::Suction:
-				//auto pl = ge->GetTask<Player::Object>("Player");
-				this->target = ge->qa_Player;
-				if (auto  tg = this->target.lock()) {
-					//ターゲットへの相対座標を求める
-					ML::Vec2  toVec = tg->pos - this->pos;
-
-					float speed = 20;
-					auto vec = toVec.Normalize();
-					vec *= speed;
-					//ターゲットに５％近づく
-					//this->pos += toVec * 0.05f;
-
-					this->pos += vec;
-				}
-				break;
-			}
+			break;
 		}
 	}
 
@@ -213,14 +209,10 @@ namespace  Item_coin
 		};
 		BChara::DrawInfo  rtv;
 		int work;
-		switch (this->motion)
-		{
-		default:
-			work = this->animCnt/5;
-			work %= 4;
-			rtv = imageTable[work]; 
-			break;
-		}
+
+		work = this->animCnt / 5;
+		work %= 4;
+		rtv = imageTable[work];
 
 		return rtv;
 	}

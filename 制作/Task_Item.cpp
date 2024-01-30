@@ -135,7 +135,7 @@ namespace  Item
 				//’n–Ê‚ÉÚG‚µ‚Ä‚¢‚é
 				else {
 					this->fallSpeed = min(this->moveVec.y - this->gravity, this->maxFallSpeed);
-					this->moveVec.y -= this->fallSpeed * 1.7;
+					this->moveVec.y -= this->fallSpeed * 1.7f;
 				}
 
 

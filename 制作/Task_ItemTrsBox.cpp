@@ -152,7 +152,7 @@ namespace  ItemTrsBox
 			break;
 		case Lose:
 			rtv = imageTable[6];
-			rtv.color = ML::Color(1.f-(0.05*this->moveCnt),1,1,1);
+			rtv.color = ML::Color(1.0f - (0.05f * this->moveCnt), 1.0f, 1.0f, 1.0f);
 			break;
 		}
 

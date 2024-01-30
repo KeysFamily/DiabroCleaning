@@ -43,16 +43,16 @@ namespace  LoadGameOver
 
 		//★データ初期化
 		this->render2D_Priority[1] = 0.1f;
-		this->textPos = ML::Vec2(ge->screenWidth / 2, 200);
+		this->textPos = ML::Vec2(ge->screenWidth / 2.0f, 200.0f);
 		this->textDistance = 150;
 		this->state = State::Invalid;
 		this->textAppearDistance = 20;
 		this->textAppearCnt = 0;
 
-		easing::Create("gameOverBgAp", easing::EASINGTYPE::BOUNCEOUT, 0, ge->screenWidth / 2, 120);
+		easing::Create("gameOverBgAp", easing::EASINGTYPE::BOUNCEOUT, 0, ge->screenWidth / 2.0f, 120);
 		for (int i = 0; i < this->res->textResSize; ++i)
 		{
-			easing::Create("gameOverTxtAp" + to_string(i), easing::EASINGTYPE::SINEOUT, -this->res->imgTextSize.h, this->textPos.y, 30);
+			easing::Create("gameOverTxtAp" + to_string(i), easing::EASINGTYPE::SINEOUT, static_cast<float>(-this->res->imgTextSize.h), this->textPos.y, 30);
 		}
 		//★タスクの生成
 
@@ -102,27 +102,27 @@ namespace  LoadGameOver
 			ML::Box2D src(0, 0, 8, 8);
 
 			ML::Box2D drawL = drawBase.OffsetCopy((float)ge->screenWidth / -4, (float)ge->screenHeight / 2);
-			drawL.x += bgPos;
+			drawL.x += static_cast<int>(bgPos);
 			this->res->imgBg->Draw(drawL, src);
 
 
 			ML::Box2D drawR = drawBase.OffsetCopy((float)ge->screenWidth + (float)ge->screenWidth / 4, (float)ge->screenHeight / 2);
-			drawR.x -= bgPos;
+			drawR.x -= static_cast<int>(bgPos);
 			this->res->imgBg->Draw(drawR, src);
 		}
 
 		//文字の描画
 		ML::Box2D draw = OL::setBoxCenter(this->res->imgTextSize);
 		ML::Box2D src(0, 0, this->res->imgTextSize.w / 2, this->res->imgTextSize.h / 2);
-		draw.x += this->textPos.x;
-		draw.x -= (this->textDistance * (this->res->textResSize - 1) / 2);
+		draw.x += static_cast<int>(this->textPos.x);
+		draw.x -= static_cast<int>(this->textDistance * (this->res->textResSize - 1) / 2.0f);
 		
 		for (int i = 0; i < this->res->textResSize; ++i)
 		{
-			draw.y = easing::GetPos("gameOverTxtAp" + to_string(i));
+			draw.y = static_cast<int>(easing::GetPos("gameOverTxtAp" + to_string(i)));
 			this->res->imgText->Draw(draw, src);
 
-			draw.x += this->textDistance;
+			draw.x += static_cast<int>(this->textDistance);
 			src.x += this->res->imgTextSize.w / 2;
 		}
 
@@ -178,7 +178,7 @@ namespace  LoadGameOver
 		{
 			startPos = easing::GetPos("gameOverTxtAp" + to_string(i));
 
-			easing::Create("gameOverTxtAp" + to_string(i), easing::EASINGTYPE::QUADOUT, startPos, -this->res->imgTextSize.h, 30);
+			easing::Create("gameOverTxtAp" + to_string(i), easing::EASINGTYPE::QUADOUT, startPos, static_cast<float>(-this->res->imgTextSize.h), 30);
 			easing::Start("gameOverTxtAp" + to_string(i));
 		}
 		this->state = State::Disappear;
