@@ -106,10 +106,10 @@ namespace  PlayerStatus
 
 		if (ge->qa_Player != nullptr)
 		{
-			ge->qa_Player->power = this->shops[ATK]->GetStatusAdd();
+			ge->qa_Player->power = static_cast<float>(this->shops[ATK]->GetStatusAdd());
 			ge->qa_Player->DEF = this->shops[DEF]->GetStatusAdd();
-			ge->qa_Player->INT = this->shops[INT]->GetStatusAdd();
-			ge->qa_Player->speed = this->shops[SPD]->GetStatusAdd();
+			ge->qa_Player->INT = static_cast<float>(this->shops[INT]->GetStatusAdd());
+			ge->qa_Player->speed = static_cast<float>(this->shops[SPD]->GetStatusAdd());
 		}
 
 	}
@@ -133,13 +133,13 @@ namespace  PlayerStatus
 
 		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->power));
 		this->res->addStFont->Draw(draw.OffsetCopy(this->addStatusDistance), " +" + to_string((int)ge->qa_Player->itemPower), this->addStatusColor);
-		draw.y += this->statusDistance;
+		draw.y += static_cast<int>(this->statusDistance);
 		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->DEF));
 		this->res->addStFont->Draw(draw.OffsetCopy(this->addStatusDistance), " +" + to_string((int)ge->qa_Player->itemDEF), this->addStatusColor);
-		draw.y += this->statusDistance;
+		draw.y += static_cast<int>(this->statusDistance);
 		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->INT));
 		this->res->addStFont->Draw(draw.OffsetCopy(this->addStatusDistance), " +" + to_string((int)ge->qa_Player->itemINT), this->addStatusColor);
-		draw.y += this->statusDistance;
+		draw.y += static_cast<int>(this->statusDistance);
 		this->res->systemFont->Draw(draw, to_string((int)ge->qa_Player->speed));
 		this->res->addStFont->Draw(draw.OffsetCopy(this->addStatusDistance), " +" + to_string((int)ge->qa_Player->itemSpeed), this->addStatusColor);
 	}

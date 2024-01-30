@@ -83,7 +83,7 @@ namespace  SystemMenuMoneyDisplay
 
 				this->moneyMoveCnt.Addval(1);
 				float moveRate = (moneyMoveCnt.vmax - moneyMoveCnt.vnow) / (float)moneyMoveCnt.vmax;
-				this->moneyDisplay = ge->qa_Player->balanceMoney - moneyDifference * moveRate;
+				this->moneyDisplay = static_cast<int>(ge->qa_Player->balanceMoney - moneyDifference * moveRate);
 
 				if (this->moneyMoveCnt.IsMax())
 				{

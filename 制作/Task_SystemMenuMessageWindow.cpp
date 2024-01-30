@@ -128,7 +128,7 @@ namespace  SystemMenuMessageWindow
 		ifs >> this->messageStr;
 
 		this->appearMessageDistance = distance;
-		this->currentMessagePos.SetValues(0, 0, this->messageStr.size());
+		this->currentMessagePos.SetValues(0, 0, static_cast<int>(this->messageStr.size()));
 		this->shopStaff->SetAnimation((ShopStaff::Motion)motion);
 		this->appearMessageCount = 0;
 
