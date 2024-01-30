@@ -266,6 +266,8 @@ namespace  Map
 		this->SetEnemyOnMap();
 		
 		//¶¬Ï‚ÝƒAƒCƒeƒ€“Ç‚Ýž‚Ý
+		this->boxOpenData.clear();
+
 		ifstream ifs(this->folderPath + "openedBox.txt");
 		while (!ifs)
 		{
