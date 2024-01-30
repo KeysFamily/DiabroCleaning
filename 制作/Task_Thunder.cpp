@@ -43,7 +43,7 @@ namespace  Thunder
 		this->hitBase = ML::Box2D(-24, -24, 48, 48);
 		this->pos = ML::Vec2(0, 0);
 		this->speed = 10.0f;
-		this->power = 1.0f;
+		this->power = 3.0f;
 		this->cost = 4;
 		this->motion = Motion::Start;
 		this->diff = ML::Vec2(0, 0);

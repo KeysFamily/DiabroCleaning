@@ -41,7 +41,7 @@ namespace  Beam
 		this->render2D_Priority[1] = 0.5f;
 		this->hitBase = ML::Box2D(0, -16, 0, 32);
 		this->pos = ML::Vec2(0, 0);
-		this->power = 1.0f;
+		this->power = 2.0f;
 		this->cost = 2;
 		this->motion = Motion::Start;
 		this->length = 100;
@@ -69,7 +69,7 @@ namespace  Beam
 	{
 		this->moveCnt++;
 		this->animCnt++;
-		this->coolTime++;
+		
 		auto pl = ge->GetTask<BChara>("Player");
 		if (this->angle_LR == Angle_LR::Right)
 		{
@@ -86,6 +86,18 @@ namespace  Beam
 		else { this->length = 100; }
 		this->Think();
 		this->Move();
+		auto enemys = ge->GetTasks<BChara>("Enemy");
+		for (auto it = enemys->begin();
+			it != enemys->end();
+			++it) {
+			if ((*it)->CheckHit(this->hitBase.OffsetCopy(this->pos))) {
+				this->coolTime++;
+				BChara::AttackInfo at = { this->power, 0, 0 };
+				if (this->coolTime % 20 == 1) {
+					(*it)->Received(this, at);
+				}
+			}
+		}
 	}
 	//-------------------------------------------------------------------
 	//「２Ｄ描画」１フレーム毎に行う処理
@@ -128,13 +140,13 @@ namespace  Beam
 	//モーションに対応した処理
 	void  Object::Move()
 	{
-		auto enemys = ge->GetTasks<BChara>("Enemy");
+		//auto enemys = ge->GetTasks<BChara>("Enemy");
 		auto pl = ge->GetTask<BChara>("Player");
 		switch (this->motion) {
 		case Motion::Start:
 			break;
 		case Motion::Infinite:
-			for (auto it = enemys->begin();
+			/*for (auto it = enemys->begin();
 				it != enemys->end();
 				++it) {
 				if ((*it)->CheckHit(this->hitBase.OffsetCopy(this->pos))) {
@@ -143,7 +155,7 @@ namespace  Beam
 					(*it)->Received(this, at);
 					}
 				}
-			}
+			}*/
 			if (this->moveCnt % 20 == 1) { pl->balanceMoney -= this->cost; }
 			break;
 		case Motion::End:
