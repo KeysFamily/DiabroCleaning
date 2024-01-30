@@ -539,7 +539,7 @@ namespace  Map
 	// プレイヤーのスタート地点の座標
 	ML::Vec2 Object::GetPlayerStartPos() const
 	{
-		int enterChip = 12;
+		int enterChip = 7;
 
 		OL::Size2D mapSize(ObjectMap.width, ObjectMap.height);
 
