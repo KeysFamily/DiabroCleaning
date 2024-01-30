@@ -60,6 +60,9 @@
     <Filter Include="MyPG\Task\Game\GameOver">
       <UniqueIdentifier>{33665348-11fe-427b-9252-780fb78a2e44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyPG\Task\Game\Enemy\Attack">
+      <UniqueIdentifier>{d66add41-dfc7-49e2-a631-a9bb17ba2ded}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameEngine_Ver3_83.cpp">
@@ -239,9 +242,6 @@
     <ClCompile Include="Dm2008_Ver1_4.cpp">
       <Filter>Lib</Filter>
     </ClCompile>
-    <ClCompile Include="Task_WaterBlast.cpp">
-      <Filter>MyPG\Task\Game\Magic</Filter>
-    </ClCompile>
     <ClCompile Include="Task_FireBall.cpp">
       <Filter>MyPG\Task\Game\Majic</Filter>
     </ClCompile>
@@ -387,6 +387,20 @@
     <ClCompile Include="Task_GameOverMenu.cpp">
       <Filter>MyPG\Task\Game\GameOver</Filter>
     </ClCompile>
+
+    <ClCompile Include="RateLot.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_WaterBlast.cpp">
+      <Filter>MyPG\Task\Game\Magic</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemyFireBall.cpp">
+      <Filter>MyPG\Task\Game\Enemy\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_EnemyBlast.cpp">
+      <Filter>MyPG\Task\Game\Enemy\Attack</Filter>
+    </ClCompile>
+    
     <ClCompile Include="Task_EnemyFireBall.cpp" />
     <ClCompile Include="Task_EnemyEffect.cpp">
       <Filter>MyPG\Task\Game\Enemy</Filter>
@@ -396,6 +410,7 @@
     </ClCompile>
     <ClCompile Include="GameFileManager.cpp">
       <Filter>MyPG</Filter>
+
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -499,9 +514,6 @@
     <ClInclude Include="Task_FireBall.h">
       <Filter>MyPG\Task\Game\Magic</Filter>
     </ClInclude>
-    <ClInclude Include="Task_WaterBlast.h">
-      <Filter>MyPG\Task\Game\Magic</Filter>
-    </ClInclude>
     <ClInclude Include="Task_EnemySkeleton.h">
       <Filter>MyPG\Task\Game\Enemy</Filter>
     </ClInclude>
@@ -600,6 +612,19 @@
     <ClInclude Include="Task_GameOverMenu.h">
       <Filter>MyPG\Task\Game\GameOver</Filter>
     </ClInclude>
+
+    <ClInclude Include="RateLot.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_WaterBlast.h">
+      <Filter>MyPG\Task\Game\Magic</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemyFireBall.h">
+      <Filter>MyPG\Task\Game\Enemy\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_EnemyBlast.h">
+      <Filter>MyPG\Task\Game\Enemy\Attack</Filter>
+    </ClInclude>
     <ClInclude Include="Task_EnemyFireBall.h" />
     <ClInclude Include="Task_EnemyEffect.h">
       <Filter>MyPG\Task\Game\Enemy</Filter>
@@ -609,6 +634,7 @@
     </ClInclude>
     <ClInclude Include="GameFileManager.h">
       <Filter>MyPG</Filter>
+
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
