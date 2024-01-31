@@ -36,6 +36,7 @@ public:
 		Turn,		// ‹t‚ğŒü‚­
 		Bound,	// ’e‚«”ò‚Î‚³‚ê‚Ä‚¢‚é
 		Lose,		// Á–Å’†
+		Burn,		//”R‚¦‚é
 	};
 	int searchCnt;			//õ“GƒJƒEƒ“ƒg
 	int notFoundPlayerCnt;	//ƒvƒŒƒCƒ„‚ª’T‚¹‚È‚©‚Á‚½‚Æ‚«
@@ -64,6 +65,8 @@ protected:
 	bool Attack_Std(string gn_, BChara::AttackInfo at_, ML::Box2D AttackHit_);				//UŒ‚‹¤’Êˆ—
 	void UpDate_Std();													//XV‹¤’Êˆ—
 	void Render_Std(const DG::Image::SP& img_);							//•`‰æ‹¤’Êˆ—
+
+	bool CheckLava() const;
 
 	void DropCoins(unsigned int dropNum_);
 };

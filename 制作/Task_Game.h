@@ -62,6 +62,7 @@ namespace  Game
 			Normal,
 			OpeningMenu,
 			GameOver,
+			GameClear,
 			ReviveUpDate,
 		};
 		State state;
@@ -71,6 +72,7 @@ namespace  Game
 		bool CheckFinishedMenu();
 		void SetGameOver();
 		void ReviveGame();
+		void SetClear();
 		void SetResult();
 		shared_ptr<vector<BTask::SP>> GetGameObj();
 		void UpDateByState();

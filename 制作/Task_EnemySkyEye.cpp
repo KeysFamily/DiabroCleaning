@@ -298,6 +298,11 @@ namespace  EnemySkyEye
 				this->Kill();
 			}
 			break;
+		case Motion::Burn:
+			if (this->moveCnt >= 8) {
+				this->Kill();
+			}
+			break;
 		case Motion::Bound:
 			this->moveVec *= 0.98f;
 			break;

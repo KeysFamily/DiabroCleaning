@@ -213,7 +213,7 @@ namespace  SystemMenu
 	{
 		ge->KillAll_GN("SystemMenu", "SelectObject");
 		this->SaveToFile();
-		easing::Create("menuDisap", easing::EASINGTYPE::CUBICOUT, this->pos.y, -1080, 30);
+		easing::Create("menuDisap", easing::EASINGTYPE::CUBICOUT, this->pos.y, -1081, 30);
 		easing::Start("menuDisap");
 		bgm::Stop("bgmMenu");
 		se::Play("shopin");

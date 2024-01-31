@@ -425,7 +425,26 @@ namespace  MapManager
 			}
 		}
 	}
+	//-------------------------------------------------------------------
+	//スタート地点に戻る
+	void Object::SetToStart()
+	{
+		//敵の消滅処理（仮）
+		ge->KillAll_G("enemy");
 
+		this->currentPos.x = 0;
+		this->currentPos.y = 0;
+
+		ge->qa_Map->SaveMap();
+		ge->qa_Map->LoadMap(this->saveFolderPath + "mapId_" + to_string(this->mapid[currentPos.y][currentPos.x]));
+		ge->qa_Player->pos = ge->qa_Map->GetPlayerStartPos();
+		auto camera = ge->GetTask<Sprite::Object>("Sprite");
+		camera->MoveImmediately();
+
+		this->moveMapDir = Map::MapDir::Non;
+		this->mapTransition = nullptr;
+		this->minimap->SetVisit(0, 0);
+	}
 	//-------------------------------------------------------------------
 	//セッタ
 	void Object::SetMaxDepth(int depth_)

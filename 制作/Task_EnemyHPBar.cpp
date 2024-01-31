@@ -71,7 +71,7 @@ namespace  EnemyHPBar
 		const BChara::SP& en = target.lock();
 		this->pos = en->pos + this->offset;
 
-		if (hpDisplay != en->hp.vnow)
+		if (hpDisplay != (int)en->hp.vnow)
 		{
 			decleaseTime.vnow = decleaseTime.vmin;
 			hpDecleased += hpDisplay - static_cast<int>(en->hp.vnow);

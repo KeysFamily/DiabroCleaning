@@ -149,6 +149,8 @@
     <ClCompile Include="RateLot.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="Task_Beam.cpp" />
+    <ClCompile Include="Task_BossHPBar.cpp" />
+    <ClCompile Include="Task_DamageNum.cpp" />
     <ClCompile Include="Task_Effect00.cpp" />
     <ClCompile Include="Task_Ending.cpp" />
     <ClCompile Include="Task_EnemyBlast.cpp" />
@@ -229,6 +231,8 @@
     <ClInclude Include="SelectableObject.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="Task_Beam.h" />
+    <ClInclude Include="Task_BossHPBar.h" />
+    <ClInclude Include="Task_DamageNum.h" />
     <ClInclude Include="Task_Effect00.h" />
     <ClInclude Include="Task_Ending.h" />
     <ClInclude Include="Task_EnemyBlast.h" />

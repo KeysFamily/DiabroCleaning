@@ -92,6 +92,7 @@ namespace  Map
 		int					depth;		//深度
 		int					depthInLevel;		//レベル
 		string				folderPath;	//マップデータフォルダへのパス
+		bool				isBossRoom;	//ボス部屋かどうか
 
 		//あたり判定
 		bool  CheckHit(const  ML::Box2D& hit_);
@@ -146,6 +147,7 @@ namespace  Map
 		void SetEnemyOnMap();
 		void SetItemOnMap();
 
+		void SetBossRoom();
 
 	};
 }

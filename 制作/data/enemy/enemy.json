@@ -31,7 +31,7 @@
 			"decSpeed": 0.5,
 			"unHitTime": 10,
 			"dropMoney": 1,
-			"attack": 50
+			"attack": 10
 		}
 	]
 }

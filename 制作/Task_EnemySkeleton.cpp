@@ -92,7 +92,7 @@ namespace  EnemySkeleton
 	void  Object::UpDate()
 	{
 		this->UpDate_Std();
-		BChara::AttackInfo ai = { 5,0,0 };
+		BChara::AttackInfo ai = { max(1,this->attackPow * 0.8f),0,0 };
 		this->Attack_Std(Player::defGroupName, ai, this->CallHitBox());
 	}
 	//-------------------------------------------------------------------
@@ -339,6 +339,15 @@ namespace  EnemySkeleton
 			}
 			if (this->moveCnt == 5) { this->DropCoins(this->dropMoney); }
 			if (this->moveCnt >= 30) {
+				this->Kill();
+			}
+			break;
+		case Motion::Burn:
+			if (this->moveCnt == 1)
+			{
+				ge->CreateEffect(10, this->pos);
+			}
+			if (this->moveCnt >= 15) {
 				this->Kill();
 			}
 			break;

@@ -22,6 +22,8 @@ namespace  MiniMap
 		this->imgBGSize.Set(256, 256);
 		this->imgChip = DG::Image::Create("./data/map/image/UI/MapChip.png");
 		this->imgChipSize.Set(32, 32);
+		this->imgPl = DG::Image::Create("./data/map/image/UI/playerChip.png");
+		this->imgPlSize.Set(32, 64);
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -30,6 +32,7 @@ namespace  MiniMap
 	{
 		this->imgBG.reset();
 		this->imgChip.reset();
+		this->imgPl.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -48,7 +51,10 @@ namespace  MiniMap
 		this->cameraPos = ML::Vec2(0, 0);
 		this->screenSize.Set(240, 216);
 		this->screenOfs = ML::Vec2(0, 12);
-
+		this->playerPos.x = 0;
+		this->playerPos.y = 0;
+		this->animCnt.SetValues(0, 0, 60);
+		this->hide = false;
 		//ƒ}ƒbƒvƒ`ƒbƒv”z—ñ‚Ì‰Šú‰»
 		this->ResizeMap(Map::MAPSIZE_MAX);
 		//šƒ^ƒXƒN‚Ì¶¬
@@ -81,11 +87,22 @@ namespace  MiniMap
 			this->cameraPos.x += speed;
 		if (inp.RStick.BL.on)
 			this->cameraPos.x -= speed;
+
+		this->animCnt.Addval(1);
+		if (this->animCnt.IsMax())
+		{
+			this->animCnt.Setval(this->animCnt.vmin);
+		}
 	}
 	//-------------------------------------------------------------------
 	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
 	void  Object::Render2D_AF()
 	{
+		if(this->hide == true)
+		{
+			return;
+		}
+
 		//”wŒi•`‰æ
 		ML::Box2D draw = OL::setBoxCenter(this->res->imgBGSize);
 		draw.Offset(this->pos);
@@ -106,6 +123,19 @@ namespace  MiniMap
 				this->SetToScreen(draw, src, screen);
 
 				this->res->imgChip->Draw(draw, src);
+
+
+				if (x == this->playerPos.x && y == this->playerPos.y)
+				{
+					ML::Box2D srcPl = src;
+					srcPl.x %= this->res->imgChipSize.w;
+					srcPl.y %= this->res->imgChipSize.h;
+					this->res->imgPl->Draw(draw, srcPl);
+
+					srcPl.x += this->res->imgPlSize.w;
+					float alpha = sin(ML::ToRadian(180 * ((float)this->animCnt.vnow / this->animCnt.vmax)));
+					this->res->imgPl->Draw(draw, srcPl, ML::Color(alpha, 1, 1, 1));
+				}
 			}
 		}
 	}
@@ -206,6 +236,15 @@ namespace  MiniMap
 		{
 			return;
 		}
+		this->playerPos.x = x_;
+		this->playerPos.y = y_;
+		this->cameraPos.x = screenSize.w / -2
+							+ this->res->imgChipSize.w * x_
+							+ this->res->imgChipSize.w / 2;
+		this->cameraPos.y = screenSize.h / -2
+							+ this->res->imgChipSize.h * y_
+							+ this->res->imgChipSize.h / 2;
+
 
 		this->mapData[y_][x_] |= VISITED;
 	}

@@ -66,6 +66,7 @@ namespace  Ending
 		bgm::Stop("bgm_GameOver");
 
 		ge->KillAll_G("エンディング");
+		bgm::AllStop();
 
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
@@ -106,7 +107,6 @@ namespace  Ending
 		
 		if(this->KeyOnOff==true)this->res->Key_img->Draw(KeyDraw, KeySrc);
 		
-		ge->Dbg_ToDisplay(100, 100, "Ending");
 	}
 
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
