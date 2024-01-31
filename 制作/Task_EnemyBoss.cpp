@@ -71,7 +71,6 @@ namespace  EnemyBoss
 	{
 		//★データ＆タスク解放
 
-		ge->GameClearFlag = true;
 		if (!ge->QuitFlag() && this->nextTaskCreate) {
 			//★引き継ぎタスクの生成
 		}

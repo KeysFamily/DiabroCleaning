@@ -962,10 +962,10 @@ namespace  Player
 		}
 		this->unHitTime = 90;
 		//this->hp.Addval(-at_.power);	//仮処理
-		this->balanceMoney -= max(1, (int)at_.power - this->DEF + this->itemDEF); //ダメージ計算公式
+		this->balanceMoney -= max(1, (int)at_.power - this->DEF - this->itemDEF); //ダメージ計算公式
 		auto dmg = DamageNum::Object::Create(true);
 		dmg->pos = this->pos;
-		dmg->damageNum = max(1, (int)at_.power - this->DEF + this->itemDEF);
+		dmg->damageNum = max(1, (int)at_.power - this->DEF - this->itemDEF);
 		if (this->balanceMoney < 0)
 		{
 			this->moveVec = ML::Vec2(0, 0);
